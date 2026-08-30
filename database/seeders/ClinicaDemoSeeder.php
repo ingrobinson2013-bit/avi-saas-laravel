@@ -20,15 +20,15 @@ class ClinicaDemoSeeder extends Seeder
     public function run(): void
     {
         // 1. Clínica Vet-Pet Patitas (Tenant Piloto)
-        $tenant = Tenant::firstOrCreate(
+        $tenant = Tenant::updateOrCreate(
             ['slug' => 'vet-pet-patitas'],
             [
                 'name' => 'Vet-Pet Patitas Consultorio Veterinario',
                 'domain' => 'patitas.aviplan.co',
                 'branding' => [
                     'logo_url' => 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=300',
-                    'primary_color' => '#10B981',
-                    'secondary_color' => '#065F46',
+                    'primary_color' => '#0D9488',
+                    'secondary_color' => '#0B1120',
                     'phone' => '3508742543',
                     'email' => 'petmovilveterinario@gmail.com',
                     'city' => 'Cajicá, Cundinamarca',
@@ -38,12 +38,6 @@ class ClinicaDemoSeeder extends Seeder
                 'saas_plan_tier' => 'pro',
             ]
         );
-
-        // Actualizar también el tenant previo si existía con patitas-felices
-        Tenant::where('slug', 'patitas-felices')->update([
-            'name' => 'Vet-Pet Patitas Consultorio Veterinario',
-            'slug' => 'vet-pet-patitas',
-        ]);
 
         // 2. Super Administrador (Robinson - CEO NODIA)
         User::firstOrCreate(
