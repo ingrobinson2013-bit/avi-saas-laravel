@@ -16,6 +16,7 @@ COPY nginx.conf /etc/nginx/http.d/default.conf
 COPY . /var/www/html
 
 # Crear directorios de cache y storage con permisos completos ANTES de composer install
+RUN cp .env.example .env 2>/dev/null || true
 RUN mkdir -p /var/www/html/storage/framework/cache/data \
     /var/www/html/storage/framework/sessions \
     /var/www/html/storage/framework/views \
