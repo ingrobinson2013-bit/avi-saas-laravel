@@ -8,7 +8,16 @@ Route::get('/', function () {
     return view('b2b_landing');
 });
 
-// 2. Acceso amigable por Slug al Admin de la clínica (ej. /v/vet-pet-patitas/admin -> /admin/vet-pet-patitas)
+// 2. Redirección amigable de /admin a la clínica activa
+Route::get('/admin', function () {
+    $tenant = auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
+    if ($tenant) {
+        return redirect('/admin/' . $tenant->slug);
+    }
+    return redirect('/admin/login');
+});
+
+// 3. Acceso amigable por Slug al Admin de la clínica (ej. /v/vet-pet-patitas/admin -> /admin/vet-pet-patitas)
 Route::get('/v/{slug}/admin/{section?}', function (string $slug, ?string $section = null) {
     $tenant = Tenant::where('slug', $slug)->firstOrFail();
     $target = '/admin/' . $tenant->slug . ($section ? '/' . $section : '');
@@ -21,7 +30,7 @@ Route::get('/v/{slug}/admin/{section?}', function (string $slug, ?string $sectio
     return redirect('/admin/' . $tenant->slug . '/login');
 })->where('section', '.*');
 
-// 3. Portal B2C de Pacientes de la Clínica (ej. /v/vet-pet-patitas)
+// 4. Portal B2C de Pacientes de la Clínica (ej. /v/vet-pet-patitas)
 Route::get('/v/{slug}', function (string $slug) {
     $tenant = Tenant::where('slug', $slug)->firstOrFail();
     $plans = $tenant->plans()->with('planBenefits.benefitDefinition')->where('is_active', true)->get();

@@ -31,17 +31,22 @@ class CounterRedeem extends Page
         }
 
         $query = trim($this->searchQuery);
+        $tenant = \Filament\Facades\Filament::getTenant();
+        $tenantId = $tenant?->id ?? session('current_tenant_id') ?? auth()->user()?->tenant_id;
 
         return Subscription::with(['pet.customer', 'plan', 'benefitBalances.benefitDefinition'])
-            ->whereHas('pet.customer', function ($q) use ($query) {
-                $q->where('identification', 'ilike', "%{$query}%")
-                  ->orWhere('phone', 'ilike', "%{$query}%")
-                  ->orWhere('name', 'ilike', "%{$query}%");
+            ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
+            ->where(function ($mainQuery) use ($query) {
+                $mainQuery->whereHas('pet.customer', function ($q) use ($query) {
+                    $q->where('identification', 'ilike', "%{$query}%")
+                      ->orWhere('phone', 'ilike', "%{$query}%")
+                      ->orWhere('name', 'ilike', "%{$query}%");
+                })
+                ->orWhereHas('pet', function ($q) use ($query) {
+                    $q->where('name', 'ilike', "%{$query}%");
+                });
             })
-            ->orWhereHas('pet', function ($q) use ($query) {
-                $q->where('name', 'ilike', "%{$query}%");
-            })
-            ->where('status', 'active')
+            ->where('subscriptions.status', 'active')
             ->limit(8)
             ->get();
     }
