@@ -18,14 +18,14 @@ Route::get('/v/{slug}/admin/{section?}', function (string $slug, ?string $sectio
         ]);
     }
 
-    if ($section) {
-        return redirect('/admin/' . $section);
-    }
+    $target = $section ? '/admin/' . $section : '/admin';
 
     if (auth()->check()) {
-        return redirect('/admin');
+        return redirect($target);
     }
 
+    // Guardar la URL de destino para que al iniciar sesión lo lleve directo
+    session(['url.intended' => $target]);
     return redirect('/admin/login');
 })->where('section', '.*');
 
