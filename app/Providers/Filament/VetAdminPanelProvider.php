@@ -27,8 +27,14 @@ class VetAdminPanelProvider extends PanelProvider
             ->id('vet-admin')
             ->path('admin')
             ->login()
+            ->brandName('Vet-Pet Patitas — Consultorio Veterinario')
+            ->brandLogo(fn () => view('filament.vet-admin.logo'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon('https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=64')
+            ->font('Plus Jakarta Sans')
             ->colors([
                 'primary' => Color::Emerald,
+                'gray' => Color::Slate,
             ])
             ->discoverResources(in: app_path('Filament/VetAdmin/Resources'), for: 'App\\Filament\\VetAdmin\\Resources')
             ->discoverPages(in: app_path('Filament/VetAdmin/Pages'), for: 'App\\Filament\\VetAdmin\\Pages')
