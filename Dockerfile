@@ -15,15 +15,17 @@ COPY nginx.conf /etc/nginx/http.d/default.conf
 
 COPY . /var/www/html
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
-
+# Crear directorios de cache y storage con permisos completos ANTES de composer install
 RUN mkdir -p /var/www/html/storage/framework/cache/data \
     /var/www/html/storage/framework/sessions \
     /var/www/html/storage/framework/views \
     /var/www/html/storage/logs \
     /var/www/html/bootstrap/cache && \
-    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
-    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+    chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
+
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
+
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 80
 
