@@ -26,7 +26,7 @@
                     </svg>
                 </div>
                 <div>
-                    <span class="text-xl font-extrabold tracking-tight text-white">Patitas <span class="text-emerald-400">Felices</span></span>
+                    <span class="text-xl font-extrabold tracking-tight text-white">Vet-Pet <span class="text-emerald-400">Patitas</span></span>
                     <span class="hidden sm:inline-block ml-2 px-2 py-0.5 text-xs font-semibold bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">Planes de Salud Prepaga</span>
                 </div>
             </div>
@@ -241,7 +241,7 @@
     <!-- FOOTER -->
     <footer class="border-t border-slate-800 py-10 bg-slate-950">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-slate-500 text-xs gap-4">
-            <p>© 2026 Clínica Veterinaria Patitas Felices — Línea Única de Atención: <span class="text-emerald-400 font-bold">350 874 2543</span></p>
+            <p>© 2026 Vet-Pet Patitas Consultorio Veterinario — Cajicá, Cundinamarca (Calle 7 # 4-73 Este) — Línea Única de Atención: <span class="text-emerald-400 font-bold">350 874 2543</span></p>
             <div class="flex space-x-6">
                 <a href="/admin" class="hover:text-emerald-400 transition-colors">Panel Operador</a>
                 <a href="/admin/counter-redeem" class="hover:text-emerald-400 transition-colors">Mostrador de Recepción</a>

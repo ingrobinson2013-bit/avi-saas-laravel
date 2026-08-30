@@ -19,24 +19,33 @@ class ClinicaDemoSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Clínica Patitas Felices (Tenant)
+        // 1. Clínica Vet-Pet Patitas (Tenant Piloto)
         $tenant = Tenant::firstOrCreate(
-            ['slug' => 'patitas-felices'],
+            ['slug' => 'vet-pet-patitas'],
             [
-                'name' => 'Clínica Veterinaria Patitas Felices',
+                'name' => 'Vet-Pet Patitas Consultorio Veterinario',
                 'domain' => 'patitas.aviplan.co',
                 'branding' => [
                     'logo_url' => 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=300',
                     'primary_color' => '#10B981',
                     'secondary_color' => '#065F46',
                     'phone' => '3508742543',
+                    'email' => 'petmovilveterinario@gmail.com',
+                    'city' => 'Cajicá, Cundinamarca',
+                    'address' => 'Calle 7 # 4-73 Este (hacia El Parasol rojo)',
                 ],
                 'is_active' => true,
                 'saas_plan_tier' => 'pro',
             ]
         );
 
-        // 2. Super Administrador (Robinson)
+        // Actualizar también el tenant previo si existía con patitas-felices
+        Tenant::where('slug', 'patitas-felices')->update([
+            'name' => 'Vet-Pet Patitas Consultorio Veterinario',
+            'slug' => 'vet-pet-patitas',
+        ]);
+
+        // 2. Super Administrador (Robinson - CEO NODIA)
         User::firstOrCreate(
             ['email' => 'superadmin@aviplan.co'],
             [
@@ -46,18 +55,28 @@ class ClinicaDemoSeeder extends Seeder
             ]
         );
 
-        // 3. Usuario Administrador de la Clínica
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@patitasfelices.com'],
+        // 3. Usuario Administrador de Vet-Pet Patitas
+        User::firstOrCreate(
+            ['email' => 'petmovilveterinario@gmail.com'],
             [
                 'tenant_id' => $tenant->id,
-                'name' => 'Dra. Robinson & Hermana (Patitas Felices)',
+                'name' => 'Dra. Vet-Pet Patitas',
                 'password' => Hash::make('Ashley2023##'),
                 'role' => 'clinic_admin',
             ]
         );
 
-        // 4. Catálogo de Beneficios Oficiales Patitas Felices
+        User::firstOrCreate(
+            ['email' => 'admin@patitasfelices.com'],
+            [
+                'tenant_id' => $tenant->id,
+                'name' => 'Administración Vet-Pet Patitas',
+                'password' => Hash::make('Ashley2023##'),
+                'role' => 'clinic_admin',
+            ]
+        );
+
+        // 4. Beneficios
         $bKit = BenefitDefinition::firstOrCreate(
             ['tenant_id' => $tenant->id, 'name' => 'Kit Bienvenida (Cédula + Collar Placa + Carnet Digital)'],
             ['description' => 'Identificación oficial, placa grabada y registro médico inicial.', 'category' => 'bienvenida']
@@ -113,7 +132,7 @@ class ClinicaDemoSeeder extends Seeder
             ['description' => 'Cobertura exequial digna para tu mascota.', 'category' => 'funerario']
         );
 
-        // 5. Crear Plan Patitas Básico ($50.000 COP/mes)
+        // 5. Planes
         $planBasico = Plan::firstOrCreate(
             ['tenant_id' => $tenant->id, 'name' => 'Plan Patitas Básico'],
             [
@@ -135,7 +154,6 @@ class ClinicaDemoSeeder extends Seeder
         PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bCitologia->id], ['quantity' => 2]);
         PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bBano->id], ['quantity' => 2]);
 
-        // 6. Crear Plan Patitas Premium ($150.000 1er mes / $80.000 COP/mes)
         $planPremium = Plan::firstOrCreate(
             ['tenant_id' => $tenant->id, 'name' => 'Plan Patitas Premium'],
             [
@@ -155,7 +173,7 @@ class ClinicaDemoSeeder extends Seeder
         PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bLaboratorio->id], ['quantity' => 2]);
         PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bFunerario->id], ['quantity' => 1]);
 
-        // 7. Tutor y Mascota Demo
+        // 6. Tutor y Mascota Demo
         $tutor = Customer::firstOrCreate(
             ['tenant_id' => $tenant->id, 'identification' => '1020304050'],
             [
@@ -171,7 +189,7 @@ class ClinicaDemoSeeder extends Seeder
                 'species' => 'dog',
                 'breed' => 'Golden Retriever',
                 'birthdate' => now()->subYears(3),
-                'medical_notes' => 'Paciente afiliado a Plan Patitas Premium.',
+                'medical_notes' => 'Paciente afiliado a Plan Patitas Premium en Cajicá.',
             ]
         );
 
@@ -185,7 +203,6 @@ class ClinicaDemoSeeder extends Seeder
             ]
         );
 
-        // Saldos en el Ledger
         SubscriptionBenefitBalance::firstOrCreate(
             ['subscription_id' => $sub->id, 'benefit_definition_id' => $bConsultaPresencial->id],
             ['total_granted' => 3, 'used_count' => 1, 'remaining_count' => 2]
