@@ -2,6 +2,8 @@
 
 namespace App\Filament\VetAdmin\Resources;
 
+use App\Filament\VetAdmin\Resources\PetResource\Pages;
+
 use App\Models\Pet;
 use Filament\Forms;
 use Filament\Forms\Form;

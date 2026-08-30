@@ -1,9 +1,19 @@
 <?php
+
 namespace App\Filament\VetAdmin\Resources\CustomerResource\Pages;
+
 use App\Filament\VetAdmin\Resources\CustomerResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-class ListCustomers extends ListRecords {
-    protected static string $resource = CustomerResource::class;
-    protected function getHeaderActions(): array { return [Actions\CreateAction::make()]; }
+
+class ListCustomers extends ListRecords
+{
+    protected static string  = CustomerResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\CreateAction::make(),
+        ];
+    }
 }
