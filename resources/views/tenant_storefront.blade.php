@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-white text-slate-900 antialiased selection:bg-sky-500 selection:text-white">
+<html lang="es" class="h-full bg-white text-slate-900 antialiased selection:bg-sky-500 selection:text-white overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>{{ $tenant->name }} — Cuidado preventivo inteligente para tu mascota</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,21 +31,21 @@
         .border-brand-primary { border-color: var(--brand-primary); }
     </style>
 </head>
-<body class="min-h-full flex flex-col justify-between bg-white">
+<body class="min-h-full flex flex-col justify-between bg-white overflow-x-hidden">
 
     <!-- 1. TOP BAR -->
     <div class="bg-brand-secondary text-white text-xs font-semibold py-2 px-4">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-            <div class="flex items-center space-x-2 text-sky-100">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-2 text-center sm:text-left">
+            <div class="flex items-center space-x-2 text-sky-100 text-[11px] sm:text-xs">
                 <span>🐾</span>
-                <span>Planes de salud prepagada y bienestar integral para mascotas</span>
+                <span>Planes de salud prepagada y bienestar integral</span>
             </div>
             <div class="flex items-center space-x-4">
-                <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}" target="_blank" class="flex items-center space-x-1.5 hover:opacity-90 transition-opacity">
-                    <svg class="w-4 h-4 fill-current text-sky-400" viewBox="0 0 24 24">
+                <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}" target="_blank" class="flex items-center space-x-1.5 hover:opacity-90 transition-opacity text-[11px] sm:text-xs">
+                    <svg class="w-3.5 h-3.5 fill-current text-sky-400" viewBox="0 0 24 24">
                         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
                     </svg>
-                    <span>WhatsApp:</span>
+                    <span>Línea Única:</span>
                     <span class="text-white font-bold">{{ $tenant->branding['phone'] ?? '350 874 2543' }}</span>
                 </a>
             </div>
@@ -54,17 +54,17 @@
 
     <!-- 2. NAVBAR -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-2.5 sm:space-x-3">
                 @if(!empty($logoUrl))
-                    <img src="{{ $logoUrl }}" alt="{{ $tenant->name }}" class="h-12 max-h-14 w-auto object-contain rounded-lg shadow-sm" loading="lazy">
+                    <img src="{{ $logoUrl }}" alt="{{ $tenant->name }}" class="h-9 sm:h-12 max-h-14 w-auto object-contain rounded-lg shadow-sm" loading="lazy">
                 @else
-                    <div class="w-11 h-11 rounded-xl bg-brand-primary flex items-center justify-center text-white text-xl shadow-md">
+                    <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-brand-primary flex items-center justify-center text-white text-lg sm:text-xl shadow-md">
                         🐾
                     </div>
                 @endif
                 <div>
-                    <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900">{{ $tenant->name }}</span>
+                    <span class="text-base sm:text-xl font-extrabold tracking-tight text-slate-900 truncate block max-w-[170px] sm:max-w-none">{{ $tenant->name }}</span>
                     <span class="hidden sm:inline-block ml-2 px-2.5 py-0.5 text-xs font-semibold rounded-full" style="background-color: {{ $primaryColor }}15; color: {{ $primaryColor }};">{{ $tenant->branding['city'] ?? 'Cajicá' }}</span>
                 </div>
             </div>
@@ -76,11 +76,11 @@
                 <a href="#contacto" class="hover:text-brand-primary transition-colors">Contacto</a>
             </nav>
 
-            <div class="flex items-center space-x-3">
-                <a href="/v/{{ $tenant->slug }}/admin" class="px-4 py-2 text-sm font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all">
-                    Panel Veterinaria
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <a href="/v/{{ $tenant->slug }}/admin" class="hidden sm:inline-block px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all">
+                    Panel
                 </a>
-                <a href="#planes" class="px-5 py-2 text-sm font-bold text-white bg-brand-primary hover:opacity-90 rounded-full shadow-md transition-all">
+                <a href="#planes" class="px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold text-white bg-brand-primary hover:opacity-90 rounded-full shadow-md transition-all whitespace-nowrap">
                     Ver planes
                 </a>
             </div>
@@ -89,77 +89,77 @@
 
     <main class="flex-grow">
         <!-- 3. HERO -->
-        <section class="hero-gradient relative pt-12 pb-20 overflow-hidden">
+        <section class="hero-gradient relative pt-8 sm:pt-12 pb-16 sm:pb-20 overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                     
-                    <div class="lg:col-span-7 space-y-6">
-                        <div class="inline-flex items-center space-x-3 bg-white px-3.5 py-1.5 rounded-full shadow-sm border border-slate-100">
+                    <div class="lg:col-span-7 space-y-5 sm:space-y-6">
+                        <div class="inline-flex items-center space-x-2.5 sm:space-x-3 bg-white px-3 sm:px-3.5 py-1.5 rounded-full shadow-sm border border-slate-100">
                             <div class="flex -space-x-2 overflow-hidden">
-                                <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt=""/>
-                                <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt=""/>
-                                <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt=""/>
+                                <img class="inline-block h-5 w-5 sm:h-6 sm:w-6 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt=""/>
+                                <img class="inline-block h-5 w-5 sm:h-6 sm:w-6 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt=""/>
+                                <img class="inline-block h-5 w-5 sm:h-6 sm:w-6 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt=""/>
                             </div>
                             <div class="flex items-center space-x-1 text-amber-400 text-xs">
                                 <span>★★★★★</span>
                             </div>
-                            <span class="text-xs font-bold text-slate-700">+450 mascotas protegidas en {{ $tenant->branding['city'] ?? 'Cajicá' }}</span>
+                            <span class="text-[11px] sm:text-xs font-bold text-slate-700">+450 mascotas protegidas</span>
                         </div>
 
-                        <h1 class="text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1]">
+                        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
                             Cuidado preventivo <span class="text-brand-primary">inteligente</span> para tu mascota
                         </h1>
 
-                        <p class="text-lg text-slate-600 leading-relaxed max-w-xl font-normal">
+                        <p class="text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl font-normal">
                             Planes de salud diseñados por veterinarios para garantizar bienestar, ahorro continuo y atención inmediata en <strong class="text-slate-800">{{ $tenant->name }}</strong>.
                         </p>
 
-                        <div class="space-y-2.5 text-sm font-semibold text-slate-700">
+                        <div class="space-y-2.5 text-xs sm:text-sm font-semibold text-slate-700">
                             <div class="flex items-center space-x-2.5">
-                                <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-extrabold" style="background-color: {{ $primaryColor }}20; color: {{ $primaryColor }};">✓</span>
+                                <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-extrabold shrink-0" style="background-color: {{ $primaryColor }}20; color: {{ $primaryColor }};">✓</span>
                                 <span>Ahorra hasta 35% en servicios veterinarios anuales</span>
                             </div>
                             <div class="flex items-center space-x-2.5">
-                                <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-extrabold" style="background-color: {{ $primaryColor }}20; color: {{ $primaryColor }};">✓</span>
+                                <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-extrabold shrink-0" style="background-color: {{ $primaryColor }}20; color: {{ $primaryColor }};">✓</span>
                                 <span>Atención prioritaria y kit de bienvenida</span>
                             </div>
                             <div class="flex items-center space-x-2.5">
-                                <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-extrabold" style="background-color: {{ $primaryColor }}20; color: {{ $primaryColor }};">✓</span>
+                                <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-extrabold shrink-0" style="background-color: {{ $primaryColor }}20; color: {{ $primaryColor }};">✓</span>
                                 <span>Recordatorios automáticos de vacunas y desparasitación</span>
                             </div>
                         </div>
 
-                        <div class="pt-3 flex flex-wrap items-center gap-4">
-                            <a href="#planes" class="px-7 py-3.5 rounded-full bg-brand-primary text-white font-bold text-sm shadow-lg hover:opacity-90 transition-all flex items-center space-x-2">
+                        <div class="pt-2 flex flex-wrap items-center gap-3 sm:gap-4">
+                            <a href="#planes" class="px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-brand-primary text-white font-bold text-xs sm:text-sm shadow-lg hover:opacity-90 transition-all flex items-center space-x-2">
                                 <span>Explorar planes</span>
                                 <span>›</span>
                             </a>
-                            <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20agendar%20una%20cita%20veterinaria%20en%20{{ urlencode($tenant->name) }}" target="_blank" class="px-6 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm border border-slate-200 shadow-sm transition-all flex items-center space-x-2">
+                            <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20agendar%20una%20cita%20veterinaria%20en%20{{ urlencode($tenant->name) }}" target="_blank" class="px-5 sm:px-6 py-3 sm:py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200 shadow-sm transition-all flex items-center space-x-2">
                                 <span>📅 Agendar cita</span>
                             </a>
                         </div>
                     </div>
 
                     <!-- FOTO DERECHA HERO -->
-                    <div class="lg:col-span-5 relative">
-                        <div class="relative mx-auto max-w-md">
+                    <div class="lg:col-span-5 relative mt-4 lg:mt-0">
+                        <div class="relative mx-auto max-w-sm sm:max-w-md">
                             <img class="w-full h-auto object-cover rounded-3xl shadow-xl border border-slate-100" src="{{ $heroImage }}" alt="{{ $tenant->name }}" loading="lazy"/>
                             
-                            <div class="absolute -bottom-6 -left-6 sm:-left-8 bg-white p-4 sm:p-5 rounded-2xl shadow-2xl border border-slate-100 max-w-[270px] space-y-3">
-                                <div class="flex items-center space-x-3">
-                                    <img class="w-11 h-11 rounded-full object-cover border-2 border-brand-primary" src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=150" alt="Max Golden"/>
+                            <div class="absolute -bottom-4 left-2 sm:-left-6 sm:-bottom-6 bg-white p-3.5 sm:p-5 rounded-2xl shadow-2xl border border-slate-100 max-w-[240px] sm:max-w-[270px] space-y-2.5 sm:space-y-3">
+                                <div class="flex items-center space-x-2.5 sm:space-x-3">
+                                    <img class="w-9 h-9 sm:w-11 sm:h-11 rounded-full object-cover border-2 border-brand-primary shrink-0" src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=150" alt="Max Golden"/>
                                     <div>
                                         <div class="flex items-center space-x-1.5">
-                                            <h4 class="font-extrabold text-sm text-slate-900">Max</h4>
-                                            <span class="px-1.5 py-0.2 text-[10px] font-bold rounded-full" style="background-color: {{ $primaryColor }}20; color: {{ $primaryColor }};">● Activo</span>
+                                            <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Max</h4>
+                                            <span class="px-1.5 py-0.2 text-[9px] sm:text-[10px] font-bold rounded-full" style="background-color: {{ $primaryColor }}20; color: {{ $primaryColor }};">● Activo</span>
                                         </div>
-                                        <p class="text-[11px] text-slate-500">Golden Retriever • 3 años</p>
-                                        <p class="text-[10px] text-brand-primary font-bold">Plan Activo 💎</p>
+                                        <p class="text-[10px] sm:text-[11px] text-slate-500">Golden Retriever • 3 años</p>
+                                        <p class="text-[9px] sm:text-[10px] text-brand-primary font-bold">Plan Activo 💎</p>
                                     </div>
                                 </div>
 
-                                <div class="bg-slate-50 p-2.5 rounded-xl text-xs space-y-1">
-                                    <div class="flex justify-between text-slate-500 text-[10px]">
+                                <div class="bg-slate-50 p-2 sm:p-2.5 rounded-xl text-xs space-y-1">
+                                    <div class="flex justify-between text-slate-500 text-[9px] sm:text-[10px]">
                                         <span>Próximo servicio</span>
                                         <span class="font-bold text-slate-700">En 12 días</span>
                                     </div>
@@ -168,10 +168,10 @@
 
                                 <div class="flex items-center justify-between pt-1 border-t border-slate-100 text-xs">
                                     <div>
-                                        <span class="text-[10px] text-slate-400">Ahorro acumulado</span>
-                                        <p class="font-extrabold text-brand-primary text-sm">$180.000 <span class="text-[10px] font-normal text-slate-500">COP</span></p>
+                                        <span class="text-[9px] sm:text-[10px] text-slate-400">Ahorro acumulado</span>
+                                        <p class="font-extrabold text-brand-primary text-xs sm:text-sm">$180.000 <span class="text-[9px] sm:text-[10px] font-normal text-slate-500">COP</span></p>
                                     </div>
-                                    <div class="text-brand-primary text-lg">📊</div>
+                                    <div class="text-brand-primary text-base sm:text-lg">📊</div>
                                 </div>
                             </div>
                         </div>
@@ -181,43 +181,39 @@
             </div>
         </section>
 
-        <!-- 4. PLANES -->
-        <section id="planes" class="py-20 bg-[#fbfcfd] border-t border-slate-100">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                
         <!-- 4. PLANES DINÁMICOS CON COLORES DE MARCA Y LÍNEA DE TIEMPO -->
-        <section id="planes" class="py-16 sm:py-20 bg-[#fbfcfd] border-t border-slate-100">
+        <section id="planes" class="py-12 sm:py-20 bg-[#fbfcfd] border-t border-slate-100 overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
-                <div class="text-center space-y-3 mb-10 sm:mb-12">
-                    <div class="inline-flex items-center space-x-2 bg-emerald-50 border border-emerald-200 px-3.5 py-1 rounded-full text-brand-primary text-xs font-bold shadow-sm">
+                <div class="text-center space-y-3 mb-8 sm:mb-12">
+                    <div class="inline-flex items-center space-x-2 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full text-brand-primary text-xs font-bold shadow-sm">
                         <span>🐾</span>
                         <span>Planes Oficiales de Salud & Prevención</span>
                     </div>
                     <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Elige el plan ideal para tu mascota</h2>
-                    <p class="text-slate-500 text-xs sm:text-sm max-w-2xl mx-auto font-medium">
+                    <p class="text-slate-500 text-xs sm:text-sm max-w-2xl mx-auto font-medium px-2">
                         Cuidado médico preventivo de alta calidad en <strong>{{ $tenant->name }}</strong>. Paga mes a mes o ahorra pagando el año completo con activación inmediata.
                     </p>
 
                     <!-- SELECTOR CICLO FACTURACIÓN: MENSUAL / ANUAL -->
                     <div class="pt-3 sm:pt-4 flex items-center justify-center px-2">
-                        <div class="bg-slate-100 p-1 sm:p-1.5 rounded-2xl border border-slate-200 inline-flex flex-wrap items-center justify-center gap-1 shadow-inner" id="cycle-toggle-wrapper">
-                            <button type="button" onclick="setBillingCycle('monthly')" id="btn-cycle-monthly" class="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs transition-all bg-white text-slate-900 shadow-sm">
+                        <div class="bg-slate-100 p-1 sm:p-1.5 rounded-2xl border border-slate-200 inline-flex flex-wrap items-center justify-center gap-1 shadow-inner w-full sm:w-auto max-w-xs sm:max-w-none" id="cycle-toggle-wrapper">
+                            <button type="button" onclick="setBillingCycle('monthly')" id="btn-cycle-monthly" class="flex-1 sm:flex-initial px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs transition-all bg-white text-slate-900 shadow-sm text-center">
                                 📅 Pago Mensual
                             </button>
-                            <button type="button" onclick="setBillingCycle('annual')" id="btn-cycle-annual" class="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs transition-all text-slate-600 hover:text-slate-900 flex items-center space-x-1.5">
+                            <button type="button" onclick="setBillingCycle('annual')" id="btn-cycle-annual" class="flex-1 sm:flex-initial px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-1.5 text-center">
                                 <span>⭐ Pago Anual</span>
-                                <span class="bg-emerald-600 text-white text-[9px] sm:text-[10px] font-black px-1.5 sm:px-2 py-0.5 rounded-full uppercase tracking-wider">-10% & 0 Carencias</span>
+                                <span class="bg-emerald-600 text-white text-[9px] sm:text-[10px] font-black px-1.5 sm:px-2 py-0.5 rounded-full uppercase tracking-wider">-10%</span>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 max-w-5xl gap-8 mx-auto items-stretch">
+                <div class="grid grid-cols-1 md:grid-cols-2 max-w-5xl gap-6 sm:gap-8 mx-auto items-stretch">
                     
                     <!-- 1. PLAN PATITAS BÁSICO -->
-                    <div id="plan-card-basico" onclick="selectPlanCard('basico')" class="plan-card cursor-pointer bg-white rounded-3xl p-6 sm:p-8 border-2 border-brand-primary ring-2 ring-brand-primary/20 shadow-md flex flex-col justify-between transition-all relative">
-                        <div class="space-y-6">
+                    <div id="plan-card-basico" onclick="selectPlanCard('basico')" class="plan-card cursor-pointer bg-white rounded-3xl p-5 sm:p-8 border-2 border-brand-primary ring-2 ring-brand-primary/20 shadow-md flex flex-col justify-between transition-all relative">
+                        <div class="space-y-5 sm:space-y-6">
                             <!-- Encabezado del Plan -->
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3.5">
@@ -355,12 +351,12 @@
                     </div>
 
                     <!-- 2. PLAN PATITAS PREMIUM -->
-                    <div id="plan-card-premium" onclick="selectPlanCard('premium')" class="plan-card cursor-pointer bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm hover:shadow-md flex flex-col justify-between transition-all relative">
+                    <div id="plan-card-premium" onclick="selectPlanCard('premium')" class="plan-card cursor-pointer bg-white rounded-3xl p-5 sm:p-8 border border-slate-200 shadow-sm hover:shadow-md flex flex-col justify-between transition-all relative">
                         <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand-secondary text-white font-bold text-[10px] sm:text-[11px] rounded-full shadow-md uppercase tracking-wider whitespace-nowrap">
                             PLAN RECOMENDADO ★
                         </div>
 
-                        <div class="space-y-6">
+                        <div class="space-y-5 sm:space-y-6">
                             <!-- Encabezado del Plan -->
                             <div class="flex items-center justify-between pt-2">
                                 <div class="flex items-center space-x-3.5">
@@ -494,23 +490,23 @@
                 </div>
 
                 <!-- LÍNEA DE TIEMPO / PERIODOS DE CARENCIA (MODALIDAD MENSUAL) -->
-                <div class="mt-12 sm:mt-16 max-w-5xl mx-auto bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 lg:p-10 shadow-sm space-y-6" id="carencias-section">
+                <div class="mt-10 sm:mt-16 max-w-5xl mx-auto bg-white rounded-3xl border border-slate-200 p-4 sm:p-8 lg:p-10 shadow-sm space-y-6" id="carencias-section">
                     <div class="text-center space-y-3">
                         <div class="inline-flex items-center space-x-1.5 text-xs font-bold text-amber-600 bg-amber-50 px-3.5 py-1 rounded-full border border-amber-200 shadow-sm">
                             <span>⏳</span>
                             <span>Modalidad Mensual: Activación Progresiva</span>
                         </div>
                         <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Periodos de Carencia (Activación de Beneficios)</h3>
-                        <p class="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto font-medium">
+                        <p class="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto font-medium px-2">
                             Beneficios del <strong id="carencia-title-plan" class="text-slate-900">Plan Patitas Básico</strong>. Si eliges pago mensual, los servicios se habilitan paso a paso. <strong>O paga el año completo y activa TODO de manera INMEDIATA sin esperas.</strong>
                         </p>
 
                         <!-- Selector de Plan en Carencias -->
-                        <div class="inline-flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 text-xs font-bold shadow-inner">
-                            <button type="button" onclick="selectPlanCard('basico')" id="btn-carencia-basico" class="px-4 py-2 rounded-xl transition-all bg-white text-slate-900 shadow-sm">
+                        <div class="inline-flex bg-slate-100 p-1 sm:p-1.5 rounded-2xl border border-slate-200 text-xs font-bold shadow-inner">
+                            <button type="button" onclick="selectPlanCard('basico')" id="btn-carencia-basico" class="px-3.5 sm:px-4 py-2 rounded-xl transition-all bg-white text-slate-900 shadow-sm">
                                 🐾 Plan Básico
                             </button>
-                            <button type="button" onclick="selectPlanCard('premium')" id="btn-carencia-premium" class="px-4 py-2 rounded-xl transition-all text-slate-600 hover:text-slate-900">
+                            <button type="button" onclick="selectPlanCard('premium')" id="btn-carencia-premium" class="px-3.5 sm:px-4 py-2 rounded-xl transition-all text-slate-600 hover:text-slate-900">
                                 💎 Plan Premium
                             </button>
                         </div>
