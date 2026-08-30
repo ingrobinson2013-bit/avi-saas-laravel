@@ -216,17 +216,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 max-w-5xl gap-8 mx-auto items-stretch">
                     
                     <!-- 1. PLAN PATITAS BÁSICO -->
-                    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm hover:shadow-md flex flex-col justify-between transition-all relative">
+                    <div id="plan-card-basico" onclick="selectPlanCard('basico')" class="plan-card cursor-pointer bg-white rounded-3xl p-6 sm:p-8 border-2 border-brand-primary ring-2 ring-brand-primary/20 shadow-md flex flex-col justify-between transition-all relative">
                         <div class="space-y-6">
                             <!-- Encabezado del Plan -->
-                            <div class="flex items-center space-x-3.5">
-                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold shrink-0 shadow-sm" style="background-color: {{ $primaryColor }}15; color: {{ $primaryColor }};">
-                                    🛡️
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3.5">
+                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold shrink-0 shadow-sm" style="background-color: {{ $primaryColor }}15; color: {{ $primaryColor }};">
+                                        🛡️
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-extrabold text-slate-900">Plan Patitas Básico</h3>
+                                        <p class="text-xs text-slate-500 font-medium">Prevención integral y medicina prepagada</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="text-xl font-extrabold text-slate-900">Plan Patitas Básico</h3>
-                                    <p class="text-xs text-slate-500 font-medium">Prevención integral y medicina prepagada</p>
-                                </div>
+                                <span id="badge-selected-basico" class="badge-plan-status px-2.5 py-1 bg-brand-primary text-white text-[10px] font-black rounded-full uppercase tracking-wider">
+                                    Seleccionado ✓
+                                </span>
                             </div>
 
                             <!-- Precios Dinámicos Mensual vs Anual -->
@@ -251,6 +256,14 @@
                                         🎁 Afiliación bonificada ($0) • 🚀 <strong>ACTIVACIÓN INMEDIATA</strong> sin carencias.
                                     </p>
                                 </div>
+                            </div>
+
+                            <!-- Link interactivo a Carencias -->
+                            <div class="flex items-center justify-between text-xs pt-1">
+                                <button type="button" onclick="event.stopPropagation(); jumpToCarencias('basico');" class="text-brand-primary hover:underline font-bold flex items-center space-x-1">
+                                    <span>⏳ Ver tiempos de carencia de este plan</span>
+                                    <span>↓</span>
+                                </button>
                             </div>
 
                             <hr class="border-slate-100">
@@ -342,21 +355,26 @@
                     </div>
 
                     <!-- 2. PLAN PATITAS PREMIUM -->
-                    <div class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-brand-primary shadow-xl flex flex-col justify-between transition-all relative">
+                    <div id="plan-card-premium" onclick="selectPlanCard('premium')" class="plan-card cursor-pointer bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm hover:shadow-md flex flex-col justify-between transition-all relative">
                         <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand-secondary text-white font-bold text-[10px] sm:text-[11px] rounded-full shadow-md uppercase tracking-wider whitespace-nowrap">
                             PLAN RECOMENDADO ★
                         </div>
 
                         <div class="space-y-6">
                             <!-- Encabezado del Plan -->
-                            <div class="flex items-center space-x-3.5 pt-2">
-                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold shrink-0 shadow-sm" style="background-color: {{ $primaryColor }}15; color: {{ $primaryColor }};">
-                                    💎
+                            <div class="flex items-center justify-between pt-2">
+                                <div class="flex items-center space-x-3.5">
+                                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold shrink-0 shadow-sm" style="background-color: {{ $primaryColor }}15; color: {{ $primaryColor }};">
+                                        💎
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-extrabold text-slate-900">Plan Patitas Premium</h3>
+                                        <p class="text-xs text-slate-500 font-medium">Máxima cobertura médica y urgencias</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="text-xl font-extrabold text-slate-900">Plan Patitas Premium</h3>
-                                    <p class="text-xs text-slate-500 font-medium">Máxima cobertura médica y urgencias</p>
-                                </div>
+                                <span id="badge-selected-premium" class="badge-plan-status hidden px-2.5 py-1 bg-brand-primary text-white text-[10px] font-black rounded-full uppercase tracking-wider">
+                                    Seleccionado ✓
+                                </span>
                             </div>
 
                             <!-- Precios Dinámicos Mensual vs Anual -->
@@ -381,6 +399,14 @@
                                         🎁 Afiliación bonificada ($0) • 🚀 <strong>ACTIVACIÓN INMEDIATA</strong> sin carencias.
                                     </p>
                                 </div>
+                            </div>
+
+                            <!-- Link interactivo a Carencias -->
+                            <div class="flex items-center justify-between text-xs pt-1">
+                                <button type="button" onclick="event.stopPropagation(); jumpToCarencias('premium');" class="text-brand-primary hover:underline font-bold flex items-center space-x-1">
+                                    <span>⏳ Ver tiempos de carencia de este plan</span>
+                                    <span>↓</span>
+                                </button>
                             </div>
 
                             <hr class="border-slate-100">
@@ -476,15 +502,15 @@
                         </div>
                         <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Periodos de Carencia (Activación de Beneficios)</h3>
                         <p class="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto font-medium">
-                            Si eliges pago mensual, los servicios se habilitan paso a paso. <strong>O paga el año completo y activa TODO de manera INMEDIATA sin esperas.</strong>
+                            Beneficios del <strong id="carencia-title-plan" class="text-slate-900">Plan Patitas Básico</strong>. Si eliges pago mensual, los servicios se habilitan paso a paso. <strong>O paga el año completo y activa TODO de manera INMEDIATA sin esperas.</strong>
                         </p>
 
                         <!-- Selector de Plan en Carencias -->
                         <div class="inline-flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 text-xs font-bold shadow-inner">
-                            <button type="button" onclick="showCarenciaPlan('basico')" id="btn-carencia-basico" class="px-4 py-2 rounded-xl transition-all bg-white text-slate-900 shadow-sm">
+                            <button type="button" onclick="selectPlanCard('basico')" id="btn-carencia-basico" class="px-4 py-2 rounded-xl transition-all bg-white text-slate-900 shadow-sm">
                                 🐾 Plan Básico
                             </button>
-                            <button type="button" onclick="showCarenciaPlan('premium')" id="btn-carencia-premium" class="px-4 py-2 rounded-xl transition-all text-slate-600 hover:text-slate-900">
+                            <button type="button" onclick="selectPlanCard('premium')" id="btn-carencia-premium" class="px-4 py-2 rounded-xl transition-all text-slate-600 hover:text-slate-900">
                                 💎 Plan Premium
                             </button>
                         </div>
@@ -645,26 +671,61 @@
                         }
                     }
 
-                    function showCarenciaPlan(planType) {
+                    function selectPlanCard(planType) {
+                        const cardBasico = document.getElementById('plan-card-basico');
+                        const cardPremium = document.getElementById('plan-card-premium');
+                        const badgeBasico = document.getElementById('badge-selected-basico');
+                        const badgePremium = document.getElementById('badge-selected-premium');
                         const blockBasico = document.getElementById('carencia-block-basico');
                         const blockPremium = document.getElementById('carencia-block-premium');
                         const btnBasico = document.getElementById('btn-carencia-basico');
                         const btnPremium = document.getElementById('btn-carencia-premium');
+                        const titlePlan = document.getElementById('carencia-title-plan');
 
                         if (planType === 'premium') {
+                            // Tarjetas superiores
+                            cardBasico.classList.remove('border-2', 'border-brand-primary', 'ring-2', 'ring-brand-primary/20', 'shadow-md');
+                            cardBasico.classList.add('border-slate-200');
+                            badgeBasico.classList.add('hidden');
+
+                            cardPremium.classList.add('border-2', 'border-brand-primary', 'ring-2', 'ring-brand-primary/20', 'shadow-md');
+                            cardPremium.classList.remove('border-slate-200');
+                            badgePremium.classList.remove('hidden');
+
+                            // Timeline inferior
                             blockBasico.classList.add('hidden');
                             blockPremium.classList.remove('hidden');
                             btnPremium.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
                             btnPremium.classList.remove('text-slate-600');
                             btnBasico.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
                             btnBasico.classList.add('text-slate-600');
+                            if (titlePlan) titlePlan.textContent = 'Plan Patitas Premium';
                         } else {
+                            // Tarjetas superiores
+                            cardPremium.classList.remove('border-2', 'border-brand-primary', 'ring-2', 'ring-brand-primary/20', 'shadow-md');
+                            cardPremium.classList.add('border-slate-200');
+                            badgePremium.classList.add('hidden');
+
+                            cardBasico.classList.add('border-2', 'border-brand-primary', 'ring-2', 'ring-brand-primary/20', 'shadow-md');
+                            cardBasico.classList.remove('border-slate-200');
+                            badgeBasico.classList.remove('hidden');
+
+                            // Timeline inferior
                             blockPremium.classList.add('hidden');
                             blockBasico.classList.remove('hidden');
                             btnBasico.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
                             btnBasico.classList.remove('text-slate-600');
                             btnPremium.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
                             btnPremium.classList.add('text-slate-600');
+                            if (titlePlan) titlePlan.textContent = 'Plan Patitas Básico';
+                        }
+                    }
+
+                    function jumpToCarencias(planType) {
+                        selectPlanCard(planType);
+                        const carenciasEl = document.getElementById('carencias-section');
+                        if (carenciasEl) {
+                            carenciasEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }
                     }
                 </script>
