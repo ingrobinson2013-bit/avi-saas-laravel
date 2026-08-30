@@ -176,7 +176,9 @@ class ClinicaDemoSeeder extends Seeder
         // 6. Tutores y Mascotas Demo
         $vetUser = User::where('email', 'petmovilveterinario@gmail.com')->first();
 
-        // Paciente 1: Max (Golden Retriever - Plan Premium)
+        // ==========================================
+        // EJEMPLO 1: MAX (Golden Retriever - Plan Premium)
+        // ==========================================
         $tutorMax = Customer::firstOrCreate(
             ['tenant_id' => $tenant->id, 'identification' => '1020304050'],
             [
@@ -206,46 +208,97 @@ class ClinicaDemoSeeder extends Seeder
             ]
         );
 
-        $balConsulta = SubscriptionBenefitBalance::firstOrCreate(
+        // Saldos en Vivo para Max (Plan Premium)
+        $balMaxKit = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bKit->id],
+            ['total_granted' => 1, 'used_count' => 1, 'remaining_count' => 0]
+        );
+
+        $balMaxVirtual = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bConsultaVirtual->id],
+            ['total_granted' => 999, 'used_count' => 2, 'remaining_count' => 997]
+        );
+
+        $balMaxConsulta = SubscriptionBenefitBalance::updateOrCreate(
             ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bConsultaPresencial->id],
             ['total_granted' => 3, 'used_count' => 1, 'remaining_count' => 2]
         );
 
-        $balVacuna = SubscriptionBenefitBalance::firstOrCreate(
+        $balMaxChequeo = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bChequeoPreventivo->id],
+            ['total_granted' => 4, 'used_count' => 1, 'remaining_count' => 3]
+        );
+
+        $balMaxVacuna = SubscriptionBenefitBalance::updateOrCreate(
             ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bVacunaAnual->id],
             ['total_granted' => 1, 'used_count' => 0, 'remaining_count' => 1]
         );
 
-        $balLab = SubscriptionBenefitBalance::firstOrCreate(
-            ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bLaboratorio->id],
-            ['total_granted' => 2, 'used_count' => 0, 'remaining_count' => 2]
-        );
-
-        $balAntipulgas = SubscriptionBenefitBalance::firstOrCreate(
+        $balMaxAntipulgas = SubscriptionBenefitBalance::updateOrCreate(
             ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bAntipulgas->id],
             ['total_granted' => 2, 'used_count' => 1, 'remaining_count' => 1]
         );
 
-        // Canjes registrados para Max
+        $balMaxLab = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bLaboratorio->id],
+            ['total_granted' => 2, 'used_count' => 0, 'remaining_count' => 2]
+        );
+
+        $balMaxBano = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bBano->id],
+            ['total_granted' => 2, 'used_count' => 1, 'remaining_count' => 1]
+        );
+
+        $balMaxFunerario = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bFunerario->id],
+            ['total_granted' => 1, 'used_count' => 0, 'remaining_count' => 1]
+        );
+
+        // Canjes Auditados en el Historial de Max
         BenefitRedemption::firstOrCreate(
-            ['tenant_id' => $tenant->id, 'balance_id' => $balConsulta->id, 'notes' => 'Chequeo general preventivo y descarte de otitis externa.'],
+            ['tenant_id' => $tenant->id, 'balance_id' => $balMaxKit->id],
             [
-                'redeemed_at' => now()->subDays(8),
+                'redeemed_at' => now()->subDays(10),
                 'vet_user_id' => $vetUser?->id,
                 'quantity' => 1,
+                'notes' => 'Entrega de Kit Oficial: Cédula de Identidad, Placa QR y Collar de Bienvenida.',
             ]
         );
 
         BenefitRedemption::firstOrCreate(
-            ['tenant_id' => $tenant->id, 'balance_id' => $balAntipulgas->id, 'notes' => 'Aplicación de antipulgas Credelio 450mg.'],
+            ['tenant_id' => $tenant->id, 'balance_id' => $balMaxConsulta->id],
             [
-                'redeemed_at' => now()->subDays(5),
+                'redeemed_at' => now()->subDays(7),
                 'vet_user_id' => $vetUser?->id,
                 'quantity' => 1,
+                'notes' => 'Consulta preventiva general. Paciente con peso óptimo (31.5kg). Examen cardiopulmonar normal.',
             ]
         );
 
-        // Paciente 2: Luna (Gata Siamés - Plan Básico por vencer en 4 días)
+        BenefitRedemption::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'balance_id' => $balMaxAntipulgas->id],
+            [
+                'redeemed_at' => now()->subDays(4),
+                'vet_user_id' => $vetUser?->id,
+                'quantity' => 1,
+                'notes' => 'Aplicación y entrega de comprimido Credelio 450mg para protección antiparasitaria externa.',
+            ]
+        );
+
+        BenefitRedemption::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'balance_id' => $balMaxBano->id],
+            [
+                'redeemed_at' => now()->subDays(2),
+                'vet_user_id' => $vetUser?->id,
+                'quantity' => 1,
+                'notes' => 'Baño medicado dermatológico, corte de uñas y limpieza de oídos.',
+            ]
+        );
+
+
+        // ==========================================
+        // EJEMPLO 2: LUNA (Gata Siamés - Plan Básico por vencer en 4 días)
+        // ==========================================
         $tutorLuna = Customer::firstOrCreate(
             ['tenant_id' => $tenant->id, 'identification' => '1030405060'],
             [
@@ -261,7 +314,7 @@ class ClinicaDemoSeeder extends Seeder
                 'species' => 'cat',
                 'breed' => 'Siamés',
                 'birthdate' => now()->subYears(2),
-                'medical_notes' => 'Esterilizada. Esquema de vacunación al día.',
+                'medical_notes' => 'Esterilizada. Esquema de vacunación felina al día.',
             ]
         );
 
@@ -271,67 +324,110 @@ class ClinicaDemoSeeder extends Seeder
                 'plan_id' => $planBasico->id,
                 'status' => 'active',
                 'current_period_start' => now()->subDays(26),
-                'current_period_end' => now()->addDays(4), // Vence en 4 días para testear alertas de renovación
+                'current_period_end' => now()->addDays(4), // Vence en 4 días (Alerta de renovación activa)
             ]
         );
 
-        $balLunaBano = SubscriptionBenefitBalance::firstOrCreate(
-            ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bBano->id],
-            ['total_granted' => 2, 'used_count' => 2, 'remaining_count' => 0]
+        // Saldos en Vivo para Luna (Plan Básico)
+        $balLunaKit = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bKit->id],
+            ['total_granted' => 1, 'used_count' => 1, 'remaining_count' => 0]
         );
 
-        $balLunaDesp = SubscriptionBenefitBalance::firstOrCreate(
+        $balLunaVirtual = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bConsultaVirtual->id],
+            ['total_granted' => 999, 'used_count' => 1, 'remaining_count' => 998]
+        );
+
+        $balLunaConsulta = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bConsultaPresencial->id],
+            ['total_granted' => 3, 'used_count' => 2, 'remaining_count' => 1]
+        );
+
+        $balLunaChequeo = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bChequeoPreventivo->id],
+            ['total_granted' => 4, 'used_count' => 1, 'remaining_count' => 3]
+        );
+
+        $balLunaVacuna = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bVacunaAnual->id],
+            ['total_granted' => 1, 'used_count' => 0, 'remaining_count' => 1]
+        );
+
+        $balLunaDesp = SubscriptionBenefitBalance::updateOrCreate(
             ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bDesparasitacion->id],
             ['total_granted' => 3, 'used_count' => 1, 'remaining_count' => 2]
         );
 
+        $balLunaAntipulgas = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bAntipulgas->id],
+            ['total_granted' => 2, 'used_count' => 1, 'remaining_count' => 1]
+        );
+
+        $balLunaLab = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bLaboratorio->id],
+            ['total_granted' => 1, 'used_count' => 0, 'remaining_count' => 1]
+        );
+
+        $balLunaCitologia = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bCitologia->id],
+            ['total_granted' => 2, 'used_count' => 1, 'remaining_count' => 1]
+        );
+
+        // Beneficio con 0 cupos disponibles para demostrar bloqueo de límite
+        $balLunaBano = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bBano->id],
+            ['total_granted' => 2, 'used_count' => 2, 'remaining_count' => 0]
+        );
+
+        // Canjes Auditados en el Historial de Luna
         BenefitRedemption::firstOrCreate(
-            ['tenant_id' => $tenant->id, 'balance_id' => $balLunaBano->id, 'notes' => 'Baño medicado y corte de uñas felino.'],
+            ['tenant_id' => $tenant->id, 'balance_id' => $balLunaKit->id],
+            [
+                'redeemed_at' => now()->subDays(25),
+                'vet_user_id' => $vetUser?->id,
+                'quantity' => 1,
+                'notes' => 'Kit de Bienvenida felino entregado en recepción.',
+            ]
+        );
+
+        BenefitRedemption::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'balance_id' => $balLunaConsulta->id],
+            [
+                'redeemed_at' => now()->subDays(18),
+                'vet_user_id' => $vetUser?->id,
+                'quantity' => 1,
+                'notes' => 'Consulta por control de peso y asesoría en cambio de alimentación.',
+            ]
+        );
+
+        BenefitRedemption::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'balance_id' => $balLunaCitologia->id],
             [
                 'redeemed_at' => now()->subDays(12),
                 'vet_user_id' => $vetUser?->id,
                 'quantity' => 1,
+                'notes' => 'Citología de oído derecho por rascado leve. Negativo para levaduras.',
             ]
         );
 
-        // Paciente 3: Rocky (Bulldog Francés - Plan Básico)
-        $tutorRocky = Customer::firstOrCreate(
-            ['tenant_id' => $tenant->id, 'identification' => '1040506070'],
+        BenefitRedemption::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'balance_id' => $balLunaBano->id],
             [
-                'name' => 'Andrés Felipe Torres',
-                'phone' => '+573204567890',
-                'email' => 'andres.torres@gmail.com',
+                'redeemed_at' => now()->subDays(8),
+                'vet_user_id' => $vetUser?->id,
+                'quantity' => 1,
+                'notes' => 'Baño seco y corte de uñas felino especializado.',
             ]
         );
 
-        $petRocky = Pet::firstOrCreate(
-            ['customer_id' => $tutorRocky->id, 'name' => 'Rocky'],
+        BenefitRedemption::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'balance_id' => $balLunaBano->id, 'notes' => 'Segundo baño del período. Cupos de baño completados (2/2).'],
             [
-                'species' => 'dog',
-                'breed' => 'Bulldog Francés',
-                'birthdate' => now()->subMonths(10),
-                'medical_notes' => 'Sensibilidad dérmica.',
+                'redeemed_at' => now()->subDays(2),
+                'vet_user_id' => $vetUser?->id,
+                'quantity' => 1,
             ]
-        );
-
-        $subRocky = Subscription::firstOrCreate(
-            ['tenant_id' => $tenant->id, 'pet_id' => $petRocky->id],
-            [
-                'plan_id' => $planBasico->id,
-                'status' => 'active',
-                'current_period_start' => now()->subDays(2),
-                'current_period_end' => now()->addDays(28),
-            ]
-        );
-
-        SubscriptionBenefitBalance::firstOrCreate(
-            ['subscription_id' => $subRocky->id, 'benefit_definition_id' => $bKit->id],
-            ['total_granted' => 1, 'used_count' => 1, 'remaining_count' => 0]
-        );
-
-        SubscriptionBenefitBalance::firstOrCreate(
-            ['subscription_id' => $subRocky->id, 'benefit_definition_id' => $bConsultaPresencial->id],
-            ['total_granted' => 3, 'used_count' => 1, 'remaining_count' => 2]
         );
     }
 }
