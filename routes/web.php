@@ -8,25 +8,17 @@ Route::get('/', function () {
     return view('b2b_landing');
 });
 
-// 2. Acceso y navegación al Admin dedicado de cada clínica (/v/{slug}/admin y subrutas)
+// 2. Acceso amigable por Slug al Admin de la clínica (ej. /v/vet-pet-patitas/admin -> /admin/vet-pet-patitas)
 Route::get('/v/{slug}/admin/{section?}', function (string $slug, ?string $section = null) {
-    $tenant = Tenant::where('slug', $slug)->first();
-    if ($tenant) {
-        session([
-            'current_tenant_id' => $tenant->id,
-            'current_tenant_slug' => $tenant->slug,
-        ]);
-    }
-
-    $target = $section ? '/admin/' . $section : '/admin';
+    $tenant = Tenant::where('slug', $slug)->firstOrFail();
+    $target = '/admin/' . $tenant->slug . ($section ? '/' . $section : '');
 
     if (auth()->check()) {
         return redirect($target);
     }
 
-    // Guardar la URL de destino para que al iniciar sesión lo lleve directo
     session(['url.intended' => $target]);
-    return redirect('/admin/login');
+    return redirect('/admin/' . $tenant->slug . '/login');
 })->where('section', '.*');
 
 // 3. Portal B2C de Pacientes de la Clínica (ej. /v/vet-pet-patitas)

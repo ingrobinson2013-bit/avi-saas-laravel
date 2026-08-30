@@ -3,6 +3,7 @@
 namespace App\Filament\VetAdmin\Pages;
 
 use App\Models\Tenant;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -181,10 +182,6 @@ class ClinicSettings extends Page implements HasForms
 
     protected function getTenant(): ?Tenant
     {
-        $user = auth()->user();
-        if ($user?->tenant_id) {
-            return Tenant::find($user->tenant_id);
-        }
-        return Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
+        return Filament::getTenant() ?? auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
     }
 }

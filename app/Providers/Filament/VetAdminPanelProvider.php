@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Models\Tenant;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -26,6 +27,7 @@ class VetAdminPanelProvider extends PanelProvider
             ->default()
             ->id('vet-admin')
             ->path('admin')
+            ->tenant(Tenant::class, slugAttribute: 'slug')
             ->login()
             ->brandName('Vet-Pet Patitas — Consultorio Veterinario')
             ->brandLogo(fn () => view('filament.vet-admin.logo'))
@@ -33,7 +35,7 @@ class VetAdminPanelProvider extends PanelProvider
             ->favicon('https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=64')
             ->font('Plus Jakarta Sans')
             ->colors([
-                'primary' => Color::Emerald,
+                'primary' => Color::Sky,
                 'gray' => Color::Slate,
             ])
             ->discoverResources(in: app_path('Filament/VetAdmin/Resources'), for: 'App\\Filament\\VetAdmin\\Resources')
