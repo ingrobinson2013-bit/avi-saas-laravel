@@ -41,6 +41,7 @@ class ClinicSettings extends Page implements HasForms
                 'logo_file' => $branding['logo_path'] ?? null,
                 'hero_file' => $branding['hero_path'] ?? null,
                 'banner_file' => $branding['banner_path'] ?? null,
+                'banner_video_file' => $branding['banner_video_path'] ?? null,
             ]);
         }
     }
@@ -74,8 +75,8 @@ class ClinicSettings extends Page implements HasForms
                             ->required(),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Fotografías del Portal Web')
-                    ->description('Sube las imágenes de tu consultorio y mascotas.')
+                Forms\Components\Section::make('Fotografías y Video del Portal')
+                    ->description('Sube las imágenes y video corto de tu consultorio y pacientes.')
                     ->schema([
                         Forms\Components\FileUpload::make('hero_file')
                             ->label('Foto Principal (Banner Superior Mascotas)')
@@ -84,16 +85,28 @@ class ClinicSettings extends Page implements HasForms
                             ->visibility('public')
                             ->image()
                             ->imagePreviewHeight('160')
-                            ->maxSize(10240),
+                            ->maxSize(10240)
+                            ->helperText('Foto que se muestra al lado del título.'),
 
                         Forms\Components\FileUpload::make('banner_file')
-                            ->label('Foto de Instalaciones / Consultorio')
+                            ->label('Foto de Portada / Instalaciones')
                             ->disk('r2')
                             ->directory('tenants/banners')
                             ->visibility('public')
                             ->image()
                             ->imagePreviewHeight('160')
-                            ->maxSize(10240),
+                            ->maxSize(10240)
+                            ->helperText('Foto para la sección "Así de fácil".'),
+
+                        Forms\Components\FileUpload::make('banner_video_file')
+                            ->label('Video Corto Promocional o de la Clínica (Máx 20 MB)')
+                            ->disk('r2')
+                            ->directory('tenants/videos')
+                            ->visibility('public')
+                            ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/quicktime'])
+                            ->maxSize(20480)
+                            ->helperText('Video corto de tus instalaciones, pacientes o bienvenida (MP4 / WebM). Carga optimizada sin frenar la página.')
+                            ->columnSpanFull(),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Datos de Contacto')
@@ -132,29 +145,35 @@ class ClinicSettings extends Page implements HasForms
 
             $r2BaseUrl = rtrim(config('filesystems.disks.r2.url', 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev'), '/');
 
-            // 1. Procesar Logo
+            // 1. Logo
             if (!empty($state['logo_file'])) {
                 $branding['logo_path'] = $state['logo_file'];
                 $branding['logo_url'] = $r2BaseUrl . '/' . ltrim($state['logo_file'], '/');
             }
 
-            // 2. Procesar Foto Hero
+            // 2. Foto Hero
             if (!empty($state['hero_file'])) {
                 $branding['hero_path'] = $state['hero_file'];
                 $branding['hero_image_url'] = $r2BaseUrl . '/' . ltrim($state['hero_file'], '/');
             }
 
-            // 3. Procesar Banner Instalaciones
+            // 3. Banner Foto
             if (!empty($state['banner_file'])) {
                 $branding['banner_path'] = $state['banner_file'];
                 $branding['banner_image_url'] = $r2BaseUrl . '/' . ltrim($state['banner_file'], '/');
             }
 
+            // 4. Video Corto
+            if (!empty($state['banner_video_file'])) {
+                $branding['banner_video_path'] = $state['banner_video_file'];
+                $branding['banner_video_url'] = $r2BaseUrl . '/' . ltrim($state['banner_video_file'], '/');
+            }
+
             $tenant->update(['branding' => $branding]);
 
             Notification::make()
-                ->title('¡Marca y Colores guardados con éxito!')
-                ->body('Tu logo y fotos ya se encuentran disponibles en alta resolución en /v/' . $tenant->slug)
+                ->title('¡Marca, Fotos y Video guardados en Cloudflare R2!')
+                ->body('Tus cambios ya se encuentran activos en /v/' . $tenant->slug)
                 ->success()
                 ->send();
         }
