@@ -20,7 +20,7 @@
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
             <div class="flex items-center space-x-2 text-emerald-200">
                 <span>🐾</span>
-                <span>Cuida a tu mascota todo el año • Con planes flexibles desde $50.000/mes</span>
+                <span>Cuida a tu mascota todo el año • Con planes flexibles de salud prepagada</span>
             </div>
             <div class="flex items-center space-x-4">
                 <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}" target="_blank" class="flex items-center space-x-1.5 hover:text-emerald-300 transition-colors">
@@ -37,7 +37,6 @@
     <!-- 2. NAVBAR BLANCO ELEGANTE -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- LOGO -->
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-600/20">
                     <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
@@ -45,23 +44,21 @@
                     </svg>
                 </div>
                 <div>
-                    <span class="text-xl font-extrabold tracking-tight text-slate-900">Veterinaria <span class="text-emerald-600">Patitas</span></span>
+                    <span class="text-xl font-extrabold tracking-tight text-slate-900">{{ $tenant->name }}</span>
+                    <span class="hidden sm:inline-block ml-2 px-2 py-0.5 text-xs font-semibold bg-emerald-100 text-emerald-800 rounded-full">{{ $tenant->branding['city'] ?? 'Cajicá' }}</span>
                 </div>
             </div>
 
-            <!-- LINKS -->
             <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold text-slate-600">
                 <a href="#planes" class="text-emerald-700 font-bold border-b-2 border-emerald-600 pb-1">Planes</a>
                 <a href="#beneficios" class="hover:text-emerald-600 transition-colors">Beneficios</a>
-                <a href="#calculadora-ia" class="hover:text-emerald-600 transition-colors">Calculadora IA</a>
                 <a href="#como-funciona" class="hover:text-emerald-600 transition-colors">Preguntas</a>
-                <a href="#contacto" class="hover:text-emerald-600 transition-colors">Nosotros</a>
+                <a href="#contacto" class="hover:text-emerald-600 transition-colors">Contacto</a>
             </nav>
 
-            <!-- ACCIONES -->
             <div class="flex items-center space-x-3">
-                <a href="/admin" class="px-4 py-2 text-sm font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all">
-                    Mi cuenta
+                <a href="/v/{{ $tenant->slug }}/admin" class="px-4 py-2 text-sm font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all">
+                    Panel Veterinaria
                 </a>
                 <a href="#planes" class="px-5 py-2 text-sm font-bold text-white bg-emerald-800 hover:bg-emerald-900 rounded-full shadow-md shadow-emerald-800/20 transition-all">
                     Ver planes
@@ -71,14 +68,12 @@
     </header>
 
     <main class="flex-grow">
-        <!-- 3. HERO SECTION EXACTO AL DISEÑO -->
+        <!-- 3. HERO SECTION -->
         <section class="hero-gradient relative pt-12 pb-20 overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                     
-                    <!-- TEXTO HERO -->
                     <div class="lg:col-span-7 space-y-6">
-                        <!-- Social Proof -->
                         <div class="inline-flex items-center space-x-3 bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-100">
                             <div class="flex -space-x-2 overflow-hidden">
                                 <img class="inline-block h-6 w-6 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt=""/>
@@ -96,10 +91,9 @@
                         </h1>
 
                         <p class="text-lg text-slate-600 leading-relaxed max-w-xl font-normal">
-                            Planes de salud diseñados por veterinarios para garantizar bienestar, ahorro y tranquilidad.
+                            Planes de salud diseñados por veterinarios para garantizar bienestar, ahorro y tranquilidad en <strong class="text-slate-800">{{ $tenant->branding['city'] ?? 'Cajicá' }}</strong>.
                         </p>
 
-                        <!-- BULLETS CON CHECKS VERDES -->
                         <div class="space-y-2.5 text-sm font-semibold text-slate-700">
                             <div class="flex items-center space-x-2.5">
                                 <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-extrabold">✓</span>
@@ -111,22 +105,20 @@
                             </div>
                             <div class="flex items-center space-x-2.5">
                                 <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-extrabold">✓</span>
-                                <span>Recordatorios y seguimiento IA</span>
+                                <span>Recordatorios y seguimiento personalizado</span>
                             </div>
                         </div>
 
-                        <!-- BOTONES HERO -->
                         <div class="pt-3 flex flex-wrap items-center gap-4">
                             <a href="#planes" class="px-7 py-3.5 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-sm shadow-lg shadow-emerald-700/20 transition-all flex items-center space-x-2">
                                 <span>Explorar planes</span>
                                 <span>›</span>
                             </a>
-                            <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20agendar%20una%20cita%20veterinaria" target="_blank" class="px-6 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm border border-slate-200 shadow-sm transition-all flex items-center space-x-2">
+                            <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20agendar%20una%20cita%20veterinaria%20en%20{{ urlencode($tenant->name) }}" target="_blank" class="px-6 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm border border-slate-200 shadow-sm transition-all flex items-center space-x-2">
                                 <span>📅 Agendar cita</span>
                             </a>
                         </div>
 
-                        <!-- BADGES DE SEGURIDAD -->
                         <div class="pt-4 flex flex-wrap items-center gap-6 text-xs text-slate-500 font-medium">
                             <span class="flex items-center space-x-1.5"><span>🔒</span> <span>Seguridad de datos</span></span>
                             <span class="flex items-center space-x-1.5"><span>💳</span> <span>Pagos seguros</span></span>
@@ -134,13 +126,10 @@
                         </div>
                     </div>
 
-                    <!-- FOTO DERECHA CON TARJETA FLOTANTE DE MASCOTA -->
                     <div class="lg:col-span-5 relative">
                         <div class="relative mx-auto max-w-md">
-                            <!-- FOTO REALISTA PERRO Y GATO -->
                             <img class="w-full h-auto object-cover rounded-3xl" src="https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=700&auto=format&fit=crop&q=80" alt="Perro y gato felices"/>
                             
-                            <!-- TARJETA FLOTANTE (ESTILO IMAGEN) -->
                             <div class="absolute -bottom-6 -left-6 sm:-left-8 bg-white p-4 sm:p-5 rounded-2xl shadow-2xl border border-slate-100 max-w-[270px] space-y-3">
                                 <div class="flex items-center space-x-3">
                                     <img class="w-11 h-11 rounded-full object-cover border-2 border-emerald-500" src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=150" alt="Max Golden"/>
@@ -150,7 +139,7 @@
                                             <span class="px-1.5 py-0.2 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-full">● Activo</span>
                                         </div>
                                         <p class="text-[11px] text-slate-500">Golden Retriever • 3 años</p>
-                                        <p class="text-[10px] text-emerald-600 font-bold">Plan Plus 💎</p>
+                                        <p class="text-[10px] text-emerald-600 font-bold">Plan Activo 💎</p>
                                     </div>
                                 </div>
 
@@ -177,186 +166,84 @@
             </div>
         </section>
 
-        <!-- 4. SECCIÓN DE PLANES CON CARDS EXACTAS AL DISEÑO -->
+        <!-- 4. SECCIÓN DINÁMICA DE PLANES (SOLO LOS PLANES DE ESTA VETERINARIA) -->
         <section id="planes" class="py-20 bg-[#fbfcfd] border-t border-slate-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
                 <div class="text-center space-y-2 mb-16">
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Elige el plan ideal para tu mascota</h2>
-                    <p class="text-slate-500 text-sm">Planes flexibles que se adaptan a cada necesidad</p>
+                    <p class="text-slate-500 text-sm">Planes oficiales de {{ $tenant->name }}</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
+                <div class="grid grid-cols-1 {{ count($plans) === 2 ? 'md:grid-cols-2 max-w-4xl' : 'md:grid-cols-3 max-w-6xl' }} gap-8 mx-auto items-stretch">
                     
-                    <!-- 1. PLAN BÁSICO -->
-                    <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
-                        <div class="space-y-5">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl font-bold">
-                                    🐾
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold text-slate-900">Básico</h3>
-                                    <p class="text-xs text-slate-400">Lo esencial para su bienestar</p>
-                                </div>
-                            </div>
+                    @forelse($plans as $index => $plan)
+                    @php
+                        $isFeatured = ($index === 1) || str_contains(strtolower($plan->name), 'premium') || str_contains(strtolower($plan->name), 'plus');
+                    @endphp
 
-                            <div class="flex items-baseline space-x-1 pt-2">
-                                <span class="text-4xl font-extrabold text-slate-900">$50.000</span>
-                                <span class="text-slate-400 text-xs font-semibold">/mes</span>
-                            </div>
-                            <p class="text-xs text-slate-500 font-medium">Afiliación $50.000 • $540.000/año (10% Dcto sin carencias)</p>
-
-                            <hr class="border-slate-100">
-
-                            <ul class="space-y-3 text-xs font-medium text-slate-600">
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>Kit Bienvenida (Cédula + Collar Placa)</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>Consultas virtuales ilimitadas (L-D)</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>3 Consultas presenciales al año</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>1 Vacunación completa anual</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>Desparasitación interna cada 4 meses</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>10% Dcto en medicamentos y hospitalización</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20afiliarme%20al%20Plan%20Patitas%20Básico" target="_blank" class="mt-8 w-full py-3 text-center rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs border border-slate-300 transition-all block">
-                            Elegir plan
-                        </a>
-                    </div>
-
-                    <!-- 2. PLAN PLUS / PREMIUM (DESTACADO EN VERDE) -->
-                    <div class="bg-white rounded-3xl p-8 border-2 border-emerald-500 shadow-xl relative flex flex-col justify-between">
+                    <div class="bg-white rounded-3xl p-8 {{ $isFeatured ? 'border-2 border-emerald-500 shadow-xl relative' : 'border border-slate-200 shadow-sm hover:shadow-md' }} flex flex-col justify-between transition-all">
+                        
+                        @if($isFeatured)
                         <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-emerald-800 text-white font-bold text-[11px] rounded-full shadow-md">
                             Más elegido
                         </div>
+                        @endif
 
                         <div class="space-y-5">
-                            <div class="flex items-center space-x-3 pt-2">
-                                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold">
+                            <div class="flex items-center space-x-3 {{ $isFeatured ? 'pt-2' : '' }}">
+                                <div class="w-12 h-12 rounded-2xl {{ $isFeatured ? 'bg-emerald-50 text-emerald-600' : 'bg-sky-50 text-sky-600' }} flex items-center justify-center text-xl font-bold">
                                     🐾
                                 </div>
                                 <div>
-                                    <h3 class="text-xl font-bold text-slate-900">Plus / Premium</h3>
-                                    <p class="text-xs text-slate-400">Más protección y beneficios</p>
+                                    <h3 class="text-xl font-bold text-slate-900">{{ $plan->name }}</h3>
+                                    <p class="text-xs text-slate-400">{{ $plan->description ? Str::limit($plan->description, 45) : 'Plan de bienestar para mascotas' }}</p>
                                 </div>
                             </div>
 
                             <div class="flex items-baseline space-x-1 pt-2">
-                                <span class="text-4xl font-extrabold text-slate-900">$80.000</span>
-                                <span class="text-slate-400 text-xs font-semibold">/mes (1er mes $150k)</span>
+                                <span class="text-4xl font-extrabold text-slate-900">${{ number_format($plan->price_cop, 0, ',', '.') }}</span>
+                                <span class="text-slate-400 text-xs font-semibold">COP / {{ $plan->billing_interval === 'monthly' ? 'mes' : 'año' }}</span>
                             </div>
-                            <p class="text-xs text-emerald-600 font-semibold">$902.400/año (10% Dcto + Sin Carencias)</p>
+                            
+                            @if(!empty($plan->description))
+                            <p class="text-xs text-slate-600 font-medium">{{ $plan->description }}</p>
+                            @endif
 
                             <hr class="border-slate-100">
 
+                            <p class="text-xs font-bold text-slate-400 uppercase">Beneficios incluidos:</p>
                             <ul class="space-y-3 text-xs font-medium text-slate-600">
+                                @forelse($plan->planBenefits as $pb)
                                 <li class="flex items-center space-x-2.5">
                                     <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>Todo lo del Plan Básico incluido</span>
+                                    <span>{{ $pb->benefitDefinition->name }} (x{{ $pb->quantity >= 999 ? 'Ilimitado' : $pb->quantity }})</span>
                                 </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>Chequeos preventivos cada 3 meses</span>
+                                @empty
+                                <li class="flex items-center space-x-2.5 text-slate-400">
+                                    <span>• Cobertura médica y preventiva incluida</span>
                                 </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>100% Exámenes de laboratorio (Hemograma + Químicas)</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>Desparasitación externa semestral (Credelio/Pipeta)</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>Servicio funerario 100% gratuito (desde mes 8)</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>20% Dcto en certificado médico aéreo</span>
-                                </li>
+                                @endforelse
                             </ul>
                         </div>
 
-                        <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20afiliarme%20al%20Plan%20Patitas%20Premium" target="_blank" class="mt-8 w-full py-3.5 text-center rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md shadow-emerald-700/20 transition-all block">
+                        <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20afiliarme%20al%20{{ urlencode($plan->name) }}%20en%20{{ urlencode($tenant->name) }}" target="_blank" class="mt-8 w-full py-3.5 text-center rounded-full {{ $isFeatured ? 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-md shadow-emerald-700/20' : 'bg-white hover:bg-slate-50 text-slate-800 border border-slate-300' }} font-bold text-xs transition-all block">
                             Elegir plan
                         </a>
                     </div>
-
-                    <!-- 3. PLAN GOLD SENIOR (COBERTURA TOTAL) -->
-                    <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
-                        <div class="space-y-5">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl font-bold">
-                                    🐾
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold text-slate-900">Senior Gold</h3>
-                                    <p class="text-xs text-slate-400">Protección geriátrica completa</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-baseline space-x-1 pt-2">
-                                <span class="text-4xl font-extrabold text-slate-900">$149.000</span>
-                                <span class="text-slate-400 text-xs font-semibold">/mes</span>
-                            </div>
-                            <p class="text-xs text-slate-500 font-medium">Ideal para perros y gatos de 7+ años</p>
-
-                            <hr class="border-slate-100">
-
-                            <ul class="space-y-3 text-xs font-medium text-slate-600">
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>Consultas presenciales continuas</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>Perfil geriátrico completo anual</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>Ecografía abdominal preventiva</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>Limpieza dental ultrasónica anual</span>
-                                </li>
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-emerald-600 font-bold">✓</span>
-                                    <span>Atención prioritaria continua</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20afiliarme%20al%20Plan%20Senior%20Gold" target="_blank" class="mt-8 w-full py-3 text-center rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs border border-slate-300 transition-all block">
-                            Elegir plan
-                        </a>
+                    @empty
+                    <div class="col-span-2 text-center py-12 text-slate-400">
+                        <p>No hay planes configurados para esta clínica todavía.</p>
                     </div>
+                    @endforelse
 
                 </div>
 
-                <p class="text-center text-[11px] text-slate-400 mt-8">* Aplica condiciones y periodos de carencia según reglamento del consultorio veterinario.</p>
+                <p class="text-center text-[11px] text-slate-400 mt-8">* Aplica condiciones y periodos de carencia según reglamento de {{ $tenant->name }}.</p>
             </div>
         </section>
 
-        <!-- 5. FEATURES HIGHLIGHTS (4 COLUMNAS CON ICONOS CIRCULARES) -->
+        <!-- 5. FEATURES HIGHLIGHTS -->
         <section id="beneficios" class="py-16 bg-white border-t border-slate-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -367,7 +254,7 @@
                         </div>
                         <div class="space-y-1">
                             <h4 class="font-bold text-sm text-slate-900">IA que recomienda lo mejor para tu mascota</h4>
-                            <p class="text-xs text-slate-500 leading-relaxed">Nuestra IA sugiere el plan según su edad, raza y hábitos.</p>
+                            <p class="text-xs text-slate-500 leading-relaxed">Sugerencias inteligentes según su edad, raza y hábitos.</p>
                         </div>
                     </div>
 
@@ -405,7 +292,7 @@
             </div>
         </section>
 
-        <!-- 6. SECCIÓN "ASÍ DE FÁCIL" CON VIDEO/FOTO -->
+        <!-- 6. SECCIÓN "ASÍ DE FÁCIL" -->
         <section id="como-funciona" class="py-16 bg-[#fbfcfd] border-t border-slate-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -493,7 +380,7 @@
 
                     <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
                         <div class="text-amber-400 text-xs">★★★★★</div>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">"Excelente atención en Cajicá y beneficios reales sin letras chiquitas. 100% recomendados."</p>
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium">"Excelente atención en {{ $tenant->branding['city'] ?? 'Cajicá' }} y beneficios reales. 100% recomendados."</p>
                         <div class="flex items-center space-x-3 pt-2">
                             <img class="w-8 h-8 rounded-full object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="Laura"/>
                             <span class="text-xs font-bold text-slate-800">Laura G. (Tutora de Toby)</span>
@@ -503,7 +390,7 @@
             </div>
         </section>
 
-        <!-- 8. BANNER VERDE ESMERALDA WHATSAPP CALL TO ACTION -->
+        <!-- 8. BANNER WHATSAPP -->
         <section class="py-10 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="rounded-3xl bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-700 p-8 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
@@ -517,7 +404,7 @@
                         </div>
                     </div>
                     
-                    <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20tengo%20dudas%20sobre%20los%20Planes%20Patitas" target="_blank" class="z-10 px-8 py-4 bg-white text-emerald-800 hover:bg-emerald-50 font-extrabold text-sm rounded-full shadow-lg transition-all flex items-center space-x-2 flex-shrink-0">
+                    <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20tengo%20dudas%20sobre%20los%20Planes%20de%20{{ urlencode($tenant->name) }}" target="_blank" class="z-10 px-8 py-4 bg-white text-emerald-800 hover:bg-emerald-50 font-extrabold text-sm rounded-full shadow-lg transition-all flex items-center space-x-2 flex-shrink-0">
                         <span>💬 Chatear ahora</span>
                     </a>
                 </div>
@@ -526,7 +413,7 @@
 
     </main>
 
-    <!-- 9. FOOTER LIMPIO -->
+    <!-- 9. FOOTER -->
     <footer id="contacto" class="bg-[#f8fafc] border-t border-slate-200 py-14 text-slate-600 text-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-5 gap-8">
             
@@ -535,10 +422,7 @@
                     <span class="text-emerald-600 font-bold text-xl">🐾</span>
                     <span class="text-base font-extrabold text-slate-900">{{ $tenant->name }}</span>
                 </div>
-                <p class="text-slate-500 leading-relaxed max-w-sm">Cuidado confiable y preventivo para tus mascotas con atención personalizada en Cajicá.</p>
-                <div class="flex space-x-3 pt-2 text-slate-400 text-base">
-                    <span>📘</span><span>📷</span><span>💬</span><span>▶</span>
-                </div>
+                <p class="text-slate-500 leading-relaxed max-w-sm">Cuidado confiable y preventivo para tus mascotas con atención personalizada en {{ $tenant->branding['city'] ?? 'Cajicá' }}.</p>
             </div>
 
             <div>
@@ -546,18 +430,16 @@
                 <ul class="space-y-2">
                     <li><a href="#planes" class="hover:text-emerald-600">Planes</a></li>
                     <li><a href="#beneficios" class="hover:text-emerald-600">Beneficios</a></li>
-                    <li><a href="#calculadora-ia" class="hover:text-emerald-600">Calculadora IA</a></li>
                     <li><a href="#como-funciona" class="hover:text-emerald-600">Preguntas frecuentes</a></li>
                 </ul>
             </div>
 
             <div>
-                <h5 class="font-bold text-slate-900 text-xs uppercase mb-3">Mi cuenta</h5>
+                <h5 class="font-bold text-slate-900 text-xs uppercase mb-3">Portal Operativo</h5>
                 <ul class="space-y-2">
-                    <li><a href="/admin" class="hover:text-emerald-600">Mis mascotas</a></li>
-                    <li><a href="/admin" class="hover:text-emerald-600">Mis planes</a></li>
-                    <li><a href="/admin" class="hover:text-emerald-600">Historial de servicios</a></li>
-                    <li><a href="/admin" class="hover:text-emerald-600">Pagos</a></li>
+                    <li><a href="/v/{{ $tenant->slug }}/admin" class="hover:text-emerald-600">Mostrador de Recepción</a></li>
+                    <li><a href="/v/{{ $tenant->slug }}/admin" class="hover:text-emerald-600">Gestor de Planes</a></li>
+                    <li><a href="/v/{{ $tenant->slug }}/admin" class="hover:text-emerald-600">Historias Clínicas</a></li>
                 </ul>
             </div>
 
