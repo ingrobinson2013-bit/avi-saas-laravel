@@ -26,6 +26,7 @@ class VetAdminPanelProvider extends PanelProvider
             ->default()
             ->id('vet-admin')
             ->path('admin')
+            ->login()
             ->colors([
                 'primary' => Color::Emerald,
             ])
