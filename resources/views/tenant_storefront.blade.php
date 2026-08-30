@@ -414,6 +414,12 @@
                                         <span class="text-slate-500 text-xs font-bold">COP / año</span>
                                     </div>
                                     <p class="text-[11px] text-emerald-700 font-bold pt-1 leading-relaxed">
+                                        🎁 Afiliación bonificada ($0) • 🚀 <strong>ACTIVACIÓN INMEDIATA</strong> sin carencias.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Link interactivo a Carencias -->
                             <div class="flex items-center justify-between text-xs pt-1">
                                 <button type="button" onclick="event.stopPropagation(); jumpToCarencias('basico');" class="text-brand-primary hover:underline font-bold flex items-center space-x-1">
                                     <span>⏳ Ver tiempos de carencia de este plan</span>
