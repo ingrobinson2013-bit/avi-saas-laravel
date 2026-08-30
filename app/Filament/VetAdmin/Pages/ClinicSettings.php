@@ -28,17 +28,19 @@ class ClinicSettings extends Page implements HasForms
     {
         $tenant = $this->getTenant();
         if ($tenant) {
+            $branding = $tenant->branding ?? [];
+
             $this->form->fill([
                 'name' => $tenant->name,
-                'city' => $tenant->branding['city'] ?? '',
-                'address' => $tenant->branding['address'] ?? '',
-                'phone' => $tenant->branding['phone'] ?? '',
-                'email' => $tenant->branding['email'] ?? '',
-                'logo_url' => $tenant->branding['logo_url'] ?? '',
-                'primary_color' => $tenant->branding['primary_color'] ?? '#059669',
-                'secondary_color' => $tenant->branding['secondary_color'] ?? '#034433',
-                'hero_image_url' => $tenant->branding['hero_image_url'] ?? 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=700&auto=format&fit=crop&q=80',
-                'banner_image_url' => $tenant->branding['banner_image_url'] ?? 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=1000',
+                'city' => $branding['city'] ?? 'Cajicá, Cundinamarca',
+                'address' => $branding['address'] ?? 'Calle 7 # 4-73 Este',
+                'phone' => $branding['phone'] ?? '3508742543',
+                'email' => $branding['email'] ?? 'petmovilveterinario@gmail.com',
+                'primary_color' => $branding['primary_color'] ?? '#0284c7',
+                'secondary_color' => $branding['secondary_color'] ?? '#0f172a',
+                'logo_file' => $branding['logo_path'] ?? null,
+                'hero_file' => $branding['hero_path'] ?? null,
+                'banner_file' => $branding['banner_path'] ?? null,
             ]);
         }
     }
@@ -47,84 +49,68 @@ class ClinicSettings extends Page implements HasForms
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Identidad Visual y Colores')
-                    ->description('Sube el logo de tu veterinaria y define tu paleta corporativa.')
+                Forms\Components\Section::make('Identidad Visual y Colores de la Veterinaria')
+                    ->description('Sube tu logo oficial y personaliza la paleta corporativa.')
                     ->schema([
                         Forms\Components\FileUpload::make('logo_file')
-                            ->label('Subir Logo de la Veterinaria (Directo a Cloudflare R2)')
+                            ->label('Logo Oficial de la Veterinaria')
                             ->disk('r2')
                             ->directory('tenants/logos')
                             ->visibility('public')
                             ->image()
-                            ->imageResizeMode('contain')
+                            ->imagePreviewHeight('150')
                             ->maxSize(5120)
-                            ->helperText('Arrastra tu logo en formato PNG o SVG (fondo transparente recomendado).')
-                            ->columnSpanFull(),
-
-                        Forms\Components\TextInput::make('logo_url')
-                            ->label('O Pega la URL Directa del Logo')
-                            ->placeholder('https://.../logo.png')
+                            ->helperText('Arrastra tu logo en formato PNG o SVG (fondo transparente o blanco).')
                             ->columnSpanFull(),
 
                         Forms\Components\ColorPicker::make('primary_color')
-                            ->label('Color Principal de Botones y Tarjetas')
-                            ->default('#059669')
+                            ->label('Color Principal de Botones y Acentos')
+                            ->default('#0284c7')
                             ->required(),
 
                         Forms\Components\ColorPicker::make('secondary_color')
                             ->label('Color de la Barra Superior')
-                            ->default('#034433')
+                            ->default('#0f172a')
                             ->required(),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Fotografías del Portal')
-                    ->description('Imágenes del consultorio y pacientes.')
+                Forms\Components\Section::make('Fotografías del Portal Web')
+                    ->description('Sube las imágenes de tu consultorio y mascotas.')
                     ->schema([
                         Forms\Components\FileUpload::make('hero_file')
-                            ->label('Subir Foto Principal (Hero Mascotas)')
+                            ->label('Foto Principal (Banner Superior Mascotas)')
                             ->disk('r2')
                             ->directory('tenants/heroes')
                             ->visibility('public')
                             ->image()
-                            ->maxSize(10240)
-                            ->helperText('Sube una foto de tus pacientes o clínica para el banner principal.'),
+                            ->imagePreviewHeight('160')
+                            ->maxSize(10240),
 
                         Forms\Components\FileUpload::make('banner_file')
-                            ->label('Subir Foto de Instalaciones / Video')
+                            ->label('Foto de Instalaciones / Consultorio')
                             ->disk('r2')
                             ->directory('tenants/banners')
                             ->visibility('public')
                             ->image()
-                            ->maxSize(10240)
-                            ->helperText('Sube una foto de tu consultorio en Cajicá.'),
-
-                        Forms\Components\TextInput::make('hero_image_url')
-                            ->label('O URL Foto Principal')
-                            ->placeholder('https://...'),
-
-                        Forms\Components\TextInput::make('banner_image_url')
-                            ->label('O URL Foto Instalaciones')
-                            ->placeholder('https://...'),
+                            ->imagePreviewHeight('160')
+                            ->maxSize(10240),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Datos de Contacto y Ubicación')
+                Forms\Components\Section::make('Datos de Contacto')
+                    ->collapsed()
                     ->schema([
                         Forms\Components\TextInput::make('phone')
                             ->label('WhatsApp Oficial')
-                            ->placeholder('3508742543')
-                            ->required(),
+                            ->default('3508742543'),
                         Forms\Components\TextInput::make('email')
                             ->label('Correo Electrónico')
-                            ->placeholder('contacto@veterinaria.com')
-                            ->email(),
+                            ->default('petmovilveterinario@gmail.com'),
                         Forms\Components\TextInput::make('city')
                             ->label('Ciudad')
-                            ->placeholder('Cajicá, Cundinamarca')
-                            ->required(),
+                            ->default('Cajicá, Cundinamarca'),
                         Forms\Components\TextInput::make('address')
                             ->label('Dirección')
-                            ->placeholder('Calle 7 # 4-73 Este')
-                            ->required(),
+                            ->default('Calle 7 # 4-73 Este'),
                     ])->columns(2),
             ])
             ->statePath('data');
@@ -137,37 +123,38 @@ class ClinicSettings extends Page implements HasForms
 
         if ($tenant) {
             $branding = $tenant->branding ?? [];
-            $branding['city'] = $state['city'];
-            $branding['address'] = $state['address'];
-            $branding['phone'] = $state['phone'];
-            $branding['email'] = $state['email'];
-            $branding['primary_color'] = $state['primary_color'];
-            $branding['secondary_color'] = $state['secondary_color'];
+            $branding['city'] = $state['city'] ?? 'Cajicá, Cundinamarca';
+            $branding['address'] = $state['address'] ?? 'Calle 7 # 4-73 Este';
+            $branding['phone'] = $state['phone'] ?? '3508742543';
+            $branding['email'] = $state['email'] ?? 'petmovilveterinario@gmail.com';
+            $branding['primary_color'] = $state['primary_color'] ?? '#0284c7';
+            $branding['secondary_color'] = $state['secondary_color'] ?? '#0f172a';
 
-            // Resolver URLs de Cloudflare R2 si se subieron archivos
+            $r2BaseUrl = rtrim(config('filesystems.disks.r2.url', 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev'), '/');
+
+            // 1. Procesar Logo
             if (!empty($state['logo_file'])) {
-                $branding['logo_url'] = Storage::disk('r2')->url($state['logo_file']);
-            } elseif (!empty($state['logo_url'])) {
-                $branding['logo_url'] = $state['logo_url'];
+                $branding['logo_path'] = $state['logo_file'];
+                $branding['logo_url'] = $r2BaseUrl . '/' . ltrim($state['logo_file'], '/');
             }
 
+            // 2. Procesar Foto Hero
             if (!empty($state['hero_file'])) {
-                $branding['hero_image_url'] = Storage::disk('r2')->url($state['hero_file']);
-            } elseif (!empty($state['hero_image_url'])) {
-                $branding['hero_image_url'] = $state['hero_image_url'];
+                $branding['hero_path'] = $state['hero_file'];
+                $branding['hero_image_url'] = $r2BaseUrl . '/' . ltrim($state['hero_file'], '/');
             }
 
+            // 3. Procesar Banner Instalaciones
             if (!empty($state['banner_file'])) {
-                $branding['banner_image_url'] = Storage::disk('r2')->url($state['banner_file']);
-            } elseif (!empty($state['banner_image_url'])) {
-                $branding['banner_image_url'] = $state['banner_image_url'];
+                $branding['banner_path'] = $state['banner_file'];
+                $branding['banner_image_url'] = $r2BaseUrl . '/' . ltrim($state['banner_file'], '/');
             }
 
             $tenant->update(['branding' => $branding]);
 
             Notification::make()
-                ->title('¡Marca y Colores guardados en Cloudflare R2!')
-                ->body('Los cambios e imágenes ya están disponibles en alta velocidad en /v/' . $tenant->slug)
+                ->title('¡Marca y Colores guardados con éxito!')
+                ->body('Tu logo y fotos ya se encuentran disponibles en alta resolución en /v/' . $tenant->slug)
                 ->success()
                 ->send();
         }
