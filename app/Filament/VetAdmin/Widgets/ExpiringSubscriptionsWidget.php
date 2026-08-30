@@ -13,7 +13,7 @@ class ExpiringSubscriptionsWidget extends BaseWidget
 {
     protected static ?int $sort = 2;
     protected int | string | array $columnSpan = ['md' => 2, 'xl' => 1];
-    protected static ?string $heading = '⏰ Próximos Vencimientos & Renovaciones';
+    protected static ?string $heading = '⏰ Membresías Próximas a Renovar';
 
     public function table(Table $table): Table
     {
@@ -31,13 +31,13 @@ class ExpiringSubscriptionsWidget extends BaseWidget
             )
             ->columns([
                 Tables\Columns\TextColumn::make('pet.name')
-                    ->label('Mascota')
-                    ->description(fn (Subscription $record) => ($record->pet?->species === 'cat' ? '🐱 ' : '🐶 ') . ($record->pet?->breed ?? 'Mestizo'))
+                    ->label('Paciente')
+                    ->formatStateUsing(function ($state, Subscription $record) {
+                        $species = $record->pet?->species === 'cat' ? '🐱' : '🐶';
+                        return "{$species} " . ($state ?? 'Mascota');
+                    })
+                    ->description(fn (Subscription $record) => $record->pet?->customer?->name ?? 'Tutor')
                     ->weight('bold'),
-
-                Tables\Columns\TextColumn::make('pet.customer.name')
-                    ->label('Tutor / WhatsApp')
-                    ->description(fn (Subscription $record) => $record->pet?->customer?->phone ?? ''),
 
                 Tables\Columns\TextColumn::make('plan.name')
                     ->label('Plan')
@@ -45,25 +45,19 @@ class ExpiringSubscriptionsWidget extends BaseWidget
                     ->color('info'),
 
                 Tables\Columns\TextColumn::make('current_period_end')
-                    ->label('Fecha de Vencimiento')
+                    ->label('Vencimiento')
                     ->dateTime('d/m/Y')
                     ->description(function (Subscription $record) {
-                        $days = now()->diffInDays($record->current_period_end, false);
-                        if ($days < 0) return '🔴 Vencida hace ' . abs($days) . ' días';
-                        if ($days === 0) return '🟡 Vence HOY';
-                        return "🟡 Vence en {$days} días";
+                        $days = (int) round(now()->diffInDays($record->current_period_end, false));
+                        if ($days < 0) return '🔴 Vencida';
+                        if ($days === 0) return '🟡 Vence hoy';
+                        return "🟡 En {$days} días";
                     })
                     ->sortable(),
-
-                Tables\Columns\TextColumn::make('benefit_usage')
-                    ->label('Uso del Ciclo')
-                    ->getStateUsing(fn (Subscription $record) => "{$record->total_used}/{$record->total_granted} servicios")
-                    ->badge()
-                    ->color('success'),
             ])
             ->actions([
                 Tables\Actions\Action::make('whatsappReminder')
-                    ->label('Recordar Renovación')
+                    ->label('WhatsApp')
                     ->icon('heroicon-o-chat-bubble-left-right')
                     ->color('success')
                     ->url(function (Subscription $record) {
@@ -73,16 +67,11 @@ class ExpiringSubscriptionsWidget extends BaseWidget
                         $planName = $record->plan?->name ?? 'Plan de Bienestar';
                         $date = $record->current_period_end?->format('d/m/Y');
                         
-                        $text = "🐾 Hola {$tutorName}, te saludamos de la veterinaria. Te recordamos que el {$planName} de {$petName} finaliza su ciclo el {$date}. ¿Deseas renovar su plan para seguir disfrutando de sus consultas, vacunas y beneficios?";
+                        $text = "🐾 Hola {$tutorName}, te saludamos de la clínica veterinaria. Te recordamos que el {$planName} de {$petName} finaliza su ciclo el {$date}. ¿Deseas renovar su plan para seguir disfrutando de sus consultas, vacunas y beneficios?";
                         return "https://wa.me/{$phone}?text=" . urlencode($text);
                     })
                     ->openUrlInNewTab(),
-
-                Tables\Actions\Action::make('view')
-                    ->label('Ver Ficha')
-                    ->icon('heroicon-o-eye')
-                    ->color('gray')
-                    ->url(fn (Subscription $record) => SubscriptionResource::getUrl('view', ['record' => $record->id])),
-            ]);
+            ])
+            ->paginated(false);
     }
 }

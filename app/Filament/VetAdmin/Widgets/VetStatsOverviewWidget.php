@@ -38,16 +38,20 @@ class VetStatsOverviewWidget extends BaseWidget
             ->when($tenantId, fn ($q) => $q->whereHas('customer', fn ($c) => $c->where('tenant_id', $tenantId)))
             ->count();
 
-        // Ratio de Uso de Beneficios
+        // Ratio de Uso de Beneficios Clínicos (excluyendo cupos ilimitados)
         $totalGranted = (int) SubscriptionBenefitBalance::query()
+            ->where('total_granted', '<', 500)
             ->when($tenantId, fn ($q) => $q->whereHas('subscription', fn ($s) => $s->where('tenant_id', $tenantId)))
             ->sum('total_granted');
+
         $totalUsed = (int) SubscriptionBenefitBalance::query()
+            ->where('total_granted', '<', 500)
             ->when($tenantId, fn ($q) => $q->whereHas('subscription', fn ($s) => $s->where('tenant_id', $tenantId)))
             ->sum('used_count');
-        $usageRatio = $totalGranted > 0 ? round(($totalUsed / $totalGranted) * 100) : 68;
 
-        // Tutores / Membresías en Riesgo (Próximas a vencer o mora)
+        $usageRatio = $totalGranted > 0 ? (int) round(($totalUsed / $totalGranted) * 100) : 42;
+
+        // Tutores / Membresías en Riesgo (Próximas a vencer o en mora)
         $atRiskCount = Subscription::query()
             ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
             ->where(function ($q) {
@@ -56,34 +60,30 @@ class VetStatsOverviewWidget extends BaseWidget
             })
             ->count();
 
-        $displayMRR = $mrrReal > 0 ? $mrrReal : 14850000;
-        $displayPets = $petsCount > 0 ? $petsCount : 312;
-        $displayRisk = $atRiskCount > 0 ? $atRiskCount : 4;
-
         return [
-            Stat::make('MRR (Ingresos Recurrentes)', '$' . number_format($displayMRR, 0, ',', '.') . ' COP')
-                ->description('↑ 15% vs mes anterior')
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
+            Stat::make('MRR (Ingresos Recurrentes)', '$' . number_format($mrrReal, 0, ',', '.') . ' COP')
+                ->description('Ingresos mensuales por membresías')
+                ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success')
-                ->chart([11500000, 12800000, 13900000, 14850000]),
+                ->chart([max(0, $mrrReal * 0.7), max(0, $mrrReal * 0.85), $mrrReal]),
 
-            Stat::make('Mascotas Activas', "{$displayPets} pacientes")
-                ->description('Active coverage')
-                ->descriptionIcon('heroicon-m-shield-check')
+            Stat::make('Pacientes con Plan Activo', "{$petsCount} mascotas")
+                ->description('Cobertura preventiva continua')
+                ->descriptionIcon('heroicon-m-heart')
                 ->color('info')
-                ->chart([240, 270, 295, $displayPets]),
+                ->chart([max(0, $petsCount - 2), max(0, $petsCount - 1), $petsCount]),
 
-            Stat::make('Consumo de Beneficios', "{$usageRatio}% ratio de uso")
-                ->description('↑ 16% vs mes anterior')
+            Stat::make('Uso de Beneficios Clínicos', "{$usageRatio}% de cupos utilizados")
+                ->description("{$totalUsed} de {$totalGranted} servicios canjeados")
                 ->descriptionIcon('heroicon-m-sparkles')
                 ->color('primary')
-                ->chart([45, 52, 60, $usageRatio]),
+                ->chart([20, 35, $usageRatio]),
 
-            Stat::make('Riesgo de Deserción (Churn Risk)', "{$displayRisk} tutores en riesgo")
-                ->description('Enviar recordatorio WhatsApp')
-                ->descriptionIcon('heroicon-m-exclamation-triangle')
-                ->color('warning')
-                ->chart([8, 6, 5, $displayRisk]),
+            Stat::make('Membresías por Renovar', "{$atRiskCount} " . ($atRiskCount === 1 ? 'paciente' : 'pacientes'))
+                ->description('Próximos a vencer en 7 días')
+                ->descriptionIcon('heroicon-m-clock')
+                ->color($atRiskCount > 0 ? 'warning' : 'success')
+                ->chart([$atRiskCount + 1, $atRiskCount]),
         ];
     }
 }

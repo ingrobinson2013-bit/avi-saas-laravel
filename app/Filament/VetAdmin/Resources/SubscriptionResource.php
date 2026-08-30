@@ -131,7 +131,7 @@ class SubscriptionResource extends Resource
                     ->label('Próx. Renovación')
                     ->dateTime('d/m/Y')
                     ->description(function (Subscription $record) {
-                        $days = now()->diffInDays($record->current_period_end, false);
+                        $days = (int) round(now()->diffInDays($record->current_period_end, false));
                         if ($days < 0) return '🔴 Vencida';
                         if ($days === 0) return '🟡 Hoy';
                         return "en {$days} días";

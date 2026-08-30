@@ -423,5 +423,99 @@ class ClinicaDemoSeeder extends Seeder
                 'quantity' => 1,
             ]
         );
+
+        // ==========================================
+        // EJEMPLO 3: THOR (Pastor Alemán - Plan Premium)
+        // ==========================================
+        $tutorThor = Customer::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'identification' => '1040506070'],
+            [
+                'name' => 'Andrea Ramírez',
+                'phone' => '+573152345678',
+                'email' => 'andrea.ramirez@gmail.com',
+            ]
+        );
+
+        $petThor = Pet::firstOrCreate(
+            ['customer_id' => $tutorThor->id, 'name' => 'Thor'],
+            [
+                'species' => 'dog',
+                'breed' => 'Pastor Alemán',
+                'birthdate' => now()->subYears(4),
+                'medical_notes' => 'Excelente condición física. Sin alergias conocidas.',
+            ]
+        );
+
+        $subThor = Subscription::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'pet_id' => $petThor->id],
+            [
+                'plan_id' => $planPremium->id,
+                'status' => 'active',
+                'current_period_start' => now()->subDays(5),
+                'current_period_end' => now()->addDays(25),
+            ]
+        );
+
+        $balThorConsulta = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subThor->id, 'benefit_definition_id' => $bConsultaPresencial->id],
+            ['total_granted' => 3, 'used_count' => 1, 'remaining_count' => 2]
+        );
+
+        $balThorVacuna = SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subThor->id, 'benefit_definition_id' => $bVacunaAnual->id],
+            ['total_granted' => 1, 'used_count' => 1, 'remaining_count' => 0]
+        );
+
+        BenefitRedemption::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'balance_id' => $balThorVacuna->id],
+            [
+                'redeemed_at' => now()->subDays(4),
+                'vet_user_id' => $vetUser?->id,
+                'quantity' => 1,
+                'notes' => 'Vacunación Anual Pentavalente canina y Rabia certificada.',
+            ]
+        );
+
+        // ==========================================
+        // EJEMPLO 4: MILO (Gato Persa - Plan Básico)
+        // ==========================================
+        $tutorMilo = Customer::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'identification' => '1050607080'],
+            [
+                'name' => 'Juan Pablo Morales',
+                'phone' => '+573188765432',
+                'email' => 'juanpablo.m@outlook.com',
+            ]
+        );
+
+        $petMilo = Pet::firstOrCreate(
+            ['customer_id' => $tutorMilo->id, 'name' => 'Milo'],
+            [
+                'species' => 'cat',
+                'breed' => 'Persa',
+                'birthdate' => now()->subYears(1),
+                'medical_notes' => 'Cuidado especial de pelaje largo.',
+            ]
+        );
+
+        $subMilo = Subscription::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'pet_id' => $petMilo->id],
+            [
+                'plan_id' => $planBasico->id,
+                'status' => 'active',
+                'current_period_start' => now()->subDays(1),
+                'current_period_end' => now()->addDays(29),
+            ]
+        );
+
+        SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subMilo->id, 'benefit_definition_id' => $bKit->id],
+            ['total_granted' => 1, 'used_count' => 1, 'remaining_count' => 0]
+        );
+
+        SubscriptionBenefitBalance::updateOrCreate(
+            ['subscription_id' => $subMilo->id, 'benefit_definition_id' => $bConsultaPresencial->id],
+            ['total_granted' => 3, 'used_count' => 0, 'remaining_count' => 3]
+        );
     }
 }
