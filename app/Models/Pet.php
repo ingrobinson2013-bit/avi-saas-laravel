@@ -30,6 +30,18 @@ class Pet extends Model
         return $this->belongsTo(Customer::class);
     }
 
+    public function tenant(): \Illuminate\Database\Eloquent\Relations\HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Tenant::class,
+            Customer::class,
+            'id',          // Foreign key on customers table (Customer PK is id)
+            'id',          // Foreign key on tenants table (Tenant PK is id)
+            'customer_id', // Local key on pets table
+            'tenant_id'    // Local key on customers table
+        );
+    }
+
     public function subscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class);

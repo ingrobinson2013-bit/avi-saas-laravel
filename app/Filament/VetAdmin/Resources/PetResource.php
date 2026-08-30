@@ -16,6 +16,7 @@ use Filament\Tables\Table;
 class PetResource extends Resource
 {
     protected static ?string $model = Pet::class;
+    protected static ?string $tenantOwnershipRelationshipName = 'customer';
     protected static ?string $navigationIcon = 'heroicon-o-heart';
     protected static ?string $navigationLabel = 'Mascotas & Pacientes';
     protected static ?string $modelLabel = 'Mascota';
