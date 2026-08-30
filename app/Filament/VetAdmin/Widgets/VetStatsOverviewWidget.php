@@ -6,6 +6,7 @@ use App\Models\BenefitRedemption;
 use App\Models\Customer;
 use App\Models\Pet;
 use App\Models\Subscription;
+use Filament\Facades\Filament;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -15,22 +16,19 @@ class VetStatsOverviewWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        $tenantId = session('current_tenant_id') ?? auth()->user()?->tenant_id;
+        $tenant = Filament::getTenant();
+        $tenantId = $tenant?->id ?? session('current_tenant_id') ?? auth()->user()?->tenant_id;
 
         // Subscripciones activas
-        $activeSubsQuery = Subscription::query()
-            ->where('status', 'active');
-
-        if ($tenantId) {
-            $activeSubsQuery->where('tenant_id', $tenantId);
-        }
-
-        $activeSubsCount = $activeSubsQuery->count();
+        $activeSubsCount = Subscription::query()
+            ->where('subscriptions.status', 'active')
+            ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
+            ->count();
 
         // Ingresos Recurrentes Estimados (MRR)
         $mrr = (float) Subscription::query()
-            ->where('status', 'active')
-            ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
+            ->where('subscriptions.status', 'active')
+            ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
             ->join('plans', 'subscriptions.plan_id', '=', 'plans.id')
             ->sum('plans.price_cop');
 
@@ -53,8 +51,8 @@ class VetStatsOverviewWidget extends BaseWidget
 
         // Subscripciones por vencer (próximos 7 días)
         $expiringSoon = Subscription::query()
-            ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
-            ->where('status', 'active')
+            ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
+            ->where('subscriptions.status', 'active')
             ->whereBetween('current_period_end', [now(), now()->addDays(7)])
             ->count();
 
@@ -63,7 +61,7 @@ class VetStatsOverviewWidget extends BaseWidget
                 ->description("{$expiringSoon} por renovar esta semana")
                 ->descriptionIcon('heroicon-m-shield-check')
                 ->color('success')
-                ->chart([$activeSubsCount - 2, $activeSubsCount - 1, $activeSubsCount]),
+                ->chart([max(0, $activeSubsCount - 2), max(0, $activeSubsCount - 1), $activeSubsCount]),
 
             Stat::make('Ingresos Recurrentes (MRR)', '$' . number_format($mrr, 0, ',', '.') . ' COP')
                 ->description('Membresías activas mensuales')

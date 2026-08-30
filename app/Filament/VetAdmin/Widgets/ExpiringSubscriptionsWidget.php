@@ -4,6 +4,7 @@ namespace App\Filament\VetAdmin\Widgets;
 
 use App\Filament\VetAdmin\Resources\SubscriptionResource;
 use App\Models\Subscription;
+use Filament\Facades\Filament;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -16,14 +17,15 @@ class ExpiringSubscriptionsWidget extends BaseWidget
 
     public function table(Table $table): Table
     {
-        $tenantId = session('current_tenant_id') ?? auth()->user()?->tenant_id;
+        $tenant = Filament::getTenant();
+        $tenantId = $tenant?->id ?? session('current_tenant_id') ?? auth()->user()?->tenant_id;
 
         return $table
             ->query(
                 Subscription::query()
                     ->with(['pet.customer', 'plan', 'benefitBalances'])
-                    ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
-                    ->where('status', 'active')
+                    ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
+                    ->where('subscriptions.status', 'active')
                     ->whereBetween('current_period_end', [now()->subDays(2), now()->addDays(15)])
                     ->orderBy('current_period_end', 'asc')
             )
