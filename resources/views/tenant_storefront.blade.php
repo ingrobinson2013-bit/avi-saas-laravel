@@ -222,17 +222,33 @@
                     @forelse($plans as $index => $plan)
                     @php
                         $isBasic = str_contains(strtolower($plan->name), 'básico') || str_contains(strtolower($plan->name), 'basico');
-                        $isFeatured = ($index === 1) || str_contains(strtolower($plan->name), 'premium') || str_contains(strtolower($plan->name), 'plus');
-                        $monthlyPrice = (float) $plan->price_cop;
-                        $annualPrice = $isBasic ? 540000 : ($monthlyPrice * 12 * 0.9);
-                        $affiliationFee = $isBasic ? 50000 : 150000;
+                        $isPremium = str_contains(strtolower($plan->name), 'premium') || str_contains(strtolower($plan->name), 'plus');
+                        $isFeatured = $isPremium || ($index === 1);
+                        
+                        // Precios oficiales definidos por Vet-Pet Patitas
+                        if ($isBasic) {
+                            $monthlyPrice = 50000;
+                            $firstMonthPrice = 100000; // $50.000 afi + $50.000 mes
+                            $affiliationFee = 50000;
+                            $annualPrice = 540000;
+                        } elseif ($isPremium) {
+                            $monthlyPrice = 80000;
+                            $firstMonthPrice = 150000; // $70.000 afi + $80.000 mes
+                            $affiliationFee = 70000;
+                            $annualPrice = 902400; // Valor oficial anual con descuento
+                        } else {
+                            $monthlyPrice = (float) $plan->price_cop;
+                            $firstMonthPrice = $monthlyPrice;
+                            $affiliationFee = 0;
+                            $annualPrice = $monthlyPrice * 12 * 0.9;
+                        }
                     @endphp
 
                     <div class="bg-white rounded-3xl p-5 sm:p-8 {{ $isFeatured ? 'border-2 border-brand-primary shadow-xl relative' : 'border border-slate-200 shadow-sm hover:shadow-md' }} flex flex-col justify-between transition-all">
                         
                         @if($isFeatured)
                         <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 bg-brand-secondary text-white font-bold text-[10px] sm:text-[11px] rounded-full shadow-md uppercase tracking-wider whitespace-nowrap">
-                            Plan Recomendado ★
+                            Plan Premium Más Completo ★
                         </div>
                         @elseif($isBasic)
                         <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 bg-slate-800 text-white font-bold text-[10px] sm:text-[11px] rounded-full shadow-md uppercase tracking-wider whitespace-nowrap">
@@ -248,7 +264,7 @@
                                 </div>
                                 <div>
                                     <h3 class="text-lg sm:text-xl font-extrabold text-slate-900">{{ $plan->name }}</h3>
-                                    <p class="text-xs text-slate-500 font-medium">{{ $isBasic ? 'Prevención integral y medicina prepagada' : 'Máxima cobertura médica y urgencias' }}</p>
+                                    <p class="text-xs text-slate-500 font-medium">{{ $isBasic ? 'Prevención esencial y medicina prepagada' : 'Cobertura total con Servicio Funerario 100% incluido' }}</p>
                                 </div>
                             </div>
 
@@ -260,8 +276,8 @@
                                         <span class="text-slate-500 text-xs font-bold">COP / mes</span>
                                     </div>
                                     <p class="text-[11px] text-emerald-700 font-semibold pt-1 leading-normal">
-                                        • Mes 1: <strong>${{ number_format($monthlyPrice + $affiliationFee, 0, ',', '.') }} COP</strong> (Incluye ${{ number_format($affiliationFee, 0, ',', '.') }} de afiliación única)<br>
-                                        • A partir del 2do mes pagas solo <strong>${{ number_format($monthlyPrice, 0, ',', '.') }} COP</strong>
+                                        • Mes 1: <strong>${{ number_format($firstMonthPrice, 0, ',', '.') }} COP</strong> (Afiliación + 1er mes)<br>
+                                        • A partir del 2do mes: <strong>${{ number_format($monthlyPrice, 0, ',', '.') }} COP</strong>
                                     </p>
                                 </div>
 
@@ -353,6 +369,71 @@
                                         <p>• <strong>10% Dcto:</strong> Hospitalización, Medicamentos, Procedimientos y Funeraria (100% si no usó servicios previos).</p>
                                     </div>
                                 </div>
+                                @elseif($isPremium)
+                                <!-- Cobertura Específica Plan Premium -->
+                                <div class="space-y-2.5 text-slate-700 font-medium">
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5 shrink-0">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">3 Consultas Presenciales</strong> al año con valoración médica completa.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5 shrink-0">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">Inyectología de Estabilización</strong> en consulta (antibiótico, analgésico o antipirético hasta $20.000).
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5 shrink-0">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">Vacunación Anual Completa</strong> (1 dosis al año: Caninos Pentavalente+Rabia / Felinos Triple+Rabia).
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5 shrink-0">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">Cobertura 100% en Laboratorio:</strong> Coprológico o Parcial de Orina, Hemograma o Perfil Básico (Creatinina, ALT, BUN por enfermedad/urgencia).
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5 shrink-0">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">Desparasitación Externa / Antipulgas:</strong> Credelio o pipeta cada 6 meses (2 al año).
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5 shrink-0">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">Consultas Virtuales Gratuitas e Ilimitadas</strong> de lunes a domingo.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5 shrink-0">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">Kit Bienvenida:</strong> Cédula, Collar Placa y Control para Historia Clínica.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5 shrink-0">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">Chequeos Preventivos Trimestrales</strong> + Campañas preventivas y Acompañamiento continuo.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <span class="text-emerald-600 font-extrabold text-sm leading-none mt-0.5 shrink-0">★</span>
+                                        <div>
+                                            <strong class="text-slate-900 text-emerald-800">Servicio Funerario 100% Gratuito Incluido</strong> (A partir de los 8 meses en mensual, o inmediato en anual).
+                                        </div>
+                                    </div>
+
+                                    <!-- Descuentos Destacados -->
+                                    <div class="mt-3 pt-3 border-t border-slate-100 space-y-1.5 text-[11px] text-slate-600 bg-slate-50 p-2.5 sm:p-3 rounded-xl">
+                                        <p class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">🏷️ Descuentos en Clínica:</p>
+                                        <p>• <strong>20% Dcto:</strong> Certificado Médico Nacional de Vuelo.</p>
+                                        <p>• <strong>10% Dcto:</strong> Hospitalización, Procedimientos, Exámenes e Imagenología.</p>
+                                    </div>
+                                </div>
                                 @else
                                 <!-- Cobertura Otros Planes -->
                                 <ul class="space-y-2.5 text-xs font-medium text-slate-600">
@@ -390,76 +471,141 @@
 
                 <!-- LÍNEA DE TIEMPO / PERIODOS DE CARENCIA (MODALIDAD MENSUAL) -->
                 <div class="mt-12 sm:mt-16 max-w-5xl mx-auto bg-white rounded-3xl border border-slate-200 p-5 sm:p-8 lg:p-10 shadow-sm space-y-6" id="carencias-section">
-                    <div class="text-center space-y-2">
+                    <div class="text-center space-y-3">
                         <div class="inline-flex items-center space-x-1.5 text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
                             <span>⏳</span>
                             <span>Modalidad Mensual: Activación Progresiva</span>
                         </div>
                         <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">Periodos de Carencia (Activación de Beneficios)</h3>
                         <p class="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto">
-                            Si eliges pago mensual, los servicios se habilitan paso a paso. <strong>O paga el año completo por $540.000 COP y activa TODO de manera INMEDIATA.</strong>
+                            Si eliges pago mensual, los servicios se habilitan paso a paso. <strong>O paga el año completo y activa TODO de manera INMEDIATA sin esperas.</strong>
                         </p>
+
+                        <!-- Selector de Plan en Carencias -->
+                        <div class="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold">
+                            <button type="button" onclick="showCarenciaPlan('basico')" id="btn-carencia-basico" class="px-4 py-1.5 rounded-lg transition-all bg-white text-slate-900 shadow-sm">
+                                🐾 Plan Básico
+                            </button>
+                            <button type="button" onclick="showCarenciaPlan('premium')" id="btn-carencia-premium" class="px-4 py-1.5 rounded-lg transition-all text-slate-600 hover:text-slate-900">
+                                💎 Plan Premium
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 pt-2 sm:pt-4">
-                        <!-- Inmediato -->
-                        <div class="bg-emerald-50/60 border border-emerald-200/80 rounded-2xl p-4 space-y-2">
-                            <span class="inline-block px-2.5 py-0.5 bg-emerald-600 text-white font-black text-[10px] rounded-full uppercase">Inmediato</span>
-                            <h4 class="font-bold text-xs text-slate-900">Al Pagar Afiliación:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>Kit de Bienvenida (Cédula/Placa)</li>
-                                <li>1ra Desparasitación interna</li>
-                                <li>Historia clínica de bienvenida</li>
-                                <li>Consultas virtuales ILIMITADAS (L-D)</li>
-                                <li>Dctos en hospitalización y medicamentos</li>
-                            </ul>
-                        </div>
+                    <!-- CARENCIA PLAN BÁSICO -->
+                    <div id="carencia-block-basico" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 pt-2">
+                            <!-- Inmediato -->
+                            <div class="bg-emerald-50/60 border border-emerald-200/80 rounded-2xl p-4 space-y-2">
+                                <span class="inline-block px-2.5 py-0.5 bg-emerald-600 text-white font-black text-[10px] rounded-full uppercase">Inmediato</span>
+                                <h4 class="font-bold text-xs text-slate-900">Al Pagar Afiliación:</h4>
+                                <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                    <li>Kit de Bienvenida (Cédula/Placa)</li>
+                                    <li>1ra Desparasitación interna</li>
+                                    <li>Historia clínica de bienvenida</li>
+                                    <li>Consultas virtuales ILIMITADAS (L-D)</li>
+                                    <li>Dctos en hospitalización y medicamentos</li>
+                                </ul>
+                            </div>
 
-                        <!-- 30 Días -->
-                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
-                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 30 Días</span>
-                            <h4 class="font-bold text-xs text-slate-900">Mes 1+:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>1ra Consulta presencial</li>
-                                <li>Chequeos preventivos periódicos</li>
-                                <li>Inyectología de estabilización (hasta $20k)</li>
-                                <li>Acompañamiento y recordatorios</li>
-                                <li>Campañas preventivas</li>
-                            </ul>
-                        </div>
+                            <!-- 30 Días -->
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                                <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 30 Días</span>
+                                <h4 class="font-bold text-xs text-slate-900">Mes 1+:</h4>
+                                <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                    <li>1ra Consulta presencial</li>
+                                    <li>Chequeos preventivos periódicos</li>
+                                    <li>Inyectología de estabilización (hasta $20k)</li>
+                                    <li>Acompañamiento y recordatorios</li>
+                                    <li>Campañas preventivas</li>
+                                </ul>
+                            </div>
 
-                        <!-- 3 Meses -->
-                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
-                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 3 Meses</span>
-                            <h4 class="font-bold text-xs text-slate-900">90 Días+:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>Todo lo anterior</li>
-                                <li>Desparasitación externa / antipulgas (Credelio o pipeta)</li>
-                            </ul>
-                        </div>
+                            <!-- 3 Meses -->
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                                <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 3 Meses</span>
+                                <h4 class="font-bold text-xs text-slate-900">90 Días+:</h4>
+                                <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                    <li>Todo lo anterior</li>
+                                    <li>Desparasitación externa / antipulgas (Credelio o pipeta)</li>
+                                </ul>
+                            </div>
 
-                        <!-- 6 Meses -->
-                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
-                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 6 Meses</span>
-                            <h4 class="font-bold text-xs text-slate-900">180 Días+:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>Todo lo anterior</li>
-                                <li>Exámenes de laboratorio 100% (Hemograma, ALT, BUN, Creatinina / Coprológico)</li>
-                                <li>Citología de oídos</li>
-                                <li>Vacunación anual completa</li>
-                                <li>20% Dcto en Certificado Médico de vuelo</li>
-                            </ul>
-                        </div>
+                            <!-- 6 Meses -->
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                                <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 6 Meses</span>
+                                <h4 class="font-bold text-xs text-slate-900">180 Días+:</h4>
+                                <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                    <li>Todo lo anterior</li>
+                                    <li>Exámenes de laboratorio 100% (Hemograma, ALT, BUN, Creatinina / Coprológico)</li>
+                                    <li>Citología de oídos</li>
+                                    <li>Vacunación anual completa</li>
+                                    <li>20% Dcto en Certificado de vuelo</li>
+                                </ul>
+                            </div>
 
-                        <!-- 8 Meses -->
-                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 sm:col-span-2 lg:col-span-1">
-                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 8 Meses</span>
-                            <h4 class="font-bold text-xs text-slate-900">240 Días+:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>Todo lo anterior</li>
-                                <li>Baños y peluquería (1 grande/gigante ó 2 pequeñas/medianas)</li>
-                                <li>Servicio Funerario 10% Dcto (100% si no ha usado ningún servicio)</li>
-                            </ul>
+                            <!-- 8 Meses -->
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 sm:col-span-2 lg:col-span-1">
+                                <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 8 Meses</span>
+                                <h4 class="font-bold text-xs text-slate-900">240 Días+:</h4>
+                                <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                    <li>Todo lo anterior</li>
+                                    <li>Baños y peluquería (1 grande/gigante ó 2 pequeñas/medianas)</li>
+                                    <li>Servicio Funerario 10% Dcto (100% si no ha usado ningún servicio)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARENCIA PLAN PREMIUM -->
+                    <div id="carencia-block-premium" class="space-y-4 hidden">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-2">
+                            <!-- Inmediato -->
+                            <div class="bg-emerald-50/60 border border-emerald-200/80 rounded-2xl p-4 space-y-2">
+                                <span class="inline-block px-2.5 py-0.5 bg-emerald-600 text-white font-black text-[10px] rounded-full uppercase">Inmediato</span>
+                                <h4 class="font-bold text-xs text-slate-900">Al Pagar Afiliación:</h4>
+                                <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                    <li>Kit de Bienvenida (Cédula/Collar Placa)</li>
+                                    <li>Control de Bienvenida e Historia Clínica</li>
+                                    <li>Consultas virtuales GRATUITAS e ILIMITADAS (L-D)</li>
+                                </ul>
+                            </div>
+
+                            <!-- 30 Días -->
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                                <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 30 Días</span>
+                                <h4 class="font-bold text-xs text-slate-900">Mes 1+:</h4>
+                                <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                    <li>1ra Consulta presencial en clínica</li>
+                                    <li>Seguimiento clínico inicial</li>
+                                </ul>
+                            </div>
+
+                            <!-- 90 Días (3 Meses) -->
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                                <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 90 Días</span>
+                                <h4 class="font-bold text-xs text-slate-900">Beneficios Premium:</h4>
+                                <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                    <li>Consultas presenciales adicionales</li>
+                                    <li>Chequeos preventivos cada 3 meses</li>
+                                    <li>Acompañamiento y campañas preventivas</li>
+                                    <li>Inyectología de estabilización (hasta $20k)</li>
+                                    <li>Desparasitación externa (Credelio / Pipeta)</li>
+                                    <li>Vacunación Anual Completa (dosis única)</li>
+                                    <li>Laboratorio 100% (Hemograma, ALT, BUN, Creatinina / Coprológico)</li>
+                                    <li>10% Dctos en clínica y 20% en Certificado de Vuelo</li>
+                                </ul>
+                            </div>
+
+                            <!-- 8 Meses (240 Días) -->
+                            <div class="bg-emerald-50/80 border border-emerald-300 rounded-2xl p-4 space-y-2">
+                                <span class="inline-block px-2.5 py-0.5 bg-emerald-700 text-white font-black text-[10px] rounded-full uppercase">A los 8 Meses</span>
+                                <h4 class="font-bold text-xs text-emerald-950">Servicio Funerario 100%:</h4>
+                                <ul class="text-[11px] text-emerald-900 space-y-1.5 list-disc pl-3 font-medium">
+                                    <li>Todo lo anterior descrito</li>
+                                    <li><strong>SERVICIO FUNERARIO GRATUITO 100% INCLUIDO</strong> en el plan</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
@@ -468,10 +614,10 @@
                             <span class="text-2xl shrink-0">💡</span>
                             <div>
                                 <p class="font-bold">¿Deseas activar todos los beneficios hoy mismo sin carencias?</p>
-                                <p class="text-emerald-700 text-[11px] sm:text-xs">Elige la modalidad de Pago Anual con 10% de descuento ($540.000 COP) y $0 costo de afiliación.</p>
+                                <p class="text-emerald-700 text-[11px] sm:text-xs">Elige la modalidad de Pago Anual con 10% de descuento y $0 costo de afiliación.</p>
                             </div>
                         </div>
-                        <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20activar%20el%20Plan%20Patitas%20Básico%20en%20modalidad%20ANUAL%20sin%20carencias" target="_blank" class="w-full sm:w-auto text-center px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-sm whitespace-nowrap transition-all flex items-center justify-center">
+                        <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20activar%20mi%20Plan%20en%20modalidad%20ANUAL%20sin%20carencias" target="_blank" class="w-full sm:w-auto text-center px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-sm whitespace-nowrap transition-all flex items-center justify-center">
                             Activar Plan Anual ⭐
                         </a>
                     </div>
@@ -500,9 +646,32 @@
                             btnAnnual.classList.add('text-slate-600');
                         }
                     }
+
+                    function showCarenciaPlan(planType) {
+                        const blockBasico = document.getElementById('carencia-block-basico');
+                        const blockPremium = document.getElementById('carencia-block-premium');
+                        const btnBasico = document.getElementById('btn-carencia-basico');
+                        const btnPremium = document.getElementById('btn-carencia-premium');
+
+                        if (planType === 'premium') {
+                            blockBasico.classList.add('hidden');
+                            blockPremium.classList.remove('hidden');
+                            btnPremium.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                            btnPremium.classList.remove('text-slate-600');
+                            btnBasico.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                            btnBasico.classList.add('text-slate-600');
+                        } else {
+                            blockPremium.classList.add('hidden');
+                            blockBasico.classList.remove('hidden');
+                            btnBasico.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                            btnBasico.classList.remove('text-slate-600');
+                            btnPremium.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                            btnPremium.classList.add('text-slate-600');
+                        }
+                    }
                 </script>
 
-                <p class="text-center text-[10px] sm:text-[11px] text-slate-400 mt-6 sm:mt-8 px-2">
+                <p class="text-center text-[11px] text-slate-400 mt-8">
                     * El proceso para solicitar los beneficios una vez activos será siempre a través de nuestra línea única de atención <strong>{{ $tenant->branding['phone'] ?? '350 874 2543' }}</strong>. Los servicios descritos están incluidos en el plan; la entrega o suministro de estos puede generar un valor adicional según condiciones particulares.
                 </p>
             </div>
