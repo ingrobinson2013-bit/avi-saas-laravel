@@ -12,8 +12,8 @@ use Filament\Widgets\TableWidget as BaseWidget;
 class ExpiringSubscriptionsWidget extends BaseWidget
 {
     protected static ?int $sort = 2;
-    protected int | string | array $columnSpan = 'full';
-    protected static ?string $heading = '⏰ Membresías Próximas a Vencer & Renovaciones (Próximos 15 Días)';
+    protected int | string | array $columnSpan = ['md' => 2, 'xl' => 1];
+    protected static ?string $heading = '⏰ Próximos Vencimientos & Renovaciones';
 
     public function table(Table $table): Table
     {

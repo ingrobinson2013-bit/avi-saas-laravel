@@ -89,7 +89,12 @@ class SubscriptionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('pet.name')
                     ->label('Mascota')
-                    ->description(fn (Subscription $record): string => ($record->pet?->species === 'cat' ? '🐱 Gato' : '🐶 Perro') . ($record->pet?->breed ? " • {$record->pet->breed}" : ''))
+                    ->description(function (Subscription $record): string {
+                        $species = $record->pet?->species === 'cat' ? '🐱 ' : '🐶 ';
+                        $breed = $record->pet?->breed ?? 'Mestizo';
+                        $age = $record->pet?->birthdate ? ' • ' . \Carbon\Carbon::parse($record->pet->birthdate)->age . ' años' : '';
+                        return "{$species}{$breed}{$age}";
+                    })
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
@@ -102,7 +107,7 @@ class SubscriptionResource extends Resource
                 Tables\Columns\TextColumn::make('plan.name')
                     ->label('Plan')
                     ->badge()
-                    ->color('info')
+                    ->color(fn ($state) => str_contains(strtolower($state ?? ''), 'premium') ? 'purple' : 'info')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('computed_status')
@@ -112,7 +117,7 @@ class SubscriptionResource extends Resource
                     ->color(fn (Subscription $record) => $record->status_color),
 
                 Tables\Columns\TextColumn::make('benefit_balances_summary')
-                    ->label('Uso de Beneficios')
+                    ->label('Saldo de Beneficios')
                     ->getStateUsing(function (Subscription $record) {
                         $granted = $record->total_granted;
                         $used = $record->total_used;
@@ -125,6 +130,12 @@ class SubscriptionResource extends Resource
                 Tables\Columns\TextColumn::make('current_period_end')
                     ->label('Próx. Renovación')
                     ->dateTime('d/m/Y')
+                    ->description(function (Subscription $record) {
+                        $days = now()->diffInDays($record->current_period_end, false);
+                        if ($days < 0) return '🔴 Vencida';
+                        if ($days === 0) return '🟡 Hoy';
+                        return "en {$days} días";
+                    })
                     ->sortable(),
             ])
             ->filters([
@@ -226,6 +237,18 @@ class SubscriptionResource extends Resource
                             ->success()
                             ->send();
                     }),
+
+                Tables\Actions\Action::make('whatsapp')
+                    ->label('WhatsApp')
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('success')
+                    ->url(function (Subscription $record) {
+                        $phone = preg_replace('/[^0-9]/', '', $record->pet?->customer?->phone ?? '');
+                        $name = $record->pet?->customer?->name ?? 'Tutor';
+                        $pet = $record->pet?->name ?? 'tu mascota';
+                        return "https://wa.me/{$phone}?text=" . urlencode("Hola {$name}, te saludamos de la clínica veterinaria sobre el plan de {$pet}.");
+                    })
+                    ->openUrlInNewTab(),
 
                 Tables\Actions\EditAction::make(),
             ]);
