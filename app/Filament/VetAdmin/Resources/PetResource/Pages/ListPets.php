@@ -8,7 +8,7 @@ use Filament\Resources\Pages\ListRecords;
 
 class ListPets extends ListRecords
 {
-    protected static string  = PetResource::class;
+    protected static string $resource = PetResource::class;
 
     protected function getHeaderActions(): array
     {

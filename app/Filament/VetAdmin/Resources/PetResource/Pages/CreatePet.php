@@ -7,5 +7,5 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreatePet extends CreateRecord
 {
-    protected static string  = PetResource::class;
+    protected static string $resource = PetResource::class;
 }
