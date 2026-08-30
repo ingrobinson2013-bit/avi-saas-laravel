@@ -1,18 +1,11 @@
 FROM php:8.3-fpm-alpine
 
-RUN apk add --no-cache \
-    nginx \
-    postgresql-dev \
-    libpng-dev \
-    libzip-dev \
-    zip \
-    unzip \
-    git \
-    curl \
-    nodejs \
-    npm
+# Instalador oficial de extensiones binarias precompiladas (Ultra rápido: < 30s)
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN docker-php-ext-install pdo pdo_pgsql pgsql gd zip bcmath opcache
+RUN apk add --no-cache nginx git curl nodejs npm icu-data-full
+
+RUN install-php-extensions pdo_pgsql pgsql gd zip bcmath opcache intl redis
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -22,7 +15,7 @@ COPY nginx.conf /etc/nginx/http.d/default.conf
 
 COPY . /var/www/html
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
 
 RUN mkdir -p /var/www/html/storage/framework/cache/data \
     /var/www/html/storage/framework/sessions \
