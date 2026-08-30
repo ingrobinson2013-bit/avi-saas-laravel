@@ -188,70 +188,196 @@
             </div>
         </section>
 
-        <!-- 4. PLANES DINÁMICOS CON COLORES DE MARCA -->
+        <!-- 4. PLANES DINÁMICOS CON COLORES DE MARCA Y LÍNEA DE TIEMPO -->
         <section id="planes" class="py-20 bg-[#fbfcfd] border-t border-slate-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
-                <div class="text-center space-y-2 mb-16">
+                <div class="text-center space-y-3 mb-12">
+                    <div class="inline-flex items-center space-x-2 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full text-brand-primary text-xs font-bold">
+                        <span>🐾</span>
+                        <span>Planes Oficiales de Salud & Prevención</span>
+                    </div>
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Elige el plan ideal para tu mascota</h2>
-                    <p class="text-slate-500 text-sm">Planes oficiales de {{ $tenant->name }}</p>
+                    <p class="text-slate-500 text-sm max-w-2xl mx-auto">
+                        Cuidado médico preventivo de alta calidad en <strong>{{ $tenant->name }}</strong>. Paga mes a mes o ahorra pagando el año completo con activación inmediata.
+                    </p>
+
+                    <!-- SELECTOR CICLO FACTURACIÓN: MENSUAL / ANUAL -->
+                    <div class="pt-4 flex items-center justify-center">
+                        <div class="bg-slate-100 p-1.5 rounded-2xl border border-slate-200 inline-flex items-center space-x-1 shadow-inner" id="cycle-toggle-wrapper">
+                            <button type="button" onclick="setBillingCycle('monthly')" id="btn-cycle-monthly" class="px-5 py-2.5 rounded-xl font-bold text-xs transition-all bg-white text-slate-900 shadow-sm">
+                                📅 Pago Mensual
+                            </button>
+                            <button type="button" onclick="setBillingCycle('annual')" id="btn-cycle-annual" class="px-5 py-2.5 rounded-xl font-bold text-xs transition-all text-slate-600 hover:text-slate-900 flex items-center space-x-1.5">
+                                <span>⭐ Pago Anual</span>
+                                <span class="bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">-10% & 0 Carencias</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 {{ count($plans) === 2 ? 'md:grid-cols-2 max-w-4xl' : 'md:grid-cols-3 max-w-6xl' }} gap-8 mx-auto items-stretch">
+                <div class="grid grid-cols-1 {{ count($plans) === 2 ? 'md:grid-cols-2 max-w-5xl' : 'md:grid-cols-3 max-w-6xl' }} gap-8 mx-auto items-stretch">
                     
                     @forelse($plans as $index => $plan)
                     @php
+                        $isBasic = str_contains(strtolower($plan->name), 'básico') || str_contains(strtolower($plan->name), 'basico');
                         $isFeatured = ($index === 1) || str_contains(strtolower($plan->name), 'premium') || str_contains(strtolower($plan->name), 'plus');
+                        $monthlyPrice = (float) $plan->price_cop;
+                        $annualPrice = $isBasic ? 540000 : ($monthlyPrice * 12 * 0.9);
+                        $affiliationFee = $isBasic ? 50000 : 150000;
                     @endphp
 
                     <div class="bg-white rounded-3xl p-8 {{ $isFeatured ? 'border-2 border-brand-primary shadow-xl relative' : 'border border-slate-200 shadow-sm hover:shadow-md' }} flex flex-col justify-between transition-all">
                         
                         @if($isFeatured)
-                        <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand-secondary text-white font-bold text-[11px] rounded-full shadow-md">
-                            Más elegido
+                        <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-brand-secondary text-white font-bold text-[11px] rounded-full shadow-md uppercase tracking-wider">
+                            Plan Recomendado ★
+                        </div>
+                        @elseif($isBasic)
+                        <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-slate-800 text-white font-bold text-[11px] rounded-full shadow-md uppercase tracking-wider">
+                            Plan Esencial 🐾
                         </div>
                         @endif
 
-                        <div class="space-y-5">
-                            <div class="flex items-center space-x-3 {{ $isFeatured ? 'pt-2' : '' }}">
+                        <div class="space-y-6">
+                            <!-- Encabezado del Plan -->
+                            <div class="flex items-center space-x-3 {{ ($isFeatured || $isBasic) ? 'pt-2' : '' }}">
                                 <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold" style="background-color: {{ $primaryColor }}15; color: {{ $primaryColor }};">
-                                    🐾
+                                    {{ $isBasic ? '🛡️' : '💎' }}
                                 </div>
                                 <div>
-                                    <h3 class="text-xl font-bold text-slate-900">{{ $plan->name }}</h3>
-                                    <p class="text-xs text-slate-400">{{ $plan->description ? Str::limit($plan->description, 45) : 'Plan de bienestar para mascotas' }}</p>
+                                    <h3 class="text-xl font-extrabold text-slate-900">{{ $plan->name }}</h3>
+                                    <p class="text-xs text-slate-500 font-medium">{{ $isBasic ? 'Prevención integral y medicina prepagada' : 'Máxima cobertura médica y urgencias' }}</p>
                                 </div>
                             </div>
 
-                            <div class="flex items-baseline space-x-1 pt-2">
-                                <span class="text-4xl font-extrabold text-slate-900">${{ number_format($plan->price_cop, 0, ',', '.') }}</span>
-                                <span class="text-slate-400 text-xs font-semibold">COP / {{ $plan->billing_interval === 'monthly' ? 'mes' : 'año' }}</span>
+                            <!-- Precios Dinámicos Mensual vs Anual -->
+                            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+                                <div class="monthly-price-block">
+                                    <div class="flex items-baseline space-x-1">
+                                        <span class="text-4xl font-black text-slate-900">${{ number_format($monthlyPrice, 0, ',', '.') }}</span>
+                                        <span class="text-slate-500 text-xs font-bold">COP / mes</span>
+                                    </div>
+                                    <p class="text-[11px] text-emerald-700 font-semibold pt-1">
+                                        • Mes 1: <strong>${{ number_format($monthlyPrice + $affiliationFee, 0, ',', '.') }} COP</strong> (Incluye ${{ number_format($affiliationFee, 0, ',', '.') }} de afiliación única)<br>
+                                        • A partir del 2do mes pagas solo <strong>${{ number_format($monthlyPrice, 0, ',', '.') }} COP</strong>
+                                    </p>
+                                </div>
+
+                                <div class="annual-price-block hidden">
+                                    <div class="flex items-baseline space-x-1">
+                                        <span class="text-4xl font-black text-slate-900">${{ number_format($annualPrice, 0, ',', '.') }}</span>
+                                        <span class="text-slate-500 text-xs font-bold">COP / año</span>
+                                    </div>
+                                    <p class="text-[11px] text-emerald-700 font-bold pt-1">
+                                        🎁 Afiliación bonificada ($0) • 🚀 <strong>ACTIVACIÓN INMEDIATA</strong> de todos los beneficios sin carencias.
+                                    </p>
+                                </div>
                             </div>
-                            
-                            @if(!empty($plan->description))
-                            <p class="text-xs text-slate-600 font-medium">{{ $plan->description }}</p>
-                            @endif
 
                             <hr class="border-slate-100">
 
-                            <p class="text-xs font-bold text-slate-400 uppercase">Beneficios incluidos:</p>
-                            <ul class="space-y-3 text-xs font-medium text-slate-600">
-                                @forelse($plan->planBenefits as $pb)
-                                <li class="flex items-center space-x-2.5">
-                                    <span class="text-brand-primary font-bold">✓</span>
-                                    <span>{{ $pb->benefitDefinition->name }} (x{{ $pb->quantity >= 999 ? 'Ilimitado' : $pb->quantity }})</span>
-                                </li>
-                                @empty
-                                <li class="flex items-center space-x-2.5 text-slate-400">
-                                    <span>• Cobertura médica y preventiva incluida</span>
-                                </li>
-                                @endforelse
-                            </ul>
+                            <!-- BOLSA DE BENEFICIOS DETALLADOS -->
+                            <div class="space-y-4 text-xs">
+                                <p class="text-xs font-extrabold text-slate-800 uppercase tracking-wider">¿Qué incluye este plan al año?</p>
+
+                                @if($isBasic)
+                                <!-- Cobertura Específica Plan Básico -->
+                                <div class="space-y-3 text-slate-700 font-medium">
+                                    <div class="flex items-start space-x-2.5">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">3 Consultas Presenciales</strong> al año con valoración médica.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2.5">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">Inyectología de Estabilización</strong> en consulta (hasta $20.000 por evento).
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2.5">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">Vacunación Anual Completa</strong> (1 dosis anual: Caninos Pentavalente+Rabia / Felinos Triple+Rabia).
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2.5">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">1 Examen Básico 100% cubierto</strong> (Hemograma, Creatinina, ALT, BUN / Coprológico por evento) + 10% Dcto adicional.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2.5">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">2 Citologías de Oídos</strong> al año para control de otitis.
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2.5">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">3 Desparasitaciones Internas</strong> al año (cada 4 meses).
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2.5">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">2 Antipulgas / Desparasitación Externa</strong> al año (cada 6 meses: Credelio o pipeta).
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2.5">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">Baño y Peluquería:</strong> 2 Baños (Razas Pequeñas/Medianas) ó 1 Baño (Razas Grandes/Gigantes).
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2.5">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">Consultas Virtuales Gratuitas e Ilimitadas</strong> (Lunes a Domingo).
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start space-x-2.5">
+                                        <span class="text-brand-primary font-extrabold text-sm leading-none mt-0.5">✓</span>
+                                        <div>
+                                            <strong class="text-slate-900">Kit Bienvenida:</strong> Cédula, Collar Placa, Desparasitación inicial e Historia Clínica.
+                                        </div>
+                                    </div>
+
+                                    <!-- Descuentos Destacados -->
+                                    <div class="mt-3 pt-3 border-t border-slate-100 space-y-1.5 text-[11px] text-slate-600 bg-slate-50 p-3 rounded-xl">
+                                        <p class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">🏷️ Descuentos en Clínica:</p>
+                                        <p>• <strong>20% Dcto:</strong> Profilaxis Dental y Certificado Médico de Vuelo.</p>
+                                        <p>• <strong>10% Dcto:</strong> Hospitalización, Medicamentos, Procedimientos y Funeraria (100% si no usó servicios previos).</p>
+                                    </div>
+                                </div>
+                                @else
+                                <!-- Cobertura Otros Planes -->
+                                <ul class="space-y-3 text-xs font-medium text-slate-600">
+                                    @forelse($plan->planBenefits as $pb)
+                                    <li class="flex items-center space-x-2.5">
+                                        <span class="text-brand-primary font-bold">✓</span>
+                                        <span>{{ $pb->benefitDefinition->name }} (x{{ $pb->quantity >= 999 ? 'Ilimitado' : $pb->quantity }})</span>
+                                    </li>
+                                    @empty
+                                    <li class="flex items-center space-x-2.5 text-slate-400">
+                                        <span>• Cobertura médica y preventiva completa</span>
+                                    </li>
+                                    @endforelse
+                                </ul>
+                                @endif
+                            </div>
                         </div>
 
-                        <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20afiliarme%20al%20{{ urlencode($plan->name) }}%20en%20{{ urlencode($tenant->name) }}" target="_blank" class="mt-8 w-full py-3.5 text-center rounded-full {{ $isFeatured ? 'bg-brand-primary hover:opacity-90 text-white shadow-md' : 'bg-white hover:bg-slate-50 text-slate-800 border border-slate-300' }} font-bold text-xs transition-all block">
-                            Elegir plan
-                        </a>
+                        <!-- CTA Directo a WhatsApp -->
+                        <div class="pt-6 space-y-3">
+                            <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola%20{{ urlencode($tenant->name) }},%20deseo%20afiliar%20a%20mi%20mascota%20al%20{{ urlencode($plan->name) }}%20(Línea%20Única%203508742543)" target="_blank" class="w-full py-4 text-center rounded-2xl {{ $isFeatured ? 'bg-brand-primary hover:opacity-90 text-white shadow-lg' : 'bg-slate-900 hover:bg-slate-800 text-white shadow-md' }} font-extrabold text-xs transition-all flex items-center justify-center space-x-2">
+                                <span>🐾 Afiliarme a {{ $plan->name }}</span>
+                                <span>›</span>
+                            </a>
+                            <p class="text-[10px] text-center text-slate-400">Línea única de atención y autorizaciones: <strong>{{ $tenant->branding['phone'] ?? '350 874 2543' }}</strong></p>
+                        </div>
                     </div>
                     @empty
                     <div class="col-span-2 text-center py-12 text-slate-400">
@@ -261,7 +387,123 @@
 
                 </div>
 
-                <p class="text-center text-[11px] text-slate-400 mt-8">* Aplica condiciones y periodos de carencia según reglamento de {{ $tenant->name }}.</p>
+                <!-- LÍNEA DE TIEMPO / PERIODOS DE CARENCIA (MODALIDAD MENSUAL) -->
+                <div class="mt-16 max-w-4xl mx-auto bg-white rounded-3xl border border-slate-200 p-8 sm:p-10 shadow-sm space-y-6" id="carencias-section">
+                    <div class="text-center space-y-2">
+                        <div class="inline-flex items-center space-x-1.5 text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                            <span>⏳</span>
+                            <span>Modalidad Mensual: Activación Progresiva</span>
+                        </div>
+                        <h3 class="text-2xl font-extrabold text-slate-900">Periodos de Carencia (Activación de Beneficios)</h3>
+                        <p class="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto">
+                            Si eliges pago mensual, los servicios se habilitan paso a paso. <strong>O paga el año completo por $540.000 COP y activa TODO de manera INMEDIATA.</strong>
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 pt-4">
+                        <!-- Inmediato -->
+                        <div class="bg-emerald-50/60 border border-emerald-200/80 rounded-2xl p-4 space-y-2">
+                            <span class="inline-block px-2.5 py-0.5 bg-emerald-600 text-white font-black text-[10px] rounded-full uppercase">Inmediato</span>
+                            <h4 class="font-bold text-xs text-slate-900">Al Pagar Afiliación:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>Kit de Bienvenida (Cédula/Placa)</li>
+                                <li>1ra Desparasitación interna</li>
+                                <li>Historia clínica de bienvenida</li>
+                                <li>Consultas virtuales ILIMITADAS (L-D)</li>
+                                <li>Dctos en hospitalización y medicamentos</li>
+                            </ul>
+                        </div>
+
+                        <!-- 30 Días -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 30 Días</span>
+                            <h4 class="font-bold text-xs text-slate-900">Mes 1+:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>1ra Consulta presencial</li>
+                                <li>Chequeos preventivos periódicos</li>
+                                <li>Inyectología de estabilización (hasta $20k)</li>
+                                <li>Acompañamiento y recordatorios</li>
+                                <li>Campañas preventivas</li>
+                            </ul>
+                        </div>
+
+                        <!-- 3 Meses -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 3 Meses</span>
+                            <h4 class="font-bold text-xs text-slate-900">90 Días+:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>Todo lo anterior</li>
+                                <li>Desparasitación externa / antipulgas (Credelio o pipeta)</li>
+                            </ul>
+                        </div>
+
+                        <!-- 6 Meses -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 6 Meses</span>
+                            <h4 class="font-bold text-xs text-slate-900">180 Días+:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>Todo lo anterior</li>
+                                <li>Exámenes de laboratorio 100% (Hemograma, ALT, BUN, Creatinina / Coprológico)</li>
+                                <li>Citología de oídos</li>
+                                <li>Vacunación anual completa</li>
+                                <li>20% Dcto en Certificado Médico de vuelo</li>
+                            </ul>
+                        </div>
+
+                        <!-- 8 Meses -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 8 Meses</span>
+                            <h4 class="font-bold text-xs text-slate-900">240 Días+:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>Todo lo anterior</li>
+                                <li>Baños y peluquería (1 grande/gigante ó 2 pequeñas/medianas)</li>
+                                <li>Servicio Funerario 10% Dcto (100% si no ha usado ningún servicio)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center space-x-3 text-xs text-emerald-900">
+                            <span class="text-2xl">💡</span>
+                            <div>
+                                <p class="font-bold">¿Deseas activar todos los beneficios hoy mismo sin carencias?</p>
+                                <p class="text-emerald-700">Elige la modalidad de Pago Anual con 10% de descuento ($540.000 COP) y $0 costo de afiliación.</p>
+                            </div>
+                        </div>
+                        <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20activar%20el%20Plan%20Patitas%20Básico%20en%20modalidad%20ANUAL%20sin%20carencias" target="_blank" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-sm whitespace-nowrap transition-all">
+                            Activar Plan Anual ⭐
+                        </a>
+                    </div>
+                </div>
+
+                <script>
+                    function setBillingCycle(cycle) {
+                        const monthlyBlocks = document.querySelectorAll('.monthly-price-block');
+                        const annualBlocks = document.querySelectorAll('.annual-price-block');
+                        const btnMonthly = document.getElementById('btn-cycle-monthly');
+                        const btnAnnual = document.getElementById('btn-cycle-annual');
+
+                        if (cycle === 'annual') {
+                            monthlyBlocks.forEach(b => b.classList.add('hidden'));
+                            annualBlocks.forEach(b => b.classList.remove('hidden'));
+                            btnAnnual.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                            btnAnnual.classList.remove('text-slate-600');
+                            btnMonthly.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                            btnMonthly.classList.add('text-slate-600');
+                        } else {
+                            annualBlocks.forEach(b => b.classList.add('hidden'));
+                            monthlyBlocks.forEach(b => b.classList.remove('hidden'));
+                            btnMonthly.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                            btnMonthly.classList.remove('text-slate-600');
+                            btnAnnual.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                            btnAnnual.classList.add('text-slate-600');
+                        }
+                    }
+                </script>
+
+                <p class="text-center text-[11px] text-slate-400 mt-8">
+                    * El proceso para solicitar los beneficios una vez activos será siempre a través de nuestra línea única de atención <strong>{{ $tenant->branding['phone'] ?? '350 874 2543' }}</strong>. Los servicios descritos están incluidos en el plan; la entrega o suministro de estos puede generar un valor adicional según condiciones particulares.
+                </p>
             </div>
         </section>
 

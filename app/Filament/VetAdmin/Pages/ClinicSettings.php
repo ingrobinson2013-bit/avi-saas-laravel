@@ -48,34 +48,63 @@ class ClinicSettings extends Page implements HasForms
         return $form
             ->schema([
                 Forms\Components\Section::make('Identidad Visual y Colores')
-                    ->description('Personaliza el logo y la paleta de colores de tu clínica')
+                    ->description('Sube el logo de tu veterinaria y define tu paleta corporativa.')
                     ->schema([
-                        Forms\Components\TextInput::make('logo_url')
-                            ->label('URL del Logo de la Clínica')
-                            ->placeholder('https://... (o sube tu imagen)')
-                            ->helperText('Pega el enlace de tu logo transparente (PNG/SVG) o URL de Cloudflare R2.')
+                        Forms\Components\FileUpload::make('logo_file')
+                            ->label('Subir Logo de la Veterinaria (Directo a Cloudflare R2)')
+                            ->disk('r2')
+                            ->directory('tenants/logos')
+                            ->visibility('public')
+                            ->image()
+                            ->imageResizeMode('contain')
+                            ->maxSize(5120)
+                            ->helperText('Arrastra tu logo en formato PNG o SVG (fondo transparente recomendado).')
                             ->columnSpanFull(),
+
+                        Forms\Components\TextInput::make('logo_url')
+                            ->label('O Pega la URL Directa del Logo')
+                            ->placeholder('https://.../logo.png')
+                            ->columnSpanFull(),
+
                         Forms\Components\ColorPicker::make('primary_color')
-                            ->label('Color Principal (Botones, Acentos, Cards)')
+                            ->label('Color Principal de Botones y Tarjetas')
                             ->default('#059669')
                             ->required(),
+
                         Forms\Components\ColorPicker::make('secondary_color')
-                            ->label('Color Secundario (Barra Superior)')
+                            ->label('Color de la Barra Superior')
                             ->default('#034433')
                             ->required(),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Imágenes del Portal Web')
-                    ->description('Personaliza las fotografías de la página principal.')
+                Forms\Components\Section::make('Fotografías del Portal')
+                    ->description('Imágenes del consultorio y pacientes.')
                     ->schema([
+                        Forms\Components\FileUpload::make('hero_file')
+                            ->label('Subir Foto Principal (Hero Mascotas)')
+                            ->disk('r2')
+                            ->directory('tenants/heroes')
+                            ->visibility('public')
+                            ->image()
+                            ->maxSize(10240)
+                            ->helperText('Sube una foto de tus pacientes o clínica para el banner principal.'),
+
+                        Forms\Components\FileUpload::make('banner_file')
+                            ->label('Subir Foto de Instalaciones / Video')
+                            ->disk('r2')
+                            ->directory('tenants/banners')
+                            ->visibility('public')
+                            ->image()
+                            ->maxSize(10240)
+                            ->helperText('Sube una foto de tu consultorio en Cajicá.'),
+
                         Forms\Components\TextInput::make('hero_image_url')
-                            ->label('Foto Principal Hero (Mascotas)')
-                            ->placeholder('https://images.unsplash.com/...')
-                            ->helperText('Imagen destacada al lado del título.'),
+                            ->label('O URL Foto Principal')
+                            ->placeholder('https://...'),
+
                         Forms\Components\TextInput::make('banner_image_url')
-                            ->label('Foto Sección Explicativa')
-                            ->placeholder('https://images.unsplash.com/...')
-                            ->helperText('Foto o banner del consultorio / clínica.'),
+                            ->label('O URL Foto Instalaciones')
+                            ->placeholder('https://...'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Datos de Contacto y Ubicación')
@@ -112,17 +141,33 @@ class ClinicSettings extends Page implements HasForms
             $branding['address'] = $state['address'];
             $branding['phone'] = $state['phone'];
             $branding['email'] = $state['email'];
-            $branding['logo_url'] = $state['logo_url'];
             $branding['primary_color'] = $state['primary_color'];
             $branding['secondary_color'] = $state['secondary_color'];
-            $branding['hero_image_url'] = $state['hero_image_url'];
-            $branding['banner_image_url'] = $state['banner_image_url'];
+
+            // Resolver URLs de Cloudflare R2 si se subieron archivos
+            if (!empty($state['logo_file'])) {
+                $branding['logo_url'] = Storage::disk('r2')->url($state['logo_file']);
+            } elseif (!empty($state['logo_url'])) {
+                $branding['logo_url'] = $state['logo_url'];
+            }
+
+            if (!empty($state['hero_file'])) {
+                $branding['hero_image_url'] = Storage::disk('r2')->url($state['hero_file']);
+            } elseif (!empty($state['hero_image_url'])) {
+                $branding['hero_image_url'] = $state['hero_image_url'];
+            }
+
+            if (!empty($state['banner_file'])) {
+                $branding['banner_image_url'] = Storage::disk('r2')->url($state['banner_file']);
+            } elseif (!empty($state['banner_image_url'])) {
+                $branding['banner_image_url'] = $state['banner_image_url'];
+            }
 
             $tenant->update(['branding' => $branding]);
 
             Notification::make()
-                ->title('¡Marca y Colores actualizados con éxito!')
-                ->body('Los cambios ya se reflejan en tu portal /v/' . $tenant->slug)
+                ->title('¡Marca y Colores guardados en Cloudflare R2!')
+                ->body('Los cambios e imágenes ya están disponibles en alta velocidad en /v/' . $tenant->slug)
                 ->success()
                 ->send();
         }
