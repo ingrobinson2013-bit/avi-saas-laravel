@@ -29,4 +29,14 @@ class BenefitRedemption extends Model
     {
         return $this->belongsTo(SubscriptionBenefitBalance::class, 'balance_id');
     }
+
+    public function vetUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'vet_user_id');
+    }
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 }

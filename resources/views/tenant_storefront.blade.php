@@ -51,7 +51,7 @@
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-2 text-center sm:text-left">
             <div class="flex items-center space-x-2 text-sky-100 text-[11px] sm:text-xs">
                 <span class="animate-bounce">🐾</span>
-                <span>Planes de salud prepagada • Personaliza tu carnet digital en vivo</span>
+                <span>Planes de Bienestar y Prevención • Personaliza tu carnet digital en vivo</span>
             </div>
             <div class="flex items-center space-x-4">
                 <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}" target="_blank" class="flex items-center space-x-1.5 hover:opacity-90 transition-opacity text-[11px] sm:text-xs">
@@ -128,7 +128,7 @@
                         </h1>
 
                         <p class="text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl font-normal">
-                            Planes de salud prepagada diseñados por veterinarios para garantizar bienestar, consultas ilimitadas, vacunas y ahorro real en <strong class="text-slate-800">{{ $tenant->name }}</strong>.
+                            Planes de bienestar y salud preventiva diseñados por veterinarios para garantizar consultas, vacunas, chequeos y ahorro real en <strong class="text-slate-800">{{ $tenant->name }}</strong>.
                         </p>
 
                         <!-- MINI SIMULADOR INTERACTIVO DEL CARNET EN EL HERO -->
@@ -265,7 +265,7 @@
                         Calcula cuánto dinero ahorras con el Plan de Salud
                     </h2>
                     <p class="text-slate-400 text-sm max-w-xl mx-auto">
-                        Compara el gasto de pagar servicios particulares vs tener una membresía prepagada en <strong>{{ $tenant->name }}</strong>.
+                        Compara el gasto de pagar servicios particulares vs tener un plan de bienestar preventivo en <strong>{{ $tenant->name }}</strong>.
                     </p>
                 </div>
 
@@ -387,7 +387,7 @@
                                     </div>
                                     <div>
                                         <h3 class="text-xl font-extrabold text-slate-900">Plan Patitas Básico</h3>
-                                        <p class="text-xs text-slate-500 font-medium">Prevención integral y medicina prepagada</p>
+                                        <p class="text-xs text-slate-500 font-medium">Prevención integral y bienestar preventivo</p>
                                     </div>
                                 </div>
                                 <span id="badge-selected-basico" class="badge-plan-status px-2.5 py-1 bg-brand-primary text-white text-[10px] font-black rounded-full uppercase tracking-wider">

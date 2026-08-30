@@ -11,7 +11,8 @@ class CreatePlan extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['tenant_id'] = \App\Models\Tenant::where('slug', 'vet-pet-patitas')->first()?->id ?? \App\Models\Tenant::first()?->id;
+        $tenantId = session('current_tenant_id') ?? auth()->user()?->tenant_id ?? \App\Models\Tenant::where('slug', 'vet-pet-patitas')->first()?->id ?? \App\Models\Tenant::first()?->id;
+        $data['tenant_id'] = $tenantId;
         return $data;
     }
 }

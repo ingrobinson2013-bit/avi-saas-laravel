@@ -173,54 +173,165 @@ class ClinicaDemoSeeder extends Seeder
         PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bLaboratorio->id], ['quantity' => 2]);
         PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bFunerario->id], ['quantity' => 1]);
 
-        // 6. Tutor y Mascota Demo
-        $tutor = Customer::firstOrCreate(
+        // 6. Tutores y Mascotas Demo
+        $vetUser = User::where('email', 'petmovilveterinario@gmail.com')->first();
+
+        // Paciente 1: Max (Golden Retriever - Plan Premium)
+        $tutorMax = Customer::firstOrCreate(
             ['tenant_id' => $tenant->id, 'identification' => '1020304050'],
             [
-                'name' => 'Carlos Mendoza (Tutor)',
+                'name' => 'Carlos Mendoza',
                 'phone' => '+573001234567',
                 'email' => 'carlos.mendoza@gmail.com',
             ]
         );
 
-        $pet = Pet::firstOrCreate(
-            ['customer_id' => $tutor->id, 'name' => 'Max'],
+        $petMax = Pet::firstOrCreate(
+            ['customer_id' => $tutorMax->id, 'name' => 'Max'],
             [
                 'species' => 'dog',
                 'breed' => 'Golden Retriever',
                 'birthdate' => now()->subYears(3),
-                'medical_notes' => 'Paciente afiliado a Plan Patitas Premium en Cajicá.',
+                'medical_notes' => 'Paciente afiliado a Plan Patitas Premium en Cajicá. Alergia leve a pollo.',
             ]
         );
 
-        $sub = Subscription::firstOrCreate(
-            ['tenant_id' => $tenant->id, 'pet_id' => $pet->id],
+        $subMax = Subscription::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'pet_id' => $petMax->id],
             [
                 'plan_id' => $planPremium->id,
                 'status' => 'active',
-                'current_period_start' => now(),
-                'current_period_end' => now()->addMonth(),
+                'current_period_start' => now()->subDays(10),
+                'current_period_end' => now()->addDays(20),
+            ]
+        );
+
+        $balConsulta = SubscriptionBenefitBalance::firstOrCreate(
+            ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bConsultaPresencial->id],
+            ['total_granted' => 3, 'used_count' => 1, 'remaining_count' => 2]
+        );
+
+        $balVacuna = SubscriptionBenefitBalance::firstOrCreate(
+            ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bVacunaAnual->id],
+            ['total_granted' => 1, 'used_count' => 0, 'remaining_count' => 1]
+        );
+
+        $balLab = SubscriptionBenefitBalance::firstOrCreate(
+            ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bLaboratorio->id],
+            ['total_granted' => 2, 'used_count' => 0, 'remaining_count' => 2]
+        );
+
+        $balAntipulgas = SubscriptionBenefitBalance::firstOrCreate(
+            ['subscription_id' => $subMax->id, 'benefit_definition_id' => $bAntipulgas->id],
+            ['total_granted' => 2, 'used_count' => 1, 'remaining_count' => 1]
+        );
+
+        // Canjes registrados para Max
+        BenefitRedemption::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'balance_id' => $balConsulta->id, 'notes' => 'Chequeo general preventivo y descarte de otitis externa.'],
+            [
+                'redeemed_at' => now()->subDays(8),
+                'vet_user_id' => $vetUser?->id,
+                'quantity' => 1,
+            ]
+        );
+
+        BenefitRedemption::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'balance_id' => $balAntipulgas->id, 'notes' => 'Aplicación de antipulgas Credelio 450mg.'],
+            [
+                'redeemed_at' => now()->subDays(5),
+                'vet_user_id' => $vetUser?->id,
+                'quantity' => 1,
+            ]
+        );
+
+        // Paciente 2: Luna (Gata Siamés - Plan Básico por vencer en 4 días)
+        $tutorLuna = Customer::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'identification' => '1030405060'],
+            [
+                'name' => 'María Fernanda Gómez',
+                'phone' => '+573109876543',
+                'email' => 'mafe.gomez@hotmail.com',
+            ]
+        );
+
+        $petLuna = Pet::firstOrCreate(
+            ['customer_id' => $tutorLuna->id, 'name' => 'Luna'],
+            [
+                'species' => 'cat',
+                'breed' => 'Siamés',
+                'birthdate' => now()->subYears(2),
+                'medical_notes' => 'Esterilizada. Esquema de vacunación al día.',
+            ]
+        );
+
+        $subLuna = Subscription::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'pet_id' => $petLuna->id],
+            [
+                'plan_id' => $planBasico->id,
+                'status' => 'active',
+                'current_period_start' => now()->subDays(26),
+                'current_period_end' => now()->addDays(4), // Vence en 4 días para testear alertas de renovación
+            ]
+        );
+
+        $balLunaBano = SubscriptionBenefitBalance::firstOrCreate(
+            ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bBano->id],
+            ['total_granted' => 2, 'used_count' => 2, 'remaining_count' => 0]
+        );
+
+        $balLunaDesp = SubscriptionBenefitBalance::firstOrCreate(
+            ['subscription_id' => $subLuna->id, 'benefit_definition_id' => $bDesparasitacion->id],
+            ['total_granted' => 3, 'used_count' => 1, 'remaining_count' => 2]
+        );
+
+        BenefitRedemption::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'balance_id' => $balLunaBano->id, 'notes' => 'Baño medicado y corte de uñas felino.'],
+            [
+                'redeemed_at' => now()->subDays(12),
+                'vet_user_id' => $vetUser?->id,
+                'quantity' => 1,
+            ]
+        );
+
+        // Paciente 3: Rocky (Bulldog Francés - Plan Básico)
+        $tutorRocky = Customer::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'identification' => '1040506070'],
+            [
+                'name' => 'Andrés Felipe Torres',
+                'phone' => '+573204567890',
+                'email' => 'andres.torres@gmail.com',
+            ]
+        );
+
+        $petRocky = Pet::firstOrCreate(
+            ['customer_id' => $tutorRocky->id, 'name' => 'Rocky'],
+            [
+                'species' => 'dog',
+                'breed' => 'Bulldog Francés',
+                'birthdate' => now()->subMonths(10),
+                'medical_notes' => 'Sensibilidad dérmica.',
+            ]
+        );
+
+        $subRocky = Subscription::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'pet_id' => $petRocky->id],
+            [
+                'plan_id' => $planBasico->id,
+                'status' => 'active',
+                'current_period_start' => now()->subDays(2),
+                'current_period_end' => now()->addDays(28),
             ]
         );
 
         SubscriptionBenefitBalance::firstOrCreate(
-            ['subscription_id' => $sub->id, 'benefit_definition_id' => $bConsultaPresencial->id],
+            ['subscription_id' => $subRocky->id, 'benefit_definition_id' => $bKit->id],
+            ['total_granted' => 1, 'used_count' => 1, 'remaining_count' => 0]
+        );
+
+        SubscriptionBenefitBalance::firstOrCreate(
+            ['subscription_id' => $subRocky->id, 'benefit_definition_id' => $bConsultaPresencial->id],
             ['total_granted' => 3, 'used_count' => 1, 'remaining_count' => 2]
-        );
-
-        SubscriptionBenefitBalance::firstOrCreate(
-            ['subscription_id' => $sub->id, 'benefit_definition_id' => $bVacunaAnual->id],
-            ['total_granted' => 1, 'used_count' => 0, 'remaining_count' => 1]
-        );
-
-        SubscriptionBenefitBalance::firstOrCreate(
-            ['subscription_id' => $sub->id, 'benefit_definition_id' => $bLaboratorio->id],
-            ['total_granted' => 2, 'used_count' => 0, 'remaining_count' => 2]
-        );
-
-        SubscriptionBenefitBalance::firstOrCreate(
-            ['subscription_id' => $sub->id, 'benefit_definition_id' => $bAntipulgas->id],
-            ['total_granted' => 2, 'used_count' => 1, 'remaining_count' => 1]
         );
     }
 }

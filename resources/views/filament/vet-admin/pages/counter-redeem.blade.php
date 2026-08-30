@@ -98,7 +98,7 @@
                                 </div>
                             </div>
 
-                            <div>
+                            <div class="flex items-center gap-2">
                                 @if($balance->remaining_count > 0)
                                     <button 
                                         wire:click="redeemBenefit('{{ $balance->benefitDefinition->id }}')"
@@ -109,7 +109,7 @@
                                     </button>
                                 @else
                                     <span class="px-3 py-1.5 bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 text-xs font-bold rounded-lg">
-                                        Agotado
+                                        Cupos Agotados
                                     </span>
                                 @endif
                             </div>

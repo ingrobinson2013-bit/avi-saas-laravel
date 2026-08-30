@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>AVI-Plan — La Plataforma SaaS Marca Blanca de Salud Prepagada para Veterinarias</title>
+    <title>AVI-Plan — La Plataforma SaaS Marca Blanca de Planes de Bienestar y Salud para Veterinarias</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +60,7 @@
                     </div>
 
                     <h1 class="text-4xl sm:text-7xl font-extrabold tracking-tight text-white leading-tight">
-                        Crea tu propio programa de <span class="gradient-text">Salud Prepagada</span> para Mascotas
+                        Crea tu propio programa de <span class="gradient-text">Planes de Bienestar y Membresías</span> para Mascotas
                     </h1>
 
                     <p class="text-lg sm:text-2xl text-slate-400 leading-relaxed max-w-3xl mx-auto font-normal">

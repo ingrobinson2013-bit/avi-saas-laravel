@@ -38,6 +38,12 @@ class SubscriptionBenefitBalance extends Model
 
     public function redemptions(): HasMany
     {
-        return $this->hasMany(BenefitRedemption::class, 'balance_id');
+        return $this->hasMany(BenefitRedemption::class, 'balance_id')->latest('redeemed_at');
+    }
+
+    public function getUsagePercentageAttribute(): int
+    {
+        $total = max(1, $this->total_granted);
+        return (int) min(100, round(($this->used_count / $total) * 100));
     }
 }

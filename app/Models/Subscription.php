@@ -27,6 +27,11 @@ class Subscription extends Model
         'current_period_end' => 'datetime',
     ];
 
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
     public function pet(): BelongsTo
     {
         return $this->belongsTo(Pet::class);
@@ -40,5 +45,80 @@ class Subscription extends Model
     public function benefitBalances(): HasMany
     {
         return $this->hasMany(SubscriptionBenefitBalance::class);
+    }
+
+    public function isExpiringSoon(): bool
+    {
+        if ($this->status !== 'active' || !$this->current_period_end) {
+            return false;
+        }
+        return $this->current_period_end->isBetween(now(), now()->addDays(7));
+    }
+
+    public function isOverdue(): bool
+    {
+        if (!$this->current_period_end) {
+            return false;
+        }
+        return $this->current_period_end->isPast();
+    }
+
+    public function getComputedStatusAttribute(): string
+    {
+        if ($this->status === 'canceled') {
+            return 'canceled';
+        }
+        if ($this->isOverdue()) {
+            return 'overdue';
+        }
+        if ($this->isExpiringSoon()) {
+            return 'expiring_soon';
+        }
+        return $this->status ?? 'active';
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return match ($this->computed_status) {
+            'active' => '🟢 Activa',
+            'expiring_soon' => '🟡 Por vencer',
+            'overdue' => '🔴 Vencida / Mora',
+            'canceled' => '⚫ Cancelada',
+            'paused' => '⏸️ Pausada',
+            default => '🟢 Activa',
+        };
+    }
+
+    public function getStatusColorAttribute(): string
+    {
+        return match ($this->computed_status) {
+            'active' => 'success',
+            'expiring_soon' => 'warning',
+            'overdue' => 'danger',
+            'canceled' => 'gray',
+            'paused' => 'info',
+            default => 'success',
+        };
+    }
+
+    public function getTotalGrantedAttribute(): int
+    {
+        return (int) $this->benefitBalances->sum('total_granted');
+    }
+
+    public function getTotalUsedAttribute(): int
+    {
+        return (int) $this->benefitBalances->sum('used_count');
+    }
+
+    public function getTotalRemainingAttribute(): int
+    {
+        return (int) $this->benefitBalances->sum('remaining_count');
+    }
+
+    public function getUsagePercentageAttribute(): int
+    {
+        $granted = max(1, $this->total_granted);
+        return (int) min(100, round(($this->total_used / $granted) * 100));
     }
 }
