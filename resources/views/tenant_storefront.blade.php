@@ -24,28 +24,41 @@
             --brand-secondary: {{ $secondaryColor }};
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .hero-gradient { background: radial-gradient(circle at 80% 20%, {{ $primaryColor }}20 0%, #f0fdfa30 40%, rgba(255, 255, 255, 0) 70%); }
+        .hero-gradient { background: radial-gradient(circle at 80% 20%, {{ $primaryColor }}25 0%, #f0fdfa30 45%, rgba(255, 255, 255, 0) 75%); }
         .bg-brand-primary { background-color: var(--brand-primary); }
         .bg-brand-secondary { background-color: var(--brand-secondary); }
         .text-brand-primary { color: var(--brand-primary); }
         .border-brand-primary { border-color: var(--brand-primary); }
+        .carnet-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transform-style: preserve-3d;
+        }
+        .shimmer-badge {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
     </style>
 </head>
 <body class="min-h-full flex flex-col justify-between bg-white overflow-x-hidden">
 
-    <!-- 1. TOP BAR -->
-    <div class="bg-brand-secondary text-white text-xs font-semibold py-2 px-4">
+    <!-- 1. TOP BAR DINÁMICA -->
+    <div class="bg-brand-secondary text-white text-xs font-semibold py-2 px-3 sm:px-4 border-b border-slate-800">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-2 text-center sm:text-left">
             <div class="flex items-center space-x-2 text-sky-100 text-[11px] sm:text-xs">
-                <span>🐾</span>
-                <span>Planes de salud prepagada y bienestar integral</span>
+                <span class="animate-bounce">🐾</span>
+                <span>Planes de salud prepagada • Personaliza tu carnet digital en vivo</span>
             </div>
             <div class="flex items-center space-x-4">
                 <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}" target="_blank" class="flex items-center space-x-1.5 hover:opacity-90 transition-opacity text-[11px] sm:text-xs">
                     <svg class="w-3.5 h-3.5 fill-current text-sky-400" viewBox="0 0 24 24">
                         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
                     </svg>
-                    <span>Línea Única:</span>
+                    <span>Línea Oficial:</span>
                     <span class="text-white font-bold">{{ $tenant->branding['phone'] ?? '350 874 2543' }}</span>
                 </a>
             </div>
@@ -54,33 +67,36 @@
 
     <!-- 2. NAVBAR -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-2.5 sm:space-x-3">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
                 @if(!empty($logoUrl))
-                    <img src="{{ $logoUrl }}" alt="{{ $tenant->name }}" class="h-9 sm:h-12 max-h-14 w-auto object-contain rounded-lg shadow-sm" loading="lazy">
+                    <img src="{{ $logoUrl }}" alt="{{ $tenant->name }}" class="h-9 sm:h-12 max-h-14 w-auto object-contain rounded-lg shadow-sm shrink-0" loading="lazy">
                 @else
-                    <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-brand-primary flex items-center justify-center text-white text-lg sm:text-xl shadow-md">
+                    <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-brand-primary flex items-center justify-center text-white text-lg sm:text-xl shadow-md shrink-0">
                         🐾
                     </div>
                 @endif
-                <div>
-                    <span class="text-base sm:text-xl font-extrabold tracking-tight text-slate-900 truncate block max-w-[170px] sm:max-w-none">{{ $tenant->name }}</span>
-                    <span class="hidden sm:inline-block ml-2 px-2.5 py-0.5 text-xs font-semibold rounded-full" style="background-color: {{ $primaryColor }}15; color: {{ $primaryColor }};">{{ $tenant->branding['city'] ?? 'Cajicá' }}</span>
+                <div class="min-w-0">
+                    <span class="text-sm sm:text-lg lg:text-xl font-extrabold tracking-tight text-slate-900 truncate block">{{ $tenant->name }}</span>
+                    <span class="inline-block px-2 py-0.5 text-[9px] sm:text-xs font-semibold rounded-full truncate" style="background-color: {{ $primaryColor }}15; color: {{ $primaryColor }};">{{ $tenant->branding['city'] ?? 'Cajicá' }}</span>
                 </div>
             </div>
 
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold text-slate-600">
-                <a href="#planes" class="text-brand-primary font-bold border-b-2 border-brand-primary pb-1">Planes</a>
+            <nav class="hidden md:flex items-center space-x-7 text-sm font-semibold text-slate-600">
+                <a href="#planes" class="hover:text-brand-primary transition-colors">Planes</a>
+                <a href="#calculadora" class="hover:text-brand-primary transition-colors flex items-center space-x-1">
+                    <span>🧮 Calculadora de Ahorro</span>
+                    <span class="bg-amber-100 text-amber-800 text-[9px] font-bold px-1.5 py-0.5 rounded-full">Nuevo</span>
+                </a>
                 <a href="#beneficios" class="hover:text-brand-primary transition-colors">Beneficios</a>
-                <a href="#como-funciona" class="hover:text-brand-primary transition-colors">Video & Proceso</a>
-                <a href="#contacto" class="hover:text-brand-primary transition-colors">Contacto</a>
+                <a href="#faq" class="hover:text-brand-primary transition-colors">Preguntas</a>
             </nav>
 
-            <div class="flex items-center space-x-2 sm:space-x-3">
+            <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
                 <a href="/v/{{ $tenant->slug }}/admin" class="hidden sm:inline-block px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all">
                     Panel
                 </a>
-                <a href="#planes" class="px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold text-white bg-brand-primary hover:opacity-90 rounded-full shadow-md transition-all whitespace-nowrap">
+                <a href="#planes" class="px-3.5 sm:px-5 py-2 text-xs sm:text-sm font-bold text-white bg-brand-primary hover:opacity-90 rounded-full shadow-md transition-all whitespace-nowrap">
                     Ver planes
                 </a>
             </div>
@@ -88,11 +104,12 @@
     </header>
 
     <main class="flex-grow">
-        <!-- 3. HERO -->
+        <!-- 3. HERO INTERACTIVO CON SIMULADOR DE CARNET DIGITAL 3D -->
         <section class="hero-gradient relative pt-8 sm:pt-12 pb-16 sm:pb-20 overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                     
+                    <!-- COLUMNA IZQUIERDA: MENSAJE + INTERACTIVIDAD INICIAL -->
                     <div class="lg:col-span-7 space-y-5 sm:space-y-6">
                         <div class="inline-flex items-center space-x-2.5 sm:space-x-3 bg-white px-3 sm:px-3.5 py-1.5 rounded-full shadow-sm border border-slate-100">
                             <div class="flex -space-x-2 overflow-hidden">
@@ -107,73 +124,128 @@
                         </div>
 
                         <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
-                            Cuidado preventivo <span class="text-brand-primary">inteligente</span> para tu mascota
+                            Cuidado preventivo <span class="text-brand-primary underline decoration-sky-300">inteligente</span> para tu mascota
                         </h1>
 
                         <p class="text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl font-normal">
-                            Planes de salud diseñados por veterinarios para garantizar bienestar, ahorro continuo y atención inmediata en <strong class="text-slate-800">{{ $tenant->name }}</strong>.
+                            Planes de salud prepagada diseñados por veterinarios para garantizar bienestar, consultas ilimitadas, vacunas y ahorro real en <strong class="text-slate-800">{{ $tenant->name }}</strong>.
                         </p>
 
-                        <div class="space-y-2.5 text-xs sm:text-sm font-semibold text-slate-700">
-                            <div class="flex items-center space-x-2.5">
-                                <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-extrabold shrink-0" style="background-color: {{ $primaryColor }}20; color: {{ $primaryColor }};">✓</span>
-                                <span>Ahorra hasta 35% en servicios veterinarios anuales</span>
+                        <!-- MINI SIMULADOR INTERACTIVO DEL CARNET EN EL HERO -->
+                        <div class="bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 max-w-xl">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-extrabold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                                    <span>✨</span> Personaliza el carnet de tu mascota:
+                                </span>
+                                <span class="text-[10px] text-sky-600 font-bold bg-sky-50 px-2 py-0.5 rounded-full">En vivo ⚡</span>
                             </div>
-                            <div class="flex items-center space-x-2.5">
-                                <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-extrabold shrink-0" style="background-color: {{ $primaryColor }}20; color: {{ $primaryColor }};">✓</span>
-                                <span>Atención prioritaria y kit de bienvenida</span>
-                            </div>
-                            <div class="flex items-center space-x-2.5">
-                                <span class="w-5 h-5 rounded-full flex items-center justify-center text-xs font-extrabold shrink-0" style="background-color: {{ $primaryColor }}20; color: {{ $primaryColor }};">✓</span>
-                                <span>Recordatorios automáticos de vacunas y desparasitación</span>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Nombre</label>
+                                    <input type="text" id="live-pet-name" value="Max" oninput="updateLiveCarnet()" placeholder="Ej. Lucas" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Especie</label>
+                                    <div class="flex bg-slate-100 p-0.5 rounded-xl border border-slate-200">
+                                        <button type="button" onclick="setLivePetType('dog')" id="btn-pet-dog" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition bg-white text-slate-900 shadow-sm text-center">
+                                            🐶 Perro
+                                        </button>
+                                        <button type="button" onclick="setLivePetType('cat')" id="btn-pet-cat" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition text-slate-500 hover:text-slate-900 text-center">
+                                            🐱 Gato
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Raza</label>
+                                    <input type="text" id="live-pet-breed" value="Golden Retriever" oninput="updateLiveCarnet()" placeholder="Ej. Criollo" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                                </div>
                             </div>
                         </div>
 
-                        <div class="pt-2 flex flex-wrap items-center gap-3 sm:gap-4">
-                            <a href="#planes" class="px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-brand-primary text-white font-bold text-xs sm:text-sm shadow-lg hover:opacity-90 transition-all flex items-center space-x-2">
-                                <span>Explorar planes</span>
+                        <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                            <a href="#planes" class="px-6 sm:px-7 py-3.5 rounded-full bg-brand-primary text-white font-bold text-xs sm:text-sm shadow-lg hover:opacity-90 transition-all flex items-center justify-center space-x-2 text-center">
+                                <span>Ver Planes y Precios</span>
                                 <span>›</span>
                             </a>
-                            <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20agendar%20una%20cita%20veterinaria%20en%20{{ urlencode($tenant->name) }}" target="_blank" class="px-5 sm:px-6 py-3 sm:py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200 shadow-sm transition-all flex items-center space-x-2">
-                                <span>📅 Agendar cita</span>
+                            <a href="#calculadora" class="px-5 sm:px-6 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs sm:text-sm border border-slate-200 shadow-sm transition-all flex items-center justify-center space-x-2 text-center">
+                                <span>🧮 Calcular Mi Ahorro Anual</span>
                             </a>
                         </div>
                     </div>
 
-                    <!-- FOTO DERECHA HERO -->
+                    <!-- COLUMNA DERECHA: CARNET DIGITAL 3D HOLOGRÁFICO EN VIVO -->
                     <div class="lg:col-span-5 relative mt-4 lg:mt-0">
-                        <div class="relative mx-auto max-w-sm sm:max-w-md">
-                            <img class="w-full h-auto object-cover rounded-3xl shadow-xl border border-slate-100" src="{{ $heroImage }}" alt="{{ $tenant->name }}" loading="lazy"/>
+                        <div class="mx-auto max-w-sm sm:max-w-md space-y-4">
                             
-                            <div class="absolute -bottom-4 left-2 sm:-left-6 sm:-bottom-6 bg-white p-3.5 sm:p-5 rounded-2xl shadow-2xl border border-slate-100 max-w-[240px] sm:max-w-[270px] space-y-2.5 sm:space-y-3">
-                                <div class="flex items-center space-x-2.5 sm:space-x-3">
-                                    <img class="w-9 h-9 sm:w-11 sm:h-11 rounded-full object-cover border-2 border-brand-primary shrink-0" src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=150" alt="Max Golden"/>
-                                    <div>
-                                        <div class="flex items-center space-x-1.5">
-                                            <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Max</h4>
-                                            <span class="px-1.5 py-0.2 text-[9px] sm:text-[10px] font-bold rounded-full" style="background-color: {{ $primaryColor }}20; color: {{ $primaryColor }};">● Activo</span>
+                            <!-- CARNET DIGITAL INTERACTIVO -->
+                            <div id="live-carnet-card" class="carnet-card rounded-3xl p-6 text-white shadow-2xl relative overflow-hidden border border-white/20 select-none" style="background: linear-gradient(135deg, {{ $primaryColor }} 0%, {{ $secondaryColor }} 100%);">
+                                
+                                <!-- Decorative circles -->
+                                <div class="absolute -right-10 -top-10 w-36 h-36 rounded-full bg-white/10 pointer-events-none"></div>
+                                <div class="absolute -left-10 -bottom-10 w-28 h-28 rounded-full bg-white/5 pointer-events-none"></div>
+
+                                <div class="relative z-10 space-y-4">
+                                    <!-- Header Carnet -->
+                                    <div class="flex items-center justify-between border-b border-white/15 pb-3">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-xl">🐾</span>
+                                            <div>
+                                                <p class="text-[9px] font-black uppercase tracking-widest text-sky-200">{{ $tenant->name }}</p>
+                                                <p class="text-xs font-extrabold text-white">Carnet Digital de Afiliado</p>
+                                            </div>
                                         </div>
-                                        <p class="text-[10px] sm:text-[11px] text-slate-500">Golden Retriever • 3 años</p>
-                                        <p class="text-[9px] sm:text-[10px] text-brand-primary font-bold">Plan Activo 💎</p>
+                                        <span class="px-2.5 py-0.5 bg-emerald-400/20 text-emerald-300 border border-emerald-300/30 text-[9px] font-black rounded-full uppercase tracking-wider">
+                                            ● ACTIVO 2026
+                                        </span>
                                     </div>
-                                </div>
 
-                                <div class="bg-slate-50 p-2 sm:p-2.5 rounded-xl text-xs space-y-1">
-                                    <div class="flex justify-between text-slate-500 text-[9px] sm:text-[10px]">
-                                        <span>Próximo servicio</span>
-                                        <span class="font-bold text-slate-700">En 12 días</span>
+                                    <!-- Pet Info Display -->
+                                    <div class="flex items-center justify-between pt-1">
+                                        <div class="space-y-0.5">
+                                            <p class="text-[9px] uppercase tracking-wider text-white/60 font-bold">Paciente</p>
+                                            <h3 id="card-pet-name" class="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase">MAX</h3>
+                                            <p id="card-pet-breed" class="text-xs text-sky-100 font-medium">Golden Retriever • Canino</p>
+                                        </div>
+                                        <div id="card-pet-emoji" class="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-3xl shadow-inner border border-white/20">
+                                            🐕
+                                        </div>
                                     </div>
-                                    <p class="font-bold text-slate-800 text-xs">Desparasitación</p>
-                                </div>
 
-                                <div class="flex items-center justify-between pt-1 border-t border-slate-100 text-xs">
-                                    <div>
-                                        <span class="text-[9px] sm:text-[10px] text-slate-400">Ahorro acumulado</span>
-                                        <p class="font-extrabold text-brand-primary text-xs sm:text-sm">$180.000 <span class="text-[9px] sm:text-[10px] font-normal text-slate-500">COP</span></p>
+                                    <!-- Plan and Contract Info -->
+                                    <div class="grid grid-cols-2 gap-3 pt-2 bg-black/20 p-3 rounded-2xl border border-white/10">
+                                        <div>
+                                            <p class="text-[8px] uppercase tracking-wider text-white/60 font-bold">Membresía</p>
+                                            <p id="card-plan-name" class="text-xs font-black text-amber-300">Plan Patitas Básico</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[8px] uppercase tracking-wider text-white/60 font-bold">Contrato Digital</p>
+                                            <p id="card-contract-id" class="text-xs font-mono font-bold text-white">VP-2026-8842</p>
+                                        </div>
                                     </div>
-                                    <div class="text-brand-primary text-base sm:text-lg">📊</div>
+
+                                    <!-- QR & Chip Footer -->
+                                    <div class="flex items-center justify-between pt-1 text-[10px] text-white/70">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-7 h-5 rounded bg-amber-400/80 border border-amber-300 flex items-center justify-center text-[7px] font-black text-slate-900">
+                                                CHIP
+                                            </div>
+                                            <span>Validación inmediata en recepción</span>
+                                        </div>
+                                        <span class="font-mono text-[9px] text-white/50">AVI-SaaS</span>
+                                    </div>
                                 </div>
                             </div>
+
+                            <!-- Micro-interacción: Estado de Afiliación -->
+                            <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between text-xs">
+                                <div class="flex items-center space-x-2.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                                    <span class="font-bold text-slate-700">Afiliaciones activas hoy en {{ $tenant->branding['city'] ?? 'Cajicá' }}</span>
+                                </div>
+                                <a href="#planes" class="text-brand-primary font-extrabold hover:underline">Afiliarme ahora →</a>
+                            </div>
+
                         </div>
                     </div>
 
@@ -181,8 +253,101 @@
             </div>
         </section>
 
-        <!-- 4. PLANES DINÁMICOS CON COLORES DE MARCA Y LÍNEA DE TIEMPO -->
-        <section id="planes" class="py-12 sm:py-20 bg-[#fbfcfd] border-t border-slate-100 overflow-hidden">
+        <!-- 4. CALCULADORA INTERACTIVA DE AHORRO ANUAL (ROI MASCOTA) -->
+        <section id="calculadora" class="py-16 sm:py-20 bg-slate-900 text-white relative overflow-hidden">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                
+                <div class="text-center space-y-3 mb-12">
+                    <div class="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                        <span>🧮 Herramienta Interactiva</span>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+                        Calcula cuánto dinero ahorras con el Plan de Salud
+                    </h2>
+                    <p class="text-slate-400 text-sm max-w-xl mx-auto">
+                        Compara el gasto de pagar servicios particulares vs tener una membresía prepagada en <strong>{{ $tenant->name }}</strong>.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-950/80 p-6 sm:p-10 rounded-3xl border border-slate-800 shadow-2xl">
+                    
+                    <!-- CONTROLES INTERACTIVOS (IZQUIERDA) -->
+                    <div class="lg:col-span-7 space-y-6">
+                        
+                        <!-- 1. Consultas Veterinarias -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <label class="font-bold text-slate-300">🩺 Consultas presenciales al año:</label>
+                                <span id="calc-consultas-val" class="font-black text-sky-400 text-sm">3 consultas</span>
+                            </div>
+                            <input type="range" id="calc-consultas" min="1" max="8" value="3" oninput="calculateSavings()" class="w-full accent-sky-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
+                            <div class="flex justify-between text-[10px] text-slate-500">
+                                <span>1 consulta</span>
+                                <span>3 (Recomendado)</span>
+                                <span>8 consultas</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. Baños y Peluquerías -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <label class="font-bold text-slate-300">🛁 Baños y estética al año:</label>
+                                <span id="calc-baths-val" class="font-black text-sky-400 text-sm">2 baños</span>
+                            </div>
+                            <input type="range" id="calc-baths" min="0" max="6" value="2" oninput="calculateSavings()" class="w-full accent-sky-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
+                            <div class="flex justify-between text-[10px] text-slate-500">
+                                <span>0 baños</span>
+                                <span>2 baños</span>
+                                <span>6 baños</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Vacunación y Prevención Anual -->
+                        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
+                            <p class="text-xs font-bold text-slate-300">💉 Servicios preventivos incluidos en el cálculo:</p>
+                            <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-400">
+                                <span>✓ Vacuna anual (Rabia + Pentavalente)</span>
+                                <span>✓ 3 Desparasitaciones internas</span>
+                                <span>✓ 2 Desparasitaciones externas (Credelio)</span>
+                                <span>✓ 1 Examen de laboratorio 100%</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- RESULTADO DEL AHORRO (DERECHA) -->
+                    <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-950 p-6 sm:p-8 rounded-3xl border border-sky-500/30 text-center space-y-5 shadow-xl relative overflow-hidden">
+                        <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-sky-500/10 pointer-events-none"></div>
+
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Costo promedio particular (Sin Plan)</p>
+                            <p id="calc-particular-price" class="text-xl font-bold text-slate-400 line-through mt-0.5">$840.000 COP</p>
+                        </div>
+
+                        <div class="py-2 border-y border-slate-800">
+                            <p class="text-xs font-black uppercase tracking-widest text-emerald-400">Con Plan Patitas Pagas Solo:</p>
+                            <p id="calc-plan-price" class="text-3xl sm:text-4xl font-black text-white mt-1">$540.000 <span class="text-xs font-normal text-slate-400">COP/año</span></p>
+                        </div>
+
+                        <div class="bg-emerald-500/15 border border-emerald-500/30 p-4 rounded-2xl space-y-1">
+                            <p class="text-xs font-bold text-emerald-300">¡Tu Ahorro Neto Anual Estimado!</p>
+                            <p id="calc-savings-total" class="text-3xl font-black text-emerald-400">$300.000 COP</p>
+                            <p id="calc-savings-percent" class="text-[11px] text-emerald-200 font-bold">Ahorras un 36% en salud médica</p>
+                        </div>
+
+                        <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20hice%20el%20c%C3%A1lculo%20en%20la%20p%C3%A1gina%20y%20quiero%20afiliar%20a%20mi%20mascota%20para%20ahorrar" target="_blank" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs uppercase tracking-wider rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-1.5">
+                            <span>🐾 Afiliarme con este Ahorro</span>
+                            <span>›</span>
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 5. CATÁLOGO DE PLANES CON SELECTOR DINÁMICO -->
+        <section id="planes" class="py-16 sm:py-20 bg-[#fbfcfd] border-t border-slate-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
                 <div class="text-center space-y-3 mb-8 sm:mb-12">
@@ -198,10 +363,10 @@
                     <!-- SELECTOR CICLO FACTURACIÓN: MENSUAL / ANUAL -->
                     <div class="pt-3 sm:pt-4 flex items-center justify-center px-2">
                         <div class="bg-slate-100 p-1 sm:p-1.5 rounded-2xl border border-slate-200 inline-flex flex-wrap items-center justify-center gap-1 shadow-inner w-full sm:w-auto max-w-xs sm:max-w-none" id="cycle-toggle-wrapper">
-                            <button type="button" onclick="setBillingCycle('monthly')" id="btn-cycle-monthly" class="flex-1 sm:flex-initial px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs transition-all bg-white text-slate-900 shadow-sm text-center">
+                            <button type="button" onclick="setBillingCycle('monthly')" id="btn-cycle-monthly" class="flex-1 sm:flex-initial px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs transition-all bg-white text-slate-900 shadow-sm text-center">
                                 📅 Pago Mensual
                             </button>
-                            <button type="button" onclick="setBillingCycle('annual')" id="btn-cycle-annual" class="flex-1 sm:flex-initial px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-1.5 text-center">
+                            <button type="button" onclick="setBillingCycle('annual')" id="btn-cycle-annual" class="flex-1 sm:flex-initial px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl font-bold text-xs transition-all text-slate-600 hover:text-slate-900 flex items-center justify-center space-x-1.5 text-center">
                                 <span>⭐ Pago Anual</span>
                                 <span class="bg-emerald-600 text-white text-[9px] sm:text-[10px] font-black px-1.5 sm:px-2 py-0.5 rounded-full uppercase tracking-wider">-10%</span>
                             </button>
@@ -213,7 +378,7 @@
                     
                     <!-- 1. PLAN PATITAS BÁSICO -->
                     <div id="plan-card-basico" onclick="selectPlanCard('basico')" class="plan-card cursor-pointer bg-white rounded-3xl p-5 sm:p-8 border-2 border-brand-primary ring-2 ring-brand-primary/20 shadow-md flex flex-col justify-between transition-all relative">
-                        <div class="space-y-5 sm:space-y-6">
+                        <div class="space-y-5 sm:space-y-6 pt-2">
                             <!-- Encabezado del Plan -->
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-3.5">
@@ -249,12 +414,6 @@
                                         <span class="text-slate-500 text-xs font-bold">COP / año</span>
                                     </div>
                                     <p class="text-[11px] text-emerald-700 font-bold pt-1 leading-relaxed">
-                                        🎁 Afiliación bonificada ($0) • 🚀 <strong>ACTIVACIÓN INMEDIATA</strong> sin carencias.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Link interactivo a Carencias -->
                             <div class="flex items-center justify-between text-xs pt-1">
                                 <button type="button" onclick="event.stopPropagation(); jumpToCarencias('basico');" class="text-brand-primary hover:underline font-bold flex items-center space-x-1">
                                     <span>⏳ Ver tiempos de carencia de este plan</span>
@@ -637,252 +796,68 @@
                                 <p class="text-emerald-700 text-[11px] sm:text-xs">Elige la modalidad de Pago Anual con 10% de descuento y $0 costo de afiliación.</p>
                             </div>
                         </div>
-                        <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20deseo%20activar%20mi%20Plan%20en%20modalidad%20ANUAL%20sin%20carencias" target="_blank" class="w-full sm:w-auto text-center px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-sm whitespace-nowrap transition-all flex items-center justify-center">
-                            Activar Plan Anual ⭐
+                        <a href="                            Activar Plan Anual ⭐
                         </a>
                     </div>
                 </div>
 
-                <script>
-                    function setBillingCycle(cycle) {
-                        const monthlyBlocks = document.querySelectorAll('.monthly-price-block');
-                        const annualBlocks = document.querySelectorAll('.annual-price-block');
-                        const btnMonthly = document.getElementById('btn-cycle-monthly');
-                        const btnAnnual = document.getElementById('btn-cycle-annual');
+                <!-- 7. ACORDEÓN DINÁMICO DE PREGUNTAS FRECUENTES (FAQ) -->
+                <div id="faq" class="mt-12 sm:mt-16 max-w-4xl mx-auto space-y-6">
+                    <div class="text-center space-y-2">
+                        <span class="text-xs font-bold text-brand-primary uppercase tracking-widest">Resolvemos tus inquietudes</span>
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Preguntas Frecuentes</h3>
+                    </div>
 
-                        if (cycle === 'annual') {
-                            monthlyBlocks.forEach(b => b.classList.add('hidden'));
-                            annualBlocks.forEach(b => b.classList.remove('hidden'));
-                            btnAnnual.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
-                            btnAnnual.classList.remove('text-slate-600');
-                            btnMonthly.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
-                            btnMonthly.classList.add('text-slate-600');
-                        } else {
-                            annualBlocks.forEach(b => b.classList.add('hidden'));
-                            monthlyBlocks.forEach(b => b.classList.remove('hidden'));
-                            btnMonthly.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
-                            btnMonthly.classList.remove('text-slate-600');
-                            btnAnnual.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
-                            btnAnnual.classList.add('text-slate-600');
-                        }
-                    }
+                    <div class="space-y-3">
+                        <!-- FAQ 1 -->
+                        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                            <button type="button" onclick="toggleFaq(1)" class="w-full p-4 sm:p-5 text-left font-bold text-xs sm:text-sm text-slate-900 flex items-center justify-between gap-2 hover:bg-slate-50 transition">
+                                <span>¿Cómo solicito una cita o servicio una vez afiliado?</span>
+                                <span id="faq-icon-1" class="text-brand-primary font-black text-base transition-transform duration-200">+</span>
+                            </button>
+                            <div id="faq-content-1" class="hidden px-4 pb-4 sm:px-5 sm:pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+                                Solo debes comunicarte a nuestra línea única oficial de WhatsApp <strong>{{ $tenant->branding['phone'] ?? '350 874 2543' }}</strong>. Nuestro equipo valida tu carnet digital en el mostrador en segundos y agenda tu cita prioritaria.
+                            </div>
+                        </div>
 
-                    function selectPlanCard(planType) {
-                        const cardBasico = document.getElementById('plan-card-basico');
-                        const cardPremium = document.getElementById('plan-card-premium');
-                        const badgeBasico = document.getElementById('badge-selected-basico');
-                        const badgePremium = document.getElementById('badge-selected-premium');
-                        const blockBasico = document.getElementById('carencia-block-basico');
-                        const blockPremium = document.getElementById('carencia-block-premium');
-                        const btnBasico = document.getElementById('btn-carencia-basico');
-                        const btnPremium = document.getElementById('btn-carencia-premium');
-                        const titlePlan = document.getElementById('carencia-title-plan');
+                        <!-- FAQ 2 -->
+                        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                            <button type="button" onclick="toggleFaq(2)" class="w-full p-4 sm:p-5 text-left font-bold text-xs sm:text-sm text-slate-900 flex items-center justify-between gap-2 hover:bg-slate-50 transition">
+                                <span>¿Qué incluye exactamente el Kit de Bienvenida?</span>
+                                <span id="faq-icon-2" class="text-brand-primary font-black text-base transition-transform duration-200">+</span>
+                            </button>
+                            <div id="faq-content-2" class="hidden px-4 pb-4 sm:px-5 sm:pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+                                Incluye la Cédula Digital de tu mascota, Collar con Placa de identificación física, apertura de historia clínica y la primera dosis de desparasitación interna.
+                            </div>
+                        </div>
 
-                        if (planType === 'premium') {
-                            // Tarjetas superiores
-                            cardBasico.classList.remove('border-2', 'border-brand-primary', 'ring-2', 'ring-brand-primary/20', 'shadow-md');
-                            cardBasico.classList.add('border-slate-200');
-                            badgeBasico.classList.add('hidden');
+                        <!-- FAQ 3 -->
+                        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                            <button type="button" onclick="toggleFaq(3)" class="w-full p-4 sm:p-5 text-left font-bold text-xs sm:text-sm text-slate-900 flex items-center justify-between gap-2 hover:bg-slate-50 transition">
+                                <span>¿Qué diferencia hay entre el pago mensual y el pago anual?</span>
+                                <span id="faq-icon-3" class="text-brand-primary font-black text-base transition-transform duration-200">+</span>
+                            </button>
+                            <div id="faq-content-3" class="hidden px-4 pb-4 sm:px-5 sm:pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+                                En el pago mensual los beneficios se habilitan progresivamente mes a mes. En el <strong>pago anual anticipado</strong> obtienes un 10% de descuento directo ($540.000 COP en plan básico) y todos los servicios se activan <strong>inmediatamente sin carencias</strong>.
+                            </div>
+                        </div>
 
-                            cardPremium.classList.add('border-2', 'border-brand-primary', 'ring-2', 'ring-brand-primary/20', 'shadow-md');
-                            cardPremium.classList.remove('border-slate-200');
-                            badgePremium.classList.remove('hidden');
-
-                            // Timeline inferior
-                            blockBasico.classList.add('hidden');
-                            blockPremium.classList.remove('hidden');
-                            btnPremium.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
-                            btnPremium.classList.remove('text-slate-600');
-                            btnBasico.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
-                            btnBasico.classList.add('text-slate-600');
-                            if (titlePlan) titlePlan.textContent = 'Plan Patitas Premium';
-                        } else {
-                            // Tarjetas superiores
-                            cardPremium.classList.remove('border-2', 'border-brand-primary', 'ring-2', 'ring-brand-primary/20', 'shadow-md');
-                            cardPremium.classList.add('border-slate-200');
-                            badgePremium.classList.add('hidden');
-
-                            cardBasico.classList.add('border-2', 'border-brand-primary', 'ring-2', 'ring-brand-primary/20', 'shadow-md');
-                            cardBasico.classList.remove('border-slate-200');
-                            badgeBasico.classList.remove('hidden');
-
-                            // Timeline inferior
-                            blockPremium.classList.add('hidden');
-                            blockBasico.classList.remove('hidden');
-                            btnBasico.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
-                            btnBasico.classList.remove('text-slate-600');
-                            btnPremium.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
-                            btnPremium.classList.add('text-slate-600');
-                            if (titlePlan) titlePlan.textContent = 'Plan Patitas Básico';
-                        }
-                    }
-
-                    function jumpToCarencias(planType) {
-                        selectPlanCard(planType);
-                        const carenciasEl = document.getElementById('carencias-section');
-                        if (carenciasEl) {
-                            carenciasEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    }
-                </script>
+                        <!-- FAQ 4 -->
+                        <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                            <button type="button" onclick="toggleFaq(4)" class="w-full p-4 sm:p-5 text-left font-bold text-xs sm:text-sm text-slate-900 flex items-center justify-between gap-2 hover:bg-slate-50 transition">
+                                <span>¿Puedo afiliar más de una mascota?</span>
+                                <span id="faq-icon-4" class="text-brand-primary font-black text-base transition-transform duration-200">+</span>
+                            </button>
+                            <div id="faq-content-4" class="hidden px-4 pb-4 sm:px-5 sm:pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+                                ¡Sí! Cada peludo cuenta con su propio carnet digital y su bolsa individual de consultas, vacunas y peluquerías.
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <p class="text-center text-[11px] text-slate-400 mt-8 font-medium">
                     * El proceso para solicitar los beneficios una vez activos será siempre a través de nuestra línea única de atención <strong>{{ $tenant->branding['phone'] ?? '350 874 2543' }}</strong>. Los servicios descritos están incluidos en el plan; la entrega o suministro de estos puede generar un valor adicional según condiciones particulares.
                 </p>
-            </div>
-        </section>
-
-        <!-- 5. FEATURES -->
-        <section id="beneficios" class="py-16 bg-white border-t border-slate-100">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    
-                    <div class="flex items-start space-x-4">
-                        <div class="w-12 h-12 rounded-full flex items-center justify-center text-xl flex-shrink-0" style="background-color: {{ $primaryColor }}15; color: {{ $primaryColor }};">
-                            🪄
-                        </div>
-                        <div class="space-y-1">
-                            <h4 class="font-bold text-sm text-slate-900">IA que recomienda lo mejor para tu mascota</h4>
-                            <p class="text-xs text-slate-500 leading-relaxed">Sugerencias inteligentes según su edad, raza y hábitos.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-4">
-                        <div class="w-12 h-12 rounded-full flex items-center justify-center text-xl flex-shrink-0" style="background-color: {{ $primaryColor }}15; color: {{ $primaryColor }};">
-                            📱
-                        </div>
-                        <div class="space-y-1">
-                            <h4 class="font-bold text-sm text-slate-900">Controla todo desde tu celular</h4>
-                            <p class="text-xs text-slate-500 leading-relaxed">Historial, citas, beneficios y recordatorios de vacunas.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-4">
-                        <div class="w-12 h-12 rounded-full flex items-center justify-center text-xl flex-shrink-0" style="background-color: {{ $primaryColor }}15; color: {{ $primaryColor }};">
-                            ❤️
-                        </div>
-                        <div class="space-y-1">
-                            <h4 class="font-bold text-sm text-slate-900">Atención cercana y humana</h4>
-                            <p class="text-xs text-slate-500 leading-relaxed">Nuestro equipo veterinario siempre disponible para ti.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-4">
-                        <div class="w-12 h-12 rounded-full flex items-center justify-center text-xl flex-shrink-0" style="background-color: {{ $primaryColor }}15; color: {{ $primaryColor }};">
-                            💰
-                        </div>
-                        <div class="space-y-1">
-                            <h4 class="font-bold text-sm text-slate-900">Ahorra sin sacrificar la calidad</h4>
-                            <p class="text-xs text-slate-500 leading-relaxed">Más beneficios, prevención continua y mejor precio.</p>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- 6. SECCIÓN "ASÍ DE FÁCIL" CON VIDEO OPTIMIZADO O FOTO BANNER -->
-        <section id="como-funciona" class="py-16 bg-[#fbfcfd] border-t border-slate-100">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                    
-                    <div class="lg:col-span-5 space-y-6">
-                        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Así de <span class="text-brand-primary underline" style="text-decoration-color: {{ $primaryColor }}80;">fácil</span></h2>
-
-                        <div class="space-y-6">
-                            <div class="flex items-start space-x-4">
-                                <div class="w-8 h-8 rounded-full bg-brand-secondary text-white font-extrabold flex items-center justify-center text-xs flex-shrink-0">
-                                    1
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-sm text-slate-900">Elige tu plan</h4>
-                                    <p class="text-xs text-slate-500">Compara y selecciona la cobertura adecuada para tu peludo.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start space-x-4">
-                                <div class="w-8 h-8 rounded-full bg-brand-secondary text-white font-extrabold flex items-center justify-center text-xs flex-shrink-0">
-                                    2
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-sm text-slate-900">Registra a tu mascota</h4>
-                                    <p class="text-xs text-slate-500">Datos rápidos, carnet digital y kit de bienvenida.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start space-x-4">
-                                <div class="w-8 h-8 rounded-full bg-brand-secondary text-white font-extrabold flex items-center justify-center text-xs flex-shrink-0">
-                                    3
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-sm text-slate-900">Disfruta los beneficios</h4>
-                                    <p class="text-xs text-slate-500">Atención médica, vacunas y descuentos en cada visita.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-7">
-                        <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-100 bg-slate-900">
-                            @if(!empty($bannerVideo))
-                                <video class="w-full h-80 object-cover" poster="{{ $bannerImage }}" preload="metadata" controls playsinline>
-                                    <source src="{{ $bannerVideo }}" type="video/mp4">
-                                    Tu navegador no soporta la reproducción de video.
-                                </video>
-                            @else
-                                <img class="w-full h-80 object-cover" src="{{ $bannerImage }}" alt="{{ $tenant->name }}" loading="lazy"/>
-                                <div class="absolute inset-0 bg-slate-900/20 flex items-center justify-center pointer-events-none">
-                                    <div class="w-16 h-16 rounded-full bg-white/90 text-brand-primary flex items-center justify-center text-2xl shadow-xl">
-                                        ▶
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- 7. TESTIMONIOS -->
-        <section class="py-16 bg-white border-t border-slate-100">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between mb-10">
-                    <h3 class="text-2xl font-extrabold text-slate-900">Lo que dicen nuestros clientes</h3>
-                    <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}" target="_blank" class="text-xs font-bold text-brand-primary hover:opacity-90 flex items-center space-x-1">
-                        <span>Ver más opiniones</span>
-                        <span>→</span>
-                    </a>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
-                        <div class="text-amber-400 text-xs">★★★★★</div>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">"Desde que tengo a Max en el plan Plus, hemos ahorrado y su salud ha mejorado muchísimo."</p>
-                        <div class="flex items-center space-x-3 pt-2">
-                            <img class="w-8 h-8 rounded-full object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Andrea"/>
-                            <span class="text-xs font-bold text-slate-800">Andrea M. (Tutor de Max)</span>
-                        </div>
-                    </div>
-
-                    <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
-                        <div class="text-amber-400 text-xs">★★★★★</div>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">"Los recordatorios y la atención en el mostrador me han salvado la vida. ¡Ya no se me olvida nada!"</p>
-                        <div class="flex items-center space-x-3 pt-2">
-                            <img class="w-8 h-8 rounded-full object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="Camilo"/>
-                            <span class="text-xs font-bold text-slate-800">Camilo R. (Tutor de Luna)</span>
-                        </div>
-                    </div>
-
-                    <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
-                        <div class="text-amber-400 text-xs">★★★★★</div>
-                        <p class="text-xs text-slate-600 leading-relaxed font-medium">"Excelente atención en {{ $tenant->branding['city'] ?? 'Cajicá' }} y beneficios reales. 100% recomendados."</p>
-                        <div class="flex items-center space-x-3 pt-2">
-                            <img class="w-8 h-8 rounded-full object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="Laura"/>
-                            <span class="text-xs font-bold text-slate-800">Laura G. (Tutora de Toby)</span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -891,7 +866,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="rounded-3xl p-8 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden" style="background: linear-gradient(135deg, {{ $primaryColor }} 0%, {{ $secondaryColor }} 100%);">
                     <div class="flex items-center space-x-5 z-10">
-                        <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-3xl flex-shrink-0">
+                        <div class="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-3xl shrink-0">
                             💬
                         </div>
                         <div>
@@ -900,7 +875,7 @@
                         </div>
                     </div>
                     
-                    <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20tengo%20dudas%20sobre%20los%20Planes%20de%20{{ urlencode($tenant->name) }}" target="_blank" class="z-10 px-8 py-4 bg-white text-slate-900 hover:bg-slate-50 font-extrabold text-sm rounded-full shadow-lg transition-all flex items-center space-x-2 flex-shrink-0">
+                    <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20tengo%20dudas%20sobre%20los%20Planes%20de%20{{ urlencode($tenant->name) }}" target="_blank" class="z-10 px-8 py-4 bg-white text-slate-900 hover:bg-slate-50 font-extrabold text-sm rounded-full shadow-lg transition-all flex items-center space-x-2 shrink-0">
                         <span>💬 Chatear ahora</span>
                     </a>
                 </div>
@@ -909,8 +884,24 @@
 
     </main>
 
+    <!-- STICKY ACTION BAR PARA CELULARES (APARECE AL HACER SCROLL) -->
+    <div id="sticky-mobile-bar" class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 p-3 flex items-center justify-between gap-2 shadow-2xl transition-transform duration-300 translate-y-full">
+        <div class="min-w-0">
+            <p class="text-[10px] text-slate-400 font-bold uppercase">Plan Bienestar</p>
+            <p class="text-xs font-black text-slate-900 truncate">Desde $50.000 COP</p>
+        </div>
+        <div class="flex items-center space-x-2 shrink-0">
+            <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}" target="_blank" class="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-200">
+                💬
+            </a>
+            <a href="#planes" class="px-4 py-2.5 bg-brand-primary text-white font-black text-xs rounded-xl shadow-sm">
+                Afiliar Mascota 🐾
+            </a>
+        </div>
+    </div>
+
     <!-- 9. FOOTER -->
-    <footer id="contacto" class="bg-[#f8fafc] border-t border-slate-200 py-14 text-slate-600 text-xs">
+    <footer id="contacto" class="bg-[#f8fafc] border-t border-slate-200 py-14 text-slate-600 text-xs pb-20 sm:pb-14">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-5 gap-8">
             
             <div class="md:col-span-2 space-y-3">
@@ -929,8 +920,9 @@
                 <h5 class="font-bold text-slate-900 text-xs uppercase mb-3">Enlaces rápidos</h5>
                 <ul class="space-y-2">
                     <li><a href="#planes" class="hover:text-brand-primary">Planes</a></li>
-                    <li><a href="#beneficios" class="hover:text-brand-primary">Beneficios</a></li>
-                    <li><a href="#como-funciona" class="hover:text-brand-primary">Video & Proceso</a></li>
+                    <li><a href="#calculadora" class="hover:text-brand-primary">Calculadora de Ahorro</a></li>
+                    <li><a href="#carencias-section" class="hover:text-brand-primary">Carencias</a></li>
+                    <li><a href="#faq" class="hover:text-brand-primary">Preguntas frecuentes</a></li>
                 </ul>
             </div>
 
@@ -964,5 +956,213 @@
         </div>
     </footer>
 
+    <!-- SCRIPTS DINÁMICOS -->
+    <script>
+        let currentPetType = 'dog';
+
+        // 1. Actualización en tiempo real del carnet
+        function updateLiveCarnet() {
+            const nameInput = document.getElementById('live-pet-name').value.trim();
+            const breedInput = document.getElementById('live-pet-breed').value.trim();
+            
+            document.getElementById('card-pet-name').innerText = nameInput ? nameInput.toUpperCase() : 'MI MASCOTA';
+            document.getElementById('card-pet-breed').innerText = (breedInput || 'Raza') + ' • ' + (currentPetType === 'dog' ? 'Canino' : 'Felino');
+        }
+
+        function setLivePetType(type) {
+            currentPetType = type;
+            const btnDog = document.getElementById('btn-pet-dog');
+            const btnCat = document.getElementById('btn-pet-cat');
+            const cardEmoji = document.getElementById('card-pet-emoji');
+
+            if (type === 'cat') {
+                btnCat.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                btnCat.classList.remove('text-slate-500');
+                btnDog.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                btnDog.classList.add('text-slate-500');
+                cardEmoji.innerText = '🐈';
+                if (document.getElementById('live-pet-name').value === 'Max') {
+                    document.getElementById('live-pet-name').value = 'Mimi';
+                    document.getElementById('live-pet-breed').value = 'Persa';
+                }
+            } else {
+                btnDog.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                btnDog.classList.remove('text-slate-500');
+                btnCat.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                btnCat.classList.add('text-slate-500');
+                cardEmoji.innerText = '🐕';
+                if (document.getElementById('live-pet-name').value === 'Mimi') {
+                    document.getElementById('live-pet-name').value = 'Max';
+                    document.getElementById('live-pet-breed').value = 'Golden Retriever';
+                }
+            }
+            updateLiveCarnet();
+        }
+
+        // 2. Calculadora dinámica de ahorro
+        function calculateSavings() {
+            const consultas = parseInt(document.getElementById('calc-consultas').value);
+            const baths = parseInt(document.getElementById('calc-baths').value);
+
+            document.getElementById('calc-consultas-val').innerText = consultas + (consultas === 1 ? ' consulta' : ' consultas');
+            document.getElementById('calc-baths-val').innerText = baths + (baths === 1 ? ' baño' : ' baños');
+
+            // Costos referenciales particulares en Colombia
+            const costoConsultaParticular = 65000;
+            const costoBanoParticular = 45000;
+            const costoVacunacionParticular = 90000;
+            const costoDesparasitacionParticular = 70000;
+            const costoExamenLaboratorioParticular = 110000;
+
+            const totalParticular = (consultas * costoConsultaParticular) + 
+                                    (baths * costoBanoParticular) + 
+                                    costoVacunacionParticular + 
+                                    costoDesparasitacionParticular + 
+                                    costoExamenLaboratorioParticular;
+
+            const totalPlan = 540000; // Plan básico anual
+            const ahorro = Math.max(0, totalParticular - totalPlan);
+            const porcentajeAhorro = Math.round((ahorro / totalParticular) * 100);
+
+            document.getElementById('calc-particular-price').innerText = '$' + totalParticular.toLocaleString('es-CO') + ' COP';
+            document.getElementById('calc-savings-total').innerText = '$' + ahorro.toLocaleString('es-CO') + ' COP';
+            document.getElementById('calc-savings-percent').innerText = 'Ahorras un ' + porcentajeAhorro + '% en salud médica';
+        }
+
+        // 3. Selección interactiva de tarjeta de plan y sincronización con carnet/timeline
+        function selectPlanCard(planType) {
+            const cardBasico = document.getElementById('plan-card-basico');
+            const cardPremium = document.getElementById('plan-card-premium');
+            const badgeBasico = document.getElementById('badge-selected-basico');
+            const badgePremium = document.getElementById('badge-selected-premium');
+            const blockBasico = document.getElementById('carencia-block-basico');
+            const blockPremium = document.getElementById('carencia-block-premium');
+            const btnBasico = document.getElementById('btn-carencia-basico');
+            const btnPremium = document.getElementById('btn-carencia-premium');
+            const titlePlan = document.getElementById('carencia-title-plan');
+            const cardPlanName = document.getElementById('card-plan-name');
+
+            if (planType === 'premium') {
+                if (cardBasico) {
+                    cardBasico.classList.remove('border-2', 'border-brand-primary', 'ring-2', 'ring-brand-primary/20', 'shadow-md');
+                    cardBasico.classList.add('border-slate-200');
+                }
+                if (badgeBasico) badgeBasico.classList.add('hidden');
+
+                if (cardPremium) {
+                    cardPremium.classList.add('border-2', 'border-brand-primary', 'ring-2', 'ring-brand-primary/20', 'shadow-md');
+                    cardPremium.classList.remove('border-slate-200');
+                }
+                if (badgePremium) badgePremium.classList.remove('hidden');
+
+                if (blockBasico) blockBasico.classList.add('hidden');
+                if (blockPremium) blockPremium.classList.remove('hidden');
+                if (btnPremium) {
+                    btnPremium.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                    btnPremium.classList.remove('text-slate-600');
+                }
+                if (btnBasico) {
+                    btnBasico.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                    btnBasico.classList.add('text-slate-600');
+                }
+                if (titlePlan) titlePlan.textContent = 'Plan Patitas Premium';
+                if (cardPlanName) cardPlanName.textContent = 'Plan Patitas Premium';
+            } else {
+                if (cardPremium) {
+                    cardPremium.classList.remove('border-2', 'border-brand-primary', 'ring-2', 'ring-brand-primary/20', 'shadow-md');
+                    cardPremium.classList.add('border-slate-200');
+                }
+                if (badgePremium) badgePremium.classList.add('hidden');
+
+                if (cardBasico) {
+                    cardBasico.classList.add('border-2', 'border-brand-primary', 'ring-2', 'ring-brand-primary/20', 'shadow-md');
+                    cardBasico.classList.remove('border-slate-200');
+                }
+                if (badgeBasico) badgeBasico.classList.remove('hidden');
+
+                if (blockPremium) blockPremium.classList.add('hidden');
+                if (blockBasico) blockBasico.classList.remove('hidden');
+                if (btnBasico) {
+                    btnBasico.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                    btnBasico.classList.remove('text-slate-600');
+                }
+                if (btnPremium) {
+                    btnPremium.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                    btnPremium.classList.add('text-slate-600');
+                }
+                if (titlePlan) titlePlan.textContent = 'Plan Patitas Básico';
+                if (cardPlanName) cardPlanName.textContent = 'Plan Patitas Básico';
+            }
+        }
+
+        // 4. Selector mensual / anual
+        function setBillingCycle(cycle) {
+            const monthlyBlocks = document.querySelectorAll('.monthly-price-block');
+            const annualBlocks = document.querySelectorAll('.annual-price-block');
+            const btnMonthly = document.getElementById('btn-cycle-monthly');
+            const btnAnnual = document.getElementById('btn-cycle-annual');
+
+            if (cycle === 'annual') {
+                monthlyBlocks.forEach(b => b.classList.add('hidden'));
+                annualBlocks.forEach(b => b.classList.remove('hidden'));
+                if (btnAnnual) {
+                    btnAnnual.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                    btnAnnual.classList.remove('text-slate-600');
+                }
+                if (btnMonthly) {
+                    btnMonthly.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                    btnMonthly.classList.add('text-slate-600');
+                }
+            } else {
+                annualBlocks.forEach(b => b.classList.add('hidden'));
+                monthlyBlocks.forEach(b => b.classList.remove('hidden'));
+                if (btnMonthly) {
+                    btnMonthly.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                    btnMonthly.classList.remove('text-slate-600');
+                }
+                if (btnAnnual) {
+                    btnAnnual.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                    btnAnnual.classList.add('text-slate-600');
+                }
+            }
+        }
+
+        function jumpToCarencias(planType) {
+            selectPlanCard(planType);
+            const carenciasEl = document.getElementById('carencias-section');
+            if (carenciasEl) {
+                carenciasEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // 5. Toggle FAQ acordeón
+        function toggleFaq(id) {
+            const content = document.getElementById('faq-content-' + id);
+            const icon = document.getElementById('faq-icon-' + id);
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.innerText = '−';
+            } else {
+                content.classList.add('hidden');
+                icon.innerText = '+';
+            }
+        }
+
+        // 6. Sticky Mobile Bar on Scroll
+        window.addEventListener('scroll', function() {
+            const bar = document.getElementById('sticky-mobile-bar');
+            if (bar) {
+                if (window.scrollY > 350) {
+                    bar.classList.remove('translate-y-full');
+                } else {
+                    bar.classList.add('translate-y-full');
+                }
+            }
+        });
+
+        // Inicializar cálculos
+        calculateSavings();
+    </script>
 </body>
 </html>
