@@ -19,7 +19,7 @@ class ClinicaDemoSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Crear o Recuperar Clínica Demo (Tenant)
+        // 1. Clínica Patitas Felices (Tenant)
         $tenant = Tenant::firstOrCreate(
             ['slug' => 'patitas-felices'],
             [
@@ -29,13 +29,14 @@ class ClinicaDemoSeeder extends Seeder
                     'logo_url' => 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=300',
                     'primary_color' => '#10B981',
                     'secondary_color' => '#065F46',
+                    'phone' => '3508742543',
                 ],
                 'is_active' => true,
                 'saas_plan_tier' => 'pro',
             ]
         );
 
-        // 2. Crear o Recuperar Super Administrador del SaaS (Robinson)
+        // 2. Super Administrador (Robinson)
         User::firstOrCreate(
             ['email' => 'superadmin@aviplan.co'],
             [
@@ -45,59 +46,120 @@ class ClinicaDemoSeeder extends Seeder
             ]
         );
 
-        // Crear o Recuperar Usuario Administrador de Clínica Demo
+        // 3. Usuario Administrador de la Clínica
         $admin = User::firstOrCreate(
             ['email' => 'admin@patitasfelices.com'],
             [
                 'tenant_id' => $tenant->id,
-                'name' => 'Dr. Robinson Naranjo (Veterinario Demo)',
+                'name' => 'Dra. Robinson & Hermana (Patitas Felices)',
                 'password' => Hash::make('Ashley2023##'),
                 'role' => 'clinic_admin',
             ]
         );
 
-        // 3. Catálogo de Beneficios
-        $bConsulta = BenefitDefinition::firstOrCreate(
-            ['tenant_id' => $tenant->id, 'name' => 'Consulta Médica General'],
-            ['description' => 'Valoración médica clínica preventiva.', 'category' => 'consulta']
+        // 4. Catálogo de Beneficios Oficiales Patitas Felices
+        $bKit = BenefitDefinition::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'name' => 'Kit Bienvenida (Cédula + Collar Placa + Carnet Digital)'],
+            ['description' => 'Identificación oficial, placa grabada y registro médico inicial.', 'category' => 'bienvenida']
         );
 
-        $bVacuna = BenefitDefinition::firstOrCreate(
-            ['tenant_id' => $tenant->id, 'name' => 'Vacuna Anual (Rabia / Sextuple / Triple Felina)'],
-            ['description' => 'Aplicación de biológico certificado.', 'category' => 'vacuna']
+        $bConsultaVirtual = BenefitDefinition::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'name' => 'Consultas Virtuales Ilimitadas'],
+            ['description' => 'Teleorientación médica veterinaria de lunes a domingo.', 'category' => 'consulta']
+        );
+
+        $bConsultaPresencial = BenefitDefinition::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'name' => 'Consultas Presenciales en Clínica'],
+            ['description' => 'Valoración médica clínica por sintomatología o control.', 'category' => 'consulta']
+        );
+
+        $bChequeoPreventivo = BenefitDefinition::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'name' => 'Chequeos Preventivos Trimestrales'],
+            ['description' => 'Control de peso, constantes vitales y prevención cada 3 meses.', 'category' => 'consulta']
+        );
+
+        $bVacunaAnual = BenefitDefinition::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'name' => 'Vacunación Anual Completa (Pentavalente/Triple + Rabia)'],
+            ['description' => 'Biológico certificado anual con firma veterinaria.', 'category' => 'vacuna']
         );
 
         $bDesparasitacion = BenefitDefinition::firstOrCreate(
-            ['tenant_id' => $tenant->id, 'name' => 'Desparasitación Interna y Externa'],
-            ['description' => 'Tratamiento profiláctico trimestral.', 'category' => 'desparasitacion']
+            ['tenant_id' => $tenant->id, 'name' => 'Desparasitación Interna'],
+            ['description' => 'Tratamiento profiláctico trimestral (3 veces al año).', 'category' => 'desparasitacion']
+        );
+
+        $bAntipulgas = BenefitDefinition::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'name' => 'Desparasitación Externa / Antipulgas (Credelio / Pipeta)'],
+            ['description' => 'Protección antiparasitaria externa semestral (cada 6 meses).', 'category' => 'desparasitacion']
+        );
+
+        $bLaboratorio = BenefitDefinition::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'name' => 'Exámenes de Laboratorio al 100% (Hemograma + Creatinina/ALT/BUN)'],
+            ['description' => 'Perfil bioquímico básico y cuadro hemático por enfermedad o urgencia.', 'category' => 'laboratorio']
+        );
+
+        $bCitologia = BenefitDefinition::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'name' => 'Citología de Oídos'],
+            ['description' => 'Evaluación microscópica ótica para prevención de otitis.', 'category' => 'laboratorio']
         );
 
         $bBano = BenefitDefinition::firstOrCreate(
-            ['tenant_id' => $tenant->id, 'name' => 'Baño Medicado y Corte de Uñas'],
-            ['description' => 'Higiene y estética con shampoo hipoalergénico.', 'category' => 'bano']
+            ['tenant_id' => $tenant->id, 'name' => 'Baño y Peluquería Canina/Felina'],
+            ['description' => 'Higiene, corte de uñas y estética profesional.', 'category' => 'bano']
         );
 
-        // 4. Planes
-        $planVIP = Plan::firstOrCreate(
-            ['tenant_id' => $tenant->id, 'name' => 'Plan Patitas VIP / Completo'],
+        $bFunerario = BenefitDefinition::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'name' => 'Servicio Funerario y Cremación'],
+            ['description' => 'Cobertura exequial digna para tu mascota.', 'category' => 'funerario']
+        );
+
+        // 5. Crear Plan Patitas Básico ($50.000 COP/mes)
+        $planBasico = Plan::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'name' => 'Plan Patitas Básico'],
             [
-                'description' => 'Cobertura total con baños mensuales y consultas ilimitadas.',
-                'price_cop' => 85000.00,
+                'description' => 'Afiliación $50.000 + mensualidad de $50.000 COP. Incluye Kit Bienvenida, 3 consultas, vacunas, desparasitaciones y descuentos.',
+                'price_cop' => 50000.00,
                 'billing_interval' => 'monthly',
                 'is_active' => true,
             ]
         );
 
-        PlanBenefit::firstOrCreate(['plan_id' => $planVIP->id, 'benefit_definition_id' => $bConsulta->id], ['quantity' => 12]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planVIP->id, 'benefit_definition_id' => $bVacuna->id], ['quantity' => 3]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planVIP->id, 'benefit_definition_id' => $bDesparasitacion->id], ['quantity' => 4]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planVIP->id, 'benefit_definition_id' => $bBano->id], ['quantity' => 6]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bKit->id], ['quantity' => 1]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bConsultaVirtual->id], ['quantity' => 999]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bConsultaPresencial->id], ['quantity' => 3]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bChequeoPreventivo->id], ['quantity' => 4]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bVacunaAnual->id], ['quantity' => 1]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bDesparasitacion->id], ['quantity' => 3]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bAntipulgas->id], ['quantity' => 2]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bLaboratorio->id], ['quantity' => 1]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bCitologia->id], ['quantity' => 2]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bBano->id], ['quantity' => 2]);
 
-        // 5. Tutor y Mascota
+        // 6. Crear Plan Patitas Premium ($150.000 1er mes / $80.000 COP/mes)
+        $planPremium = Plan::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'name' => 'Plan Patitas Premium'],
+            [
+                'description' => 'Primer mes $150.000 y $80.000 COP desde el 2do mes. Cobertura premium total con laboratorio, consultas, vacunación y servicio funerario 100% incluido.',
+                'price_cop' => 80000.00,
+                'billing_interval' => 'monthly',
+                'is_active' => true,
+            ]
+        );
+
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bKit->id], ['quantity' => 1]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bConsultaVirtual->id], ['quantity' => 999]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bConsultaPresencial->id], ['quantity' => 3]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bChequeoPreventivo->id], ['quantity' => 4]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bVacunaAnual->id], ['quantity' => 1]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bAntipulgas->id], ['quantity' => 2]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bLaboratorio->id], ['quantity' => 2]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bFunerario->id], ['quantity' => 1]);
+
+        // 7. Tutor y Mascota Demo
         $tutor = Customer::firstOrCreate(
             ['tenant_id' => $tenant->id, 'identification' => '1020304050'],
             [
-                'name' => 'Carlos Mendoza',
+                'name' => 'Carlos Mendoza (Tutor)',
                 'phone' => '+573001234567',
                 'email' => 'carlos.mendoza@gmail.com',
             ]
@@ -109,38 +171,39 @@ class ClinicaDemoSeeder extends Seeder
                 'species' => 'dog',
                 'breed' => 'Golden Retriever',
                 'birthdate' => now()->subYears(3),
-                'medical_notes' => 'Alergia estacional leve al pasto.',
+                'medical_notes' => 'Paciente afiliado a Plan Patitas Premium.',
             ]
         );
 
         $sub = Subscription::firstOrCreate(
             ['tenant_id' => $tenant->id, 'pet_id' => $pet->id],
             [
-                'plan_id' => $planVIP->id,
+                'plan_id' => $planPremium->id,
                 'status' => 'active',
                 'current_period_start' => now(),
                 'current_period_end' => now()->addMonth(),
             ]
         );
 
+        // Saldos en el Ledger
         SubscriptionBenefitBalance::firstOrCreate(
-            ['subscription_id' => $sub->id, 'benefit_definition_id' => $bConsulta->id],
-            ['total_granted' => 12, 'used_count' => 2, 'remaining_count' => 10]
-        );
-
-        SubscriptionBenefitBalance::firstOrCreate(
-            ['subscription_id' => $sub->id, 'benefit_definition_id' => $bVacuna->id],
+            ['subscription_id' => $sub->id, 'benefit_definition_id' => $bConsultaPresencial->id],
             ['total_granted' => 3, 'used_count' => 1, 'remaining_count' => 2]
         );
 
         SubscriptionBenefitBalance::firstOrCreate(
-            ['subscription_id' => $sub->id, 'benefit_definition_id' => $bDesparasitacion->id],
-            ['total_granted' => 4, 'used_count' => 0, 'remaining_count' => 4]
+            ['subscription_id' => $sub->id, 'benefit_definition_id' => $bVacunaAnual->id],
+            ['total_granted' => 1, 'used_count' => 0, 'remaining_count' => 1]
         );
 
         SubscriptionBenefitBalance::firstOrCreate(
-            ['subscription_id' => $sub->id, 'benefit_definition_id' => $bBano->id],
-            ['total_granted' => 6, 'used_count' => 1, 'remaining_count' => 5]
+            ['subscription_id' => $sub->id, 'benefit_definition_id' => $bLaboratorio->id],
+            ['total_granted' => 2, 'used_count' => 0, 'remaining_count' => 2]
+        );
+
+        SubscriptionBenefitBalance::firstOrCreate(
+            ['subscription_id' => $sub->id, 'benefit_definition_id' => $bAntipulgas->id],
+            ['total_granted' => 2, 'used_count' => 1, 'remaining_count' => 1]
         );
     }
 }
