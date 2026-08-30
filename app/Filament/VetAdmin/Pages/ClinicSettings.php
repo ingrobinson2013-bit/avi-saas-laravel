@@ -9,6 +9,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Storage;
 
 class ClinicSettings extends Page implements HasForms
 {
@@ -46,53 +47,53 @@ class ClinicSettings extends Page implements HasForms
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Identidad Visual y Colores de la Página')
-                    ->description('Personaliza el logo, fotos y colores con los que tus clientes ven el portal de tu veterinaria.')
+                Forms\Components\Section::make('Identidad Visual y Colores')
+                    ->description('Personaliza el logo y la paleta de colores de tu clínica')
                     ->schema([
                         Forms\Components\TextInput::make('logo_url')
                             ->label('URL del Logo de la Clínica')
-                            ->placeholder('https://tusitio.com/logo.png')
-                            ->helperText('Pega el enlace de tu logo transparente (PNG/SVG).')
+                            ->placeholder('https://... (o sube tu imagen)')
+                            ->helperText('Pega el enlace de tu logo transparente (PNG/SVG) o URL de Cloudflare R2.')
                             ->columnSpanFull(),
                         Forms\Components\ColorPicker::make('primary_color')
-                            ->label('Color Principal de Botones y Acentos')
+                            ->label('Color Principal (Botones, Acentos, Cards)')
                             ->default('#059669')
                             ->required(),
                         Forms\Components\ColorPicker::make('secondary_color')
-                            ->label('Color de la Barra Superior')
+                            ->label('Color Secundario (Barra Superior)')
                             ->default('#034433')
                             ->required(),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Fotos de la Página Pública')
-                    ->description('Imágenes principales que verán tus tutores de mascotas.')
+                Forms\Components\Section::make('Imágenes del Portal Web')
+                    ->description('Personaliza las fotografías de la página principal.')
                     ->schema([
                         Forms\Components\TextInput::make('hero_image_url')
-                            ->label('Foto Principal (Hero - Perro y Gato)')
+                            ->label('Foto Principal Hero (Mascotas)')
                             ->placeholder('https://images.unsplash.com/...')
-                            ->helperText('Foto que aparece al lado del título principal.'),
+                            ->helperText('Imagen destacada al lado del título.'),
                         Forms\Components\TextInput::make('banner_image_url')
-                            ->label('Foto de la Sección "Así de Fácil"')
+                            ->label('Foto Sección Explicativa')
                             ->placeholder('https://images.unsplash.com/...')
-                            ->helperText('Foto o imagen del consultorio / clínica veterinaria.'),
+                            ->helperText('Foto o banner del consultorio / clínica.'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Datos de Contacto y Ubicación')
                     ->schema([
                         Forms\Components\TextInput::make('phone')
-                            ->label('WhatsApp / Teléfono')
+                            ->label('WhatsApp Oficial')
                             ->placeholder('3508742543')
                             ->required(),
                         Forms\Components\TextInput::make('email')
-                            ->label('Correo Electrónico Oficial')
+                            ->label('Correo Electrónico')
                             ->placeholder('contacto@veterinaria.com')
                             ->email(),
                         Forms\Components\TextInput::make('city')
-                            ->label('Ciudad / Municipio')
+                            ->label('Ciudad')
                             ->placeholder('Cajicá, Cundinamarca')
                             ->required(),
                         Forms\Components\TextInput::make('address')
-                            ->label('Dirección del Consultorio')
+                            ->label('Dirección')
                             ->placeholder('Calle 7 # 4-73 Este')
                             ->required(),
                     ])->columns(2),
@@ -121,7 +122,7 @@ class ClinicSettings extends Page implements HasForms
 
             Notification::make()
                 ->title('¡Marca y Colores actualizados con éxito!')
-                ->body('Los cambios ya se reflejan en tu portal público /v/' . $tenant->slug)
+                ->body('Los cambios ya se reflejan en tu portal /v/' . $tenant->slug)
                 ->success()
                 ->send();
         }

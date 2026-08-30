@@ -3,7 +3,13 @@
     "name": "nodia/avi-saas-laravel",
     "type": "project",
     "description": "Multi-Tenant Pet Health Membership SaaS Platform.",
-    "keywords": ["laravel", "framework", "filament", "saas", "multi-tenant"],
+    "keywords": [
+        "laravel",
+        "framework",
+        "filament",
+        "saas",
+        "multi-tenant"
+    ],
     "license": "proprietary",
     "require": {
         "php": "^8.2",
@@ -11,7 +17,8 @@
         "guzzlehttp/guzzle": "^7.8",
         "laravel/framework": "^11.0|^12.0",
         "laravel/tinker": "^2.9",
-        "livewire/livewire": "^3.4"
+        "livewire/livewire": "^3.4",
+        "league/flysystem-aws-s3-v3": "^3.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
