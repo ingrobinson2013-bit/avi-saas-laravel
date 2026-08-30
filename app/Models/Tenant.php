@@ -25,6 +25,11 @@ class Tenant extends Model
         'is_active' => 'boolean',
     ];
 
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class);
+    }
+
     public function customers(): HasMany
     {
         return $this->hasMany(Customer::class);
@@ -33,5 +38,10 @@ class Tenant extends Model
     public function plans(): HasMany
     {
         return $this->hasMany(Plan::class);
+    }
+
+    public function benefitDefinitions(): HasMany
+    {
+        return $this->hasMany(BenefitDefinition::class);
     }
 }
