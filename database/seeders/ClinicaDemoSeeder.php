@@ -35,12 +35,22 @@ class ClinicaDemoSeeder extends Seeder
             ]
         );
 
-        // 2. Crear o Recuperar Usuario Administrador
+        // 2. Crear o Recuperar Super Administrador del SaaS (Robinson)
+        User::firstOrCreate(
+            ['email' => 'superadmin@aviplan.co'],
+            [
+                'name' => 'Robinson Naranjo (CEO NODIA)',
+                'password' => Hash::make('Ashley2023##'),
+                'role' => 'super_admin',
+            ]
+        );
+
+        // Crear o Recuperar Usuario Administrador de Clínica Demo
         $admin = User::firstOrCreate(
             ['email' => 'admin@patitasfelices.com'],
             [
                 'tenant_id' => $tenant->id,
-                'name' => 'Dr. Robinson Naranjo',
+                'name' => 'Dr. Robinson Naranjo (Veterinario Demo)',
                 'password' => Hash::make('Ashley2023##'),
                 'role' => 'clinic_admin',
             ]
