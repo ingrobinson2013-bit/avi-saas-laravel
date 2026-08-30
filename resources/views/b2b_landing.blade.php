@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
+<html lang="es" class="h-full bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950 overflow-x-hidden">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>AVI-Plan — La Plataforma SaaS Marca Blanca de Salud Prepagada para Veterinarias</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,11 +15,11 @@
         .glow { box-shadow: 0 0 50px -10px rgba(16, 185, 129, 0.3); }
     </style>
 </head>
-<body class="min-h-full flex flex-col justify-between">
+<body class="min-h-full flex flex-col justify-between overflow-x-hidden">
 
     <!-- NAVBAR B2B -->
     <header class="sticky top-0 z-50 glass border-b border-slate-800/80">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-sky-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
                     <svg class="w-6 h-6 text-slate-950 font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
