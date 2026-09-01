@@ -170,8 +170,8 @@
                         </div>
                     </div>
 
-                    <!-- COLUMNA DERECHA: CARNET DIGITAL 3D HOLOGRÁFICO CON IDENTIDAD DE LA CLÍNICA -->
-                    <div class="lg:col-span-5 relative mt-4 lg:mt-0">
+                    <!-- COLUMNA DERECHA: CARNET DIGITAL 3D + FOTO PRINCIPAL DE PACIENTES -->
+                    <div class="lg:col-span-5 relative mt-4 lg:mt-0 space-y-4">
                         <div class="mx-auto max-w-sm sm:max-w-md space-y-4">
                             
                             <!-- CARNET DIGITAL CON LOGO Y COLORES CORPORATIVOS -->
@@ -236,14 +236,20 @@
                                 </div>
                             </div>
 
-                            <!-- Estado de Atención -->
-                            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between text-xs">
-                                <div class="flex items-center space-x-2.5">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-                                    <span class="font-bold text-slate-700">Atención médica en {{ $city }}</span>
+                            <!-- FOTO DESTACADA SUBIDA POR LA CLÍNICA (HERO) -->
+                            @if(!empty($heroImage))
+                                <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3.5">
+                                    <img src="{{ $heroImage }}" alt="Paciente de {{ $tenant->name }}" class="h-14 w-20 object-cover rounded-xl border border-slate-100 shrink-0">
+                                    <div class="min-w-0">
+                                        <div class="flex items-center space-x-1.5 text-[10px] font-black text-teal-700 uppercase">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                            <span>Atención en {{ $city }}</span>
+                                        </div>
+                                        <p class="text-xs font-black text-slate-900 truncate">{{ $tenant->name }}</p>
+                                        <p class="text-[11px] text-slate-500 font-medium truncate">Cuidado médico preventivo de alta calidad</p>
+                                    </div>
                                 </div>
-                                <a href="#planes" class="text-brand-primary font-black hover:underline">Afiliarme ahora →</a>
-                            </div>
+                            @endif
 
                         </div>
                     </div>
@@ -554,7 +560,7 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-6xl mx-auto">
                     
-                    <!-- Cover Photo o Video Principal -->
+                    <!-- Media Principal (Video o Foto de Portada) -->
                     <div class="lg:col-span-7 rounded-3xl overflow-hidden shadow-xl border border-slate-200 bg-slate-900 relative aspect-video flex items-center justify-center group">
                         @if(!empty($bannerVideo))
                             <video class="w-full h-full object-cover" controls autoplay muted loop playsinline poster="{{ $bannerImage }}">
@@ -576,9 +582,18 @@
                         </div>
                     </div>
 
-                    <!-- Datos de la Clínica & Foto Secundaria de Pacientes -->
+                    <!-- Datos de la Clínica & Galería de Fotos del Consultorio -->
                     <div class="lg:col-span-5 space-y-5">
-                        @if(!empty($heroImage))
+                        
+                        <!-- Si hay video, mostramos aquí la Foto de Portada / Instalaciones; si no, la Foto Hero -->
+                        @if(!empty($bannerVideo) && !empty($bannerImage))
+                            <div class="rounded-3xl overflow-hidden shadow-md border border-slate-200 aspect-[16/9] relative group">
+                                <img src="{{ $bannerImage }}" alt="Instalaciones de {{ $tenant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                                <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black text-slate-900 shadow-sm border border-slate-100">
+                                    🏥 Instalaciones
+                                </div>
+                            </div>
+                        @elseif(!empty($heroImage))
                             <div class="rounded-3xl overflow-hidden shadow-md border border-slate-200 aspect-[16/9] relative group">
                                 <img src="{{ $heroImage }}" alt="Pacientes de {{ $tenant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
                                 <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black text-slate-900 shadow-sm border border-slate-100">
