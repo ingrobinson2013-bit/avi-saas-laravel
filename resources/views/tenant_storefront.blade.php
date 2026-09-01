@@ -861,9 +861,85 @@
                     </div>
                 </div>
 
-                <p class="text-center text-[11px] text-slate-400 mt-8 font-medium">
-                    * El proceso para solicitar los beneficios una vez activos será siempre a través de nuestra línea única de atención <strong>{{ $tenant->branding['phone'] ?? '350 874 2543' }}</strong>. Los servicios descritos están incluidos en el plan; la entrega o suministro de estos puede generar un valor adicional según condiciones particulares.
-                </p>
+        <!-- 7.5. INSTALACIONES & CONSULTORIO VETERINARIO (FOTOS & VIDEO) -->
+        <section id="instalaciones" class="py-14 sm:py-20 bg-slate-50 border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center space-y-3 mb-10">
+                    <div class="inline-flex items-center space-x-2 bg-sky-100 text-sky-800 text-xs font-bold px-3 py-1 rounded-full border border-sky-200">
+                        <span>🏥 Cuidado Presencial & Instalaciones</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                        Conoce el Consultorio de {{ $tenant->name }}
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto">
+                        Ubicados en <strong>{{ $tenant->branding['city'] ?? 'Cajicá, Cundinamarca' }}</strong> para brindarle a tu mascota la mejor atención médica con tecnología y cariño.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-6xl mx-auto">
+                    
+                    <!-- Media Principal (Video o Foto de Portada) -->
+                    <div class="lg:col-span-7 rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900 relative aspect-video flex items-center justify-center group">
+                        @if(!empty($bannerVideo))
+                            <video class="w-full h-full object-cover" controls autoplay muted loop playsinline poster="{{ $bannerImage }}">
+                                <source src="{{ $bannerVideo }}" type="video/mp4">
+                                Tu navegador no soporta el reproductor de video.
+                            </video>
+                        @elseif(!empty($bannerImage))
+                            <img src="{{ $bannerImage }}" alt="Instalaciones de {{ $tenant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                        @else
+                            <img src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=1000" alt="Consultorio Veterinario" class="w-full h-full object-cover" loading="lazy">
+                        @endif
+
+                        <div class="absolute bottom-3 left-3 right-3 bg-slate-950/80 backdrop-blur-md p-3 rounded-2xl text-white flex items-center justify-between text-xs border border-white/10">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-base">📍</span>
+                                <span class="font-bold text-[11px] truncate">{{ $tenant->branding['address'] ?? 'Calle 7 # 4-73 Este' }}</span>
+                            </div>
+                            <span class="text-[10px] text-emerald-400 font-extrabold bg-emerald-950/60 px-2 py-0.5 rounded-full">Abierto Lunes a Sábado</span>
+                        </div>
+                    </div>
+
+                    <!-- Datos de la Clínica & Foto Secundaria / Hero -->
+                    <div class="lg:col-span-5 space-y-5">
+                        @if(!empty($heroImage))
+                            <div class="rounded-2xl overflow-hidden shadow-md border-2 border-white aspect-[16/9] relative group">
+                                <img src="{{ $heroImage }}" alt="Mascotas y Atención en {{ $tenant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                                <div class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full text-[10px] font-black text-slate-900 shadow-sm">
+                                    🐾 Pacientes Felices
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                            <h3 class="font-extrabold text-sm sm:text-base text-slate-900 flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                Información de Atención Presencial
+                            </h3>
+
+                            <div class="space-y-2.5 text-xs text-slate-600">
+                                <div class="flex items-start gap-2.5">
+                                    <span class="text-slate-400 font-bold">📍 Dirección:</span>
+                                    <span class="font-bold text-slate-900">{{ $tenant->branding['address'] ?? 'Calle 7 # 4-73 Este (hacia El Parasol rojo)' }}</span>
+                                </div>
+                                <div class="flex items-start gap-2.5">
+                                    <span class="text-slate-400 font-bold">🏙️ Ciudad:</span>
+                                    <span class="font-bold text-slate-900">{{ $tenant->branding['city'] ?? 'Cajicá, Cundinamarca' }}</span>
+                                </div>
+                                <div class="flex items-start gap-2.5">
+                                    <span class="text-slate-400 font-bold">📞 Teléfono / WhatsApp:</span>
+                                    <span class="font-bold text-emerald-600">{{ $tenant->branding['phone'] ?? '3508742543' }}</span>
+                                </div>
+                            </div>
+
+                            <a href="https://wa.me/57{{ $tenant->branding['phone'] ?? '3508742543' }}?text=Hola,%20quiero%20conocer%20la%20ubicaci%C3%B3n%20y%20agendar%20visita%20en%20{{ urlencode($tenant->name) }}" target="_blank" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2">
+                                <span>💬 Cómo Llegar por WhatsApp</span>
+                                <span>↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </section>
 
