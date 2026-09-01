@@ -53,11 +53,11 @@ class ClinicSettings extends Page implements HasForms
         return $form
             ->schema([
                 Forms\Components\Section::make('Identidad Visual y Colores de la Veterinaria')
-                    ->description('Sube tu logo oficial y personaliza la paleta corporativa.')
+                    ->description('Sube tu logo oficial y personaliza la paleta corporativa (Almacenamiento Cloudflare R2).')
                     ->schema([
                         Forms\Components\FileUpload::make('logo_file')
                             ->label('Logo Oficial de la Veterinaria')
-                            ->disk('public')
+                            ->disk('r2')
                             ->directory('tenants/logos')
                             ->visibility('public')
                             ->image()
@@ -78,11 +78,11 @@ class ClinicSettings extends Page implements HasForms
                     ])->columns(2),
 
                 Forms\Components\Section::make('Fotografías y Video del Portal')
-                    ->description('Sube las imágenes y video corto de tu consultorio y pacientes.')
+                    ->description('Sube las imágenes y video corto de tu consultorio y pacientes a la nube.')
                     ->schema([
                         Forms\Components\FileUpload::make('hero_file')
                             ->label('Foto Principal (Banner Superior Mascotas)')
-                            ->disk('public')
+                            ->disk('r2')
                             ->directory('tenants/heroes')
                             ->visibility('public')
                             ->image()
@@ -92,7 +92,7 @@ class ClinicSettings extends Page implements HasForms
 
                         Forms\Components\FileUpload::make('banner_file')
                             ->label('Foto de Portada / Instalaciones')
-                            ->disk('public')
+                            ->disk('r2')
                             ->directory('tenants/banners')
                             ->visibility('public')
                             ->image()
@@ -102,7 +102,7 @@ class ClinicSettings extends Page implements HasForms
 
                         Forms\Components\FileUpload::make('banner_video_file')
                             ->label('Video Corto Promocional o de la Clínica (Máx 50 MB)')
-                            ->disk('public')
+                            ->disk('r2')
                             ->directory('tenants/videos')
                             ->visibility('public')
                             ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/quicktime'])
@@ -145,38 +145,38 @@ class ClinicSettings extends Page implements HasForms
             $branding['primary_color'] = $state['primary_color'] ?? '#0284c7';
             $branding['secondary_color'] = $state['secondary_color'] ?? '#0f172a';
 
-            $disk = 'public';
+            $r2BaseUrl = rtrim(config('filesystems.disks.r2.url', 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev'), '/');
 
-            // 1. Logo (Optimizado a máx 400px WebP)
+            // 1. Logo (Optimizado a máx 400px WebP en Cloudflare R2)
             if (!empty($state['logo_file'])) {
-                $optimizedPath = ImageOptimizerService::optimizeToWebp($disk, $state['logo_file'], maxWidth: 400, quality: 85);
+                $optimizedPath = ImageOptimizerService::optimizeToWebp('r2', $state['logo_file'], maxWidth: 400, quality: 85);
                 $branding['logo_path'] = $optimizedPath;
-                $branding['logo_url'] = Storage::disk('public')->url($optimizedPath);
+                $branding['logo_url'] = $r2BaseUrl . '/' . ltrim($optimizedPath, '/');
             }
 
-            // 2. Foto Hero (Optimizado a máx 1200px WebP)
+            // 2. Foto Hero (Optimizado a máx 1200px WebP en Cloudflare R2)
             if (!empty($state['hero_file'])) {
-                $optimizedPath = ImageOptimizerService::optimizeToWebp($disk, $state['hero_file'], maxWidth: 1200, quality: 80);
+                $optimizedPath = ImageOptimizerService::optimizeToWebp('r2', $state['hero_file'], maxWidth: 1200, quality: 80);
                 $branding['hero_path'] = $optimizedPath;
-                $branding['hero_image_url'] = Storage::disk('public')->url($optimizedPath);
+                $branding['hero_image_url'] = $r2BaseUrl . '/' . ltrim($optimizedPath, '/');
             }
 
-            // 3. Banner Foto (Optimizado a máx 1200px WebP)
+            // 3. Banner Foto (Optimizado a máx 1200px WebP en Cloudflare R2)
             if (!empty($state['banner_file'])) {
-                $optimizedPath = ImageOptimizerService::optimizeToWebp($disk, $state['banner_file'], maxWidth: 1200, quality: 80);
+                $optimizedPath = ImageOptimizerService::optimizeToWebp('r2', $state['banner_file'], maxWidth: 1200, quality: 80);
                 $branding['banner_path'] = $optimizedPath;
-                $branding['banner_image_url'] = Storage::disk('public')->url($optimizedPath);
+                $branding['banner_image_url'] = $r2BaseUrl . '/' . ltrim($optimizedPath, '/');
             }
 
-            // 4. Video Corto
+            // 4. Video Corto en Cloudflare R2
             if (!empty($state['banner_video_file'])) {
                 $branding['banner_video_path'] = $state['banner_video_file'];
-                $branding['banner_video_url'] = Storage::disk('public')->url($state['banner_video_file']);
+                $branding['banner_video_url'] = $r2BaseUrl . '/' . ltrim($state['banner_video_file'], '/');
             }
 
             $tenant->update(['branding' => $branding]);
 
-            // Re-llenar el formulario para que los archivos permanezcan visibles
+            // Re-llenar el formulario para que las fotos permanezcan visibles
             $this->form->fill([
                 'name' => $tenant->name,
                 'city' => $branding['city'],
@@ -192,7 +192,7 @@ class ClinicSettings extends Page implements HasForms
             ]);
 
             Notification::make()
-                ->title('¡Marca, Fotos y Logo guardados exitosamente!')
+                ->title('¡Marca, Fotos y Logo guardados en Cloudflare R2!')
                 ->body('Tus cambios ya se encuentran activos en /v/' . $tenant->slug)
                 ->success()
                 ->send();
