@@ -12,7 +12,7 @@ return [
 
     'temporary_file_upload' => [
         'disk' => 'local',
-        'rules' => null,
+        'rules' => ['file', 'max:51200'], // 50MB
         'directory' => 'livewire-tmp',
         'middleware' => null,
         'preview_mimes' => [
@@ -20,7 +20,7 @@ return [
             'mov', 'avi', 'wmv', 'mp3', 'm4a',
             'jpeg', 'mpga', 'webp', 'wma', 'jpg',
         ],
-        'max_upload_time' => 5,
+        'max_upload_time' => 15,
         'cleanup' => true,
     ],
 

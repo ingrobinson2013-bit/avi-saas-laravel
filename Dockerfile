@@ -12,6 +12,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 COPY nginx.conf /etc/nginx/http.d/default.conf
+COPY uploads.ini $PHP_INI_DIR/conf.d/uploads.ini
 
 COPY . /var/www/html
 
@@ -21,6 +22,9 @@ RUN mkdir -p /var/www/html/storage/framework/cache/data \
     /var/www/html/storage/framework/sessions \
     /var/www/html/storage/framework/views \
     /var/www/html/storage/logs \
+    /var/www/html/storage/app/public \
+    /var/www/html/storage/app/private/livewire-tmp \
+    /var/www/html/storage/app/livewire-tmp \
     /var/www/html/bootstrap/cache && \
     chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 
@@ -30,4 +34,4 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 EXPOSE 80
 
-CMD ["sh", "-c", "mkdir -p /var/www/html/storage/logs /var/www/html/storage/framework/views /var/www/html/storage/framework/cache/data /var/www/html/storage/framework/sessions /var/www/html/storage/app/public /var/www/html/bootstrap/cache && chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache && php artisan storage:link --force 2>/dev/null || true && php artisan migrate --force && php artisan db:seed --class=ClinicaDemoSeeder --force 2>/dev/null || true; php-fpm -D && nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "mkdir -p /var/www/html/storage/logs /var/www/html/storage/framework/views /var/www/html/storage/framework/cache/data /var/www/html/storage/framework/sessions /var/www/html/storage/app/public /var/www/html/storage/app/private/livewire-tmp /var/www/html/storage/app/livewire-tmp /var/www/html/bootstrap/cache && chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache && php artisan storage:link --force 2>/dev/null || true && php artisan migrate --force && php artisan db:seed --class=ClinicaDemoSeeder --force 2>/dev/null || true; php-fpm -D && nginx -g 'daemon off;'"]
