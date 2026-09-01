@@ -26,19 +26,6 @@ class ClinicSettings extends Page implements HasForms
 
     public ?array $data = [];
 
-    public static function getUploadDisk(): string
-    {
-        $r2Key = config('filesystems.disks.r2.key');
-        $r2Secret = config('filesystems.disks.r2.secret');
-        $r2Endpoint = config('filesystems.disks.r2.endpoint');
-
-        if (!empty($r2Key) && $r2Key !== 'placeholder-key' && !empty($r2Secret) && !empty($r2Endpoint)) {
-            return 'r2';
-        }
-
-        return 'public';
-    }
-
     public function mount(): void
     {
         $tenant = $this->getTenant();
@@ -63,8 +50,6 @@ class ClinicSettings extends Page implements HasForms
 
     public function form(Form $form): Form
     {
-        $disk = static::getUploadDisk();
-
         return $form
             ->schema([
                 Forms\Components\Section::make('Identidad Visual y Colores de la Veterinaria')
@@ -72,12 +57,12 @@ class ClinicSettings extends Page implements HasForms
                     ->schema([
                         Forms\Components\FileUpload::make('logo_file')
                             ->label('Logo Oficial de la Veterinaria')
-                            ->disk($disk)
+                            ->disk('public')
                             ->directory('tenants/logos')
                             ->visibility('public')
                             ->image()
                             ->imagePreviewHeight('150')
-                            ->maxSize(5120)
+                            ->maxSize(51200)
                             ->helperText('Arrastra tu logo en formato PNG, JPG o SVG.')
                             ->columnSpanFull(),
 
@@ -97,31 +82,31 @@ class ClinicSettings extends Page implements HasForms
                     ->schema([
                         Forms\Components\FileUpload::make('hero_file')
                             ->label('Foto Principal (Banner Superior Mascotas)')
-                            ->disk($disk)
+                            ->disk('public')
                             ->directory('tenants/heroes')
                             ->visibility('public')
                             ->image()
                             ->imagePreviewHeight('160')
-                            ->maxSize(10240)
+                            ->maxSize(51200)
                             ->helperText('Foto que se muestra al lado del título.'),
 
                         Forms\Components\FileUpload::make('banner_file')
                             ->label('Foto de Portada / Instalaciones')
-                            ->disk($disk)
+                            ->disk('public')
                             ->directory('tenants/banners')
                             ->visibility('public')
                             ->image()
                             ->imagePreviewHeight('160')
-                            ->maxSize(10240)
-                            ->helperText('Foto para la sección "Así de fácil".'),
+                            ->maxSize(51200)
+                            ->helperText('Foto para la sección "Conoce Nuestras Instalaciones".'),
 
                         Forms\Components\FileUpload::make('banner_video_file')
-                            ->label('Video Corto Promocional o de la Clínica (Máx 20 MB)')
-                            ->disk($disk)
+                            ->label('Video Corto Promocional o de la Clínica (Máx 50 MB)')
+                            ->disk('public')
                             ->directory('tenants/videos')
                             ->visibility('public')
                             ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/quicktime'])
-                            ->maxSize(20480)
+                            ->maxSize(51200)
                             ->helperText('Video corto de tus instalaciones o bienvenida (MP4 / WebM).')
                             ->columnSpanFull(),
                     ])->columns(2),
@@ -160,53 +145,51 @@ class ClinicSettings extends Page implements HasForms
             $branding['primary_color'] = $state['primary_color'] ?? '#0284c7';
             $branding['secondary_color'] = $state['secondary_color'] ?? '#0f172a';
 
-            $disk = static::getUploadDisk();
-            $r2BaseUrl = rtrim(config('filesystems.disks.r2.url', 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev'), '/');
+            $disk = 'public';
 
             // 1. Logo (Optimizado a máx 400px WebP)
             if (!empty($state['logo_file'])) {
                 $optimizedPath = ImageOptimizerService::optimizeToWebp($disk, $state['logo_file'], maxWidth: 400, quality: 85);
                 $branding['logo_path'] = $optimizedPath;
-                if ($disk === 'r2') {
-                    $branding['logo_url'] = $r2BaseUrl . '/' . ltrim($optimizedPath, '/');
-                } else {
-                    $branding['logo_url'] = Storage::disk('public')->url($optimizedPath);
-                }
+                $branding['logo_url'] = Storage::disk('public')->url($optimizedPath);
             }
 
             // 2. Foto Hero (Optimizado a máx 1200px WebP)
             if (!empty($state['hero_file'])) {
                 $optimizedPath = ImageOptimizerService::optimizeToWebp($disk, $state['hero_file'], maxWidth: 1200, quality: 80);
                 $branding['hero_path'] = $optimizedPath;
-                if ($disk === 'r2') {
-                    $branding['hero_image_url'] = $r2BaseUrl . '/' . ltrim($optimizedPath, '/');
-                } else {
-                    $branding['hero_image_url'] = Storage::disk('public')->url($optimizedPath);
-                }
+                $branding['hero_image_url'] = Storage::disk('public')->url($optimizedPath);
             }
 
             // 3. Banner Foto (Optimizado a máx 1200px WebP)
             if (!empty($state['banner_file'])) {
                 $optimizedPath = ImageOptimizerService::optimizeToWebp($disk, $state['banner_file'], maxWidth: 1200, quality: 80);
                 $branding['banner_path'] = $optimizedPath;
-                if ($disk === 'r2') {
-                    $branding['banner_image_url'] = $r2BaseUrl . '/' . ltrim($optimizedPath, '/');
-                } else {
-                    $branding['banner_image_url'] = Storage::disk('public')->url($optimizedPath);
-                }
+                $branding['banner_image_url'] = Storage::disk('public')->url($optimizedPath);
             }
 
             // 4. Video Corto
             if (!empty($state['banner_video_file'])) {
                 $branding['banner_video_path'] = $state['banner_video_file'];
-                if ($disk === 'r2') {
-                    $branding['banner_video_url'] = $r2BaseUrl . '/' . ltrim($state['banner_video_file'], '/');
-                } else {
-                    $branding['banner_video_url'] = Storage::disk('public')->url($state['banner_video_file']);
-                }
+                $branding['banner_video_url'] = Storage::disk('public')->url($state['banner_video_file']);
             }
 
             $tenant->update(['branding' => $branding]);
+
+            // Re-llenar el formulario para que los archivos permanezcan visibles
+            $this->form->fill([
+                'name' => $tenant->name,
+                'city' => $branding['city'],
+                'address' => $branding['address'],
+                'phone' => $branding['phone'],
+                'email' => $branding['email'],
+                'primary_color' => $branding['primary_color'],
+                'secondary_color' => $branding['secondary_color'],
+                'logo_file' => $branding['logo_path'] ?? null,
+                'hero_file' => $branding['hero_path'] ?? null,
+                'banner_file' => $branding['banner_path'] ?? null,
+                'banner_video_file' => $branding['banner_video_path'] ?? null,
+            ]);
 
             Notification::make()
                 ->title('¡Marca, Fotos y Logo guardados exitosamente!')
@@ -216,7 +199,7 @@ class ClinicSettings extends Page implements HasForms
         }
     }
 
-    protected function getTenant(): ?Tenant
+    public function getTenant(): ?Tenant
     {
         return Filament::getTenant() ?? auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
     }
