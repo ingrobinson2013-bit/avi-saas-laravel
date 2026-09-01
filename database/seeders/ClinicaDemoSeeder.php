@@ -20,7 +20,7 @@ class ClinicaDemoSeeder extends Seeder
     public function run(): void
     {
         // 1. Clínica Vet-Pet Patitas (Tenant Piloto)
-        $tenant = Tenant::updateOrCreate(
+        $tenant = Tenant::firstOrCreate(
             ['slug' => 'vet-pet-patitas'],
             [
                 'name' => 'Vet-Pet Patitas Consultorio Veterinario',
