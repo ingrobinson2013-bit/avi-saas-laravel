@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Storage;
+use App\Services\ImageOptimizerService;
 
 class ClinicSettings extends Page implements HasForms
 {
@@ -162,33 +163,36 @@ class ClinicSettings extends Page implements HasForms
             $disk = static::getUploadDisk();
             $r2BaseUrl = rtrim(config('filesystems.disks.r2.url', 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev'), '/');
 
-            // 1. Logo
+            // 1. Logo (Optimizado a máx 400px WebP)
             if (!empty($state['logo_file'])) {
-                $branding['logo_path'] = $state['logo_file'];
+                $optimizedPath = ImageOptimizerService::optimizeToWebp($disk, $state['logo_file'], maxWidth: 400, quality: 85);
+                $branding['logo_path'] = $optimizedPath;
                 if ($disk === 'r2') {
-                    $branding['logo_url'] = $r2BaseUrl . '/' . ltrim($state['logo_file'], '/');
+                    $branding['logo_url'] = $r2BaseUrl . '/' . ltrim($optimizedPath, '/');
                 } else {
-                    $branding['logo_url'] = Storage::disk('public')->url($state['logo_file']);
+                    $branding['logo_url'] = Storage::disk('public')->url($optimizedPath);
                 }
             }
 
-            // 2. Foto Hero
+            // 2. Foto Hero (Optimizado a máx 1200px WebP)
             if (!empty($state['hero_file'])) {
-                $branding['hero_path'] = $state['hero_file'];
+                $optimizedPath = ImageOptimizerService::optimizeToWebp($disk, $state['hero_file'], maxWidth: 1200, quality: 80);
+                $branding['hero_path'] = $optimizedPath;
                 if ($disk === 'r2') {
-                    $branding['hero_image_url'] = $r2BaseUrl . '/' . ltrim($state['hero_file'], '/');
+                    $branding['hero_image_url'] = $r2BaseUrl . '/' . ltrim($optimizedPath, '/');
                 } else {
-                    $branding['hero_image_url'] = Storage::disk('public')->url($state['hero_file']);
+                    $branding['hero_image_url'] = Storage::disk('public')->url($optimizedPath);
                 }
             }
 
-            // 3. Banner Foto
+            // 3. Banner Foto (Optimizado a máx 1200px WebP)
             if (!empty($state['banner_file'])) {
-                $branding['banner_path'] = $state['banner_file'];
+                $optimizedPath = ImageOptimizerService::optimizeToWebp($disk, $state['banner_file'], maxWidth: 1200, quality: 80);
+                $branding['banner_path'] = $optimizedPath;
                 if ($disk === 'r2') {
-                    $branding['banner_image_url'] = $r2BaseUrl . '/' . ltrim($state['banner_file'], '/');
+                    $branding['banner_image_url'] = $r2BaseUrl . '/' . ltrim($optimizedPath, '/');
                 } else {
-                    $branding['banner_image_url'] = Storage::disk('public')->url($state['banner_file']);
+                    $branding['banner_image_url'] = Storage::disk('public')->url($optimizedPath);
                 }
             }
 
