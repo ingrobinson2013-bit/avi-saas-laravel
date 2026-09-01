@@ -46,56 +46,56 @@
 <body class="min-h-full flex flex-col justify-between bg-white overflow-x-hidden">
 
     <!-- 1. TOP BAR DE ATENCIÓN MÉDICA -->
-    <div class="bg-slate-900 text-white text-xs font-semibold py-2 px-3 sm:px-4 border-b border-slate-800">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-2 text-center sm:text-left">
+    <div class="bg-slate-950 text-white text-xs font-semibold py-2 px-3 sm:px-6 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4 text-center sm:text-left">
             <div class="flex items-center space-x-2 text-teal-200 text-[11px] sm:text-xs">
                 <span class="animate-pulse">🩺</span>
-                <span>Planes de Bienestar & Salud Preventiva • {{ $tenant->name }}</span>
+                <span class="font-bold">Planes de Bienestar & Salud Preventiva • {{ $tenant->name }}</span>
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3 shrink-0">
                 <a href="https://wa.me/57{{ preg_replace('/[^0-9]/', '', $phone) }}" target="_blank" class="flex items-center space-x-1.5 hover:text-teal-300 transition-colors text-[11px] sm:text-xs">
-                    <svg class="w-3.5 h-3.5 fill-current text-teal-400" viewBox="0 0 24 24">
+                    <svg class="w-3.5 h-3.5 fill-current text-teal-400 shrink-0" viewBox="0 0 24 24">
                         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
                     </svg>
-                    <span>Línea de Urgencias & Citas:</span>
+                    <span>Línea Oficial:</span>
                     <span class="text-white font-bold">{{ $phone }}</span>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- 2. NAVBAR CON IDENTIDAD DE MARCA -->
+    <!-- 2. NAVBAR CON IDENTIDAD DE MARCA COMPLETA -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-xs">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
-            <div class="flex items-center space-x-3 min-w-0">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4">
+            <div class="flex items-center space-x-2.5 sm:space-x-3.5 min-w-0">
                 @if(!empty($logoUrl))
-                    <img src="{{ $logoUrl }}" alt="{{ $tenant->name }}" class="h-10 sm:h-12 w-auto max-w-[150px] object-contain rounded-lg shrink-0 shadow-xs" loading="lazy">
+                    <img src="{{ $logoUrl }}" alt="{{ $tenant->name }}" class="h-10 sm:h-12 w-auto max-h-12 object-contain rounded-xl shrink-0 shadow-xs" loading="lazy">
                 @else
                     <div class="w-10 h-10 rounded-xl bg-brand-primary flex items-center justify-center text-white text-xl shadow-md shrink-0">
                         🐾
                     </div>
                 @endif
                 <div class="min-w-0">
-                    <span class="text-base sm:text-lg font-black tracking-tight text-slate-900 truncate block">{{ $tenant->name }}</span>
-                    <span class="inline-block text-[11px] font-bold text-teal-700 dark:text-teal-600 truncate">📍 {{ $city }}</span>
+                    <span class="text-sm sm:text-base lg:text-lg font-black tracking-tight text-slate-900 leading-tight block">{{ $tenant->name }}</span>
+                    <span class="inline-block text-[10px] sm:text-xs font-bold text-teal-700">📍 {{ $city }}</span>
                 </div>
             </div>
 
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-bold text-slate-600">
-                <a href="#planes" class="hover:text-brand-primary transition-colors">Planes de Salud</a>
+            <nav class="hidden lg:flex items-center space-x-7 text-sm font-bold text-slate-600 shrink-0">
+                <a href="#planes" class="hover:text-brand-primary transition-colors">Planes</a>
                 <a href="#calculadora" class="hover:text-brand-primary transition-colors flex items-center space-x-1">
-                    <span>🧮 Calculadora de Ahorro</span>
-                    <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full">Calcular</span>
+                    <span>🧮 Calculadora</span>
+                    <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-1.5 py-0.5 rounded-full">Ahorro</span>
                 </a>
                 <a href="#instalaciones" class="hover:text-brand-primary transition-colors">Instalaciones</a>
                 <a href="#faq" class="hover:text-brand-primary transition-colors">Preguntas</a>
             </nav>
 
-            <div class="flex items-center space-x-3 shrink-0">
-                <a href="/admin/{{ $tenant->slug }}" class="hidden sm:inline-block px-4 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all">
-                    Acceso Clínica
+            <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+                <a href="/admin/{{ $tenant->slug }}" class="hidden sm:inline-block px-3.5 sm:px-4 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all">
+                    Panel
                 </a>
-                <a href="#planes" class="px-5 py-2.5 text-xs sm:text-sm font-black text-white bg-brand-primary hover:opacity-90 rounded-full shadow-md transition-all whitespace-nowrap">
+                <a href="#planes" class="px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-black text-white bg-brand-primary hover:opacity-90 rounded-full shadow-md transition-all whitespace-nowrap">
                     Afiliar Mascota 🐾
                 </a>
             </div>
