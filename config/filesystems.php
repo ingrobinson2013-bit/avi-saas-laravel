@@ -23,11 +23,11 @@ return [
 
         'r2' => [
             'driver' => 's3',
-            'key' => env('CLOUDFLARE_R2_ACCESS_KEY_ID', env('AWS_ACCESS_KEY_ID')),
-            'secret' => env('CLOUDFLARE_R2_SECRET_ACCESS_KEY', env('AWS_SECRET_ACCESS_KEY')),
+            'key' => env('CLOUDFLARE_R2_ACCESS_KEY_ID', env('AWS_ACCESS_KEY_ID', 'placeholder-key')),
+            'secret' => env('CLOUDFLARE_R2_SECRET_ACCESS_KEY', env('AWS_SECRET_ACCESS_KEY', 'placeholder-secret')),
             'region' => 'auto',
-            'bucket' => env('CLOUDFLARE_R2_BUCKET', env('AWS_BUCKET')),
-            'url' => env('CLOUDFLARE_R2_URL', env('AWS_URL')),
+            'bucket' => env('CLOUDFLARE_R2_BUCKET', env('AWS_BUCKET', 'avi-saas-media')),
+            'url' => env('CLOUDFLARE_R2_URL', env('AWS_URL', 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev')),
             'endpoint' => env('CLOUDFLARE_R2_ENDPOINT', env('AWS_ENDPOINT')),
             'use_path_style_endpoint' => env('CLOUDFLARE_R2_USE_PATH_STYLE_ENDPOINT', false),
             'visibility' => 'public',
@@ -36,10 +36,10 @@ return [
 
         's3' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'key' => env('AWS_ACCESS_KEY_ID', 'placeholder-key'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY', 'placeholder-secret'),
             'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
-            'bucket' => env('AWS_BUCKET'),
+            'bucket' => env('AWS_BUCKET', 'avi-saas-media'),
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),

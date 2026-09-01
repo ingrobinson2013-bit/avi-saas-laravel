@@ -25,6 +25,19 @@ class ClinicSettings extends Page implements HasForms
 
     public ?array $data = [];
 
+    public static function getUploadDisk(): string
+    {
+        $r2Key = config('filesystems.disks.r2.key');
+        $r2Secret = config('filesystems.disks.r2.secret');
+        $r2Endpoint = config('filesystems.disks.r2.endpoint');
+
+        if (!empty($r2Key) && $r2Key !== 'placeholder-key' && !empty($r2Secret) && !empty($r2Endpoint)) {
+            return 'r2';
+        }
+
+        return 'public';
+    }
+
     public function mount(): void
     {
         $tenant = $this->getTenant();
@@ -49,6 +62,8 @@ class ClinicSettings extends Page implements HasForms
 
     public function form(Form $form): Form
     {
+        $disk = static::getUploadDisk();
+
         return $form
             ->schema([
                 Forms\Components\Section::make('Identidad Visual y Colores de la Veterinaria')
@@ -56,13 +71,13 @@ class ClinicSettings extends Page implements HasForms
                     ->schema([
                         Forms\Components\FileUpload::make('logo_file')
                             ->label('Logo Oficial de la Veterinaria')
-                            ->disk('r2')
+                            ->disk($disk)
                             ->directory('tenants/logos')
                             ->visibility('public')
                             ->image()
                             ->imagePreviewHeight('150')
                             ->maxSize(5120)
-                            ->helperText('Arrastra tu logo en formato PNG o SVG (fondo transparente o blanco).')
+                            ->helperText('Arrastra tu logo en formato PNG, JPG o SVG.')
                             ->columnSpanFull(),
 
                         Forms\Components\ColorPicker::make('primary_color')
@@ -81,7 +96,7 @@ class ClinicSettings extends Page implements HasForms
                     ->schema([
                         Forms\Components\FileUpload::make('hero_file')
                             ->label('Foto Principal (Banner Superior Mascotas)')
-                            ->disk('r2')
+                            ->disk($disk)
                             ->directory('tenants/heroes')
                             ->visibility('public')
                             ->image()
@@ -91,7 +106,7 @@ class ClinicSettings extends Page implements HasForms
 
                         Forms\Components\FileUpload::make('banner_file')
                             ->label('Foto de Portada / Instalaciones')
-                            ->disk('r2')
+                            ->disk($disk)
                             ->directory('tenants/banners')
                             ->visibility('public')
                             ->image()
@@ -101,12 +116,12 @@ class ClinicSettings extends Page implements HasForms
 
                         Forms\Components\FileUpload::make('banner_video_file')
                             ->label('Video Corto Promocional o de la Clínica (Máx 20 MB)')
-                            ->disk('r2')
+                            ->disk($disk)
                             ->directory('tenants/videos')
                             ->visibility('public')
                             ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/quicktime'])
                             ->maxSize(20480)
-                            ->helperText('Video corto de tus instalaciones, pacientes o bienvenida (MP4 / WebM). Carga optimizada sin frenar la página.')
+                            ->helperText('Video corto de tus instalaciones o bienvenida (MP4 / WebM).')
                             ->columnSpanFull(),
                     ])->columns(2),
 
@@ -144,36 +159,53 @@ class ClinicSettings extends Page implements HasForms
             $branding['primary_color'] = $state['primary_color'] ?? '#0284c7';
             $branding['secondary_color'] = $state['secondary_color'] ?? '#0f172a';
 
+            $disk = static::getUploadDisk();
             $r2BaseUrl = rtrim(config('filesystems.disks.r2.url', 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev'), '/');
 
             // 1. Logo
             if (!empty($state['logo_file'])) {
                 $branding['logo_path'] = $state['logo_file'];
-                $branding['logo_url'] = $r2BaseUrl . '/' . ltrim($state['logo_file'], '/');
+                if ($disk === 'r2') {
+                    $branding['logo_url'] = $r2BaseUrl . '/' . ltrim($state['logo_file'], '/');
+                } else {
+                    $branding['logo_url'] = Storage::disk('public')->url($state['logo_file']);
+                }
             }
 
             // 2. Foto Hero
             if (!empty($state['hero_file'])) {
                 $branding['hero_path'] = $state['hero_file'];
-                $branding['hero_image_url'] = $r2BaseUrl . '/' . ltrim($state['hero_file'], '/');
+                if ($disk === 'r2') {
+                    $branding['hero_image_url'] = $r2BaseUrl . '/' . ltrim($state['hero_file'], '/');
+                } else {
+                    $branding['hero_image_url'] = Storage::disk('public')->url($state['hero_file']);
+                }
             }
 
             // 3. Banner Foto
             if (!empty($state['banner_file'])) {
                 $branding['banner_path'] = $state['banner_file'];
-                $branding['banner_image_url'] = $r2BaseUrl . '/' . ltrim($state['banner_file'], '/');
+                if ($disk === 'r2') {
+                    $branding['banner_image_url'] = $r2BaseUrl . '/' . ltrim($state['banner_file'], '/');
+                } else {
+                    $branding['banner_image_url'] = Storage::disk('public')->url($state['banner_file']);
+                }
             }
 
             // 4. Video Corto
             if (!empty($state['banner_video_file'])) {
                 $branding['banner_video_path'] = $state['banner_video_file'];
-                $branding['banner_video_url'] = $r2BaseUrl . '/' . ltrim($state['banner_video_file'], '/');
+                if ($disk === 'r2') {
+                    $branding['banner_video_url'] = $r2BaseUrl . '/' . ltrim($state['banner_video_file'], '/');
+                } else {
+                    $branding['banner_video_url'] = Storage::disk('public')->url($state['banner_video_file']);
+                }
             }
 
             $tenant->update(['branding' => $branding]);
 
             Notification::make()
-                ->title('¡Marca, Fotos y Video guardados en Cloudflare R2!')
+                ->title('¡Marca, Fotos y Logo guardados exitosamente!')
                 ->body('Tus cambios ya se encuentran activos en /v/' . $tenant->slug)
                 ->success()
                 ->send();
