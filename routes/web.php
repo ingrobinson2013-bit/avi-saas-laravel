@@ -36,3 +36,7 @@ Route::get('/v/{slug}', function (string $slug) {
     $plans = $tenant->plans()->with('planBenefits.benefitDefinition')->where('is_active', true)->get();
     return view('tenant_storefront', compact('tenant', 'plans'));
 });
+
+// 5. Endpoint de Auto-Afiliación Digital de Pacientes B2C
+Route::post('/v/{slug}/afiliar', [App\Http\Controllers\StorefrontEnrollmentController::class, 'store']);
+
