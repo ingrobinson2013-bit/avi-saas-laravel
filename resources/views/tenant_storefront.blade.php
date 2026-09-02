@@ -550,10 +550,11 @@
                 <div class="text-center space-y-2">
                     <span class="text-xs font-black text-brand-primary uppercase tracking-widest">Decide en segundos</span>
                     <h3 class="text-2xl sm:text-3xl font-black text-slate-900">¿Cuál es el mejor plan para tu mascota?</h3>
+                    <p class="sm:hidden text-[11px] text-slate-400 font-bold">↔ Desliza hacia los lados para comparar</p>
                 </div>
 
-                <div class="overflow-x-auto rounded-3xl border border-slate-200 shadow-xs">
-                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                <div class="overflow-x-auto rounded-3xl border border-slate-200 shadow-xs -mx-2 sm:mx-0">
+                    <table class="w-full min-w-[500px] text-left border-collapse text-xs sm:text-sm">
                         <thead>
                             <tr class="bg-slate-50 text-slate-900 border-b border-slate-200">
                                 <th class="p-4 sm:p-5 font-black">Beneficio / Servicio</th>
@@ -1238,7 +1239,7 @@
 
     <!-- MODAL DE AUTO-AFILIACIÓN DIGITAL EN VIVO (STEP-BY-STEP) -->
     <div id="enroll-modal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 relative my-auto animate-in fade-in zoom-in-95 duration-200">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-8 shadow-2xl border border-slate-200 relative my-auto max-h-[92vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
             
             <button type="button" onclick="closeEnrollModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg font-bold w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
                 ✕
