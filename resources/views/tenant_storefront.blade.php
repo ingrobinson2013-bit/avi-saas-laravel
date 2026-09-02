@@ -630,6 +630,170 @@
             </div>
         </section>
 
+        <!-- 06.5. CRONOGRAMA DE ACTIVACIÓN DE SERVICIOS (PERIODOS DE CARENCIA) -->
+        <section id="carencias" class="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+                <div class="text-center space-y-3">
+                    <div class="inline-flex items-center space-x-2 bg-amber-100 text-amber-900 text-xs font-bold px-3 py-1 rounded-full border border-amber-200">
+                        <span>⏳ Modalidad Mensual: Activación Progresiva</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                        Cronograma de Activación de Servicios
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-500 max-w-2xl mx-auto font-medium">
+                        Si eliges pagar mes a mes, los beneficios se habilitan progresivamente. <strong>O paga el año completo y activa el 100% de los servicios el DÍA 1 sin esperas.</strong>
+                    </p>
+
+                    <!-- Selector de Plan en Carencias -->
+                    <div class="pt-2 flex justify-center">
+                        <div class="bg-slate-200/80 p-1 rounded-2xl inline-flex items-center gap-1 shadow-inner text-xs font-bold">
+                            <button type="button" onclick="showCarenciaPlan('basico')" id="btn-car-basico" class="px-4 py-2 rounded-xl bg-white text-slate-900 shadow-xs transition-all">
+                                🐾 Plan Básico
+                            </button>
+                            <button type="button" onclick="showCarenciaPlan('premium')" id="btn-car-premium" class="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all">
+                                💎 Plan Premium
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BLOQUE CARENCIA: PLAN BÁSICO -->
+                <div id="carencia-block-basico" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+                        
+                        <!-- Día 0: Inmediato -->
+                        <div class="bg-white p-5 rounded-2xl border border-teal-200 shadow-xs space-y-2.5">
+                            <span class="inline-block px-2.5 py-0.5 bg-teal-600 text-white font-black text-[10px] rounded-full uppercase">Día 0 (Inmediato)</span>
+                            <h4 class="font-black text-xs text-slate-900">Al Inscribirte:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>Kit de Bienvenida (Cédula + Placa)</li>
+                                <li>Apertura de Historia Clínica</li>
+                                <li>1ra Desparasitación interna</li>
+                                <li>Consultas virtuales ILIMITADAS (L-D)</li>
+                                <li>Dctos en medicamentos y tienda</li>
+                            </ul>
+                        </div>
+
+                        <!-- 30 Días (Mes 1+) -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
+                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 30 Días</span>
+                            <h4 class="font-black text-xs text-slate-900">Mes 1+:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>1ra Consulta presencial</li>
+                                <li>Chequeo médico preventivo</li>
+                                <li>Inyectología de estabilización (hasta $20k)</li>
+                                <li>Recordatorios de salud preventiva</li>
+                            </ul>
+                        </div>
+
+                        <!-- 90 Días (3 Meses+) -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
+                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 90 Días</span>
+                            <h4 class="font-black text-xs text-slate-900">3 Meses+:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>Todo lo anterior activo</li>
+                                <li>Desparasitación externa antipulgas (Credelio o pipeta)</li>
+                                <li>2da Consulta presencial</li>
+                            </ul>
+                        </div>
+
+                        <!-- 180 Días (6 Meses+) -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
+                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 180 Días</span>
+                            <h4 class="font-black text-xs text-slate-900">6 Meses+:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>Todo lo anterior activo</li>
+                                <li>Vacunación anual completa (Pentavalente + Rabia)</li>
+                                <li>Examen de laboratorio (Hemograma o Perfil)</li>
+                                <li>Citología de oídos</li>
+                            </ul>
+                        </div>
+
+                        <!-- 240 Días (8 Meses+) -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5 sm:col-span-2 lg:col-span-1">
+                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 240 Días</span>
+                            <h4 class="font-black text-xs text-slate-900">8 Meses+:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>Todo lo anterior activo</li>
+                                <li>2 Baños y peluquería médica</li>
+                                <li>Servicio Funerario con 10% Dcto</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- BLOQUE CARENCIA: PLAN PREMIUM -->
+                <div id="carencia-block-premium" class="space-y-4 hidden">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                        
+                        <!-- Día 0: Inmediato -->
+                        <div class="bg-white p-5 rounded-2xl border border-purple-200 shadow-xs space-y-2.5">
+                            <span class="inline-block px-2.5 py-0.5 bg-purple-600 text-white font-black text-[10px] rounded-full uppercase">Día 0 (Inmediato)</span>
+                            <h4 class="font-black text-xs text-slate-900">Al Inscribirte:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>Kit de Bienvenida Premium</li>
+                                <li>1ra Desparasitación interna</li>
+                                <li>Consultas virtuales ILIMITADAS (24/7)</li>
+                                <li>Historia clínica digital</li>
+                                <li>Dctos preferenciales en farmacia</li>
+                            </ul>
+                        </div>
+
+                        <!-- 30 Días (Mes 1+) -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
+                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 30 Días</span>
+                            <h4 class="font-black text-xs text-slate-900">Mes 1+:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>1ra Consulta presencial especializada</li>
+                                <li>Inyectología de estabilización ($20k)</li>
+                                <li>1ra Desparasitación externa (Credelio)</li>
+                            </ul>
+                        </div>
+
+                        <!-- 90 - 180 Días -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
+                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">90 - 180 Días</span>
+                            <h4 class="font-black text-xs text-slate-900">Diagnóstico Avanzado:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>Vacunación anual completa</li>
+                                <li>2da Desparasitación externa (Credelio)</li>
+                                <li>2 Exámenes de Laboratorio (Hemograma + Bioquímica)</li>
+                                <li>1 Ecografía Abdominal completa</li>
+                            </ul>
+                        </div>
+
+                        <!-- 240 Días (8 Meses+) -->
+                        <div class="bg-white p-5 rounded-2xl border border-purple-300 shadow-xs space-y-2.5">
+                            <span class="inline-block px-2.5 py-0.5 bg-purple-700 text-white font-black text-[10px] rounded-full uppercase">A los 240 Días</span>
+                            <h4 class="font-black text-xs text-slate-900">Cobertura Total:</h4>
+                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
+                                <li>Limpieza Dental (Profilaxis) 50% Dcto</li>
+                                <li>Baños y estética médica</li>
+                                <li><strong>Servicio Funerario 100% Gratuito</strong></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- BANNER DESTACADO DE ACTIVACIÓN INMEDIATA CON PAGO ANUAL -->
+                <div class="p-5 sm:p-6 rounded-3xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center space-x-3.5 text-left">
+                        <span class="text-3xl shrink-0">🚀</span>
+                        <div>
+                            <h4 class="font-black text-sm text-slate-900">¿Quieres todos los servicios activos desde el DÍA 1?</h4>
+                            <p class="text-xs text-slate-600">Elige la modalidad de <strong>Pago Anual Anticipado</strong>: ahorras 10%, no pagas inscripción y <strong>desbloqueas el 100% de los beneficios de inmediato sin esperar días de carencia</strong>.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="setBillingCycle('annual'); openEnrollModal(selectedPlan);" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-full shadow-md shrink-0 whitespace-nowrap">
+                        ⭐ Activar Plan Anual sin Carencias
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
         <!-- 07. ¿CÓMO FUNCIONA TU MEMBRESÍA? (5 PASOS) -->
         <section id="como-funciona" class="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -1257,6 +1421,26 @@
             } else {
                 content.classList.add('hidden');
                 icon.innerText = '+';
+            }
+        }
+
+        // Carencias Toggle
+        function showCarenciaPlan(plan) {
+            const blockBasico = document.getElementById('carencia-block-basico');
+            const blockPremium = document.getElementById('carencia-block-premium');
+            const btnBasico = document.getElementById('btn-car-basico');
+            const btnPremium = document.getElementById('btn-car-premium');
+
+            if (plan === 'premium') {
+                blockBasico.classList.add('hidden');
+                blockPremium.classList.remove('hidden');
+                btnPremium.className = 'px-4 py-2 rounded-xl bg-purple-700 text-white shadow-xs transition-all';
+                btnBasico.className = 'px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all';
+            } else {
+                blockPremium.classList.add('hidden');
+                blockBasico.classList.remove('hidden');
+                btnBasico.className = 'px-4 py-2 rounded-xl bg-white text-slate-900 shadow-xs transition-all';
+                btnPremium.className = 'px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all';
             }
         }
 
