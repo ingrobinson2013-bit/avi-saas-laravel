@@ -15,7 +15,7 @@ COPY nginx.conf /etc/nginx/http.d/default.conf
 COPY uploads.ini $PHP_INI_DIR/conf.d/uploads.ini
 
 # 1. Copiar manifiestos de dependencias primero para aprovechar la caché de Docker
-COPY composer.json composer.lock ./
+COPY composer.json composer.lock* ./
 
 # 2. Descargar e instalar librerías de PHP/Filament (Caché permanente en capas)
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs
