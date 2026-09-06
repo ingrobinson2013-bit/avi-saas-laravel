@@ -233,20 +233,29 @@ class SubscriptionResource extends Resource
 
                         Notification::make()
                             ->title('Membresía renovada con éxito')
-                            ->body("Saldos de beneficios reiniciados para {$record->pet?->name}.")
+                            ->body("El ciclo para {$record->pet?->name} ahora está activo hasta el " . $record->current_period_end->format('d/m/Y') . ".")
                             ->success()
                             ->send();
                     }),
 
-                Tables\Actions\Action::make('whatsapp')
+                // Acción de Ver Carnet / Imprimir PDF
+                Tables\Actions\Action::make('viewCarnet')
+                    ->label('Carnet PDF')
+                    ->icon('heroicon-o-identification')
+                    ->color('info')
+                    ->url(fn (Subscription $record): string => url("/v/{$record->tenant->slug}/carnet/{$record->gateway_subscription_id}"))
+                    ->openUrlInNewTab(),
+
+                // Acción de Enviar Recordatorio por WhatsApp
+                Tables\Actions\Action::make('notifyWhatsApp')
                     ->label('WhatsApp')
                     ->icon('heroicon-o-chat-bubble-left-right')
                     ->color('success')
-                    ->url(function (Subscription $record) {
+                    ->url(function (Subscription $record): string {
                         $phone = preg_replace('/[^0-9]/', '', $record->pet?->customer?->phone ?? '');
-                        $name = $record->pet?->customer?->name ?? 'Tutor';
-                        $pet = $record->pet?->name ?? 'tu mascota';
-                        return "https://wa.me/{$phone}?text=" . urlencode("Hola {$name}, te saludamos de la clínica veterinaria sobre el plan de {$pet}.");
+                        $carnetUrl = url("/v/{$record->tenant->slug}/carnet/{$record->gateway_subscription_id}");
+                        $msg = "¡Hola {$record->pet?->customer?->name}! 🐾 Te saludamos de {$record->tenant->name}. Te recordamos que la membresía de tu mascota *{$record->pet?->name}* ({$record->plan?->name}) está activa. Puedes consultar tu saldo de consultas y carnet aquí: {$carnetUrl}. ¡Agenda tu próxima cita con nosotros!";
+                        return "https://wa.me/57{$phone}?text=" . urlencode($msg);
                     })
                     ->openUrlInNewTab(),
 

@@ -40,3 +40,8 @@ Route::get('/v/{slug}', function (string $slug) {
 // 5. Endpoint de Auto-Afiliación Digital de Pacientes B2C
 Route::post('/v/{slug}/afiliar', [App\Http\Controllers\StorefrontEnrollmentController::class, 'store']);
 
+// 6. Carnet Digital y Certificado de Afiliación Imprimible / PDF
+Route::get('/v/{slug}/carnet/{subscription_id}', [App\Http\Controllers\SubscriptionCarnetController::class, 'show'])->name('carnet.show');
+Route::get('/v/{slug}/carnet/{subscription_id}/pdf', [App\Http\Controllers\SubscriptionCarnetController::class, 'downloadPdf'])->name('carnet.pdf');
+
+

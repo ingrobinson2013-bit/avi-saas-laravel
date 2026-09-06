@@ -1304,7 +1304,7 @@
                     </div>
                 </div>
 
-                <!-- PASO 3: RESUMEN Y PLAN -->
+                <!-- PASO 3: RESUMEN Y MÉTODO DE PAGO -->
                 <div id="step-3-fields" class="space-y-3 hidden">
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
                         <div class="flex justify-between items-center text-xs">
@@ -1320,6 +1320,16 @@
                             <span id="summary-price" class="font-black text-sm text-slate-900">$50.000 COP</span>
                         </div>
                     </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Método de Pago Preferido *</label>
+                        <select id="payment_method" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <option value="nequi_bancolombia">📱 Nequi / Daviplata / Transferencia Bancolombia</option>
+                            <option value="card_pse">💳 Tarjeta / PSE (Link de Pago)</option>
+                            <option value="cash_reception">🏥 Pago en Efectivo / Mostrador en Clínica</option>
+                        </select>
+                    </div>
+
                     <p class="text-[10px] text-slate-500 text-center">
                         Al confirmar, se creará el contrato digital de tu mascota en {{ $tenant->name }} y se generará tu Carnet Digital de inmediato.
                     </p>
@@ -1336,6 +1346,10 @@
                     </p>
                     
                     <div class="pt-2 space-y-2">
+                        <a id="success-carnet-btn" href="#" target="_blank" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-md flex items-center justify-center space-x-2">
+                            <span>🪪 Ver y Descargar Carnet Digital (PDF)</span>
+                            <span>↗</span>
+                        </a>
                         <a id="success-whatsapp-btn" href="#" target="_blank" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl shadow-md flex items-center justify-center space-x-2">
                             <span>💬 Notificar a la Clínica por WhatsApp</span>
                             <span>↗</span>
@@ -1559,6 +1573,7 @@
                 pet_age: document.getElementById('pet_age').value.trim(),
                 plan_slug: selectedPlan,
                 billing_cycle: currentCycle,
+                payment_method: document.getElementById('payment_method').value,
             };
 
             try {
@@ -1585,6 +1600,7 @@
                     
                     document.getElementById('success-contract-id').innerText = data.contract_id;
                     document.getElementById('success-pet-name').innerText = data.pet_name;
+                    document.getElementById('success-carnet-btn').href = data.carnet_url;
                     document.getElementById('success-whatsapp-btn').href = data.whatsapp_url;
                     
                     document.getElementById('step-success-fields').classList.remove('hidden');
