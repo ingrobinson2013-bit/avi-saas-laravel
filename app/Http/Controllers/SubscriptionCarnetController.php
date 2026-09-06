@@ -12,11 +12,16 @@ class SubscriptionCarnetController extends Controller
     public function show(string $slug, string $subscriptionId)
     {
         $tenant = Tenant::where('slug', $slug)->firstOrFail();
+        $isUuid = \Illuminate\Support\Str::isUuid($subscriptionId);
         
         $subscription = Subscription::where('tenant_id', $tenant->id)
-            ->where(function ($query) use ($subscriptionId) {
-                $query->where('id', $subscriptionId)
-                    ->orWhere('gateway_subscription_id', $subscriptionId);
+            ->where(function ($query) use ($subscriptionId, $isUuid) {
+                if ($isUuid) {
+                    $query->where('id', $subscriptionId)
+                          ->orWhere('gateway_subscription_id', $subscriptionId);
+                } else {
+                    $query->where('gateway_subscription_id', $subscriptionId);
+                }
             })
             ->with(['pet.customer', 'plan', 'benefitBalances.benefitDefinition'])
             ->firstOrFail();
@@ -27,11 +32,16 @@ class SubscriptionCarnetController extends Controller
     public function downloadPdf(string $slug, string $subscriptionId)
     {
         $tenant = Tenant::where('slug', $slug)->firstOrFail();
+        $isUuid = \Illuminate\Support\Str::isUuid($subscriptionId);
         
         $subscription = Subscription::where('tenant_id', $tenant->id)
-            ->where(function ($query) use ($subscriptionId) {
-                $query->where('id', $subscriptionId)
-                    ->orWhere('gateway_subscription_id', $subscriptionId);
+            ->where(function ($query) use ($subscriptionId, $isUuid) {
+                if ($isUuid) {
+                    $query->where('id', $subscriptionId)
+                          ->orWhere('gateway_subscription_id', $subscriptionId);
+                } else {
+                    $query->where('gateway_subscription_id', $subscriptionId);
+                }
             })
             ->with(['pet.customer', 'plan', 'benefitBalances.benefitDefinition'])
             ->firstOrFail();
