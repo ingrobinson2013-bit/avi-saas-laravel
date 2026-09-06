@@ -37,10 +37,15 @@ class StorefrontEnrollmentController extends Controller
         $paymentMethod = $validated['payment_method'] ?? 'nequi_bancolombia';
         $species = in_array(strtolower($validated['pet_species']), ['felino', 'cat', 'gato']) ? 'Felino' : 'Canino';
         
-        // Buscar el plan adecuado (por slug o fallback a primer plan activo)
+        // Buscar el plan adecuado (por nombre o fallback a primer plan activo)
         $plan = null;
         if (!empty($validated['plan_slug'])) {
-            $plan = $tenant->plans()->where('slug', $validated['plan_slug'])->where('is_active', true)->first();
+            $plan = $tenant->plans()
+                ->where('is_active', true)
+                ->where(function ($q) use ($validated) {
+                    $q->where('name', 'ilike', '%' . $validated['plan_slug'] . '%');
+                })
+                ->first();
         }
         if (!$plan) {
             $plan = $tenant->plans()->where('is_active', true)->first();
@@ -103,9 +108,9 @@ class StorefrontEnrollmentController extends Controller
                 SubscriptionBenefitBalance::create([
                     'subscription_id' => $sub->id,
                     'benefit_definition_id' => $pb->benefit_definition_id,
-                    'total_granted' => $pb->annual_quota,
+                    'total_granted' => $pb->quantity ?? 1,
                     'used_count' => 0,
-                    'remaining_count' => $pb->annual_quota,
+                    'remaining_count' => $pb->quantity ?? 1,
                 ]);
             }
 
