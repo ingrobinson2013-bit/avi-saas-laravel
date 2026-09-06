@@ -21,6 +21,10 @@
         $address = $tenant->branding['address'] ?? 'Calle 7 # 4-73 Este';
         $phone = $tenant->branding['phone'] ?? '3508742543';
         $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
+        $paymentNequi = $tenant->branding['payment_nequi'] ?? $phone;
+        $paymentBank = $tenant->branding['payment_bank_info'] ?? 'Bancolombia Ahorros # 123-456789-01 (Titular: ' . $tenant->name . ')';
+        $paymentBoldLink = $tenant->branding['payment_bold_link'] ?? null;
+        $paymentInstructions = $tenant->branding['payment_instructions'] ?? 'Una vez realizado el pago, confirma por WhatsApp con tu número de carnet.';
     @endphp
 
     <style>
@@ -1304,8 +1308,8 @@
                     </div>
                 </div>
 
-                <!-- PASO 3: RESUMEN Y MÉTODO DE PAGO -->
-                <div id="step-3-fields" class="space-y-3 hidden">
+                <!-- PASO 3: RESUMEN Y MÉTODO DE PAGO DIRECTO -->
+                <div id="step-3-fields" class="space-y-4 hidden">
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
                         <div class="flex justify-between items-center text-xs">
                             <span class="text-slate-500">Plan Seleccionado:</span>
@@ -1315,46 +1319,147 @@
                             <span class="text-slate-500">Modalidad:</span>
                             <span id="summary-cycle" class="font-black text-teal-700">Pago Mensual</span>
                         </div>
-                        <div class="flex justify-between items-center text-xs pt-1 border-t border-slate-200">
-                            <span class="font-bold text-slate-900">Total a Pagar:</span>
-                            <span id="summary-price" class="font-black text-sm text-slate-900">$50.000 COP</span>
+                        <div class="flex justify-between items-center text-xs pt-2 border-t border-slate-200">
+                            <span class="font-bold text-slate-900">Total a Pagar a la Clínica:</span>
+                            <span id="summary-price" class="font-black text-base text-teal-700">$50.000 COP</span>
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Método de Pago Preferido *</label>
-                        <select id="payment_method" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                            <option value="nequi_bancolombia">📱 Nequi / Daviplata / Transferencia Bancolombia</option>
-                            <option value="card_pse">💳 Tarjeta / PSE (Link de Pago)</option>
-                            <option value="cash_reception">🏥 Pago en Efectivo / Mostrador en Clínica</option>
-                        </select>
+                        <label class="block text-xs font-bold text-slate-800 mb-1.5">Elige cómo deseas pagar a {{ $tenant->name }}:</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <!-- Opción Nequi -->
+                            <label class="payment-card-opt flex items-center p-3 bg-white border-2 border-teal-500 rounded-2xl cursor-pointer hover:bg-slate-50 transition-all text-xs font-bold text-slate-800" onclick="selectPaymentMethod('nequi')">
+                                <input type="radio" name="pay_opt" value="nequi" checked class="mr-2 text-teal-600 focus:ring-teal-500">
+                                <div>
+                                    <span class="block text-slate-900 font-extrabold">📱 Nequi / Daviplata</span>
+                                    <span class="text-[10px] text-slate-500 font-normal">Transferencia directa</span>
+                                </div>
+                            </label>
+
+                            <!-- Opción Bold / Tarjeta / PSE -->
+                            <label class="payment-card-opt flex items-center p-3 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 transition-all text-xs font-bold text-slate-800" onclick="selectPaymentMethod('bold')">
+                                <input type="radio" name="pay_opt" value="bold" class="mr-2 text-teal-600 focus:ring-teal-500">
+                                <div>
+                                    <span class="block text-slate-900 font-extrabold">💳 Bold / Tarjeta / PSE</span>
+                                    <span class="text-[10px] text-slate-500 font-normal">Link de pago virtual</span>
+                                </div>
+                            </label>
+
+                            <!-- Opción Bancolombia -->
+                            <label class="payment-card-opt flex items-center p-3 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 transition-all text-xs font-bold text-slate-800" onclick="selectPaymentMethod('bank')">
+                                <input type="radio" name="pay_opt" value="bank" class="mr-2 text-teal-600 focus:ring-teal-500">
+                                <div>
+                                    <span class="block text-slate-900 font-extrabold">🏦 Bancolombia / Banco</span>
+                                    <span class="text-[10px] text-slate-500 font-normal">Cuenta de la veterinaria</span>
+                                </div>
+                            </label>
+
+                            <!-- Opción Clínica / Efectivo -->
+                            <label class="payment-card-opt flex items-center p-3 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 transition-all text-xs font-bold text-slate-800" onclick="selectPaymentMethod('cash')">
+                                <input type="radio" name="pay_opt" value="cash" class="mr-2 text-teal-600 focus:ring-teal-500">
+                                <div>
+                                    <span class="block text-slate-900 font-extrabold">🏥 Pago en Clínica</span>
+                                    <span class="text-[10px] text-slate-500 font-normal">Efectivo o Datáfono</span>
+                                </div>
+                            </label>
+                        </div>
+                        <input type="hidden" id="payment_method" value="nequi">
                     </div>
 
-                    <p class="text-[10px] text-slate-500 text-center">
-                        Al confirmar, se creará el contrato digital de tu mascota en {{ $tenant->name }} y se generará tu Carnet Digital de inmediato.
-                    </p>
+                    <!-- CAJAS DINÁMICAS DE DETALLE DE PAGO SEGÚN ELECCIÓN -->
+                    <div id="pay-detail-nequi" class="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-2xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-emerald-950">📲 Número Nequi / Daviplata Oficial:</span>
+                            <button type="button" onclick="copyText('{{ $paymentNequi }}', this)" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold rounded-lg shadow-2xs transition-all">
+                                📋 Copiar Número
+                            </button>
+                        </div>
+                        <div class="text-base font-black text-emerald-900 tracking-wider font-mono">
+                            {{ $paymentNequi }}
+                        </div>
+                        <p class="text-[11px] text-emerald-800 leading-snug">
+                            Transfiere desde tu app de Nequi o Daviplata a este número de la clínica.
+                        </p>
+                    </div>
+
+                    <div id="pay-detail-bold" class="hidden p-3.5 bg-purple-50/70 border border-purple-200 rounded-2xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-purple-950">💳 Pago Digital con Bold (Tarjetas & PSE)</span>
+                            <span class="bg-purple-200 text-purple-800 text-[10px] font-black px-2 py-0.5 rounded-full">Oficial Bold</span>
+                        </div>
+                        @if(!empty($paymentBoldLink))
+                            <p class="text-[11px] text-purple-900 leading-snug">
+                                Puedes pagar de inmediato con tarjeta débito, crédito o PSE en el link oficial de Bold de la clínica:
+                            </p>
+                            <a href="{{ $paymentBoldLink }}" target="_blank" class="inline-flex items-center justify-center space-x-1.5 w-full py-2 bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all">
+                                <span>Pagar en Bold de {{ $tenant->name }}</span>
+                                <span>↗</span>
+                            </a>
+                        @else
+                            <p class="text-[11px] text-purple-900 leading-snug">
+                                Al confirmar, se emitirá tu carnet y la clínica te enviará su link directo de <strong>Bold / PSE</strong> por WhatsApp para realizar el pago con tarjeta en segundos.
+                            </p>
+                        @endif
+                    </div>
+
+                    <div id="pay-detail-bank" class="hidden p-3.5 bg-blue-50/70 border border-blue-200 rounded-2xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-blue-950">🏦 Cuenta Bancaria Oficial:</span>
+                            <button type="button" onclick="copyText('{{ $paymentBank }}', this)" class="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold rounded-lg shadow-2xs transition-all">
+                                📋 Copiar Datos
+                            </button>
+                        </div>
+                        <div class="text-xs font-bold text-blue-900 leading-relaxed bg-white p-2.5 rounded-xl border border-blue-100">
+                            {{ $paymentBank }}
+                        </div>
+                    </div>
+
+                    <div id="pay-detail-cash" class="hidden p-3.5 bg-slate-100 border border-slate-200 rounded-2xl space-y-1">
+                        <span class="text-xs font-bold text-slate-900">🏥 Pago en Mostrador / Recepción:</span>
+                        <p class="text-[11px] text-slate-600 leading-snug">
+                            Tu carnet quedará pre-activado. Podrás realizar el pago en efectivo o con datáfono directamente en la sede de <strong>{{ $tenant->name }}</strong> ({{ $address }}).
+                        </p>
+                    </div>
+
+                    @if(!empty($paymentInstructions))
+                        <div class="text-[11px] text-slate-600 bg-amber-50/80 border border-amber-200 p-2.5 rounded-xl flex items-start space-x-1.5">
+                            <span class="text-amber-700 font-bold shrink-0">ℹ️</span>
+                            <span>{{ $paymentInstructions }}</span>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- PASO 4: ÉXITO Y CARNET GENERADO -->
                 <div id="step-success-fields" class="space-y-4 hidden text-center">
-                    <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl mx-auto">
+                    <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl mx-auto shadow-inner">
                         ✓
                     </div>
-                    <h4 class="text-lg font-black text-slate-900">¡Afiliación Completada con Éxito!</h4>
-                    <p class="text-xs text-slate-600">
-                        El contrato digital <strong id="success-contract-id" class="text-teal-700 font-mono">VP-2026-XXXX</strong> ha sido emitido para <strong id="success-pet-name">TU MASCOTA</strong>.
-                    </p>
+                    <div>
+                        <h4 class="text-lg font-black text-slate-900">¡Afiliación Completada con Éxito!</h4>
+                        <p class="text-xs text-slate-600 mt-1">
+                            El contrato digital <strong id="success-contract-id" class="text-teal-700 font-mono font-black">VP-2026-XXXX</strong> ha sido emitido para <strong id="success-pet-name">TU MASCOTA</strong>.
+                        </p>
+                    </div>
+
+                    <!-- BOTÓN BOLD DINÁMICO SI FUE SELECCIONADO Y TIENE LINK -->
+                    <div id="success-bold-container" class="hidden pt-1">
+                        <a id="success-bold-btn" href="#" target="_blank" class="w-full py-3 bg-purple-700 hover:bg-purple-800 text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-md flex items-center justify-center space-x-2 transition-all">
+                            <span>💳 Pagar Ahora con Bold / PSE</span>
+                            <span>↗</span>
+                        </a>
+                    </div>
                     
-                    <div class="pt-2 space-y-2">
-                        <a id="success-carnet-btn" href="#" target="_blank" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-md flex items-center justify-center space-x-2">
+                    <div class="pt-1 space-y-2">
+                        <a id="success-carnet-btn" href="#" target="_blank" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-md flex items-center justify-center space-x-2 transition-all">
                             <span>🪪 Ver y Descargar Carnet Digital (PDF)</span>
                             <span>↗</span>
                         </a>
-                        <a id="success-whatsapp-btn" href="#" target="_blank" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl shadow-md flex items-center justify-center space-x-2">
-                            <span>💬 Notificar a la Clínica por WhatsApp</span>
+                        <a id="success-whatsapp-btn" href="#" target="_blank" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl shadow-md flex items-center justify-center space-x-2 transition-all">
+                            <span>💬 Enviar Comprobante / Notificar a la Clínica</span>
                             <span>↗</span>
                         </a>
-                        <button type="button" onclick="closeEnrollModal()" class="w-full py-2.5 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-200">
+                        <button type="button" onclick="closeEnrollModal()" class="w-full py-2.5 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-200 transition-all">
                             Cerrar
                         </button>
                     </div>
@@ -1362,13 +1467,13 @@
 
                 <!-- BOTONES DE NAVEGACIÓN DEL MODAL -->
                 <div id="modal-nav-btns" class="pt-3 flex items-center justify-between gap-3 border-t border-slate-100">
-                    <button type="button" id="btn-modal-prev" onclick="prevModalStep()" class="hidden px-4 py-2.5 text-xs font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200">
+                    <button type="button" id="btn-modal-prev" onclick="prevModalStep()" class="hidden px-4 py-2.5 text-xs font-bold text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition-all">
                         ← Atrás
                     </button>
-                    <button type="button" id="btn-modal-next" onclick="nextModalStep()" class="ml-auto px-6 py-2.5 text-xs font-black text-white bg-brand-primary rounded-xl shadow-xs hover:opacity-90">
+                    <button type="button" id="btn-modal-next" onclick="nextModalStep()" class="ml-auto px-6 py-2.5 text-xs font-black text-white bg-brand-primary rounded-xl shadow-xs hover:opacity-90 transition-all">
                         Siguiente Paso →
                     </button>
-                    <button type="submit" id="btn-modal-submit" class="hidden ml-auto px-6 py-2.5 text-xs font-black text-white bg-emerald-600 rounded-xl shadow-xs hover:bg-emerald-500">
+                    <button type="submit" id="btn-modal-submit" class="hidden ml-auto px-6 py-2.5 text-xs font-black text-white bg-emerald-600 rounded-xl shadow-xs hover:bg-emerald-500 transition-all">
                         Confirmar y Activar Carnet ✓
                     </button>
                 </div>
@@ -1382,6 +1487,48 @@
         let currentModalStep = 1;
         let selectedPlan = 'basico';
         let currentCycle = 'monthly';
+        let currentPaymentMethod = 'nequi';
+
+        // Copiar texto al portapapeles con feedback
+        function copyText(text, btnElement) {
+            navigator.clipboard.writeText(text).then(() => {
+                const original = btnElement.innerText;
+                btnElement.innerText = '¡Copiado! ✓';
+                setTimeout(() => {
+                    btnElement.innerText = original;
+                }, 2000);
+            }).catch(err => {
+                prompt('Copia este valor:', text);
+            });
+        }
+
+        // Selección visual e interactiva de método de pago
+        function selectPaymentMethod(method) {
+            currentPaymentMethod = method;
+            document.getElementById('payment_method').value = method;
+
+            const nequiBox = document.getElementById('pay-detail-nequi');
+            const boldBox = document.getElementById('pay-detail-bold');
+            const bankBox = document.getElementById('pay-detail-bank');
+            const cashBox = document.getElementById('pay-detail-cash');
+
+            nequiBox.classList.add('hidden');
+            boldBox.classList.add('hidden');
+            bankBox.classList.add('hidden');
+            cashBox.classList.add('hidden');
+
+            if (method === 'nequi') nequiBox.classList.remove('hidden');
+            if (method === 'bold') boldBox.classList.remove('hidden');
+            if (method === 'bank') bankBox.classList.remove('hidden');
+            if (method === 'cash') cashBox.classList.remove('hidden');
+
+            document.querySelectorAll('.payment-card-opt').forEach(el => {
+                el.classList.remove('border-teal-500', 'border-2');
+                el.classList.add('border-slate-200');
+            });
+            event.currentTarget.classList.remove('border-slate-200');
+            event.currentTarget.classList.add('border-teal-500', 'border-2');
+        }
 
         // Calculadora de Ahorro en tiempo real
         function calculateSavings() {
@@ -1393,7 +1540,7 @@
 
             const valorConsultasPart = consultas * 65000;
             const valorBanosPart = baths * 45000;
-            const valorPrevPart = 450000; // Vacunas + Desparasitaciones + Laboratorio
+            const valorPrevPart = 450000;
             const totalParticular = valorConsultasPart + valorBanosPart + valorPrevPart;
 
             const totalPlan = 540000;
@@ -1534,8 +1681,8 @@
                 btnPrev.classList.remove('hidden');
                 btnNext.classList.remove('hidden');
             } else if (currentModalStep === 3) {
-                modalTitle.innerText = '3. Resumen de la Membresía';
-                modalSub.innerText = 'Verifica la información antes de activar tu carnet';
+                modalTitle.innerText = '3. Resumen y Medio de Pago';
+                modalSub.innerText = 'Verifica la información y medio de pago directo a la clínica';
                 step3.classList.remove('hidden');
                 btnPrev.classList.remove('hidden');
                 btnSubmit.classList.remove('hidden');
@@ -1596,12 +1743,22 @@
                     document.getElementById('modal-nav-btns').classList.add('hidden');
                     
                     document.getElementById('modal-step-title').innerText = '🎉 ¡Carnet Digital Emitido!';
-                    document.getElementById('modal-step-subtitle').innerText = 'Tu membresía ha quedado registrada en la clínica';
+                    document.getElementById('modal-step-subtitle').innerText = 'Tu membresía ha quedado registrada en {{ $tenant->name }}';
                     
                     document.getElementById('success-contract-id').innerText = data.contract_id;
                     document.getElementById('success-pet-name').innerText = data.pet_name;
                     document.getElementById('success-carnet-btn').href = data.carnet_url;
                     document.getElementById('success-whatsapp-btn').href = data.whatsapp_url;
+
+                    // Si eligió Bold y existe link, mostrar botón de pago directo Bold
+                    const boldContainer = document.getElementById('success-bold-container');
+                    const boldBtn = document.getElementById('success-bold-btn');
+                    if (data.bold_payment_url && (data.payment_method === 'bold' || data.payment_method === 'card_pse' || data.payment_method === 'card')) {
+                        boldBtn.href = data.bold_payment_url;
+                        boldContainer.classList.remove('hidden');
+                    } else {
+                        boldContainer.classList.add('hidden');
+                    }
                     
                     document.getElementById('step-success-fields').classList.remove('hidden');
                 } else {

@@ -17,9 +17,9 @@ class ClinicSettings extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-paint-brush';
-    protected static ?string $navigationLabel = 'Marca y Colores';
-    protected static ?string $title = 'Personalización de Marca Blanca';
+    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+    protected static ?string $navigationLabel = 'Marca y Medios de Pago';
+    protected static ?string $title = 'Personalización de Marca y Medios de Pago';
     protected static ?string $slug = 'clinic-settings';
     protected static ?int $navigationSort = 10;
     protected static string $view = 'filament.vet-admin.pages.clinic-settings';
@@ -44,6 +44,10 @@ class ClinicSettings extends Page implements HasForms
                 'hero_file' => $branding['hero_path'] ?? null,
                 'banner_file' => $branding['banner_path'] ?? null,
                 'banner_video_file' => $branding['banner_video_path'] ?? null,
+                'payment_nequi' => $branding['payment_nequi'] ?? '3508742543',
+                'payment_bank_info' => $branding['payment_bank_info'] ?? 'Bancolombia Ahorros # 123-456789-01 (Titular: Clínica Veterinaria)',
+                'payment_bold_link' => $branding['payment_bold_link'] ?? '',
+                'payment_instructions' => $branding['payment_instructions'] ?? 'Una vez realizada la transferencia o pago, envía el comprobante por WhatsApp indicando el código de tu carnet.',
             ]);
         }
     }
@@ -75,6 +79,34 @@ class ClinicSettings extends Page implements HasForms
                             ->label('Color de la Barra Superior')
                             ->default('#0f172a')
                             ->required(),
+                    ])->columns(2),
+
+                Forms\Components\Section::make('💳 Configuración de Medios de Pago de la Veterinaria')
+                    ->description('Configura tus cuentas bancarias y link de Bold/Wompi para que los tutores te paguen directamente a tu clínica.')
+                    ->schema([
+                        Forms\Components\TextInput::make('payment_nequi')
+                            ->label('Número Nequi / Daviplata')
+                            ->placeholder('Ej. 3508742543')
+                            ->helperText('Número para recibir transferencias directas por Nequi o Daviplata.')
+                            ->default('3508742543'),
+
+                        Forms\Components\TextInput::make('payment_bold_link')
+                            ->label('Link de Pago Bold / Wompi / Pasarela')
+                            ->placeholder('Ej. https://bold.co/p/tu-clinica o https://checkout.wompi.co/l/...')
+                            ->helperText('Si tienes datáfono Bold o cuenta comercial, pega aquí tu link de pago virtual para cobro con tarjeta/PSE.'),
+
+                        Forms\Components\TextInput::make('payment_bank_info')
+                            ->label('Datos de Cuenta Bancaria (Bancolombia, etc.)')
+                            ->placeholder('Ej. Bancolombia Ahorros # 123-456789-01 - Nit: 900.123.456')
+                            ->helperText('Información de transferencia interbancaria tradicional.')
+                            ->columnSpanFull(),
+
+                        Forms\Components\Textarea::make('payment_instructions')
+                            ->label('Instrucciones Adicionales de Pago para el Tutor')
+                            ->placeholder('Instrucciones para validar el pago...')
+                            ->rows(2)
+                            ->helperText('Este texto aparecerá en el modal de afiliación y confirmación.')
+                            ->columnSpanFull(),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Fotografías y Video del Portal')
@@ -144,6 +176,10 @@ class ClinicSettings extends Page implements HasForms
             $branding['email'] = $state['email'] ?? 'petmovilveterinario@gmail.com';
             $branding['primary_color'] = $state['primary_color'] ?? '#0284c7';
             $branding['secondary_color'] = $state['secondary_color'] ?? '#0f172a';
+            $branding['payment_nequi'] = $state['payment_nequi'] ?? '3508742543';
+            $branding['payment_bank_info'] = $state['payment_bank_info'] ?? '';
+            $branding['payment_bold_link'] = $state['payment_bold_link'] ?? '';
+            $branding['payment_instructions'] = $state['payment_instructions'] ?? '';
 
             $r2BaseUrl = rtrim(config('filesystems.disks.r2.url', 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev'), '/');
 
@@ -176,7 +212,7 @@ class ClinicSettings extends Page implements HasForms
 
             $tenant->update(['branding' => $branding]);
 
-            // Re-llenar el formulario para que las fotos permanezcan visibles
+            // Re-llenar el formulario para que los campos permanezcan actualizados
             $this->form->fill([
                 'name' => $tenant->name,
                 'city' => $branding['city'],
@@ -189,11 +225,15 @@ class ClinicSettings extends Page implements HasForms
                 'hero_file' => $branding['hero_path'] ?? null,
                 'banner_file' => $branding['banner_path'] ?? null,
                 'banner_video_file' => $branding['banner_video_path'] ?? null,
+                'payment_nequi' => $branding['payment_nequi'] ?? '',
+                'payment_bank_info' => $branding['payment_bank_info'] ?? '',
+                'payment_bold_link' => $branding['payment_bold_link'] ?? '',
+                'payment_instructions' => $branding['payment_instructions'] ?? '',
             ]);
 
             Notification::make()
-                ->title('¡Marca, Fotos y Logo guardados en Cloudflare R2!')
-                ->body('Tus cambios ya se encuentran activos en /v/' . $tenant->slug)
+                ->title('¡Configuración de Marca y Pagos Guardada!')
+                ->body('Tus cuentas y opciones de cobro ya se encuentran activas en el portal.')
                 ->success()
                 ->send();
         }

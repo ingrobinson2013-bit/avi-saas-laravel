@@ -60,6 +60,9 @@ class VetStatsOverviewWidget extends BaseWidget
             })
             ->count();
 
+        // Tarifa de Plataforma AVI-SaaS ($2.000 COP por mascota inscrita)
+        $saasFee = $petsCount * 2000;
+
         return [
             Stat::make('MRR (Ingresos Recurrentes)', '$' . number_format($mrrReal, 0, ',', '.') . ' COP')
                 ->description('Ingresos mensuales por membresías')
@@ -73,7 +76,12 @@ class VetStatsOverviewWidget extends BaseWidget
                 ->color('info')
                 ->chart([max(0, $petsCount - 2), max(0, $petsCount - 1), $petsCount]),
 
-            Stat::make('Uso de Beneficios Clínicos', "{$usageRatio}% de cupos utilizados")
+            Stat::make('Cuota Plataforma AVI-SaaS', '$' . number_format($saasFee, 0, ',', '.') . ' COP')
+                ->description("Tarifa fija de $2.000 COP x {$petsCount} mascotas")
+                ->descriptionIcon('heroicon-m-receipt-percent')
+                ->color('gray'),
+
+            Stat::make('Uso de Beneficios Clínicos', "{$usageRatio}% de cupos")
                 ->description("{$totalUsed} de {$totalGranted} servicios canjeados")
                 ->descriptionIcon('heroicon-m-sparkles')
                 ->color('primary')

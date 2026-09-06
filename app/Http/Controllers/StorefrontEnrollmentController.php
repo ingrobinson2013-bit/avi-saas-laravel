@@ -30,11 +30,11 @@ class StorefrontEnrollmentController extends Controller
             'pet_age' => 'nullable|string|max:50',
             'plan_slug' => 'nullable|string',
             'billing_cycle' => 'nullable|string|in:monthly,annual',
-            'payment_method' => 'nullable|string|in:nequi_bancolombia,card_pse,cash_reception',
+            'payment_method' => 'nullable|string|max:100',
         ]);
 
         $billingCycle = $validated['billing_cycle'] ?? 'monthly';
-        $paymentMethod = $validated['payment_method'] ?? 'nequi_bancolombia';
+        $paymentMethod = $validated['payment_method'] ?? 'nequi';
         $species = in_array(strtolower($validated['pet_species']), ['felino', 'cat', 'gato']) ? 'Felino' : 'Canino';
         
         // Buscar el plan adecuado (por nombre o fallback a primer plan activo)
@@ -120,12 +120,13 @@ class StorefrontEnrollmentController extends Controller
         $contractId = $subscription->gateway_subscription_id;
         $clinicPhone = preg_replace('/[^0-9]/', '', $tenant->branding['phone'] ?? '3508742543');
         $planPrice = ($billingCycle === 'annual') ? '$' . number_format($plan->price_annual ?? 540000, 0, ',', '.') . ' COP/año' : '$' . number_format($plan->price_monthly ?? 50000, 0, ',', '.') . ' COP/mes';
-        $carnetUrl = url("/v/{$tenant->slug}/carnet/{$contractId}");
+        $boldPaymentUrl = $tenant->branding['payment_bold_link'] ?? null;
 
         $paymentText = match($paymentMethod) {
-            'card_pse' => '💳 Tarjeta / PSE (Link de Pago)',
-            'cash_reception' => '🏥 Pago en Efectivo / Mostrador Clínica',
-            default => '📱 Nequi / Daviplata / Transferencia Bancolombia',
+            'bold', 'card_pse', 'card' => '💳 Tarjeta / PSE (Bold)',
+            'bank_transfer', 'bancolombia' => '🏦 Transferencia Bancaria',
+            'cash_reception', 'cash' => '🏥 Pago en Efectivo / Recepción Clínica',
+            default => '📱 Nequi / Daviplata',
         };
 
         $waMessage = "¡Hola {$tenant->name}! 👋 Acabo de afiliar a mi mascota en su plataforma digital:\n\n" .
@@ -134,10 +135,10 @@ class StorefrontEnrollmentController extends Controller
             "📱 *WhatsApp:* {$validated['tutor_phone']}\n" .
             "📋 *Plan:* {$plan->name} (" . ($billingCycle === 'annual' ? 'Pago Anual' : 'Pago Mensual') . ")\n" .
             "💳 *Valor:* {$planPrice}\n" .
-            "💰 *Método de Pago:* {$paymentText}\n" .
+            "💰 *Método de Pago Seleccionado:* {$paymentText}\n" .
             "🏷️ *Contrato:* {$contractId}\n\n" .
             "🪪 *Ver Mi Carnet Digital:* {$carnetUrl}\n\n" .
-            "Quedo a la espera de la confirmación y bienvenida en la clínica. ¡Muchas gracias! 🐶🐱";
+            "Adjunto mi comprobante o quedo a la espera de confirmación. ¡Muchas gracias! 🐶🐱";
 
         $whatsappUrl = "https://wa.me/57{$clinicPhone}?text=" . urlencode($waMessage);
 
@@ -152,6 +153,8 @@ class StorefrontEnrollmentController extends Controller
             'billing_cycle' => $billingCycle,
             'carnet_url' => $carnetUrl,
             'whatsapp_url' => $whatsappUrl,
+            'bold_payment_url' => $boldPaymentUrl,
+            'payment_method' => $paymentMethod,
             'message' => '¡Afiliación registrada con éxito! Tu carnet digital ya está activo.',
         ]);
     }
