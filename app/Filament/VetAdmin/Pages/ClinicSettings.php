@@ -48,6 +48,18 @@ class ClinicSettings extends Page implements HasForms
                 'payment_bank_info' => $branding['payment_bank_info'] ?? 'Bancolombia Ahorros # 123-456789-01 (Titular: Clínica Veterinaria)',
                 'payment_bold_link' => $branding['payment_bold_link'] ?? '',
                 'payment_instructions' => $branding['payment_instructions'] ?? 'Una vez realizada la transferencia o pago, envía el comprobante por WhatsApp indicando el código de tu carnet.',
+                'hero_title' => $branding['hero_title'] ?? 'El cuidado de tu mascota, todo el año.',
+                'hero_subtitle' => $branding['hero_subtitle'] ?? 'Accede a servicios veterinarios y beneficios exclusivos con una membresía diseñada por ' . $tenant->name . '.',
+                'hero_price_badge' => $branding['hero_price_badge'] ?? 'Desde $50.000/mes',
+                'section_how_it_works' => $branding['section_how_it_works'] ?? true,
+                'section_plans' => $branding['section_plans'] ?? true,
+                'section_calculator' => $branding['section_calculator'] ?? true,
+                'section_carnet_feature' => $branding['section_carnet_feature'] ?? true,
+                'section_comparison' => $branding['section_comparison'] ?? true,
+                'section_carencias' => $branding['section_carencias'] ?? true,
+                'section_facilities' => $branding['section_facilities'] ?? true,
+                'section_testimonials' => $branding['section_testimonials'] ?? true,
+                'section_faq' => $branding['section_faq'] ?? true,
             ]);
         }
     }
@@ -80,6 +92,68 @@ class ClinicSettings extends Page implements HasForms
                             ->default('#0f172a')
                             ->required(),
                     ])->columns(2),
+
+                Forms\Components\Section::make('🎯 Textos del Hero Principal')
+                    ->description('Personaliza el mensaje de bienvenida y llamada a la acción en la cabecera de tu portal.')
+                    ->schema([
+                        Forms\Components\TextInput::make('hero_title')
+                            ->label('Título Principal del Hero')
+                            ->placeholder('Ej. El cuidado de tu mascota, todo el año.')
+                            ->default('El cuidado de tu mascota, todo el año.')
+                            ->columnSpanFull(),
+
+                        Forms\Components\Textarea::make('hero_subtitle')
+                            ->label('Subtítulo Explicativo')
+                            ->placeholder('Ej. Accede a servicios veterinarios y beneficios exclusivos...')
+                            ->rows(2)
+                            ->columnSpanFull(),
+
+                        Forms\Components\TextInput::make('hero_price_badge')
+                            ->label('Texto / Badge de Precio Inicial')
+                            ->placeholder('Ej. Desde $50.000/mes')
+                            ->default('Desde $50.000/mes'),
+                    ])->columns(2),
+
+                Forms\Components\Section::make('🧩 Bloques y Secciones Activas de la Landing')
+                    ->description('Enciende o apaga secciones según el tamaño y necesidades de tu clínica con 1 clic.')
+                    ->collapsed()
+                    ->schema([
+                        Forms\Components\Toggle::make('section_how_it_works')
+                            ->label('Sección "¿Cómo Funciona?" (4 Pasos)')
+                            ->default(true),
+
+                        Forms\Components\Toggle::make('section_plans')
+                            ->label('Sección de Planes y Precios')
+                            ->default(true),
+
+                        Forms\Components\Toggle::make('section_calculator')
+                            ->label('Calculadora de Ahorro Interactiva')
+                            ->default(true),
+
+                        Forms\Components\Toggle::make('section_carnet_feature')
+                            ->label('Feature de Carnet Digital ("Todo en un solo lugar")')
+                            ->default(true),
+
+                        Forms\Components\Toggle::make('section_comparison')
+                            ->label('Tabla Comparativa de Planes')
+                            ->default(true),
+
+                        Forms\Components\Toggle::make('section_carencias')
+                            ->label('Calendario de Carencias y Activación')
+                            ->default(true),
+
+                        Forms\Components\Toggle::make('section_facilities')
+                            ->label('Sección de Instalaciones & Video Reel (9:16)')
+                            ->default(true),
+
+                        Forms\Components\Toggle::make('section_testimonials')
+                            ->label('Testimonios y Valoraciones')
+                            ->default(true),
+
+                        Forms\Components\Toggle::make('section_faq')
+                            ->label('Preguntas Frecuentes (FAQ)')
+                            ->default(true),
+                    ])->columns(3),
 
                 Forms\Components\Section::make('💳 Configuración de Medios de Pago de la Veterinaria')
                     ->description('Configura tus cuentas bancarias y link de Bold/Wompi para que los tutores te paguen directamente a tu clínica.')
@@ -180,6 +254,18 @@ class ClinicSettings extends Page implements HasForms
             $branding['payment_bank_info'] = $state['payment_bank_info'] ?? '';
             $branding['payment_bold_link'] = $state['payment_bold_link'] ?? '';
             $branding['payment_instructions'] = $state['payment_instructions'] ?? '';
+            $branding['hero_title'] = $state['hero_title'] ?? 'El cuidado de tu mascota, todo el año.';
+            $branding['hero_subtitle'] = $state['hero_subtitle'] ?? 'Accede a servicios veterinarios y beneficios exclusivos con una membresía diseñada por ' . $tenant->name . '.';
+            $branding['hero_price_badge'] = $state['hero_price_badge'] ?? 'Desde $50.000/mes';
+            $branding['section_how_it_works'] = (bool) ($state['section_how_it_works'] ?? true);
+            $branding['section_plans'] = (bool) ($state['section_plans'] ?? true);
+            $branding['section_calculator'] = (bool) ($state['section_calculator'] ?? true);
+            $branding['section_carnet_feature'] = (bool) ($state['section_carnet_feature'] ?? true);
+            $branding['section_comparison'] = (bool) ($state['section_comparison'] ?? true);
+            $branding['section_carencias'] = (bool) ($state['section_carencias'] ?? true);
+            $branding['section_facilities'] = (bool) ($state['section_facilities'] ?? true);
+            $branding['section_testimonials'] = (bool) ($state['section_testimonials'] ?? true);
+            $branding['section_faq'] = (bool) ($state['section_faq'] ?? true);
 
             $r2BaseUrl = rtrim(config('filesystems.disks.r2.url', 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev'), '/');
 
@@ -229,6 +315,18 @@ class ClinicSettings extends Page implements HasForms
                 'payment_bank_info' => $branding['payment_bank_info'] ?? '',
                 'payment_bold_link' => $branding['payment_bold_link'] ?? '',
                 'payment_instructions' => $branding['payment_instructions'] ?? '',
+                'hero_title' => $branding['hero_title'] ?? '',
+                'hero_subtitle' => $branding['hero_subtitle'] ?? '',
+                'hero_price_badge' => $branding['hero_price_badge'] ?? '',
+                'section_how_it_works' => $branding['section_how_it_works'] ?? true,
+                'section_plans' => $branding['section_plans'] ?? true,
+                'section_calculator' => $branding['section_calculator'] ?? true,
+                'section_carnet_feature' => $branding['section_carnet_feature'] ?? true,
+                'section_comparison' => $branding['section_comparison'] ?? true,
+                'section_carencias' => $branding['section_carencias'] ?? true,
+                'section_facilities' => $branding['section_facilities'] ?? true,
+                'section_testimonials' => $branding['section_testimonials'] ?? true,
+                'section_faq' => $branding['section_faq'] ?? true,
             ]);
 
             Notification::make()

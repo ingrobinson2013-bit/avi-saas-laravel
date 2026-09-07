@@ -25,6 +25,22 @@
         $paymentBank = $tenant->branding['payment_bank_info'] ?? 'Bancolombia Ahorros # 123-456789-01 (Titular: ' . $tenant->name . ')';
         $paymentBoldLink = $tenant->branding['payment_bold_link'] ?? null;
         $paymentInstructions = $tenant->branding['payment_instructions'] ?? 'Una vez realizado el pago, confirma por WhatsApp con tu número de carnet.';
+
+        // Textos del Hero personalizables
+        $heroTitle = $tenant->branding['hero_title'] ?? 'El cuidado de tu mascota, todo el año.';
+        $heroSubtitle = $tenant->branding['hero_subtitle'] ?? 'Accede a consultas, vacunas, controles incluidos y precios preferenciales en ' . $city . ' con la membresía de salud preventiva de ' . $tenant->name . '.';
+        $heroPriceBadge = $tenant->branding['hero_price_badge'] ?? 'Desde $50.000/mes';
+
+        // Toggles de Bloques y Secciones Activas
+        $showHowItWorks = $tenant->branding['section_how_it_works'] ?? true;
+        $showPlans = $tenant->branding['section_plans'] ?? true;
+        $showCalculator = $tenant->branding['section_calculator'] ?? true;
+        $showCarnetFeature = $tenant->branding['section_carnet_feature'] ?? true;
+        $showComparison = $tenant->branding['section_comparison'] ?? true;
+        $showCarencias = $tenant->branding['section_carencias'] ?? true;
+        $showFacilities = $tenant->branding['section_facilities'] ?? true;
+        $showTestimonials = $tenant->branding['section_testimonials'] ?? true;
+        $showFaq = $tenant->branding['section_faq'] ?? true;
     @endphp
 
     <style>
@@ -92,16 +108,30 @@
             </div>
 
             <nav class="hidden lg:flex items-center space-x-6 text-xs sm:text-sm font-bold text-slate-600 shrink-0">
-                <a href="#por-que-un-plan" class="hover:text-brand-primary transition-colors">¿Por qué un Plan?</a>
-                <a href="#calculadora" class="hover:text-brand-primary transition-colors flex items-center space-x-1">
-                    <span>🧮 Calculadora</span>
-                    <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-1.5 py-0.5 rounded-full">Ahorro</span>
-                </a>
-                <a href="#planes" class="hover:text-brand-primary transition-colors">Planes</a>
-                <a href="#comparador" class="hover:text-brand-primary transition-colors">Comparar</a>
-                <a href="#como-funciona" class="hover:text-brand-primary transition-colors">Cómo Funciona</a>
-                <a href="#instalaciones" class="hover:text-brand-primary transition-colors">Instalaciones</a>
-                <a href="#faq" class="hover:text-brand-primary transition-colors">Preguntas</a>
+                @if($showHowItWorks)
+                    <a href="#como-funciona" class="hover:text-brand-primary transition-colors">¿Cómo Funciona?</a>
+                @endif
+                @if($showPlans)
+                    <a href="#planes" class="hover:text-brand-primary transition-colors">Planes</a>
+                @endif
+                @if($showCalculator)
+                    <a href="#calculadora" class="hover:text-brand-primary transition-colors flex items-center space-x-1">
+                        <span>🧮 Calculadora</span>
+                        <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-1.5 py-0.5 rounded-full">Ahorro</span>
+                    </a>
+                @endif
+                @if($showCarnetFeature)
+                    <a href="#carnet-digital" class="hover:text-brand-primary transition-colors">Carnet Digital</a>
+                @endif
+                @if($showComparison)
+                    <a href="#comparador" class="hover:text-brand-primary transition-colors">Comparar</a>
+                @endif
+                @if($showFacilities)
+                    <a href="#instalaciones" class="hover:text-brand-primary transition-colors">Instalaciones</a>
+                @endif
+                @if($showFaq)
+                    <a href="#faq" class="hover:text-brand-primary transition-colors">Preguntas</a>
+                @endif
             </nav>
 
             <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
@@ -116,7 +146,7 @@
     </header>
 
     <main class="flex-grow">
-        <!-- 01. HERO POTENTE CON PROPUESTA DE VALOR Y ELEMENTOS DE CONFIANZA -->
+        <!-- 01. HERO POTENTE CON PROPUESTA DE VALOR DIRECTA (PRIORIDAD 1) -->
         <section class="hero-gradient relative pt-8 sm:pt-14 pb-16 sm:pb-20 overflow-hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -129,22 +159,22 @@
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
                             </span>
-                            <span class="text-xs font-black text-slate-800 uppercase tracking-wider">Membresías de Salud Preventiva 2026</span>
+                            <span class="text-xs font-black text-slate-800 uppercase tracking-wider">{{ $heroPriceBadge }}</span>
                         </div>
 
                         <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.12]">
-                            Salud preventiva y <span class="text-brand-primary underline decoration-teal-300">cuidado continuo</span> para tu mascota
+                            {{ $heroTitle }}
                         </h1>
 
                         <p class="text-base sm:text-lg text-slate-600 leading-relaxed max-w-xl font-normal">
-                            Un plan diseñado por <strong class="text-slate-900">{{ $tenant->name }}</strong> para que cuides a tu mascota durante todo el año, con consultas, vacunas, controles incluidos y precios preferenciales en {{ $city }}.
+                            {{ $heroSubtitle }}
                         </p>
 
                         <!-- ELEMENTOS DE CONFIANZA RÁPIDA (TRUST BADGES) -->
                         <div class="flex flex-wrap items-center gap-2 sm:gap-3 pt-1 text-xs font-bold text-slate-700">
                             <div class="flex items-center space-x-1.5 bg-white/80 backdrop-blur-xs px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs">
                                 <span>🐾</span>
-                                <span>+450 mascotas atendidas</span>
+                                <span>+450 mascotas protegidas</span>
                             </div>
                             <div class="flex items-center space-x-1.5 bg-white/80 backdrop-blur-xs px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs">
                                 <span>📍</span>
@@ -152,7 +182,7 @@
                             </div>
                             <div class="flex items-center space-x-1.5 bg-white/80 backdrop-blur-xs px-3 py-1.5 rounded-xl border border-slate-200 shadow-xs">
                                 <span class="text-amber-400">⭐⭐⭐⭐⭐</span>
-                                <span>Atención profesional</span>
+                                <span>Atención médica profesional</span>
                             </div>
                         </div>
 
@@ -161,20 +191,20 @@
                                 <span>Ver Planes de Salud</span>
                                 <span>›</span>
                             </a>
-                            <a href="#calculadora" class="px-6 py-4 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-sm border border-slate-200 shadow-xs transition-all flex items-center justify-center space-x-2 text-center">
-                                <span>🧮 Calcular Mi Ahorro Anual</span>
-                            </a>
+                            <button type="button" onclick="openEnrollModal('basico')" class="px-6 py-4 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-sm border border-slate-200 shadow-xs transition-all flex items-center justify-center space-x-2 text-center">
+                                <span>🐾 Afiliar a Mi Mascota</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- COLUMNA DERECHA: FOTO PRINCIPAL + CARNET DIGITAL PREVIEW -->
+                    <!-- COLUMNA DERECHA: FOTO PRINCIPAL + BADGE EN VIVO -->
                     <div class="lg:col-span-5 relative mt-4 lg:mt-0 space-y-4">
                         <div class="mx-auto max-w-sm sm:max-w-md space-y-4">
                             
                             <!-- TARJETA VISUAL DE LA CLÍNICA / FOTO HERO COMPLETA -->
                             <div class="rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-white relative group flex flex-col">
                                 <div class="w-full relative overflow-hidden flex items-center justify-center bg-slate-50">
-                                    <img src="{{ $heroImage }}" alt="Pacientes de {{ $tenant->name }}" class="w-full h-auto max-h-[500px] object-cover sm:object-contain group-hover:scale-102 transition-transform duration-500" loading="lazy">
+                                    <img src="{{ $heroImage }}" alt="Pacientes de {{ $tenant->name }}" class="w-full h-auto max-h-[480px] object-cover sm:object-contain group-hover:scale-102 transition-transform duration-500" loading="lazy">
                                     <div class="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent pointer-events-none"></div>
                                 </div>
                                 
@@ -210,151 +240,72 @@
             </div>
         </section>
 
-        <!-- 02. ¿POR QUÉ UNA MEMBRESÍA DE SALUD? (PILARES DE VALOR) -->
-        <section id="por-que-un-plan" class="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
+        <!-- 02. ¿CÓMO FUNCIONA? (4 PASOS LIMPIOS - PRIORIDAD 2) -->
+        @if($showHowItWorks)
+        <section id="como-funciona" class="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center space-y-3 mb-12">
-                    <div class="inline-flex items-center space-x-2 bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full">
-                        <span>🐾 Cuidado Inteligente</span>
+                    <div class="inline-flex items-center space-x-2 bg-teal-100 text-teal-800 text-xs font-black px-3.5 py-1 rounded-full">
+                        <span>⚡ Simple, Rápido y 100% Digital</span>
                     </div>
-                    <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight max-w-3xl mx-auto">
-                        Cuidar a tu mascota no debería depender de cuándo aparece una urgencia
-                    </h2>
-                    <p class="text-xs sm:text-sm text-slate-500 max-w-2xl mx-auto font-medium">
-                        La medicina preventiva evita enfermedades complejas, alarga los años de vida de tu peludo y te protege de gastos imprevistos.
+                    <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">¿Cómo funciona tu membresía?</h2>
+                    <p class="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto">
+                        Cuidar a tu mascota en <strong>{{ $tenant->name }}</strong> es fácil, transparente y sin complicaciones en 4 pasos:
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                    <!-- Tarjeta 1: Prevención -->
-                    <div class="bg-white p-7 rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition space-y-4">
-                        <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center text-2xl font-black">
-                            🛡️
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Paso 1 -->
+                    <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs relative group hover:border-teal-400 hover:shadow-md transition-all">
+                        <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-black text-lg mb-4 group-hover:scale-110 transition-transform">
+                            01
                         </div>
-                        <h3 class="text-lg font-black text-slate-900">Prevención Activa</h3>
+                        <h3 class="text-base font-black text-slate-900 mb-2">Elige tu plan</h3>
                         <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                            Mantén al día sus consultas, vacunaciones anuales, desparasitaciones y chequeos clínicos antes de que aparezcan síntomas graves.
+                            Selecciona el plan mensual o anual que mejor se adapte a la edad y necesidades de salud de tu peludo.
                         </p>
                     </div>
 
-                    <!-- Tarjeta 2: Ahorro -->
-                    <div class="bg-white p-7 rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition space-y-4">
-                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-2xl font-black">
-                            💰
+                    <!-- Paso 2 -->
+                    <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs relative group hover:border-teal-400 hover:shadow-md transition-all">
+                        <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-black text-lg mb-4 group-hover:scale-110 transition-transform">
+                            02
                         </div>
-                        <h3 class="text-lg font-black text-slate-900">Ahorro Real y Predecible</h3>
+                        <h3 class="text-base font-black text-slate-900 mb-2">Registra a tu mascota</h3>
                         <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                            Accede a servicios esenciales 100% incluidos en una cuota fija mensual o anual, ahorrando hasta un 36% frente a tarifas particulares.
+                            Ingresa sus datos en el formulario digital en menos de 2 minutos sin papeleos ni filas.
                         </p>
                     </div>
 
-                    <!-- Tarjeta 3: Continuidad -->
-                    <div class="bg-white p-7 rounded-3xl border border-slate-200 shadow-xs hover:shadow-md transition space-y-4">
-                        <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center text-2xl font-black">
-                            🩺
+                    <!-- Paso 3 -->
+                    <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs relative group hover:border-teal-400 hover:shadow-md transition-all">
+                        <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-black text-lg mb-4 group-hover:scale-110 transition-transform">
+                            03
                         </div>
-                        <h3 class="text-lg font-black text-slate-900">Continuidad Médica</h3>
+                        <h3 class="text-base font-black text-slate-900 mb-2">Disfruta tus beneficios</h3>
                         <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                            Tu mascota cuenta con historial clínico unificado, carnet digital y acompañamiento veterinario permanente en {{ $tenant->name }}.
+                            Agenda tus consultas, vacunas y procedimientos directamente en la sede de {{ $city }}.
+                        </p>
+                    </div>
+
+                    <!-- Paso 4 -->
+                    <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs relative group hover:border-teal-400 hover:shadow-md transition-all">
+                        <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-black text-lg mb-4 group-hover:scale-110 transition-transform">
+                            04
+                        </div>
+                        <h3 class="text-base font-black text-slate-900 mb-2">Todo desde tu celular</h3>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                            Consulta tu carnet inteligente, historial de servicios y código QR médico en tiempo real sin descargar apps.
                         </p>
                     </div>
                 </div>
             </div>
         </section>
+        @endif
 
-        <!-- 04. SIMULADOR DE AHORRO ANUAL ⭐ -->
-        <section id="calculadora" class="py-16 sm:py-20 bg-slate-900 text-white relative overflow-hidden">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                
-                <div class="text-center space-y-3 mb-12">
-                    <div class="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full text-emerald-400 text-xs font-bold uppercase tracking-wider">
-                        <span>🧮 Simula el Ahorro de tu Mascota</span>
-                    </div>
-                    <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-white">
-                        ¿Cuánto dinero ahorras con una Membresía de Salud?
-                    </h2>
-                    <p class="text-slate-400 text-sm max-w-xl mx-auto">
-                        Selecciona el cuidado que necesita tu mascota durante el año y compara el costo particular vs el Plan de Bienestar en <strong>{{ $tenant->name }}</strong>.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-950/80 p-6 sm:p-10 rounded-3xl border border-slate-800 shadow-2xl">
-                    
-                    <!-- CONTROLES (IZQUIERDA) -->
-                    <div class="lg:col-span-7 space-y-6">
-                        
-                        <!-- 1. Consultas -->
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-center text-xs">
-                                <label class="font-bold text-slate-300">🐶 Consultas presenciales al año:</label>
-                                <span id="calc-consultas-val" class="font-black text-teal-400 text-sm">3 consultas</span>
-                            </div>
-                            <input type="range" id="calc-consultas" min="1" max="8" value="3" oninput="calculateSavings()" class="w-full accent-teal-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
-                            <div class="flex justify-between text-[10px] text-slate-500">
-                                <span>1 consulta</span>
-                                <span>3 (Recomendado)</span>
-                                <span>8 consultas</span>
-                            </div>
-                        </div>
-
-                        <!-- 2. Baños -->
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-center text-xs">
-                                <label class="font-bold text-slate-300">🛁 Baños y estética al año:</label>
-                                <span id="calc-baths-val" class="font-black text-teal-400 text-sm">2 baños</span>
-                            </div>
-                            <input type="range" id="calc-baths" min="0" max="6" value="2" oninput="calculateSavings()" class="w-full accent-teal-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
-                            <div class="flex justify-between text-[10px] text-slate-500">
-                                <span>0 baños</span>
-                                <span>2 baños</span>
-                                <span>6 baños</span>
-                            </div>
-                        </div>
-
-                        <!-- 3. Vacunas y Exámenes -->
-                        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
-                            <p class="text-xs font-bold text-slate-300">💉 Servicios preventivos incluidos en el cálculo:</p>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-400">
-                                <span>✓ Vacuna anual (Rabia + Pentavalente)</span>
-                                <span>✓ 3 Desparasitaciones internas</span>
-                                <span>✓ 2 Desparasitaciones externas (Credelio)</span>
-                                <span>✓ 1 Examen de laboratorio completo</span>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- RESULTADO (DERECHA) -->
-                    <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-950 p-6 sm:p-8 rounded-3xl border border-teal-500/30 text-center space-y-5 shadow-xl relative overflow-hidden">
-                        <div>
-                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Costo particular promedio (Sin Plan)</p>
-                            <p id="calc-particular-price" class="text-xl font-bold text-slate-400 line-through mt-0.5">$840.000 COP</p>
-                        </div>
-
-                        <div class="py-2 border-y border-slate-800">
-                            <p class="text-xs font-black uppercase tracking-widest text-emerald-400">Con Membresía Pagas Solo:</p>
-                            <p id="calc-plan-price" class="text-3xl sm:text-4xl font-black text-white mt-1">$540.000 <span class="text-xs font-normal text-slate-400">COP/año</span></p>
-                        </div>
-
-                        <div class="bg-emerald-500/15 border border-emerald-500/30 p-4 rounded-2xl space-y-1">
-                            <p class="text-xs font-bold text-emerald-300">¡Tu Ahorro Neto Anual Estimado!</p>
-                            <p id="calc-savings-total" class="text-3xl font-black text-emerald-400">$300.000 COP</p>
-                            <p id="calc-savings-percent" class="text-[11px] text-emerald-200 font-bold">Ahorras un 36% en salud veterinaria</p>
-                        </div>
-
-                        <button type="button" onclick="openEnrollModal('basico')" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-1.5">
-                            <span>🐾 Quiero Este Plan y Ahorrar</span>
-                            <span>›</span>
-                        </button>
-                    </div>
-
-                </div>
-
-            </div>
-        </section>
-
-        <!-- 05. PLANES DE MEMBRESÍA -->
-        <section id="planes" class="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
+        <!-- 03. PLANES DE MEMBRESÍA (PLANES MÁS ARRIBA - PRIORIDAD 3) -->
+        @if($showPlans)
+        <section id="planes" class="py-16 sm:py-20 bg-white border-t border-slate-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
                 <div class="text-center space-y-3 mb-10">
@@ -369,7 +320,7 @@
 
                     <!-- SELECTOR FACTURACIÓN -->
                     <div class="pt-4 flex items-center justify-center">
-                        <div class="bg-slate-200/70 p-1.5 rounded-2xl inline-flex items-center gap-1 shadow-inner">
+                        <div class="bg-slate-100 p-1.5 rounded-2xl inline-flex items-center gap-1 border border-slate-200 shadow-inner">
                             <button type="button" onclick="setBillingCycle('monthly')" id="btn-cycle-monthly" class="px-5 py-2 rounded-xl font-bold text-xs transition-all bg-white text-slate-900 shadow-xs">
                                 📅 Pago Mensual
                             </button>
@@ -393,7 +344,7 @@
                                     </div>
                                     <div>
                                         <h3 class="text-xl font-black text-slate-900">Plan Patitas Básico</h3>
-                                        <p class="text-xs text-slate-500 font-medium">Prevención integral y consultas periódicas</p>
+                                        <p class="text-xs text-slate-500 font-medium">Prevención integral y controles médicos</p>
                                     </div>
                                 </div>
                                 <span class="px-3 py-1 bg-brand-primary text-white text-[10px] font-black rounded-full uppercase tracking-wider">
@@ -549,8 +500,211 @@
 
             </div>
         </section>
+        @endif
 
-        <!-- 06. TABLA COMPARADORA DE PLANES ⭐ -->
+        <!-- 04. SIMULADOR DE AHORRO ANUAL INTERACTIVO (PRIORIDAD 3) -->
+        @if($showCalculator)
+        <section id="calculadora" class="py-16 sm:py-20 bg-slate-900 text-white relative overflow-hidden">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                
+                <div class="text-center space-y-3 mb-12">
+                    <div class="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                        <span>🧮 Simula el Ahorro de tu Mascota</span>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-white">
+                        ¿Cuánto dinero ahorras con una Membresía de Salud?
+                    </h2>
+                    <p class="text-slate-400 text-sm max-w-xl mx-auto">
+                        Selecciona el cuidado que necesita tu mascota durante el año y compara el costo particular vs el Plan de Bienestar en <strong>{{ $tenant->name }}</strong>.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-950/80 p-6 sm:p-10 rounded-3xl border border-slate-800 shadow-2xl">
+                    
+                    <!-- CONTROLES (IZQUIERDA) -->
+                    <div class="lg:col-span-7 space-y-6">
+                        
+                        <!-- 1. Consultas -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <label class="font-bold text-slate-300">🐶 Consultas presenciales al año:</label>
+                                <span id="calc-consultas-val" class="font-black text-teal-400 text-sm">3 consultas</span>
+                            </div>
+                            <input type="range" id="calc-consultas" min="1" max="8" value="3" oninput="calculateSavings()" class="w-full accent-teal-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
+                            <div class="flex justify-between text-[10px] text-slate-500">
+                                <span>1 consulta</span>
+                                <span>3 (Recomendado)</span>
+                                <span>8 consultas</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. Baños -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <label class="font-bold text-slate-300">🛁 Baños y estética al año:</label>
+                                <span id="calc-baths-val" class="font-black text-teal-400 text-sm">2 baños</span>
+                            </div>
+                            <input type="range" id="calc-baths" min="0" max="6" value="2" oninput="calculateSavings()" class="w-full accent-teal-400 cursor-pointer h-2 bg-slate-800 rounded-lg">
+                            <div class="flex justify-between text-[10px] text-slate-500">
+                                <span>0 baños</span>
+                                <span>2 baños</span>
+                                <span>6 baños</span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Vacunas y Exámenes -->
+                        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
+                            <p class="text-xs font-bold text-slate-300">💉 Servicios preventivos incluidos en el cálculo:</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-400">
+                                <span>✓ Vacuna anual (Rabia + Pentavalente)</span>
+                                <span>✓ 3 Desparasitaciones internas</span>
+                                <span>✓ 2 Desparasitaciones externas (Credelio)</span>
+                                <span>✓ 1 Examen de laboratorio completo</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- RESULTADO (DERECHA) -->
+                    <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-950 p-6 sm:p-8 rounded-3xl border border-teal-500/30 text-center space-y-5 shadow-xl relative overflow-hidden">
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Costo particular promedio (Sin Plan)</p>
+                            <p id="calc-particular-price" class="text-xl font-bold text-slate-400 line-through mt-0.5">$840.000 COP</p>
+                        </div>
+
+                        <div class="py-2 border-y border-slate-800">
+                            <p class="text-xs font-black uppercase tracking-widest text-emerald-400">Con Membresía Pagas Solo:</p>
+                            <p id="calc-plan-price" class="text-3xl sm:text-4xl font-black text-white mt-1">$540.000 <span class="text-xs font-normal text-slate-400">COP/año</span></p>
+                        </div>
+
+                        <div class="bg-emerald-500/15 border border-emerald-500/30 p-4 rounded-2xl space-y-1">
+                            <p class="text-xs font-bold text-emerald-300">¡Tu Ahorro Neto Anual Estimado!</p>
+                            <p id="calc-savings-total" class="text-3xl font-black text-emerald-400">$300.000 COP</p>
+                            <p id="calc-savings-percent" class="text-[11px] text-emerald-200 font-bold">Ahorras un 36% en salud veterinaria</p>
+                        </div>
+
+                        <button type="button" onclick="openEnrollModal('basico')" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-1.5">
+                            <span>🐾 Quiero Este Plan y Ahorrar</span>
+                            <span>›</span>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+        @endif
+
+        <!-- 05. CARNET DIGITAL PROTAGONISTA: "TODO EL CUIDADO EN UN SOLO LUGAR" (PRIORIDAD 4) -->
+        @if($showCarnetFeature)
+        <section id="carnet-digital" class="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                
+                <div class="lg:col-span-6 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-teal-100 text-teal-800 text-xs font-bold px-3.5 py-1 rounded-full">
+                        <span>📱 Todo el Cuidado en un Solo Lugar</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+                        Tu mascota tiene su Carnet Digital Inteligente
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+                        Olvida los carnets de papel que se pierden o deterioran. Con el sistema de <strong>{{ $tenant->name }}</strong>, tienes control total de la salud y beneficios de tu peludo desde cualquier smartphone:
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+                            <span class="text-lg">🪪</span>
+                            <h4 class="text-xs font-black text-slate-900">Carnet Digital Activo</h4>
+                            <p class="text-[11px] text-slate-500 leading-tight">Validación médica oficial con chip y número de contrato único.</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+                            <span class="text-lg">🔍</span>
+                            <h4 class="text-xs font-black text-slate-900">Código QR de Validación</h4>
+                            <p class="text-[11px] text-slate-500 leading-tight">Canjea tus consultas y vacunas en recepción en menos de 5 segundos.</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+                            <span class="text-lg">📦</span>
+                            <h4 class="text-xs font-black text-slate-900">Bolsa de Beneficios en Vivo</h4>
+                            <p class="text-[11px] text-slate-500 leading-tight">Consulta cuántas consultas, vacunas y baños te quedan disponibles.</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+                            <span class="text-lg">🛡️</span>
+                            <h4 class="text-xs font-black text-slate-900">Historial Clínico Seguro</h4>
+                            <p class="text-[11px] text-slate-500 leading-tight">Todo sincronizado con el software médico de {{ $tenant->name }}.</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="button" onclick="openEnrollModal('basico')" class="px-7 py-3.5 bg-brand-primary text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-md hover:opacity-95 transition-all">
+                            🐾 Obtener Carnet Digital para mi Mascota
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 flex justify-center">
+                    <div class="w-full max-w-sm sm:max-w-md carnet-card rounded-3xl p-6 sm:p-7 text-white shadow-2xl relative overflow-hidden border border-white/20 select-none" style="background: linear-gradient(135deg, {{ $primaryColor }} 0%, {{ $secondaryColor }} 100%);">
+                        <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10 pointer-events-none"></div>
+                        <div class="absolute -left-10 -bottom-10 w-32 h-32 rounded-full bg-white/5 pointer-events-none"></div>
+
+                        <div class="relative z-10 space-y-5">
+                            <div class="flex items-center justify-between border-b border-white/15 pb-3.5">
+                                <div class="flex items-center space-x-2.5">
+                                    @if(!empty($logoUrl))
+                                        <img src="{{ $logoUrl }}" alt="Logo" class="h-8 w-8 object-contain bg-white/20 backdrop-blur-md rounded-lg p-0.5 border border-white/30">
+                                    @else
+                                        <span class="text-2xl">🐾</span>
+                                    @endif
+                                    <div>
+                                        <p class="text-[10px] font-black uppercase tracking-widest text-teal-200">{{ $tenant->name }}</p>
+                                        <p class="text-xs font-black text-white">Carnet Digital de Afiliado</p>
+                                    </div>
+                                </div>
+                                <span class="px-2.5 py-0.5 bg-emerald-400/20 text-emerald-300 border border-emerald-300/30 text-[9px] font-black rounded-full uppercase tracking-wider">
+                                    ● ACTIVO 2026
+                                </span>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-1">
+                                <div class="space-y-0.5">
+                                    <p class="text-[9px] uppercase tracking-wider text-white/60 font-bold">Paciente</p>
+                                    <h3 class="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase">LUCAS</h3>
+                                    <p class="text-xs text-teal-100 font-medium">Golden Retriever • Canino</p>
+                                </div>
+                                <div class="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-3xl shadow-inner border border-white/20">
+                                    🐕
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 pt-2 bg-black/25 p-3.5 rounded-2xl border border-white/10">
+                                <div>
+                                    <p class="text-[8px] uppercase tracking-wider text-white/60 font-bold">Membresía</p>
+                                    <p class="text-xs font-black text-amber-300">Plan Patitas Premium</p>
+                                </div>
+                                <div>
+                                    <p class="text-[8px] uppercase tracking-wider text-white/60 font-bold">Contrato Digital</p>
+                                    <p class="text-xs font-mono font-bold text-white">VP-2026-9482</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-1 text-[10px] text-white/70">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-7 h-5 rounded bg-amber-400/90 border border-amber-300 flex items-center justify-center text-[7px] font-black text-slate-900">
+                                        CHIP
+                                    </div>
+                                    <span>Validación médica en recepción</span>
+                                </div>
+                                <span class="font-mono text-[9px] text-white/60">🔐 Verificado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        @endif
+
+        <!-- 06. TABLA COMPARADORA DE PLANES -->
+        @if($showComparison)
         <section id="comparador" class="py-16 sm:py-20 bg-white border-t border-slate-100">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                 <div class="text-center space-y-2">
@@ -636,8 +790,10 @@
                 </div>
             </div>
         </section>
+        @endif
 
-        <!-- 06.5. CRONOGRAMA DE ACTIVACIÓN DE SERVICIOS (PERIODOS DE CARENCIA) -->
+        <!-- 07. CRONOGRAMA DE ACTIVACIÓN DE SERVICIOS (PERIODOS DE CARENCIA) -->
+        @if($showCarencias)
         <section id="carencias" class="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
                 <div class="text-center space-y-3">
@@ -648,14 +804,14 @@
                         Cronograma de Activación de Servicios
                     </h2>
                     <p class="text-xs sm:text-sm text-slate-500 max-w-2xl mx-auto font-medium">
-                        Si eliges pagar mes a mes, los beneficios se habilitan progresivamente. <strong>O paga el año completo y activa el 100% de los servicios el DÍA 1 sin esperas.</strong>
+                        En la modalidad de pago mensual, los servicios preventivos se activan por etapas para garantizar la sostenibilidad del plan de salud.
                     </p>
 
                     <!-- Selector de Plan en Carencias -->
-                    <div class="pt-2 flex justify-center">
-                        <div class="bg-slate-200/80 p-1 rounded-2xl inline-flex items-center gap-1 shadow-inner text-xs font-bold">
+                    <div class="pt-3 flex items-center justify-center">
+                        <div class="bg-slate-200/70 p-1.5 rounded-2xl inline-flex items-center gap-1 shadow-inner text-xs font-bold">
                             <button type="button" onclick="showCarenciaPlan('basico')" id="btn-car-basico" class="px-4 py-2 rounded-xl bg-white text-slate-900 shadow-xs transition-all">
-                                🐾 Plan Básico
+                                🛡️ Plan Básico
                             </button>
                             <button type="button" onclick="showCarenciaPlan('premium')" id="btn-car-premium" class="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all">
                                 💎 Plan Premium
@@ -665,341 +821,147 @@
                 </div>
 
                 <!-- BLOQUE CARENCIA: PLAN BÁSICO -->
-                <div id="carencia-block-basico" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
-                        
-                        <!-- Día 0: Inmediato -->
-                        <div class="bg-white p-5 rounded-2xl border border-teal-200 shadow-xs space-y-2.5">
-                            <span class="inline-block px-2.5 py-0.5 bg-teal-600 text-white font-black text-[10px] rounded-full uppercase">Día 0 (Inmediato)</span>
-                            <h4 class="font-black text-xs text-slate-900">Al Inscribirte:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>Kit de Bienvenida (Cédula + Placa)</li>
-                                <li>Apertura de Historia Clínica</li>
-                                <li>1ra Desparasitación interna</li>
-                                <li>Consultas virtuales ILIMITADAS (L-D)</li>
-                                <li>Dctos en medicamentos y tienda</li>
-                            </ul>
+                <div id="carencia-block-basico" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- Día 0: Inmediato -->
+                    <div class="bg-white p-5 rounded-3xl border-2 border-emerald-500 shadow-sm space-y-3 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-emerald-500 text-white text-[9px] font-black px-2.5 py-0.5 rounded-bl-xl uppercase">
+                            Día 0 (Inmediato)
                         </div>
-
-                        <!-- 30 Días (Mes 1+) -->
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
-                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 30 Días</span>
-                            <h4 class="font-black text-xs text-slate-900">Mes 1+:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>1ra Consulta presencial</li>
-                                <li>Chequeo médico preventivo</li>
-                                <li>Inyectología de estabilización (hasta $20k)</li>
-                                <li>Recordatorios de salud preventiva</li>
-                            </ul>
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-base">
+                            ⚡
                         </div>
-
-                        <!-- 90 Días (3 Meses+) -->
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
-                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 90 Días</span>
-                            <h4 class="font-black text-xs text-slate-900">3 Meses+:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>Todo lo anterior activo</li>
-                                <li>Desparasitación externa antipulgas (Credelio o pipeta)</li>
-                                <li>2da Consulta presencial</li>
-                            </ul>
-                        </div>
-
-                        <!-- 180 Días (6 Meses+) -->
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
-                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 180 Días</span>
-                            <h4 class="font-black text-xs text-slate-900">6 Meses+:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>Todo lo anterior activo</li>
-                                <li>Vacunación anual completa (Pentavalente + Rabia)</li>
-                                <li>Examen de laboratorio (Hemograma o Perfil)</li>
-                                <li>Citología de oídos</li>
-                            </ul>
-                        </div>
-
-                        <!-- 240 Días (8 Meses+) -->
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5 sm:col-span-2 lg:col-span-1">
-                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 240 Días</span>
-                            <h4 class="font-black text-xs text-slate-900">8 Meses+:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>Todo lo anterior activo</li>
-                                <li>2 Baños y peluquería médica</li>
-                                <li>Servicio Funerario con 10% Dcto</li>
-                            </ul>
-                        </div>
-
+                        <h4 class="font-black text-sm text-slate-900">Activación Inmediata</h4>
+                        <ul class="text-xs text-slate-600 space-y-1.5 font-medium">
+                            <li>✓ Kit de Bienvenida (Placa + Collar)</li>
+                            <li>✓ Carnet Digital Oficial</li>
+                            <li>✓ Consultas Virtuales ILIMITADAS</li>
+                            <li>✓ 1ª Desparasitación Interna</li>
+                        </ul>
                     </div>
+
+                    <!-- 30 Días (Mes 1+) -->
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3 relative">
+                        <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-black text-base">
+                            🩺
+                        </div>
+                        <h4 class="font-black text-sm text-slate-900">A partir del Mes 1</h4>
+                        <ul class="text-xs text-slate-600 space-y-1.5 font-medium">
+                            <li>✓ Consultas Presenciales Generales</li>
+                            <li>✓ 1er Baño & Peluquería Médica</li>
+                        </ul>
+                    </div>
+
+                    <!-- 90 Días (3 Meses+) -->
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3 relative">
+                        <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center font-black text-base">
+                            💉
+                        </div>
+                        <h4 class="font-black text-sm text-slate-900">A partir del Mes 3</h4>
+                        <ul class="text-xs text-slate-600 space-y-1.5 font-medium">
+                            <li>✓ Vacunación Anual Completa</li>
+                            <li>✓ 2ª Desparasitación Interna</li>
+                        </ul>
+                    </div>
+
+                    <!-- 180 Días (6 Meses+) -->
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3 relative">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center font-black text-base">
+                            🧪
+                        </div>
+                        <h4 class="font-black text-sm text-slate-900">A partir del Mes 6</h4>
+                        <ul class="text-xs text-slate-600 space-y-1.5 font-medium">
+                            <li>✓ 1 Examen de Laboratorio Completo</li>
+                            <li>✓ Desparasitación Externa (Credelio)</li>
+                            <li>✓ 2º Baño & Peluquería</li>
+                        </ul>
+                    </div>
+
                 </div>
 
                 <!-- BLOQUE CARENCIA: PLAN PREMIUM -->
-                <div id="carencia-block-premium" class="space-y-4 hidden">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-                        
-                        <!-- Día 0: Inmediato -->
-                        <div class="bg-white p-5 rounded-2xl border border-purple-200 shadow-xs space-y-2.5">
-                            <span class="inline-block px-2.5 py-0.5 bg-purple-600 text-white font-black text-[10px] rounded-full uppercase">Día 0 (Inmediato)</span>
-                            <h4 class="font-black text-xs text-slate-900">Al Inscribirte:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>Kit de Bienvenida Premium</li>
-                                <li>1ra Desparasitación interna</li>
-                                <li>Consultas virtuales ILIMITADAS (24/7)</li>
-                                <li>Historia clínica digital</li>
-                                <li>Dctos preferenciales en farmacia</li>
-                            </ul>
+                <div id="carencia-block-premium" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- Día 0: Inmediato -->
+                    <div class="bg-white p-5 rounded-3xl border-2 border-purple-600 shadow-sm space-y-3 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-purple-600 text-white text-[9px] font-black px-2.5 py-0.5 rounded-bl-xl uppercase">
+                            Día 0 (Inmediato)
                         </div>
-
-                        <!-- 30 Días (Mes 1+) -->
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
-                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">A los 30 Días</span>
-                            <h4 class="font-black text-xs text-slate-900">Mes 1+:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>1ra Consulta presencial especializada</li>
-                                <li>Inyectología de estabilización ($20k)</li>
-                                <li>1ra Desparasitación externa (Credelio)</li>
-                            </ul>
+                        <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center font-black text-base">
+                            💎
                         </div>
-
-                        <!-- 90 - 180 Días -->
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
-                            <span class="inline-block px-2.5 py-0.5 bg-slate-800 text-white font-black text-[10px] rounded-full uppercase">90 - 180 Días</span>
-                            <h4 class="font-black text-xs text-slate-900">Diagnóstico Avanzado:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>Vacunación anual completa</li>
-                                <li>2da Desparasitación externa (Credelio)</li>
-                                <li>2 Exámenes de Laboratorio (Hemograma + Bioquímica)</li>
-                                <li>1 Ecografía Abdominal completa</li>
-                            </ul>
-                        </div>
-
-                        <!-- 240 Días (8 Meses+) -->
-                        <div class="bg-white p-5 rounded-2xl border border-purple-300 shadow-xs space-y-2.5">
-                            <span class="inline-block px-2.5 py-0.5 bg-purple-700 text-white font-black text-[10px] rounded-full uppercase">A los 240 Días</span>
-                            <h4 class="font-black text-xs text-slate-900">Cobertura Total:</h4>
-                            <ul class="text-[11px] text-slate-600 space-y-1.5 list-disc pl-3 font-medium">
-                                <li>Limpieza Dental (Profilaxis) 50% Dcto</li>
-                                <li>Baños y estética médica</li>
-                                <li><strong>Servicio Funerario 100% Gratuito</strong></li>
-                            </ul>
-                        </div>
-
+                        <h4 class="font-black text-sm text-slate-900">Activación Inmediata</h4>
+                        <ul class="text-xs text-slate-600 space-y-1.5 font-medium">
+                            <li>✓ Kit de Bienvenida (Placa + Collar)</li>
+                            <li>✓ Carnet Digital Oficial</li>
+                            <li>✓ Consultas Virtuales ILIMITADAS</li>
+                            <li>✓ 1ª Desparasitación Interna</li>
+                        </ul>
                     </div>
+
+                    <!-- 30 Días (Mes 1+) -->
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3 relative">
+                        <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-black text-base">
+                            🩺
+                        </div>
+                        <h4 class="font-black text-sm text-slate-900">A partir del Mes 1</h4>
+                        <ul class="text-xs text-slate-600 space-y-1.5 font-medium">
+                            <li>✓ Consultas Presenciales</li>
+                            <li>✓ 1er Baño & Peluquería</li>
+                            <li>✓ 1er Examen de Laboratorio</li>
+                        </ul>
+                    </div>
+
+                    <!-- 90 - 180 Días -->
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3 relative">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-base">
+                            🔬
+                        </div>
+                        <h4 class="font-black text-sm text-slate-900">Mes 3 al Mes 6</h4>
+                        <ul class="text-xs text-slate-600 space-y-1.5 font-medium">
+                            <li>✓ Vacunación Completa + Rabia</li>
+                            <li>✓ 1 Ecografía Abdominal Completa</li>
+                            <li>✓ 2ª Desparasitación Externa</li>
+                        </ul>
+                    </div>
+
+                    <!-- 240 Días (8 Meses+) -->
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3 relative">
+                        <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center font-black text-base">
+                            🦷
+                        </div>
+                        <h4 class="font-black text-sm text-slate-900">A partir del Mes 8</h4>
+                        <ul class="text-xs text-slate-600 space-y-1.5 font-medium">
+                            <li>✓ Profilaxis Dental (50% Dcto)</li>
+                            <li>✓ Servicio Funerario Gratuito</li>
+                            <li>✓ 2º Examen de Laboratorio</li>
+                        </ul>
+                    </div>
+
                 </div>
 
                 <!-- BANNER DESTACADO DE ACTIVACIÓN INMEDIATA CON PAGO ANUAL -->
-                <div class="p-5 sm:p-6 rounded-3xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="flex items-center space-x-3.5 text-left">
-                        <span class="text-3xl shrink-0">🚀</span>
-                        <div>
-                            <h4 class="font-black text-sm text-slate-900">¿Quieres todos los servicios activos desde el DÍA 1?</h4>
-                            <p class="text-xs text-slate-600">Elige la modalidad de <strong>Pago Anual Anticipado</strong>: ahorras 10%, no pagas inscripción y <strong>desbloqueas el 100% de los beneficios de inmediato sin esperar días de carencia</strong>.</p>
+                <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div class="space-y-1.5 text-center sm:text-left">
+                        <div class="inline-flex items-center space-x-2 bg-white/20 px-3 py-0.5 rounded-full text-xs font-black uppercase tracking-wider">
+                            <span>🚀 Bypass de Carencias</span>
                         </div>
+                        <h3 class="text-xl sm:text-2xl font-black">¿Quieres usar TODOS los servicios desde el Día 1?</h3>
+                        <p class="text-xs sm:text-sm text-emerald-100 max-w-xl font-medium">
+                            Con el <strong>Pago Anual Anticipado</strong> eliminas todos los periodos de carencia y recibes un 10% de descuento directo en tu membresía.
+                        </p>
                     </div>
-                    <button type="button" onclick="setBillingCycle('annual'); openEnrollModal(selectedPlan);" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-full shadow-md shrink-0 whitespace-nowrap">
-                        ⭐ Activar Plan Anual sin Carencias
+                    <button type="button" onclick="setBillingCycle('annual'); location.href='#planes';" class="px-6 py-3.5 bg-white text-emerald-900 hover:bg-emerald-50 font-black text-xs uppercase tracking-wider rounded-2xl shadow-md shrink-0 transition-all">
+                        ⭐ Ver Beneficio Anual
                     </button>
                 </div>
 
             </div>
         </section>
+        @endif
 
-        <!-- 07. ¿CÓMO FUNCIONA TU MEMBRESÍA? (5 PASOS) -->
-        <section id="como-funciona" class="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-                <div class="text-center space-y-3">
-                    <div class="inline-flex items-center space-x-2 bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full">
-                        <span>⚡ Proceso 100% Digital</span>
-                    </div>
-                    <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">Así funciona tu membresía en 5 pasos</h2>
-                    <p class="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto">
-                        Todo conectado directamente con el sistema médico de la clínica para una atención rápida y sin trámites.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                    <!-- Paso 1 -->
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-                        <span class="text-2xl font-black text-teal-600 block">01</span>
-                        <h4 class="font-black text-sm text-slate-900">Elige tu plan</h4>
-                        <p class="text-xs text-slate-600 leading-relaxed">Selecciona la modalidad mensual o anual que mejor se adapte a tu peludo.</p>
-                    </div>
-
-                    <!-- Paso 2 -->
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-                        <span class="text-2xl font-black text-teal-600 block">02</span>
-                        <h4 class="font-black text-sm text-slate-900">Afíliate</h4>
-                        <p class="text-xs text-slate-600 leading-relaxed">Completa los datos del tutor y tu mascota en menos de 1 minuto.</p>
-                    </div>
-
-                    <!-- Paso 3 -->
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-                        <span class="text-2xl font-black text-teal-600 block">03</span>
-                        <h4 class="font-black text-sm text-slate-900">Recibe tu carnet</h4>
-                        <p class="text-xs text-slate-600 leading-relaxed">Tu mascota queda registrada en la base oficial con carnet digital único.</p>
-                    </div>
-
-                    <!-- Paso 4 -->
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-                        <span class="text-2xl font-black text-teal-600 block">04</span>
-                        <h4 class="font-black text-sm text-slate-900">Usa tus beneficios</h4>
-                        <p class="text-xs text-slate-600 leading-relaxed">Acude a la clínica y el equipo valida y canjea tus servicios en recepción.</p>
-                    </div>
-
-                    <!-- Paso 5 -->
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-                        <span class="text-2xl font-black text-teal-600 block">05</span>
-                        <h4 class="font-black text-sm text-slate-900">Consulta saldos</h4>
-                        <p class="text-xs text-slate-600 leading-relaxed">Conoce tus beneficios disponibles y el historial médico de tu mascota.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 08. CARNET DIGITAL INTERACTIVO (ELEMENTO DE CONVERSIÓN) -->
-        <section class="py-16 sm:py-20 bg-white border-t border-slate-100">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                
-                <div class="lg:col-span-6 space-y-5">
-                    <div class="inline-flex items-center space-x-2 bg-teal-50 border border-teal-200 text-teal-800 text-xs font-bold px-3 py-1 rounded-full">
-                        <span>🐾 Tu Mascota en la Era Digital</span>
-                    </div>
-                    <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
-                        Tu mascota también tiene su Carnet Digital Oficial
-                    </h2>
-                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                        Con el Carnet Digital de <strong>{{ $tenant->name }}</strong>, consulta el estado de su membresía, historial de vacunas y saldo de consultas disponibles directamente desde tu teléfono.
-                    </p>
-
-                    <div class="space-y-2.5 text-xs text-slate-700 font-medium pt-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-teal-600 font-black">✓</span>
-                            <span>Código QR único de validación médica en mostrador.</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-teal-600 font-black">✓</span>
-                            <span>Apertura de historia clínica y placa con collar grabada.</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-teal-600 font-black">✓</span>
-                            <span>Sincronizado en tiempo real con el software de la clínica.</span>
-                        </div>
-                    </div>
-
-                    <div class="pt-4">
-                        <button type="button" onclick="openEnrollModal('basico')" class="px-7 py-3.5 bg-brand-primary text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-md hover:opacity-95">
-                            🐾 Obtener Carnet Digital para mi Mascota
-                        </button>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-6 flex justify-center">
-                    <div class="w-full max-w-sm sm:max-w-md carnet-card rounded-3xl p-6 sm:p-7 text-white shadow-2xl relative overflow-hidden border border-white/20 select-none" style="background: linear-gradient(135deg, {{ $primaryColor }} 0%, {{ $secondaryColor }} 100%);">
-                        <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10 pointer-events-none"></div>
-                        <div class="absolute -left-10 -bottom-10 w-32 h-32 rounded-full bg-white/5 pointer-events-none"></div>
-
-                        <div class="relative z-10 space-y-5">
-                            <div class="flex items-center justify-between border-b border-white/15 pb-3.5">
-                                <div class="flex items-center space-x-2.5">
-                                    @if(!empty($logoUrl))
-                                        <img src="{{ $logoUrl }}" alt="Logo" class="h-8 w-8 object-contain bg-white/20 backdrop-blur-md rounded-lg p-0.5 border border-white/30">
-                                    @else
-                                        <span class="text-2xl">🐾</span>
-                                    @endif
-                                    <div>
-                                        <p class="text-[10px] font-black uppercase tracking-widest text-teal-200">{{ $tenant->name }}</p>
-                                        <p class="text-xs font-black text-white">Carnet Digital de Afiliado</p>
-                                    </div>
-                                </div>
-                                <span class="px-2.5 py-0.5 bg-emerald-400/20 text-emerald-300 border border-emerald-300/30 text-[9px] font-black rounded-full uppercase tracking-wider">
-                                    ● ACTIVO 2026
-                                </span>
-                            </div>
-
-                            <div class="flex items-center justify-between pt-1">
-                                <div class="space-y-0.5">
-                                    <p class="text-[9px] uppercase tracking-wider text-white/60 font-bold">Paciente</p>
-                                    <h3 class="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase">LUCAS</h3>
-                                    <p class="text-xs text-teal-100 font-medium">Golden Retriever • Canino</p>
-                                </div>
-                                <div class="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-3xl shadow-inner border border-white/20">
-                                    🐕
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3 pt-2 bg-black/25 p-3.5 rounded-2xl border border-white/10">
-                                <div>
-                                    <p class="text-[8px] uppercase tracking-wider text-white/60 font-bold">Membresía</p>
-                                    <p class="text-xs font-black text-amber-300">Plan Patitas Premium</p>
-                                </div>
-                                <div>
-                                    <p class="text-[8px] uppercase tracking-wider text-white/60 font-bold">Contrato Digital</p>
-                                    <p class="text-xs font-mono font-bold text-white">VP-2026-9482</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center justify-between pt-1 text-[10px] text-white/70">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-7 h-5 rounded bg-amber-400/90 border border-amber-300 flex items-center justify-center text-[7px] font-black text-slate-900">
-                                        CHIP
-                                    </div>
-                                    <span>Validación inmediata en clínica</span>
-                                </div>
-                                <span class="font-mono text-[9px] text-white/50">AVI-SaaS</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- 09. TESTIMONIOS & PRUEBA SOCIAL -->
-        <section class="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-                <div class="text-center space-y-2">
-                    <span class="text-xs font-black text-brand-primary uppercase tracking-widest">Opiniones Reales</span>
-                    <h3 class="text-2xl sm:text-3xl font-black text-slate-900">Lo que dicen las familias en {{ $city }}</h3>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Testimonio 1 -->
-                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-3">
-                        <div class="text-amber-400 text-xs font-bold">⭐⭐⭐⭐⭐</div>
-                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
-                            “Desde que tenemos la membresía llevamos mucho más organizado el cuidado de Max. No tenemos que pensar en cuánto costará la consulta ni las vacunas.”
-                        </p>
-                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                            <span class="font-bold text-slate-900">María Camila R.</span>
-                            <span class="text-[10px] text-teal-700 font-bold">Tutor de Max 🐕 (Cajicá)</span>
-                        </div>
-                    </div>
-
-                    <!-- Testimonio 2 -->
-                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-3">
-                        <div class="text-amber-400 text-xs font-bold">⭐⭐⭐⭐⭐</div>
-                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
-                            “Pagué el año completo y el ahorro fue inmediato. Además la atención de las doctoras en el consultorio de Cajicá es impecable y muy cariñosa.”
-                        </p>
-                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                            <span class="font-bold text-slate-900">Juan David G.</span>
-                            <span class="text-[10px] text-teal-700 font-bold">Tutor de Luna 🐱 (Chía)</span>
-                        </div>
-                    </div>
-
-                    <!-- Testimonio 3 -->
-                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-3">
-                        <div class="text-amber-400 text-xs font-bold">⭐⭐⭐⭐⭐</div>
-                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
-                            “Tener las consultas virtuales por WhatsApp para dudas rápidas los fines de semana nos ha dado una tranquilidad increíble. Súper recomendado.”
-                        </p>
-                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                            <span class="font-bold text-slate-900">Andrea P.</span>
-                            <span class="text-[10px] text-teal-700 font-bold">Tutor de Milo 🐶 (Cajicá)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 10. INSTALACIONES & CONSULTORIO VETERINARIO (FOTOS & VIDEO) -->
+        <!-- 08. INSTALACIONES & CONSULTORIO VETERINARIO (FOTOS & VIDEO 9:16) -->
+        @if($showFacilities)
         <section id="instalaciones" class="py-16 sm:py-20 bg-white border-t border-slate-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
                 
@@ -1159,12 +1121,76 @@
 
                 </div>
 
-                </div>
-
             </div>
         </section>
+        @endif
 
-        <!-- 11. CONDICIONES CLARAS & TRANSPARENCIA (QUÉ NO INCLUYE) -->
+        <!-- 09. TESTIMONIOS & PRUEBA SOCIAL -->
+        @if($showTestimonials)
+        <section class="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+                <div class="text-center space-y-2">
+                    <span class="text-xs font-black text-brand-primary uppercase tracking-widest">Opiniones Reales</span>
+                    <h3 class="text-2xl sm:text-3xl font-black text-slate-900">Lo que dicen las familias en {{ $city }}</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Testimonio 1 -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-3">
+                        <div class="text-amber-400 text-sm">⭐⭐⭐⭐⭐</div>
+                        <p class="text-xs text-slate-600 italic leading-relaxed">
+                            "Tener el plan de salud me da una tranquilidad inmensa. Mi perrita Luna ya tuvo su vacuna y su chequeo sin pagar nada extra en recepción."
+                        </p>
+                        <div class="pt-2 flex items-center space-x-2.5 border-t border-slate-100">
+                            <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-800 font-bold flex items-center justify-center text-xs">
+                                MC
+                            </div>
+                            <div class="text-[11px]">
+                                <span class="font-bold text-slate-900">María Camila R.</span>
+                                <span class="block text-slate-400">Mamá de Luna (Poodle)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonio 2 -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-3">
+                        <div class="text-amber-400 text-sm">⭐⭐⭐⭐⭐</div>
+                        <p class="text-xs text-slate-600 italic leading-relaxed">
+                            "El carnet digital con QR es una maravilla. Llego a la veterinaria, lo escanean y ya saben qué vacunas y controles le corresponden a Milo."
+                        </p>
+                        <div class="pt-2 flex items-center space-x-2.5 border-t border-slate-100">
+                            <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-800 font-bold flex items-center justify-center text-xs">
+                                JG
+                            </div>
+                            <div class="text-[11px]">
+                                <span class="font-bold text-slate-900">Juan David G.</span>
+                                <span class="block text-slate-400">Papá de Milo (Bulldog)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonio 3 -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-3">
+                        <div class="text-amber-400 text-sm">⭐⭐⭐⭐⭐</div>
+                        <p class="text-xs text-slate-600 italic leading-relaxed">
+                            "Pagué el año completo y me ahorré un montón de plata. La atención del equipo en {{ $tenant->name }} siempre es de 10 sobre 10."
+                        </p>
+                        <div class="pt-2 flex items-center space-x-2.5 border-t border-slate-100">
+                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-xs">
+                                AP
+                            </div>
+                            <div class="text-[11px]">
+                                <span class="font-bold text-slate-900">Andrea P.</span>
+                                <span class="block text-slate-400">Mamá de Rocky & Nina</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        @endif
+
+        <!-- 10. CONDICIONES CLARAS & TRANSPARENCIA (QUÉ NO INCLUYE) -->
         <section class="py-14 bg-slate-900 text-white border-t border-slate-800">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
                 <div class="flex items-center space-x-3 text-amber-400 text-xs font-black uppercase tracking-wider">
@@ -1190,7 +1216,8 @@
             </div>
         </section>
 
-        <!-- 12. PREGUNTAS FRECUENTES (FAQ) -->
+        <!-- 11. PREGUNTAS FRECUENTES (FAQ) -->
+        @if($showFaq)
         <section id="faq" class="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                 
@@ -1243,8 +1270,9 @@
 
             </div>
         </section>
+        @endif
 
-        <!-- 13. CTA FINAL POTENTE (DUAL) -->
+        <!-- 12. CTA FINAL POTENTE (DUAL) -->
         <section class="py-16 sm:py-20 bg-slate-900 text-white relative overflow-hidden">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 relative z-10">
                 <span class="text-3xl">🐾</span>
@@ -1271,8 +1299,8 @@
     <!-- STICKY BOTTOM ACTION BAR PARA CELULARES -->
     <div class="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200 p-3 px-4 flex items-center justify-between gap-3 shadow-2xl">
         <div class="min-w-0">
-            <p class="text-[10px] text-slate-400 font-black uppercase">Membresía Desde</p>
-            <p class="text-xs font-black text-slate-900 truncate">$50.000 COP / mes</p>
+            <p class="text-[10px] text-slate-400 font-black uppercase">Membresía</p>
+            <p class="text-xs font-black text-slate-900 truncate">{{ $heroPriceBadge }}</p>
         </div>
         <div class="flex items-center space-x-2 shrink-0">
             <a href="https://wa.me/57{{ $cleanPhone }}" target="_blank" class="p-2.5 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-200 text-sm">
@@ -1284,7 +1312,7 @@
         </div>
     </div>
 
-    <!-- 14. FOOTER -->
+    <!-- 13. FOOTER 100% WHITE LABEL -->
     <footer id="contacto" class="bg-slate-950 text-slate-400 py-12 text-xs border-t border-slate-800 pb-20 lg:pb-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="space-y-3">
@@ -1312,7 +1340,7 @@
             </div>
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-slate-900 text-center text-slate-400 text-[11px]">
-            © {{ date('Y') }} {{ $tenant->name }}. Plataforma de Membresías desarrollada con tecnología AVI-SaaS.
+            © {{ date('Y') }} {{ $tenant->name }}. Todos los derechos reservados. Sistema Integral de Membresías y Salud Preventiva.
         </div>
     </footer>
 
@@ -1354,149 +1382,130 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">Correo Electrónico *</label>
-                        <input type="email" id="tutor_email" required placeholder="Ej. maria@gmail.com" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        <input type="email" id="tutor_email" required placeholder="Ej. camila@gmail.com" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
                     </div>
                 </div>
 
                 <!-- PASO 2: DATOS DE LA MASCOTA -->
                 <div id="step-2-fields" class="space-y-3 hidden">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Nombre de la Mascota *</label>
-                        <input type="text" id="pet_name" placeholder="Ej. Lucas" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nombre de la Mascota *</label>
+                            <input type="text" id="pet_name" placeholder="Ej. Lucas" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Especie *</label>
                             <select id="pet_species" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                                <option value="Canino">🐶 Perro (Canino)</option>
-                                <option value="Felino">🐱 Gato (Felino)</option>
+                                <option value="canino">🐶 Canino (Perro)</option>
+                                <option value="felino">🐱 Felino (Gato)</option>
                             </select>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Edad Aprox. (Años)</label>
-                            <input type="number" id="pet_age" min="0" max="25" placeholder="Ej. 2" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
-                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Raza</label>
-                        <input type="text" id="pet_breed" placeholder="Ej. Golden Retriever / Criollo" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Raza</label>
+                            <input type="text" id="pet_breed" placeholder="Ej. Golden Retriever / Criollo" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Edad Aproximada</label>
+                            <input type="text" id="pet_age" placeholder="Ej. 2 años" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        </div>
                     </div>
                 </div>
 
-                <!-- PASO 3: RESUMEN Y MÉTODO DE PAGO DIRECTO -->
-                <div id="step-3-fields" class="space-y-4 hidden">
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+                <!-- PASO 3: RESUMEN Y MEDIO DE PAGO -->
+                <div id="step-3-fields" class="space-y-3.5 hidden">
+                    <!-- RESUMEN DEL PLAN -->
+                    <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1">
                         <div class="flex justify-between items-center text-xs">
                             <span class="text-slate-500">Plan Seleccionado:</span>
                             <span id="summary-plan-name" class="font-black text-slate-900">Plan Patitas Básico</span>
                         </div>
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-500">Modalidad:</span>
-                            <span id="summary-cycle" class="font-black text-teal-700">Pago Mensual</span>
+                            <span class="text-slate-500">Frecuencia:</span>
+                            <span id="summary-cycle" class="font-bold text-teal-700">Mensual</span>
                         </div>
-                        <div class="flex justify-between items-center text-xs pt-2 border-t border-slate-200">
-                            <span class="font-bold text-slate-900">Total a Pagar a la Clínica:</span>
-                            <span id="summary-price" class="font-black text-base text-teal-700">$50.000 COP</span>
+                        <div class="flex justify-between items-center text-xs border-t border-slate-200 pt-1.5 mt-1.5">
+                            <span class="font-black text-slate-900">Valor a Pagar:</span>
+                            <span id="summary-price" class="font-black text-emerald-600 text-sm">$50.000 COP</span>
                         </div>
                     </div>
 
+                    <!-- SELECTOR DE MEDIO DE PAGO INTERACTIVO -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-800 mb-1.5">Elige cómo deseas pagar a {{ $tenant->name }}:</label>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <!-- Opción Nequi -->
-                            <label class="payment-card-opt flex items-center p-3 bg-white border-2 border-teal-500 rounded-2xl cursor-pointer hover:bg-slate-50 transition-all text-xs font-bold text-slate-800" onclick="selectPaymentMethod('nequi')">
-                                <input type="radio" name="pay_opt" value="nequi" checked class="mr-2 text-teal-600 focus:ring-teal-500">
-                                <div>
-                                    <span class="block text-slate-900 font-extrabold">📱 Nequi / Daviplata</span>
-                                    <span class="text-[10px] text-slate-500 font-normal">Transferencia directa</span>
-                                </div>
-                            </label>
-
-                            <!-- Opción Bold / Tarjeta / PSE -->
-                            <label class="payment-card-opt flex items-center p-3 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 transition-all text-xs font-bold text-slate-800" onclick="selectPaymentMethod('bold')">
-                                <input type="radio" name="pay_opt" value="bold" class="mr-2 text-teal-600 focus:ring-teal-500">
-                                <div>
-                                    <span class="block text-slate-900 font-extrabold">💳 Bold / Tarjeta / PSE</span>
-                                    <span class="text-[10px] text-slate-500 font-normal">Link de pago virtual</span>
-                                </div>
-                            </label>
-
-                            <!-- Opción Bancolombia -->
-                            <label class="payment-card-opt flex items-center p-3 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 transition-all text-xs font-bold text-slate-800" onclick="selectPaymentMethod('bank')">
-                                <input type="radio" name="pay_opt" value="bank" class="mr-2 text-teal-600 focus:ring-teal-500">
-                                <div>
-                                    <span class="block text-slate-900 font-extrabold">🏦 Bancolombia / Banco</span>
-                                    <span class="text-[10px] text-slate-500 font-normal">Cuenta de la veterinaria</span>
-                                </div>
-                            </label>
-
-                            <!-- Opción Clínica / Efectivo -->
-                            <label class="payment-card-opt flex items-center p-3 bg-white border border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 transition-all text-xs font-bold text-slate-800" onclick="selectPaymentMethod('cash')">
-                                <input type="radio" name="pay_opt" value="cash" class="mr-2 text-teal-600 focus:ring-teal-500">
-                                <div>
-                                    <span class="block text-slate-900 font-extrabold">🏥 Pago en Clínica</span>
-                                    <span class="text-[10px] text-slate-500 font-normal">Efectivo o Datáfono</span>
-                                </div>
-                            </label>
-                        </div>
+                        <label class="block text-xs font-black text-slate-900 mb-2">Selecciona tu Medio de Pago Directo:</label>
                         <input type="hidden" id="payment_method" value="nequi">
+                        
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div onclick="selectPaymentMethod('nequi')" class="payment-card-opt p-2.5 rounded-xl border-2 border-teal-500 bg-teal-50/50 cursor-pointer text-center space-y-0.5 hover:bg-teal-50 transition-all">
+                                <span class="block text-base">📱</span>
+                                <span class="block text-slate-900 font-extrabold">Nequi / Daviplata</span>
+                                <span class="block text-[10px] text-teal-700 font-bold">Transferencia Directa</span>
+                            </div>
+
+                            <div onclick="selectPaymentMethod('bold')" class="payment-card-opt p-2.5 rounded-xl border border-slate-200 bg-white cursor-pointer text-center space-y-0.5 hover:bg-slate-50 transition-all">
+                                <span class="block text-base">💳</span>
+                                <span class="block text-slate-900 font-extrabold">Bold / PSE</span>
+                                <span class="block text-[10px] text-purple-700 font-bold">Tarjetas y PSE</span>
+                            </div>
+
+                            <div onclick="selectPaymentMethod('bank')" class="payment-card-opt p-2.5 rounded-xl border border-slate-200 bg-white cursor-pointer text-center space-y-0.5 hover:bg-slate-50 transition-all">
+                                <span class="block text-base">🏦</span>
+                                <span class="block text-slate-900 font-extrabold">Bancolombia</span>
+                                <span class="block text-[10px] text-slate-500 font-bold">Cuenta Clínica</span>
+                            </div>
+
+                            <div onclick="selectPaymentMethod('cash')" class="payment-card-opt p-2.5 rounded-xl border border-slate-200 bg-white cursor-pointer text-center space-y-0.5 hover:bg-slate-50 transition-all">
+                                <span class="block text-base">💵</span>
+                                <span class="block text-slate-900 font-extrabold">En Recepción</span>
+                                <span class="block text-[10px] text-slate-500 font-bold">Efectivo / Datáfono</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- CAJAS DINÁMICAS DE DETALLE DE PAGO SEGÚN ELECCIÓN -->
-                    <div id="pay-detail-nequi" class="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-2xl space-y-2">
+                    <!-- DETALLES DE PAGO DINÁMICOS SEGÚN SELECCIÓN -->
+                    <!-- 1. NEQUI / DAVIPLATA -->
+                    <div id="pay-detail-nequi" class="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="text-xs font-bold text-emerald-950">📲 Número Nequi / Daviplata Oficial:</span>
-                            <button type="button" onclick="copyText('{{ $paymentNequi }}', this)" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold rounded-lg shadow-2xs transition-all">
-                                📋 Copiar Número
+                            <button type="button" onclick="copyText('{{ $paymentNequi }}', this)" class="text-[10px] font-black bg-emerald-600 text-white px-2 py-0.5 rounded-md hover:bg-emerald-700">
+                                Copiar
                             </button>
                         </div>
-                        <div class="text-base font-black text-emerald-900 tracking-wider font-mono">
-                            {{ $paymentNequi }}
-                        </div>
-                        <p class="text-[11px] text-emerald-800 leading-snug">
+                        <p class="text-base font-black text-emerald-900 font-mono tracking-wider">{{ $paymentNequi }}</p>
+                        <p class="text-[11px] text-emerald-800">
                             Transfiere desde tu app de Nequi o Daviplata a este número de la clínica.
                         </p>
                     </div>
 
-                    <div id="pay-detail-bold" class="hidden p-3.5 bg-purple-50/70 border border-purple-200 rounded-2xl space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-purple-950">💳 Pago Digital con Bold (Tarjetas & PSE)</span>
-                            <span class="bg-purple-200 text-purple-800 text-[10px] font-black px-2 py-0.5 rounded-full">Oficial Bold</span>
-                        </div>
-                        @if(!empty($paymentBoldLink))
-                            <p class="text-[11px] text-purple-900 leading-snug">
-                                Puedes pagar de inmediato con tarjeta débito, crédito o PSE en el link oficial de Bold de la clínica:
-                            </p>
-                            <a href="{{ $paymentBoldLink }}" target="_blank" class="inline-flex items-center justify-center space-x-1.5 w-full py-2 bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs rounded-xl shadow-xs transition-all">
-                                <span>Pagar en Bold de {{ $tenant->name }}</span>
-                                <span>↗</span>
-                            </a>
-                        @else
-                            <p class="text-[11px] text-purple-900 leading-snug">
-                                Al confirmar, se emitirá tu carnet y la clínica te enviará su link directo de <strong>Bold / PSE</strong> por WhatsApp para realizar el pago con tarjeta en segundos.
-                            </p>
-                        @endif
-                    </div>
-
-                    <div id="pay-detail-bank" class="hidden p-3.5 bg-blue-50/70 border border-blue-200 rounded-2xl space-y-2">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-blue-950">🏦 Cuenta Bancaria Oficial:</span>
-                            <button type="button" onclick="copyText('{{ $paymentBank }}', this)" class="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold rounded-lg shadow-2xs transition-all">
-                                📋 Copiar Datos
-                            </button>
-                        </div>
-                        <div class="text-xs font-bold text-blue-900 leading-relaxed bg-white p-2.5 rounded-xl border border-blue-100">
-                            {{ $paymentBank }}
-                        </div>
-                    </div>
-
-                    <div id="pay-detail-cash" class="hidden p-3.5 bg-slate-100 border border-slate-200 rounded-2xl space-y-1">
-                        <span class="text-xs font-bold text-slate-900">🏥 Pago en Mostrador / Recepción:</span>
-                        <p class="text-[11px] text-slate-600 leading-snug">
-                            Tu carnet quedará pre-activado. Podrás realizar el pago en efectivo o con datáfono directamente en la sede de <strong>{{ $tenant->name }}</strong> ({{ $address }}).
+                    <!-- 2. BOLD / TARJETA -->
+                    <div id="pay-detail-bold" class="hidden p-3 bg-purple-50 border border-purple-200 rounded-2xl space-y-2">
+                        <span class="text-xs font-bold text-purple-950">💳 Pago Seguro con Bold (Tarjetas & PSE)</span>
+                        <p class="text-[11px] text-purple-800 leading-relaxed">
+                            Al confirmar tu afiliación serás redirigido al portal oficial de Bold de <strong>{{ $tenant->name }}</strong> para pagar con tarjeta de crédito, débito o PSE.
                         </p>
                     </div>
 
+                    <!-- 3. BANCOLOMBIA / TRANSFERENCIA BANCARIA -->
+                    <div id="pay-detail-bank" class="hidden p-3 bg-slate-100 border border-slate-200 rounded-2xl space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-900">🏦 Cuenta Bancaria Oficial:</span>
+                            <button type="button" onclick="copyText('{{ $paymentBank }}', this)" class="text-[10px] font-black bg-slate-700 text-white px-2 py-0.5 rounded-md hover:bg-slate-800">
+                                Copiar
+                            </button>
+                        </div>
+                        <p class="text-xs font-bold text-slate-800 leading-relaxed font-mono">{{ $paymentBank }}</p>
+                    </div>
+
+                    <!-- 4. EN RECEPCIÓN -->
+                    <div id="pay-detail-cash" class="hidden p-3 bg-amber-50 border border-amber-200 rounded-2xl space-y-1">
+                        <span class="text-xs font-bold text-amber-950">💵 Pago Directo en Sede</span>
+                        <p class="text-[11px] text-amber-800 leading-relaxed">
+                            Puedes cancelar en efectivo o datáfono directamente en nuestro consultorio en <strong>{{ $address }}, {{ $city }}</strong> al momento de tu primera visita.
+                        </p>
+                    </div>
+
+                    <!-- INSTRUCCIÓN DE CONFIRMACIÓN -->
                     @if(!empty($paymentInstructions))
                         <div class="text-[11px] text-slate-600 bg-amber-50/80 border border-amber-200 p-2.5 rounded-xl flex items-start space-x-1.5">
                             <span class="text-amber-700 font-bold shrink-0">ℹ️</span>
@@ -1598,11 +1607,11 @@
             if (method === 'cash') cashBox.classList.remove('hidden');
 
             document.querySelectorAll('.payment-card-opt').forEach(el => {
-                el.classList.remove('border-teal-500', 'border-2');
-                el.classList.add('border-slate-200');
+                el.classList.remove('border-teal-500', 'border-2', 'bg-teal-50/50');
+                el.classList.add('border-slate-200', 'bg-white');
             });
-            event.currentTarget.classList.remove('border-slate-200');
-            event.currentTarget.classList.add('border-teal-500', 'border-2');
+            event.currentTarget.classList.remove('border-slate-200', 'bg-white');
+            event.currentTarget.classList.add('border-teal-500', 'border-2', 'bg-teal-50/50');
         }
 
         // Calculadora de Ahorro en tiempo real
