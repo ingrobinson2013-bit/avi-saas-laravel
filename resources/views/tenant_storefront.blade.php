@@ -1015,76 +1015,144 @@
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
                     
-                    <!-- Cover Photo o Video Principal -->
-                    <div class="lg:col-span-7 rounded-3xl overflow-hidden shadow-xl border border-slate-200 bg-slate-900 relative aspect-video flex items-center justify-center group">
-                        @if(!empty($bannerVideo))
-                            <video class="w-full h-full object-cover" controls autoplay muted loop playsinline poster="{{ $bannerImage }}">
-                                <source src="{{ $bannerVideo }}" type="video/mp4">
-                                Tu navegador no soporta video.
-                            </video>
-                        @elseif(!empty($bannerImage))
-                            <img src="{{ $bannerImage }}" alt="Instalaciones de {{ $tenant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
-                        @else
-                            <img src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=1000" alt="Consultorio Veterinario" class="w-full h-full object-cover" loading="lazy">
-                        @endif
+                    @if(!empty($bannerVideo))
+                        <!-- 1. HISTORIA / REEL EN FORMATO VERTICAL 9:16 REAL -->
+                        <div class="lg:col-span-5 flex justify-center">
+                            <div class="w-full max-w-[320px] sm:max-w-[340px] aspect-[9/16] rounded-[36px] overflow-hidden shadow-2xl border-[6px] border-slate-950 bg-black relative group flex flex-col justify-between">
+                                
+                                <!-- Top Story Bar -->
+                                <div class="absolute top-0 inset-x-0 p-3.5 z-20 bg-gradient-to-b from-black/80 via-black/40 to-transparent flex items-center justify-between text-white text-xs">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-7 h-7 rounded-full bg-teal-500 border-2 border-white flex items-center justify-center text-xs shadow-xs">
+                                            🐾
+                                        </div>
+                                        <div class="min-w-0">
+                                            <p class="font-extrabold text-[11px] leading-tight truncate">{{ $tenant->name }}</p>
+                                            <p class="text-[9px] text-teal-300 font-bold flex items-center gap-1">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
+                                                <span>Video en Vivo</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span class="bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-full text-[10px] font-bold">Reels 🎥</span>
+                                </div>
 
-                        <div class="absolute bottom-3 left-3 right-3 bg-slate-950/85 backdrop-blur-md p-3.5 rounded-2xl text-white flex items-center justify-between text-xs border border-white/10">
-                            <div class="flex items-center space-x-2 min-w-0">
-                                <span class="text-base shrink-0">📍</span>
-                                <span class="font-bold text-[11px] truncate">{{ $address }}</span>
+                                <!-- Video Vertical Full 9:16 -->
+                                <video class="w-full h-full object-cover" controls autoplay muted loop playsinline poster="{{ $bannerImage }}">
+                                    <source src="{{ $bannerVideo }}" type="video/mp4">
+                                    Tu navegador no soporta video.
+                                </video>
+
+                                <!-- Bottom Location Pill -->
+                                <div class="absolute bottom-3 inset-x-3 bg-slate-950/85 backdrop-blur-md p-2.5 rounded-2xl text-white flex items-center justify-between text-xs border border-white/10 z-20 pointer-events-none">
+                                    <div class="flex items-center space-x-1.5 min-w-0">
+                                        <span class="text-sm shrink-0">📍</span>
+                                        <span class="font-bold text-[10px] truncate">{{ $city }}</span>
+                                    </div>
+                                    <span class="text-[9px] text-emerald-400 font-black bg-emerald-950/80 px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0">Abierto L-S</span>
+                                </div>
                             </div>
-                            <span class="text-[10px] text-emerald-400 font-black bg-emerald-950/80 px-2.5 py-0.5 rounded-full uppercase tracking-wider shrink-0">Abierto L-S</span>
                         </div>
-                    </div>
 
-                    <!-- Datos de la Clínica & Galería de Fotos del Consultorio -->
-                    <div class="lg:col-span-5 space-y-5">
-                        
-                        @if(!empty($bannerVideo) && !empty($bannerImage))
-                            <div class="rounded-3xl overflow-hidden shadow-md border border-slate-200 aspect-[16/9] relative group">
-                                <img src="{{ $bannerImage }}" alt="Instalaciones de {{ $tenant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
-                                <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black text-slate-900 shadow-sm border border-slate-100">
-                                    🏥 Instalaciones
+                        <!-- 2. DATOS DE LA CLÍNICA & FOTO DE INSTALACIONES -->
+                        <div class="lg:col-span-7 space-y-5">
+                            @if(!empty($bannerImage))
+                                <div class="rounded-3xl overflow-hidden shadow-md border border-slate-200 aspect-[16/9] relative group">
+                                    <img src="{{ $bannerImage }}" alt="Instalaciones de {{ $tenant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                                    <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black text-slate-900 shadow-sm border border-slate-100">
+                                        🏥 Sede Presencial
+                                    </div>
                                 </div>
+                            @endif
+
+                            <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-4">
+                                <h3 class="font-black text-sm sm:text-base text-slate-900 flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                    Información de Atención & Consultorio
+                                </h3>
+
+                                <div class="space-y-2.5 text-xs text-slate-600 font-medium">
+                                    <div class="flex items-start gap-2.5">
+                                        <span class="text-slate-400 font-bold">📍 Dirección:</span>
+                                        <span class="font-bold text-slate-900">{{ $address }}</span>
+                                    </div>
+                                    <div class="flex items-start gap-2.5">
+                                        <span class="text-slate-400 font-bold">🏙️ Ciudad:</span>
+                                        <span class="font-bold text-slate-900">{{ $city }}</span>
+                                    </div>
+                                    <div class="flex items-start gap-2.5">
+                                        <span class="text-slate-400 font-bold">📞 WhatsApp Oficial:</span>
+                                        <span class="font-bold text-emerald-600">{{ $phone }}</span>
+                                    </div>
+                                </div>
+
+                                <a href="https://wa.me/57{{ $cleanPhone }}?text=Hola,%20quiero%20conocer%20la%20ubicaci%C3%B3n%20y%20agendar%20visita%20en%20{{ urlencode($tenant->name) }}" target="_blank" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-2xl transition flex items-center justify-center gap-2 shadow-sm">
+                                    <span>💬 Cómo Llegar por WhatsApp</span>
+                                    <span>↗</span>
+                                </a>
                             </div>
-                        @elseif(!empty($heroImage))
-                            <div class="rounded-3xl overflow-hidden shadow-md border border-slate-200 aspect-[16/9] relative group">
-                                <img src="{{ $heroImage }}" alt="Pacientes de {{ $tenant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
-                                <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black text-slate-900 shadow-sm border border-slate-100">
-                                    🐾 Pacientes Felices
-                                </div>
-                            </div>
-                        @endif
-
-                        <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-4">
-                            <h3 class="font-black text-sm sm:text-base text-slate-900 flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                                Información de Atención & Consultorio
-                            </h3>
-
-                            <div class="space-y-2.5 text-xs text-slate-600 font-medium">
-                                <div class="flex items-start gap-2.5">
-                                    <span class="text-slate-400 font-bold">📍 Dirección:</span>
-                                    <span class="font-bold text-slate-900">{{ $address }}</span>
-                                </div>
-                                <div class="flex items-start gap-2.5">
-                                    <span class="text-slate-400 font-bold">🏙️ Ciudad:</span>
-                                    <span class="font-bold text-slate-900">{{ $city }}</span>
-                                </div>
-                                <div class="flex items-start gap-2.5">
-                                    <span class="text-slate-400 font-bold">📞 WhatsApp Oficial:</span>
-                                    <span class="font-bold text-emerald-600">{{ $phone }}</span>
-                                </div>
-                            </div>
-
-                            <a href="https://wa.me/57{{ $cleanPhone }}?text=Hola,%20quiero%20conocer%20la%20ubicaci%C3%B3n%20y%20agendar%20visita%20en%20{{ urlencode($tenant->name) }}" target="_blank" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-2xl transition flex items-center justify-center gap-2">
-                                <span>💬 Cómo Llegar por WhatsApp</span>
-                                <span>↗</span>
-                            </a>
                         </div>
-                    </div>
+
+                    @else
+                        <!-- FALLBACK CUANDO NO HAY VIDEO: COVER FOTO HORIZONTAL -->
+                        <div class="lg:col-span-7 rounded-3xl overflow-hidden shadow-xl border border-slate-200 bg-slate-900 relative aspect-video flex items-center justify-center group">
+                            @if(!empty($bannerImage))
+                                <img src="{{ $bannerImage }}" alt="Instalaciones de {{ $tenant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                            @else
+                                <img src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=1000" alt="Consultorio Veterinario" class="w-full h-full object-cover" loading="lazy">
+                            @endif
+
+                            <div class="absolute bottom-3 left-3 right-3 bg-slate-950/85 backdrop-blur-md p-3.5 rounded-2xl text-white flex items-center justify-between text-xs border border-white/10">
+                                <div class="flex items-center space-x-2 min-w-0">
+                                    <span class="text-base shrink-0">📍</span>
+                                    <span class="font-bold text-[11px] truncate">{{ $address }}</span>
+                                </div>
+                                <span class="text-[10px] text-emerald-400 font-black bg-emerald-950/80 px-2.5 py-0.5 rounded-full uppercase tracking-wider shrink-0">Abierto L-S</span>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-5 space-y-5">
+                            @if(!empty($heroImage))
+                                <div class="rounded-3xl overflow-hidden shadow-md border border-slate-200 aspect-[16/9] relative group">
+                                    <img src="{{ $heroImage }}" alt="Pacientes de {{ $tenant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                                    <div class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black text-slate-900 shadow-sm border border-slate-100">
+                                        🐾 Pacientes Felices
+                                    </div>
+                                </div>
+                            @endif
+
+                            <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-4">
+                                <h3 class="font-black text-sm sm:text-base text-slate-900 flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                    Información de Atención & Consultorio
+                                </h3>
+
+                                <div class="space-y-2.5 text-xs text-slate-600 font-medium">
+                                    <div class="flex items-start gap-2.5">
+                                        <span class="text-slate-400 font-bold">📍 Dirección:</span>
+                                        <span class="font-bold text-slate-900">{{ $address }}</span>
+                                    </div>
+                                    <div class="flex items-start gap-2.5">
+                                        <span class="text-slate-400 font-bold">🏙️ Ciudad:</span>
+                                        <span class="font-bold text-slate-900">{{ $city }}</span>
+                                    </div>
+                                    <div class="flex items-start gap-2.5">
+                                        <span class="text-slate-400 font-bold">📞 WhatsApp Oficial:</span>
+                                        <span class="font-bold text-emerald-600">{{ $phone }}</span>
+                                    </div>
+                                </div>
+
+                                <a href="https://wa.me/57{{ $cleanPhone }}?text=Hola,%20quiero%20conocer%20la%20ubicaci%C3%B3n%20y%20agendar%20visita%20en%20{{ urlencode($tenant->name) }}" target="_blank" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-2xl transition flex items-center justify-center gap-2">
+                                    <span>💬 Cómo Llegar por WhatsApp</span>
+                                    <span>↗</span>
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+
+                </div>
 
                 </div>
 
