@@ -26,7 +26,7 @@ class StorefrontEnrollmentController extends Controller
             'tutor_email' => 'required|email|max:255',
             'tutor_doc' => 'nullable|string|max:50',
             'pet_name' => 'required|string|max:255',
-            'pet_species' => 'required|string|in:Canino,Felino,dog,cat,Perro,Gato',
+            'pet_species' => 'required|string|in:Canino,Felino,dog,cat,Perro,Gato,canino,felino,perro,gato',
             'pet_breed' => 'nullable|string|max:255',
             'pet_age' => 'nullable|string|max:50',
             'pet_photo_base64' => 'nullable|string',
