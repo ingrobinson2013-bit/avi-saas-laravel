@@ -155,11 +155,13 @@
             
             <!-- ENCABEZADO DE LA CLÍNICA -->
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
-                <div class="flex items-center space-x-3.5 min-w-0">
+                <div class="flex items-center space-x-4 min-w-0">
                     @if(!empty($logoUrl))
-                        <img src="{{ $logoUrl }}" alt="{{ $tenant->name }}" class="h-14 sm:h-16 w-auto max-h-16 object-contain rounded-2xl p-1 bg-white/10 backdrop-blur-md border border-white/20 shadow-md shrink-0">
+                        <div class="h-16 sm:h-20 min-w-[75px] max-w-[190px] bg-white rounded-2xl p-2.5 shadow-xl border border-white/90 flex items-center justify-center shrink-0">
+                            <img src="{{ $logoUrl }}" alt="{{ $tenant->name }}" class="h-full w-auto max-h-16 object-contain">
+                        </div>
                     @else
-                        <div class="w-14 h-14 rounded-2xl bg-brand-primary text-white flex items-center justify-center text-3xl font-black shadow-lg shrink-0">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white text-brand-primary border border-white/90 flex items-center justify-center text-3xl font-black shadow-xl shrink-0">
                             🐾
                         </div>
                     @endif
@@ -204,7 +206,9 @@
                         <div class="flex items-center justify-between border-b border-white/15 pb-3">
                             <div class="flex items-center space-x-2.5 min-w-0">
                                 @if(!empty($logoUrl))
-                                    <img src="{{ $logoUrl }}" alt="Logo" class="h-6 w-6 object-contain bg-white/20 backdrop-blur-md rounded-lg p-0.5 shrink-0">
+                                    <div class="h-7 px-2 py-0.5 bg-white rounded-lg shadow-md border border-white/90 flex items-center justify-center shrink-0">
+                                        <img src="{{ $logoUrl }}" alt="Logo" class="h-full w-auto max-h-5 object-contain">
+                                    </div>
                                 @else
                                     <span class="text-xl">🐾</span>
                                 @endif

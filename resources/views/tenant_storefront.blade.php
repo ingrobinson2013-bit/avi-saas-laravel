@@ -650,7 +650,9 @@
                             <div class="flex items-center justify-between border-b border-white/15 pb-3.5">
                                 <div class="flex items-center space-x-2.5">
                                     @if(!empty($logoUrl))
-                                        <img src="{{ $logoUrl }}" alt="Logo" class="h-8 w-8 object-contain bg-white/20 backdrop-blur-md rounded-lg p-0.5 border border-white/30">
+                                        <div class="h-8 px-2 py-0.5 bg-white rounded-xl shadow-md border border-white/80 flex items-center justify-center shrink-0">
+                                            <img src="{{ $logoUrl }}" alt="Logo" class="h-full w-auto max-h-6 object-contain">
+                                        </div>
                                     @else
                                         <span class="text-2xl">🐾</span>
                                     @endif
