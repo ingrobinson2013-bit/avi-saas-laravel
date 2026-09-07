@@ -1036,11 +1036,16 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <span class="bg-black/50 backdrop-blur-xs px-2 py-0.5 rounded-full text-[10px] font-bold">Reels 🎥</span>
+                                    
+                                    <!-- Botón de Audio Interactivo (Estilo Instagram Story) -->
+                                    <button type="button" id="btn-sound-toggle" onclick="toggleStorySound(event)" class="bg-black/60 hover:bg-black/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center space-x-1.5 text-white border border-white/20 transition-all cursor-pointer shadow-md">
+                                        <span id="sound-icon">🔇</span>
+                                        <span id="sound-label">Activar Audio</span>
+                                    </button>
                                 </div>
 
                                 <!-- Video Vertical Full 9:16 -->
-                                <video class="w-full h-full object-cover" controls autoplay muted loop playsinline poster="{{ $bannerImage }}">
+                                <video id="story-video-player" class="w-full h-full object-cover cursor-pointer" autoplay muted loop playsinline poster="{{ $bannerImage }}" onclick="toggleStorySound(event)">
                                     <source src="{{ $bannerVideo }}" type="video/mp4">
                                     Tu navegador no soporta video.
                                 </video>
@@ -1841,6 +1846,29 @@
                 alert('No se pudo conectar con el servidor. Intenta de nuevo.');
                 btnSubmit.disabled = false;
                 btnSubmit.innerText = 'Confirmar y Activar Carnet ✓';
+            }
+        }
+
+        // Control de Audio para el Story Video
+        function toggleStorySound(event) {
+            if (event) event.stopPropagation();
+            const video = document.getElementById('story-video-player');
+            const icon = document.getElementById('sound-icon');
+            const label = document.getElementById('sound-label');
+            const btn = document.getElementById('btn-sound-toggle');
+
+            if (video) {
+                if (video.muted) {
+                    video.muted = false;
+                    if (icon) icon.innerText = '🔊';
+                    if (label) label.innerText = 'Audio Activado';
+                    if (btn) btn.classList.add('bg-teal-600/80', 'border-teal-300');
+                } else {
+                    video.muted = true;
+                    if (icon) icon.innerText = '🔇';
+                    if (label) label.innerText = 'Activar Audio';
+                    if (btn) btn.classList.remove('bg-teal-600/80', 'border-teal-300');
+                }
             }
         }
     </script>
