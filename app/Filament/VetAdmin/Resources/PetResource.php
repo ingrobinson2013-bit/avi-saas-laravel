@@ -41,6 +41,17 @@ class PetResource extends Resource
                             ->label('Nombre de la Mascota')
                             ->required(),
 
+                        Forms\Components\FileUpload::make('photo_url')
+                            ->label('Foto Oficial de la Mascota')
+                            ->disk('r2')
+                            ->directory('tenants/pets')
+                            ->visibility('public')
+                            ->image()
+                            ->avatar()
+                            ->imageEditor()
+                            ->circleCropper()
+                            ->columnSpanFull(),
+
                         Forms\Components\Select::make('species')
                             ->label('Especie')
                             ->options([
@@ -67,6 +78,11 @@ class PetResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('photo_url')
+                    ->label('Foto')
+                    ->circular()
+                    ->defaultImageUrl('https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=100'),
+
                 Tables\Columns\TextColumn::make('name')
                     ->label('Mascota')
                     ->description(fn (Pet $record): string => ($record->species === 'cat' ? '🐱 ' : '🐶 ') . ($record->breed ?? 'Mestizo'))
@@ -98,75 +114,13 @@ class PetResource extends Resource
                     ->sortable(),
             ])
             ->actions([
-                Tables\Actions\Action::make('viewSubscription')
-                    ->label('Ver Plan')
-                    ->icon('heroicon-o-shield-check')
-                    ->color('info')
-                    ->visible(fn (Pet $record) => $record->activeSubscription !== null)
-                    ->url(fn (Pet $record) => SubscriptionResource::getUrl('view', ['record' => $record->activeSubscription->id])),
-
-                Tables\Actions\Action::make('quickRedeem')
-                    ->label('Canjear')
-                    ->icon('heroicon-o-check-circle')
+                Tables\Actions\Action::make('view_carnet')
+                    ->label('Ver Carnet')
+                    ->icon('heroicon-o-identification')
                     ->color('success')
-                    ->visible(fn (Pet $record) => $record->activeSubscription !== null)
-                    ->modalHeading(fn (Pet $record) => "Canjear Servicio — {$record->name}")
-                    ->form(function (Pet $record) {
-                        $sub = $record->activeSubscription;
-                        if (!$sub) return [];
-
-                        return [
-                            Forms\Components\Select::make('benefit_definition_id')
-                                ->label('Servicio a Canjear')
-                                ->options(function () use ($sub) {
-                                    $balances = $sub->benefitBalances()->with('benefitDefinition')->get();
-                                    $options = [];
-                                    foreach ($balances as $bal) {
-                                        $options[$bal->benefit_definition_id] = "{$bal->benefitDefinition?->name} (Disponibles: {$bal->remaining_count} de {$bal->total_granted})";
-                                    }
-                                    return $options;
-                                })
-                                ->required(),
-
-                            Forms\Components\TextInput::make('quantity')
-                                ->label('Cantidad')
-                                ->numeric()
-                                ->default(1)
-                                ->minValue(1)
-                                ->required(),
-
-                            Forms\Components\Textarea::make('notes')
-                                ->label('Notas / Observaciones Médicas')
-                                ->rows(2),
-                        ];
-                    })
-                    ->action(function (Pet $record, array $data, BenefitLedgerService $ledgerService) {
-                        $sub = $record->activeSubscription;
-                        if (!$sub) return;
-
-                        try {
-                            $benefit = BenefitDefinition::findOrFail($data['benefit_definition_id']);
-                            $ledgerService->redeemBenefit(
-                                subscription: $sub,
-                                benefit: $benefit,
-                                quantity: (int) $data['quantity'],
-                                vetUserId: auth()->id(),
-                                notes: $data['notes'] ?? null
-                            );
-
-                            Notification::make()
-                                ->title('¡Servicio Canjeado!')
-                                ->body("Se descontó {$data['quantity']} cupo de {$benefit->name} para {$record->name}.")
-                                ->success()
-                                ->send();
-                        } catch (\Throwable $e) {
-                            Notification::make()
-                                ->title('Error al canjear')
-                                ->body($e->getMessage())
-                                ->danger()
-                                ->send();
-                        }
-                    }),
+                    ->url(fn (Pet $record) => $record->activeSubscription ? "/v/{$record->customer->tenant->slug}/carnet/{$record->activeSubscription->gateway_subscription_id}" : null)
+                    ->openUrlInNewTab()
+                    ->visible(fn (Pet $record) => (bool) $record->activeSubscription),
 
                 Tables\Actions\EditAction::make(),
             ]);

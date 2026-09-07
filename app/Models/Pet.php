@@ -18,6 +18,7 @@ class Pet extends Model
         'species',
         'breed',
         'birthdate',
+        'photo_url',
         'medical_notes',
     ];
 

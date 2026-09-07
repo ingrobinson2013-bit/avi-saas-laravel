@@ -11,6 +11,7 @@ use App\Models\Tenant;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class StorefrontEnrollmentController extends Controller
@@ -28,6 +29,7 @@ class StorefrontEnrollmentController extends Controller
             'pet_species' => 'required|string|in:Canino,Felino,dog,cat,Perro,Gato',
             'pet_breed' => 'nullable|string|max:255',
             'pet_age' => 'nullable|string|max:50',
+            'pet_photo_base64' => 'nullable|string',
             'plan_slug' => 'nullable|string',
             'billing_cycle' => 'nullable|string|in:monthly,annual',
             'payment_method' => 'nullable|string|max:100',
@@ -37,6 +39,28 @@ class StorefrontEnrollmentController extends Controller
         $paymentMethod = $validated['payment_method'] ?? 'nequi';
         $species = in_array(strtolower($validated['pet_species']), ['felino', 'cat', 'gato']) ? 'Felino' : 'Canino';
         
+        // Procesar foto de la mascota si fue adjuntada
+        $photoUrl = null;
+        if (!empty($validated['pet_photo_base64'])) {
+            $base64 = $validated['pet_photo_base64'];
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64, $typeMatch)) {
+                $ext = strtolower($typeMatch[1]);
+                if ($ext === 'jpeg') $ext = 'jpg';
+                $imageData = substr($base64, strpos($base64, ',') + 1);
+                $decoded = base64_decode($imageData);
+                if ($decoded !== false) {
+                    $filename = 'tenants/pets/' . Str::uuid() . '.' . $ext;
+                    try {
+                        Storage::disk('r2')->put($filename, $decoded, 'public');
+                        $photoUrl = Storage::disk('r2')->url($filename);
+                    } catch (\Exception $e) {
+                        Storage::disk('public')->put($filename, $decoded);
+                        $photoUrl = Storage::disk('public')->url($filename);
+                    }
+                }
+            }
+        }
+
         // Buscar el plan adecuado (por nombre o fallback a primer plan activo)
         $plan = null;
         if (!empty($validated['plan_slug'])) {
@@ -55,7 +79,7 @@ class StorefrontEnrollmentController extends Controller
             return response()->json(['error' => 'No hay planes activos configurados para esta veterinaria.'], 422);
         }
 
-        $subscription = DB::transaction(function () use ($tenant, $plan, $validated, $species, $billingCycle) {
+        $subscription = DB::transaction(function () use ($tenant, $plan, $validated, $species, $billingCycle, $photoUrl) {
             // 1. Crear o actualizar Tutor (Customer)
             $customer = Customer::updateOrCreate(
                 [
@@ -84,8 +108,13 @@ class StorefrontEnrollmentController extends Controller
                     'species' => $species,
                     'breed' => $validated['pet_breed'] ?? 'Criollo / Mestizo',
                     'birthdate' => $birthdate ?? now()->subYears(2)->toDateString(),
+                    'photo_url' => $photoUrl,
                 ]
             );
+
+            if ($photoUrl && empty($pet->photo_url)) {
+                $pet->update(['photo_url' => $photoUrl]);
+            }
 
             // 3. Crear Suscripción Digital
             $contractNumber = 'VP-' . date('Y') . '-' . rand(1000, 9999);
@@ -138,25 +167,20 @@ class StorefrontEnrollmentController extends Controller
             "💳 *Valor:* {$planPrice}\n" .
             "💰 *Método de Pago Seleccionado:* {$paymentText}\n" .
             "🏷️ *Contrato:* {$contractId}\n\n" .
-            "🪪 *Ver Mi Carnet Digital:* {$carnetUrl}\n\n" .
-            "Adjunto mi comprobante o quedo a la espera de confirmación. ¡Muchas gracias! 🐶🐱";
+            "🪪 *Ver Carnet Digital:* {$carnetUrl}\n\n" .
+            "Adjunto mi comprobante para la activación. ¡Muchas gracias!";
 
         $whatsappUrl = "https://wa.me/57{$clinicPhone}?text=" . urlencode($waMessage);
 
         return response()->json([
             'success' => true,
+            'message' => '¡Afiliación completada exitosamente!',
             'contract_id' => $contractId,
             'pet_name' => $validated['pet_name'],
-            'pet_species' => $species,
-            'pet_breed' => $validated['pet_breed'] ?? 'Criollo / Mestizo',
-            'tutor_name' => $validated['tutor_name'],
-            'plan_name' => $plan->name,
-            'billing_cycle' => $billingCycle,
             'carnet_url' => $carnetUrl,
             'whatsapp_url' => $whatsappUrl,
             'bold_payment_url' => $boldPaymentUrl,
             'payment_method' => $paymentMethod,
-            'message' => '¡Afiliación registrada con éxito! Tu carnet digital ya está activo.',
         ]);
     }
 }

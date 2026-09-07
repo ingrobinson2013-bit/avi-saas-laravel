@@ -1401,6 +1401,22 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- FOTO DE LA MASCOTA -->
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">📸 Foto de tu Mascota (Para su Carnet Oficial)</label>
+                        <div class="flex items-center space-x-3">
+                            <div id="pet-photo-preview-box" class="w-14 h-14 rounded-2xl bg-white border-2 border-dashed border-teal-400/60 flex items-center justify-center text-xl text-teal-600 overflow-hidden shrink-0 shadow-xs relative">
+                                <img id="pet-photo-preview" class="w-full h-full object-cover hidden" alt="Foto">
+                                <span id="pet-photo-placeholder">📷</span>
+                            </div>
+                            <div class="space-y-1 min-w-0">
+                                <input type="file" id="pet_photo_input" accept="image/*" onchange="previewPetPhoto(event)" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-teal-50 file:text-teal-800 hover:file:bg-teal-100 cursor-pointer">
+                                <p class="text-[10px] text-slate-400 truncate">PNG, JPG o foto directa desde tu celular.</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Raza</label>
@@ -1572,6 +1588,22 @@
         let selectedPlan = 'basico';
         let currentCycle = 'monthly';
         let currentPaymentMethod = 'nequi';
+        let petPhotoBase64 = null;
+
+        function previewPetPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                petPhotoBase64 = e.target.result;
+                const img = document.getElementById('pet-photo-preview');
+                const placeholder = document.getElementById('pet-photo-placeholder');
+                img.src = petPhotoBase64;
+                img.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
 
         // Copiar texto al portapapeles con feedback
         function copyText(text, btnElement) {
@@ -1802,6 +1834,7 @@
                 pet_species: document.getElementById('pet_species').value,
                 pet_breed: document.getElementById('pet_breed').value.trim(),
                 pet_age: document.getElementById('pet_age').value.trim(),
+                pet_photo_base64: petPhotoBase64,
                 plan_slug: selectedPlan,
                 billing_cycle: currentCycle,
                 payment_method: document.getElementById('payment_method').value,

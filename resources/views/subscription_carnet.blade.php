@@ -227,9 +227,16 @@
                                 <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase truncate">{{ $pet->name }}</h2>
                                 <p class="text-xs text-teal-100 font-medium truncate">{{ $pet->breed ?: 'Mestizo' }} • {{ $pet->species ?: 'Canino' }}</p>
                             </div>
-                            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-3xl sm:text-4xl shadow-inner border border-white/20 shrink-0">
-                                {{ $isCanino ? '🐕' : '🐱' }}
-                            </div>
+                            @if(!empty($pet->photo_url))
+                                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shadow-xl border-2 border-white/60 p-0.5 bg-white/20 shrink-0 relative group">
+                                    <img src="{{ $pet->photo_url }}" alt="{{ $pet->name }}" class="w-full h-full object-cover rounded-xl shadow-inner">
+                                    <span class="absolute bottom-0.5 right-0.5 text-xs bg-slate-950/80 px-1 rounded-md border border-white/20">{{ $isCanino ? '🐶' : '🐱' }}</span>
+                                </div>
+                            @else
+                                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-3xl sm:text-4xl shadow-inner border border-white/20 shrink-0">
+                                    {{ $isCanino ? '🐕' : '🐱' }}
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Chip, Plan & Contrato -->
