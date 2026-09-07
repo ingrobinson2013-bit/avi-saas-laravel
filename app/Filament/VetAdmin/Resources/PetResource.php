@@ -50,6 +50,7 @@ class PetResource extends Resource
                             ->avatar()
                             ->imageEditor()
                             ->circleCropper()
+                            ->helperText('Sube o actualiza la foto de la mascota. Se almacena en la nube (Cloudflare R2) y se sincroniza con su carnet digital.')
                             ->columnSpanFull(),
 
                         Forms\Components\Select::make('species')
