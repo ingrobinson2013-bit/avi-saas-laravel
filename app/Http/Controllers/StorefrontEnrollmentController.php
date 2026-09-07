@@ -120,6 +120,7 @@ class StorefrontEnrollmentController extends Controller
         $contractId = $subscription->gateway_subscription_id;
         $clinicPhone = preg_replace('/[^0-9]/', '', $tenant->branding['phone'] ?? '3508742543');
         $planPrice = ($billingCycle === 'annual') ? '$' . number_format($plan->price_annual ?? 540000, 0, ',', '.') . ' COP/año' : '$' . number_format($plan->price_monthly ?? 50000, 0, ',', '.') . ' COP/mes';
+        $carnetUrl = url("/v/{$tenant->slug}/carnet/{$contractId}");
         $boldPaymentUrl = $tenant->branding['payment_bold_link'] ?? null;
 
         $paymentText = match($paymentMethod) {
