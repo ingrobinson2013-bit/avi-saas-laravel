@@ -87,6 +87,15 @@ class SubscriptionResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('gateway_subscription_id')
+                    ->label('N° Contrato')
+                    ->fontFamily('mono')
+                    ->weight('bold')
+                    ->searchable()
+                    ->sortable()
+                    ->badge()
+                    ->color('gray'),
+
                 Tables\Columns\TextColumn::make('pet.name')
                     ->label('Mascota')
                     ->description(function (Subscription $record): string {

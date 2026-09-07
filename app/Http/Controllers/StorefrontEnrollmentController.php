@@ -116,8 +116,8 @@ class StorefrontEnrollmentController extends Controller
                 $pet->update(['photo_url' => $photoUrl]);
             }
 
-            // 3. Crear Suscripción Digital
-            $contractNumber = 'VP-' . date('Y') . '-' . rand(1000, 9999);
+            // 3. Crear Suscripción Digital con Numeración Secuencial por Veterinaria
+            $contractNumber = Subscription::generateNextContractNumber($tenant);
             $startDate = now();
             $endDate = ($billingCycle === 'annual') ? now()->addYear() : now()->addMonth();
 
