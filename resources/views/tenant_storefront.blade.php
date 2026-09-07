@@ -171,12 +171,14 @@
                     <div class="lg:col-span-5 relative mt-4 lg:mt-0 space-y-4">
                         <div class="mx-auto max-w-sm sm:max-w-md space-y-4">
                             
-                            <!-- TARJETA VISUAL DE LA CLÍNICA / FOTO HERO -->
-                            <div class="rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900 relative aspect-[4/3] group">
-                                <img src="{{ $heroImage }}" alt="Pacientes de {{ $tenant->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
-                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                            <!-- TARJETA VISUAL DE LA CLÍNICA / FOTO HERO COMPLETA -->
+                            <div class="rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-white relative group flex flex-col">
+                                <div class="w-full relative overflow-hidden flex items-center justify-center bg-slate-50">
+                                    <img src="{{ $heroImage }}" alt="Pacientes de {{ $tenant->name }}" class="w-full h-auto max-h-[500px] object-cover sm:object-contain group-hover:scale-102 transition-transform duration-500" loading="lazy">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent pointer-events-none"></div>
+                                </div>
                                 
-                                <div class="absolute bottom-3.5 left-3.5 right-3.5 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-lg border border-slate-100 flex items-center justify-between gap-2">
+                                <div class="p-3.5 bg-white border-t border-slate-100 flex items-center justify-between gap-2 z-10 shadow-xs">
                                     <div class="flex items-center space-x-2.5 min-w-0">
                                         <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-black text-sm shrink-0">
                                             🩺
@@ -186,7 +188,7 @@
                                             <p class="text-[10px] text-teal-700 font-bold truncate">Validación por Chip & QR</p>
                                         </div>
                                     </div>
-                                    <button type="button" onclick="openEnrollModal('basico')" class="px-3 py-1.5 bg-brand-primary text-white font-black text-xs rounded-xl shadow-xs shrink-0 hover:opacity-90">
+                                    <button type="button" onclick="openEnrollModal('basico')" class="px-3.5 py-1.5 bg-brand-primary text-white font-black text-xs rounded-xl shadow-xs shrink-0 hover:opacity-90 transition-all">
                                         Afiliarme 🐾
                                     </button>
                                 </div>
