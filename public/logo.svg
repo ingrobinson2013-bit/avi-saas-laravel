@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+    <defs>
+        <linearGradient id="medGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#047857"/>
+            <stop offset="1" stop-color="#065F46"/>
+        </linearGradient>
+        <filter id="glow" x="0" y="0" width="48" height="48" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#047857" flood-opacity="0.3"/>
+        </filter>
+    </defs>
+    <!-- Contenedor Escudo Médico Squircle -->
+    <rect width="48" height="48" rx="14" fill="url(#medGrad)"/>
+    <rect x="1" y="1" width="46" height="46" rx="13" stroke="white" stroke-opacity="0.2" stroke-width="1.5"/>
+    
+    <!-- Cruz Médica Veterinaria Blanca -->
+    <path d="M20 9C20 8.44772 20.4477 8 21 8H27C27.5523 8 28 8.44772 28 9V17H36C36.5523 17 37 17.4477 37 18V24C37 24.5523 36.5523 25 36 25H28V33C28 33.5523 27.5523 34 27 34H21C20.4477 34 20 33.5523 20 33V25H12C11.4477 25 11 24.5523 11 24V18C11 17.4477 11.4477 17 12 17H20V9Z" fill="white" filter="url(#glow)"/>
+    
+    <!-- Huellita de Mascota en el Corazón de la Cruz en Verde Esmeralda Profundo -->
+    <ellipse cx="24" cy="23.5" rx="3.2" ry="2.5" fill="#047857"/>
+    <circle cx="19.5" cy="18.5" r="1.6" fill="#047857"/>
+    <circle cx="22.2" cy="16.2" r="1.6" fill="#047857"/>
+    <circle cx="25.8" cy="16.2" r="1.6" fill="#047857"/>
+    <circle cx="28.5" cy="18.5" r="1.6" fill="#047857"/>
+</svg>

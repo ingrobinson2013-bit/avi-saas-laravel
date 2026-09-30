@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>AVI-Plan — Plataforma de Planes de Bienestar y Salud para Veterinarias</title>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,15 +28,18 @@
     <!-- 1. HEADER / NAVBAR CLÍNICO -->
     <header class="sticky top-0 z-50 glass-nav">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between">
-            <a href="/" class="flex items-center space-x-3 group">
-                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-emerald-600 flex items-center justify-center shadow-md shadow-emerald-700/20 group-hover:bg-emerald-700 transition-colors">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
+            <a href="/" class="flex items-center space-x-3.5 group">
+                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl shadow-md shadow-emerald-900/15 group-hover:scale-105 transition-transform shrink-0">
+                    <img src="/logo.svg" alt="AVI-Plan Logo" class="w-full h-full object-contain">
                 </div>
-                <div>
-                    <span class="text-xl font-black tracking-tight text-slate-900">AVI<span class="text-emerald-700">Plan</span></span>
-                    <span class="hidden md:inline-block ml-2 px-2.5 py-0.5 text-[10px] font-bold uppercase bg-emerald-50 text-emerald-800 rounded-full border border-emerald-200">
+                <div class="flex flex-col">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 leading-tight">AVI<span class="text-emerald-700">Plan</span></span>
+                        <span class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-bold uppercase bg-emerald-50 text-emerald-900 rounded-md border border-emerald-200/80">
+                            by AviPetApp
+                        </span>
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800 -mt-0.5">
                         Planes de Bienestar para Veterinarias
                     </span>
                 </div>
@@ -711,9 +715,12 @@
     <!-- FOOTER B2B CLÍNICO -->
     <footer class="border-t border-slate-200 py-10 bg-white text-slate-500 text-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center space-x-2">
-                <span class="font-extrabold text-slate-900">AVI<span class="text-emerald-700">Plan</span></span>
-                <span>— Plataforma de Planes de Bienestar para Veterinarias.</span>
+            <div class="flex items-center space-x-3">
+                <img src="/logo.svg" alt="AVI-Plan Logo" class="w-7 h-7 object-contain">
+                <div>
+                    <span class="font-extrabold text-slate-900">AVI<span class="text-emerald-700">Plan</span></span>
+                    <span class="text-xs text-slate-500"> — Plataforma de Planes de Bienestar para Veterinarias.</span>
+                </div>
             </div>
             <div class="flex space-x-6 font-semibold">
                 <a href="/admin" class="hover:text-emerald-700 transition-colors">Acceso Mostrador</a>
