@@ -29,7 +29,7 @@ class VetAdminPanelProvider extends PanelProvider
             ->path('admin')
             ->tenant(Tenant::class, slugAttribute: 'slug')
             ->login()
-            ->brandName('Vet-Pet Patitas — Consultorio Veterinario')
+            ->brandName(fn () => \Filament\Facades\Filament::getTenant()?->name ?? 'Portal Veterinario')
             ->brandLogo(fn () => view('filament.vet-admin.logo'))
             ->brandLogoHeight('2.5rem')
             ->favicon('https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=64')

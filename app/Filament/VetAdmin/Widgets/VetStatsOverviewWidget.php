@@ -49,7 +49,7 @@ class VetStatsOverviewWidget extends BaseWidget
             ->when($tenantId, fn ($q) => $q->whereHas('subscription', fn ($s) => $s->where('tenant_id', $tenantId)))
             ->sum('used_count');
 
-        $usageRatio = $totalGranted > 0 ? (int) round(($totalUsed / $totalGranted) * 100) : 42;
+        $usageRatio = $totalGranted > 0 ? (int) round(($totalUsed / $totalGranted) * 100) : 0;
 
         // Tutores / Membresías en Riesgo (Próximas a vencer o en mora)
         $atRiskCount = Subscription::query()

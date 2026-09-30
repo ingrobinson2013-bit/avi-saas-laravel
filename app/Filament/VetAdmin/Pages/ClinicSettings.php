@@ -359,7 +359,7 @@ class ClinicSettings extends Page implements HasForms
 
     public function getTenant(): ?Tenant
     {
-        return Filament::getTenant() ?? auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
+        return Filament::getTenant() ?? auth()->user()?->tenant ?? Tenant::first();
     }
 }
 
