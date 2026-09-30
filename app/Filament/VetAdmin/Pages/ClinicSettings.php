@@ -337,8 +337,29 @@ class ClinicSettings extends Page implements HasForms
         }
     }
 
+    protected function getHeaderActions(): array
+    {
+        $tenant = $this->getTenant();
+        $slug = $tenant?->slug ?? 'vet-pet-patitas';
+
+        return [
+            \Filament\Actions\Action::make('view_storefront')
+                ->label('Ver Portal Web')
+                ->icon('heroicon-o-arrow-top-right-on-square')
+                ->color('gray')
+                ->url("/v/{$slug}", shouldOpenInNewTab: true),
+
+            \Filament\Actions\Action::make('print_flyer')
+                ->label('🖨️ Afiche Mostrador (QR)')
+                ->icon('heroicon-o-qr-code')
+                ->color('success')
+                ->url("/v/{$slug}/afiche", shouldOpenInNewTab: true),
+        ];
+    }
+
     public function getTenant(): ?Tenant
     {
         return Filament::getTenant() ?? auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
     }
 }
+
