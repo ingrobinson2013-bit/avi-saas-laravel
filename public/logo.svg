@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
   <defs>
     <linearGradient id="aviPrimaryGrad" x1="15" y1="15" x2="85" y2="85" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#047857"/>
-      <stop offset="50%" stop-color="#059669"/>
-      <stop offset="100%" stop-color="#0D9488"/>
+      <stop offset="0%" stop-color="#1E40AF"/>
+      <stop offset="50%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#0284C7"/>
     </linearGradient>
     <linearGradient id="aviLeafGrad" x1="50" y1="20" x2="75" y2="50" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#10B981"/>
-      <stop offset="100%" stop-color="#047857"/>
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#2563EB"/>
     </linearGradient>
     <filter id="softShadow" x="0" y="2" width="100" height="100" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#064E3B" flood-opacity="0.25"/>
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#1E3A8A" flood-opacity="0.25"/>
     </filter>
   </defs>
 
@@ -18,19 +18,17 @@
   <rect width="100" height="100" rx="28" fill="#FFFFFF"/>
   <rect x="1.5" y="1.5" width="97" height="97" rx="26.5" stroke="#E2E8F0" stroke-width="1.5"/>
 
-  <!-- Cruz Médica Veterinaria Moderna con Esquinas Suaves -->
+  <!-- Cruz Médica Veterinaria Moderna con Esquinas Suaves en Azul Degradado -->
   <g filter="url(#softShadow)">
     <path d="M42 22C42 19.7909 43.7909 18 46 18H54C56.2091 18 58 19.7909 58 22V38H74C76.2091 38 78 39.7909 78 42V50C78 52.2091 76.2091 54 74 54H58V70C58 72.2091 56.2091 74 54 74H46C43.7909 74 42 72.2091 42 70V54H26C23.7909 54 22 52.2091 22 50V42C22 39.7909 23.7909 38 26 38H42V22Z" fill="url(#aviPrimaryGrad)"/>
   </g>
 
-  <!-- Hoja / Ala de Bienestar Vital (Orgánica) en el cuadrante superior derecho -->
+  <!-- Hoja / Ala de Vitalidad en Azul Cielo / Cyan -->
   <path d="M51 45C51 45 53 23 74 23C74 23 75 42 56 46C53 46.5 51 45 51 45Z" fill="url(#aviLeafGrad)"/>
   <path d="M54 44C59 36 67 30 73 25" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
 
   <!-- Huella de Mascota en el cuadrante inferior izquierdo -->
-  <!-- Almohadilla Principal -->
   <path d="M37 60C34 58 31 60 30 63C29 65 31 68 35 68C39 68 41 65 40 63C39 60 38 60 37 60Z" fill="#FFFFFF"/>
-  <!-- Dedos -->
   <ellipse cx="28.5" cy="56" rx="2.2" ry="3" transform="rotate(-20 28.5 56)" fill="#FFFFFF"/>
   <ellipse cx="34" cy="52.5" rx="2.2" ry="3.2" transform="rotate(-5 34 52.5)" fill="#FFFFFF"/>
   <ellipse cx="40.5" cy="53.5" rx="2.2" ry="3.2" transform="rotate(15 40.5 53.5)" fill="#FFFFFF"/>
