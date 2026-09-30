@@ -48,5 +48,9 @@ Route::get('/v/{slug}/carnet/{subscription_id}/pdf', [App\Http\Controllers\Subsc
 Route::get('/v/{slug}/afiche', [App\Http\Controllers\ClinicFlyerController::class, 'show'])->name('clinic.flyer');
 Route::get('/v/{slug}/afiche/pdf', [App\Http\Controllers\ClinicFlyerController::class, 'downloadPdf'])->name('clinic.flyer.pdf');
 
+// 8. Onboarding Express B2B en 60 Segundos (15 Días Gratis)
+Route::post('/registro-clinica', [App\Http\Controllers\ClinicOnboardingController::class, 'register'])->name('clinic.register');
+
+
 
 
