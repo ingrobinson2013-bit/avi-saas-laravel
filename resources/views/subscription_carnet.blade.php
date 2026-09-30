@@ -19,16 +19,23 @@
         $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
         
         $pet = $subscription->pet;
-        $customer = $pet->customer;
+        $customer = $pet?->customer;
         $plan = $subscription->plan;
         
+        $petName = $pet?->name ?? 'Mascota Protegida';
+        $tutorName = $customer?->name ?? 'Tutor Titular';
+        $tutorPhone = $customer?->phone ?? $phone;
+        $petSpecies = $pet?->species ?? 'Canino';
+        $petBreed = $pet?->breed ?? 'Mestizo';
+        $petPhoto = $pet?->photo_url ?? null;
+        
         // Clean plan name without duplicate "Plan"
-        $planName = $plan->name;
+        $planName = $plan?->name ?? 'Plan de Salud';
         if (str_starts_with(strtolower($planName), 'plan plan')) {
             $planName = preg_replace('/^plan\s+plan\s+/i', 'Plan ', $planName);
         }
         
-        $isCanino = in_array(strtolower($pet->species ?? ''), ['canino', 'perro', 'dog']);
+        $isCanino = in_array(strtolower($petSpecies), ['canino', 'perro', 'dog']);
         $contractId = $subscription->gateway_subscription_id ?? ('VP-2026-' . str_pad($subscription->id, 4, '0', STR_PAD_LEFT));
         $expirationDate = $subscription->current_period_end ? $subscription->current_period_end->format('d/m/Y') : now()->addYear()->format('d/m/Y');
         $qrData = url('/v/' . $tenant->slug . '/carnet/' . $contractId);
@@ -143,7 +150,7 @@
                     <span>🖨️</span>
                     <span>Descargar PDF</span>
                 </button>
-                <a href="https://wa.me/57{{ $cleanPhone }}?text={{ urlencode('Hola ' . $tenant->name . ', este es el Carnet Digital de ' . $pet->name . ' (Contrato ' . $contractId . '). Deseo agendar un servicio.') }}" target="_blank" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center space-x-1.5">
+                <a href="https://wa.me/57{{ $cleanPhone }}?text={{ urlencode('Hola ' . $tenant->name . ', este es el Carnet Digital de ' . $petName . ' (Contrato ' . $contractId . '). Deseo agendar un servicio.') }}" target="_blank" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center space-x-1.5">
                     <span>💬</span>
                     <span class="hidden sm:inline">WhatsApp</span>
                 </a>
@@ -228,12 +235,12 @@
                         <div class="flex items-center justify-between py-3">
                             <div class="space-y-0.5 min-w-0">
                                 <p class="text-[9px] uppercase tracking-wider text-white/60 font-bold">Paciente</p>
-                                <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase truncate">{{ $pet->name }}</h2>
-                                <p class="text-xs text-teal-100 font-medium truncate">{{ $pet->breed ?: 'Mestizo' }} • {{ $pet->species ?: 'Canino' }}</p>
+                                <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase truncate">{{ $petName }}</h2>
+                                <p class="text-xs text-teal-100 font-medium truncate">{{ $petBreed }} • {{ $petSpecies }}</p>
                             </div>
-                            @if(!empty($pet->photo_url))
+                            @if(!empty($petPhoto))
                                 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shadow-xl border-2 border-white/60 p-0.5 bg-white/20 shrink-0 relative group">
-                                    <img src="{{ $pet->photo_url }}" alt="{{ $pet->name }}" class="w-full h-full object-cover rounded-xl shadow-inner">
+                                    <img src="{{ $petPhoto }}" alt="{{ $petName }}" class="w-full h-full object-cover rounded-xl shadow-inner">
                                     <span class="absolute bottom-0.5 right-0.5 text-xs bg-slate-950/80 px-1 rounded-md border border-white/20">{{ $isCanino ? '🐶' : '🐱' }}</span>
                                 </div>
                             @else
@@ -279,11 +286,11 @@
                             <div class="col-span-7 space-y-1.5 text-xs min-w-0">
                                 <div>
                                     <p class="text-[8px] uppercase tracking-wider text-slate-400 font-bold">Tutor Titular</p>
-                                    <p class="font-black text-white truncate text-xs sm:text-sm">{{ $customer->name }}</p>
+                                    <p class="font-black text-white truncate text-xs sm:text-sm">{{ $tutorName }}</p>
                                 </div>
                                 <div>
                                     <p class="text-[8px] uppercase tracking-wider text-slate-400 font-bold">WhatsApp / Teléfono</p>
-                                    <p class="font-bold text-emerald-400 truncate">{{ $customer->phone }}</p>
+                                    <p class="font-bold text-emerald-400 truncate">{{ $tutorPhone }}</p>
                                 </div>
                                 <div>
                                     <p class="text-[8px] uppercase tracking-wider text-slate-400 font-bold">Vigencia Oficial</p>
@@ -320,19 +327,19 @@
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
                     <div class="space-y-0.5">
                         <span class="text-slate-400 block font-bold text-[10px] uppercase">Paciente</span>
-                        <strong class="text-white text-sm uppercase block truncate">{{ $pet->name }}</strong>
+                        <strong class="text-white text-sm uppercase block truncate">{{ $petName }}</strong>
                     </div>
                     <div class="space-y-0.5">
                         <span class="text-slate-400 block font-bold text-[10px] uppercase">Especie & Raza</span>
-                        <strong class="text-slate-200 block truncate">{{ $pet->species ?: 'Canino' }} • {{ $pet->breed ?: 'Mestizo' }}</strong>
+                        <strong class="text-slate-200 block truncate">{{ $petSpecies }} • {{ $petBreed }}</strong>
                     </div>
                     <div class="space-y-0.5">
                         <span class="text-slate-400 block font-bold text-[10px] uppercase">Tutor Responsable</span>
-                        <strong class="text-white block truncate">{{ $customer->name }}</strong>
+                        <strong class="text-white block truncate">{{ $tutorName }}</strong>
                     </div>
                     <div class="space-y-0.5">
                         <span class="text-slate-400 block font-bold text-[10px] uppercase">WhatsApp</span>
-                        <strong class="text-emerald-400 block truncate font-mono">{{ $customer->phone }}</strong>
+                        <strong class="text-emerald-400 block truncate font-mono">{{ $tutorPhone }}</strong>
                     </div>
                 </div>
             </div>
