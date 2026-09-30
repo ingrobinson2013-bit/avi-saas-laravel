@@ -199,7 +199,7 @@
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
                             </span>
-                            <span>15 días gratis · Sin tarjeta de crédito · Listo en 5 minutos</span>
+                            <span>15 días gratis · Luego desde $5.000 COP por mascota o tarifa plana mensual · Sin tarjeta</span>
                         </div>
 
                         <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
@@ -463,17 +463,17 @@
 
                             <div class="grid grid-cols-2 gap-3 text-left">
                                 <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
-                                    <span class="text-[9px] uppercase font-bold text-slate-500 block">Facturación Anual</span>
-                                    <span id="mrr-annual" class="text-sm sm:text-base font-black text-blue-700 font-mono">$39.000.000</span>
+                                    <span class="text-[9px] uppercase font-bold text-slate-500 block">A $5.000 / Mascota</span>
+                                    <span id="mrr-per-pet-cost" class="text-sm sm:text-base font-black text-slate-700 font-mono">$250.000<span class="text-[10px] font-normal text-slate-500">/mes</span></span>
                                 </div>
-                                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
-                                    <span class="text-[9px] uppercase font-bold text-slate-500 block">Costo AVI-Plan</span>
-                                    <span id="mrr-tier-cost" class="text-sm sm:text-base font-black text-slate-700 font-mono">$99.000<span class="text-[10px] font-normal text-slate-500">/mes</span></span>
+                                <div class="bg-white p-3 rounded-xl border border-blue-200 bg-blue-50/40 shadow-2xs">
+                                    <span class="text-[9px] uppercase font-bold text-blue-700 block">En Plan Fijo (Ahorro)</span>
+                                    <span id="mrr-tier-cost" class="text-sm sm:text-base font-black text-blue-700 font-mono">$99.000<span class="text-[10px] font-normal text-slate-500">/mes</span></span>
                                 </div>
                             </div>
 
                             <div class="bg-blue-100/70 p-2.5 rounded-xl border border-blue-200 text-xs font-bold text-blue-900 flex justify-between items-center">
-                                <span>Margen neto retenido:</span>
+                                <span>Margen que retiene tu clínica:</span>
                                 <span id="mrr-net-margin" class="font-mono text-sm">~97% directo</span>
                             </div>
 
@@ -1138,9 +1138,9 @@
 
                         <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2 hover:border-blue-300 transition">
                             <div class="text-2xl">🚫</div>
-                            <h4 class="text-sm font-bold text-slate-900">Cero Comisión por Mascota</h4>
+                            <h4 class="text-sm font-bold text-slate-900">Cero Comisión por Venta</h4>
                             <p class="text-xs text-slate-600">
-                                AVI-Plan no retiene tu dinero ni cobra porcentajes sobre tus ventas. Solo pagas una suscripción fija mensual de software.
+                                AVI-Plan no retiene tu dinero ni cobra porcentajes sobre tus ingresos. Solo pagas $5.000 por mascota activa o una suscripción mensual fija.
                             </p>
                         </div>
 
@@ -1156,33 +1156,69 @@
             </div>
         </section>
 
-        <!-- 13. PRECIOS TRANSPARENTES (CON JUSTIFICACIÓN ROI) -->
+        <!-- 13. PRECIOS TRANSPARENTES (CON JUSTIFICACIÓN ROI & OPCIÓN POR MASCOTA) -->
         <section id="precios" class="py-20 sm:py-24 bg-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-3xl mx-auto mb-16 space-y-3 reveal-on-scroll">
+                <div class="text-center max-w-3xl mx-auto mb-14 space-y-3 reveal-on-scroll">
                     <span class="text-xs font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
-                        Planes Transparentes
+                        Precios Flexibles y Transparentes
                     </span>
                     <h2 class="text-3xl sm:text-5xl font-black text-slate-900 mt-2">Prueba gratuita de 15 días</h2>
-                    <p class="text-sm sm:text-base text-slate-600">Sin tarjeta de crédito requerida. Con solo 2 mascotas afiliadas el software se paga solo.</p>
+                    <p class="text-sm sm:text-base text-slate-600">
+                        Sin tarjeta de crédito requerida. Luego tú decides: paga solo por mascota activa ($5.000 COP) mientras despegas o ahorra con una tarifa plana fija:
+                    </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
                     
-                    <!-- STARTER -->
-                    <div class="clinic-card p-8 rounded-3xl flex flex-col justify-between bg-white reveal-on-scroll">
+                    <!-- 1. MODALIDAD FLEXIBLE: POR MASCOTA ACTIVA -->
+                    <div class="clinic-card p-6 sm:p-7 rounded-3xl flex flex-col justify-between bg-gradient-to-b from-blue-50/50 to-white border-2 border-blue-400/80 shadow-md reveal-on-scroll relative">
                         <div class="space-y-4">
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Consultorios</span>
-                            <h3 class="text-2xl font-black text-slate-900">Starter</h3>
+                            <span class="inline-block px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-black uppercase tracking-wider">
+                                🌱 Cero Riesgo
+                            </span>
+                            <h3 class="text-xl font-black text-slate-900">Por Mascota</h3>
                             <div class="flex items-baseline space-x-1">
-                                <span class="text-4xl sm:text-5xl font-extrabold text-slate-900 font-mono">$99.000</span>
-                                <span class="text-slate-500 text-sm">COP / mes</span>
+                                <span class="text-3xl sm:text-4xl font-extrabold text-blue-700 font-mono">$5.000</span>
+                                <span class="text-slate-500 text-xs font-semibold">COP / mascota / mes</span>
                             </div>
                             <p class="text-xs text-slate-600 leading-relaxed">
-                                Hasta 60 mascotas activas*. Ideal para consultorios independientes.
+                                Sin cuota fija obligatoria. Pagas solo $5.000 COP por mascota activa mientras armas tu base.
+                            </p>
+                            <hr class="border-slate-200">
+                            <ul class="space-y-2 text-xs text-slate-700 font-medium">
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span><strong>10 mascotas = solo $50.000/mes</strong></span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span><strong>20 mascotas = solo $100.000/mes</strong></span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Con 20+ mascotas te conviene pasar a Starter ($99k)</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Si un mes tienes 0 afiliados, pagas $0</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Portal web propio con tu marca</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Afiche de mostrador con QR</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Carnet digital oficial de tutores</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Mostrador de canje en recepción</span></li>
+                            </ul>
+                        </div>
+                        <button type="button" onclick="openRegisterModal('pay_per_pet')" class="mt-6 w-full py-3 text-center rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-xs border border-blue-300 transition">
+                            Elegir $5.000 / Mascota
+                        </button>
+                    </div>
+
+                    <!-- 2. STARTER (PLAN FIJO) -->
+                    <div class="clinic-card p-6 sm:p-7 rounded-3xl flex flex-col justify-between bg-white reveal-on-scroll">
+                        <div class="space-y-4">
+                            <span class="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold uppercase tracking-wider">
+                                Consultorios
+                            </span>
+                            <h3 class="text-xl font-black text-slate-900">Starter</h3>
+                            <div class="flex items-baseline space-x-1">
+                                <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-mono">$99.000</span>
+                                <span class="text-slate-500 text-xs">COP / mes</span>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Hasta 60 mascotas activas*. Te sale a solo <strong>$1.650 por mascota</strong>.
                             </p>
                             <hr class="border-slate-100">
-                            <ul class="space-y-2.5 text-xs text-slate-700 font-medium">
+                            <ul class="space-y-2 text-xs text-slate-700 font-medium">
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span><strong>Ahorro de hasta el 67%</strong> frente a $5.000/mascota</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Portal web propio con tu marca</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Afiche de mostrador con QR</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>1 Usuario para recepción</span></li>
@@ -1190,67 +1226,70 @@
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Soporte por WhatsApp</span></li>
                             </ul>
                         </div>
-                        <button type="button" onclick="openRegisterModal('starter')" class="mt-8 w-full py-3.5 text-center rounded-xl bg-white hover:bg-slate-50 text-slate-900 font-bold text-sm border border-slate-300 transition">
+                        <button type="button" onclick="openRegisterModal('starter')" class="mt-6 w-full py-3 text-center rounded-xl bg-white hover:bg-slate-50 text-slate-900 font-bold text-xs border border-slate-300 transition">
                             Elegir Starter
                         </button>
                     </div>
 
-                    <!-- PROFESIONAL (POPULAR) EN AZUL CLÍNICO -->
-                    <div class="clinic-card p-8 rounded-3xl flex flex-col justify-between border-2 border-blue-600 shadow-xl relative transform lg:-translate-y-2 bg-white reveal-on-scroll">
-                        <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-blue-600 text-white font-bold text-[11px] uppercase tracking-wider shadow-sm">
+                    <!-- 3. PROFESIONAL (POPULAR) EN AZUL CLÍNICO -->
+                    <div class="clinic-card p-6 sm:p-7 rounded-3xl flex flex-col justify-between border-2 border-blue-600 shadow-xl relative transform lg:-translate-y-2 bg-white reveal-on-scroll">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-blue-600 text-white font-bold text-[10px] uppercase tracking-wider shadow-sm">
                             ⭐ MÁS ELEGIDO
                         </div>
                         <div class="space-y-4">
-                            <span class="text-xs font-bold text-blue-700 uppercase tracking-wider">Clínicas en Crecimiento</span>
-                            <h3 class="text-2xl font-black text-slate-900">Profesional</h3>
+                            <span class="inline-block px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wider">
+                                En Crecimiento
+                            </span>
+                            <h3 class="text-xl font-black text-slate-900">Profesional</h3>
                             <div class="flex items-baseline space-x-1">
-                                <span class="text-4xl sm:text-5xl font-extrabold text-blue-700 font-mono">$229.000</span>
-                                <span class="text-slate-500 text-sm">COP / mes</span>
+                                <span class="text-3xl sm:text-4xl font-extrabold text-blue-700 font-mono">$229.000</span>
+                                <span class="text-slate-500 text-xs">COP / mes</span>
                             </div>
                             <p class="text-xs text-slate-600 leading-relaxed">
-                                Hasta 250 mascotas activas* + Usuarios ilimitados + AVI Intelligence.
+                                Hasta 250 mascotas activas*. Te sale a menos de <strong>$916 por mascota</strong>.
                             </p>
                             <hr class="border-slate-100">
-                            <ul class="space-y-2.5 text-xs text-slate-800 font-medium">
+                            <ul class="space-y-2 text-xs text-slate-800 font-medium">
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span><strong>Todo lo del plan Starter</strong></span></li>
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span><strong>Usuarios ilimitados</strong> para tu equipo</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span><strong>AVI Intelligence:</strong> Detección de retención y vencimientos</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span><strong>AVI Intelligence:</strong> Detección de retención</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Reportes de facturación recurrente</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Soporte prioritario</span></li>
                             </ul>
                         </div>
-                        <button type="button" onclick="openRegisterModal('pro')" class="mt-8 w-full py-4 text-center rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md transition transform hover:scale-[1.02] active:scale-95">
+                        <button type="button" onclick="openRegisterModal('pro')" class="mt-6 w-full py-3.5 text-center rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition transform hover:scale-[1.02] active:scale-95">
                             Comenzar Prueba Gratuita →
                         </button>
                     </div>
 
-                    <!-- ENTERPRISE -->
-                    <div class="clinic-card p-8 rounded-3xl flex flex-col justify-between bg-white reveal-on-scroll">
+                    <!-- 4. ENTERPRISE -->
+                    <div class="clinic-card p-6 sm:p-7 rounded-3xl flex flex-col justify-between bg-white reveal-on-scroll">
                         <div class="space-y-4">
-                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Hospitales y Redes</span>
-                            <h3 class="text-2xl font-black text-slate-900">Enterprise</h3>
+                            <span class="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold uppercase tracking-wider">
+                                Redes y Hospitales
+                            </span>
+                            <h3 class="text-xl font-black text-slate-900">Enterprise</h3>
                             <div class="flex items-baseline space-x-1">
-                                <span class="text-4xl sm:text-5xl font-extrabold text-slate-900 font-mono">$489.000</span>
-                                <span class="text-slate-500 text-sm">COP / mes</span>
+                                <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-mono">$489.000</span>
+                                <span class="text-slate-500 text-xs">COP / mes</span>
                             </div>
                             <p class="text-xs text-slate-600 leading-relaxed">Mascotas ilimitadas + Multi-sucursal + Dominio Propio.</p>
                             <hr class="border-slate-100">
-                            <ul class="space-y-2.5 text-xs text-slate-700 font-medium">
+                            <ul class="space-y-2 text-xs text-slate-700 font-medium">
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span><strong>Mascotas y afiliados ilimitados</strong></span></li>
-                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Múltiples sedes y sucursales conectadas</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Dominio propio personalizado (<code class="text-blue-800 font-mono">tuclinica.com</code>)</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Múltiples sedes y sucursales</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Dominio propio (<code class="text-blue-800 font-mono">tuclinica.com</code>)</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Integración WhatsApp</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Acompañamiento en puesta en marcha</span></li>
                             </ul>
                         </div>
-                        <a href="https://wa.me/573508742543?text=Hola%20Robinson,%20me%20interesa%20el%20plan%20Enterprise%20de%20AVI-Plan" target="_blank" class="mt-8 w-full py-3.5 text-center rounded-xl bg-white hover:bg-slate-50 text-slate-900 font-bold text-sm border border-slate-300 transition">
+                        <a href="https://wa.me/573508742543?text=Hola%20Robinson,%20me%20interesa%20el%20plan%20Enterprise%20de%20AVI-Plan" target="_blank" class="mt-6 w-full py-3 text-center rounded-xl bg-white hover:bg-slate-50 text-slate-900 font-bold text-xs border border-slate-300 transition">
                             Contactar Asesor
                         </a>
                     </div>
                 </div>
 
-                <div class="mt-8 text-center text-xs text-slate-500">
-                    * <strong>Mascota activa:</strong> Mascota que cuenta con un plan o membresía vigente en el mes. Si superas el límite de tu plan, puedes subir de nivel en cualquier momento sin perder datos ni interrumpir a tus afiliados.
+                <div class="mt-8 text-center text-xs text-slate-500 max-w-2xl mx-auto">
+                    * <strong>Mascota activa:</strong> Mascota que cuenta con un plan vigente en el mes. Al terminar tus 15 días gratis puedes elegir pagar por mascota activa ($5.000 COP) o activar una tarifa plana fija.
                 </div>
             </div>
         </section>
@@ -1282,7 +1321,17 @@
                             <span class="text-blue-600 font-bold text-lg group-open:rotate-45 transition-transform duration-200">+</span>
                         </summary>
                         <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
-                            <strong>No.</strong> El 100% del dinero cobrado a tus clientes va directo a tus cuentas o medios de pago. No retenemos tu dinero ni cobramos porcentajes por transacción. Solo pagas la suscripción fija mensual de la plataforma.
+                            <strong>No.</strong> El 100% del dinero cobrado a tus clientes va directo a tus cuentas o medios de pago. No retenemos tu dinero ni cobramos porcentajes por transacción. Tú solo pagas el acceso al software: ya sea $5.000 COP al mes por mascota activa, o una tarifa plana fija mensual.
+                        </p>
+                    </details>
+
+                    <details class="clinic-card p-5 rounded-2xl group cursor-pointer reveal-on-scroll">
+                        <summary class="font-bold text-sm sm:text-base text-slate-900 flex justify-between items-center list-none">
+                            <span>¿Cómo funciona la modalidad de $5.000 COP por mascota activa?</span>
+                            <span class="text-blue-600 font-bold text-lg group-open:rotate-45 transition-transform duration-200">+</span>
+                        </summary>
+                        <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+                            Es la modalidad de <strong>cero riesgo</strong> para empezar sin costo fijo obligatorio. Solo pagas por cada mascota que tenga un plan activo en el mes. Por ejemplo, si tienes 15 mascotas afiliadas cobrando $65.000/mes, tu clínica recauda $975.000 COP y el costo del software es de solo $75.000 COP (15 × $5.000). Si un mes no tienes ninguna mascota afiliada, pagas $0. Cuando tu clínica alcance 20 o más mascotas, te conviene pasarte al plan Starter ($99.000 COP) para pagar aún menos por mascota.
                         </p>
                     </details>
 
@@ -1322,7 +1371,7 @@
                             <span class="text-blue-600 font-bold text-lg group-open:rotate-45 transition-transform duration-200">+</span>
                         </summary>
                         <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
-                            No solicitamos tarjeta de crédito para iniciar. Antes de finalizar el periodo te consultaremos si deseas continuar con el plan Starter o Profesional. Si decides no continuar, tu cuenta se pausa sin ningún cargo ni penalidad.
+                            No solicitamos tarjeta de crédito para iniciar. Al finalizar tu prueba de 15 días, puedes elegir el modelo que prefieras: continuar pagando solo <strong>$5.000 COP por mascota activa</strong> (sin cargo fijo) mientras despegas, o activar una <strong>tarifa mensual fija</strong> con ahorro por volumen (Starter desde $99.000 o Pro por $229.000). Si decides no continuar, tu cuenta se pausa sin ningún cobro forzoso ni penalidad.
                         </p>
                     </details>
                 </div>
@@ -1379,8 +1428,13 @@
             </button>
 
             <div class="space-y-1">
-                <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 text-[10px] font-bold uppercase border border-blue-200">
-                    <span>Prueba Gratuita de 15 Días</span>
+                <div class="flex items-center space-x-2">
+                    <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 text-[10px] font-bold uppercase border border-blue-200">
+                        <span>Prueba Gratuita de 15 Días</span>
+                    </div>
+                    <span id="modal-tier-badge" class="inline-flex items-center px-2 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 text-[10px] font-bold">
+                        Plan Profesional
+                    </span>
                 </div>
                 <h3 class="text-2xl font-black text-slate-900">Crea tu Clínica Veterinaria</h3>
                 <p class="text-xs text-slate-500 font-medium">Empieza a configurar tus planes y tu afiche en 60 segundos.</p>
@@ -1455,6 +1509,22 @@
         // 2. MODAL LOGIC
         function openRegisterModal(tier = 'pro') {
             document.getElementById('form-tier').value = tier;
+            const badge = document.getElementById('modal-tier-badge');
+            if (badge) {
+                if (tier === 'pay_per_pet') {
+                    badge.innerText = 'Modalidad: $5.000 / Mascota';
+                    badge.className = 'inline-flex items-center px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-800 border border-cyan-200 text-[10px] font-bold';
+                } else if (tier === 'starter') {
+                    badge.innerText = 'Plan Starter ($99k)';
+                    badge.className = 'inline-flex items-center px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-bold';
+                } else if (tier === 'enterprise') {
+                    badge.innerText = 'Plan Enterprise';
+                    badge.className = 'inline-flex items-center px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200 text-[10px] font-bold';
+                } else {
+                    badge.innerText = 'Plan Profesional';
+                    badge.className = 'inline-flex items-center px-2 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 text-[10px] font-bold';
+                }
+            }
             const modal = document.getElementById('register-modal');
             modal.classList.remove('hidden', 'opacity-0', 'pointer-events-none');
             modal.classList.add('opacity-100');
@@ -1556,6 +1626,12 @@
             mrrMonthly.innerText = formatCOP(monthly);
             mrrAnnual.innerText = formatCOP(annual);
 
+            const perPetCost = count * 5000;
+            const perPetElem = document.getElementById('mrr-per-pet-cost');
+            if (perPetElem) {
+                perPetElem.innerHTML = formatCOP(perPetCost) + '<span class="text-[10px] font-normal text-slate-500">/mes</span>';
+            }
+
             let cost = 99000;
             if (count > 60 && count <= 250) {
                 cost = 229000;
@@ -1564,8 +1640,9 @@
             }
             mrrTierCost.innerHTML = formatCOP(cost) + '<span class="text-[10px] font-normal text-slate-500">/mes</span>';
 
-            const margin = Math.max(0, Math.round(((monthly - cost) / monthly) * 100));
-            mrrNetMargin.innerText = `~${margin}% neto (${formatCOP(monthly - cost)}/mes)`;
+            const bestCost = Math.min(cost, perPetCost);
+            const margin = Math.max(0, Math.round(((monthly - bestCost) / monthly) * 100));
+            mrrNetMargin.innerText = `~${margin}% neto (${formatCOP(monthly - bestCost)}/mes)`;
         }
 
         petsSlider.addEventListener('input', calculateMRR);
