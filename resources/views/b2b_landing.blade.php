@@ -28,13 +28,13 @@
     <!-- Schema.org JSON-LD para Google Search -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
+      "@@context": "https://schema.org",
+      "@@type": "SoftwareApplication",
       "name": "AVI-Plan",
       "operatingSystem": "All, Web, Cloud",
       "applicationCategory": "BusinessApplication, HealthApplication",
       "offers": {
-        "@type": "Offer",
+        "@@type": "Offer",
         "price": "99000",
         "priceCurrency": "COP",
         "priceValidUntil": "2027-12-31"
