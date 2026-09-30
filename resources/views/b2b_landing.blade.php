@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>AVI-Plan — La Plataforma SaaS de Membresías y Salud Recurrente para Veterinarias</title>
+    <title>AVI-Plan — Plataforma de Planes de Bienestar y Salud para Veterinarias</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,12 +16,11 @@
         .glass-card { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .gradient-text { background: linear-gradient(135deg, #10b981 0%, #38bdf8 50%, #818cf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .glow-emerald { box-shadow: 0 0 60px -15px rgba(16, 185, 129, 0.35); }
-        .glow-cyan { box-shadow: 0 0 60px -15px rgba(56, 189, 248, 0.35); }
     </style>
 </head>
 <body class="min-h-full flex flex-col justify-between overflow-x-hidden bg-slate-950 text-slate-100">
 
-    <!-- NAVBAR B2B -->
+    <!-- 1. HEADER / NAVBAR -->
     <header class="sticky top-0 z-50 glass border-b border-slate-800/80">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
             <a href="/" class="flex items-center space-x-3 group">
@@ -32,14 +31,17 @@
                 </div>
                 <div>
                     <span class="text-xl font-black tracking-tight text-white">AVI<span class="text-emerald-400">Plan</span></span>
-                    <span class="hidden sm:inline-block ml-2 px-2 py-0.5 text-[10px] font-extrabold uppercase bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">SaaS Veterinario</span>
+                    <span class="hidden md:inline-block ml-2 px-2.5 py-0.5 text-[10px] font-extrabold uppercase bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">
+                        Planes de Bienestar para Veterinarias
+                    </span>
                 </div>
             </a>
             
-            <nav class="hidden lg:flex items-center space-x-8 text-xs sm:text-sm font-semibold text-slate-300">
+            <nav class="hidden lg:flex items-center space-x-7 text-xs sm:text-sm font-semibold text-slate-300">
                 <a href="#como-funciona" class="hover:text-emerald-400 transition-colors">Cómo Funciona</a>
-                <a href="#pilares" class="hover:text-emerald-400 transition-colors">Lo que te Entregamos</a>
-                <a href="#calculadora" class="hover:text-emerald-400 transition-colors">Calculadora MRR</a>
+                <a href="#recibes" class="hover:text-emerald-400 transition-colors">Lo que Recibes</a>
+                <a href="#experiencia-cliente" class="hover:text-emerald-400 transition-colors">Portal del Cliente</a>
+                <a href="#calculadora" class="hover:text-emerald-400 transition-colors">Calculadora</a>
                 <a href="#precios" class="hover:text-emerald-400 transition-colors">Precios</a>
                 <a href="#faq" class="hover:text-emerald-400 transition-colors">Preguntas</a>
             </nav>
@@ -56,120 +58,356 @@
     </header>
 
     <main class="flex-grow">
-        <!-- 1. HERO B2B DE ALTA CONVERSIÓN -->
-        <section class="relative pt-12 sm:pt-20 pb-20 sm:pb-28 overflow-hidden">
-            <!-- Gradiente de fondo difuso -->
+        <!-- 2. HERO PRINCIPAL -->
+        <section class="relative pt-12 sm:pt-20 pb-16 sm:pb-24 overflow-hidden">
             <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-gradient-to-tr from-emerald-500/15 via-teal-500/10 to-transparent blur-3xl -z-10 rounded-full pointer-events-none"></div>
 
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="text-center max-w-4xl mx-auto space-y-6">
                     
-                    <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-black tracking-wide uppercase shadow-sm">
-                        <span>✨ 15 Días de Prueba Gratis • Sin Tarjeta de Crédito • Cancela cuando quieras</span>
+                    <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-bold tracking-wide">
+                        <span>15 días gratis · Sin tarjeta de crédito</span>
                     </div>
 
                     <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.1]">
-                        Convierte tu Veterinaria en un <span class="gradient-text">Motor de Ingresos Recurrentes</span> con Planes de Salud
+                        Convierte clientes ocasionales en <span class="gradient-text">clientes recurrentes.</span>
                     </h1>
 
                     <p class="text-base sm:text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal">
-                        Deja de esperar a que las mascotas se enfermen para poder facturar. Entrega a tus clientes <strong class="text-white font-semibold">membresías mensuales prepagadas</strong> con carnet digital, cobra automáticamente y valida cupos en tu mostrador en 3 segundos con tu propia marca.
+                        Crea y vende tus propios planes de bienestar para mascotas, recibe pagos recurrentes y administra afiliados, beneficios y renovaciones desde una plataforma con tu propia marca.
                     </p>
+
+                    <!-- FRASE DE POSICIONAMIENTO WHITE-LABEL -->
+                    <div class="pt-1">
+                        <p class="text-xs sm:text-sm font-mono font-bold text-emerald-400 tracking-wider uppercase">
+                            Tu marca. Tus planes. Tus precios. Tus clientes.
+                        </p>
+                    </div>
 
                     <!-- CTAs PRINCIPALES -->
                     <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
                         <button type="button" onclick="openRegisterModal('pro')" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-400 text-slate-950 font-black text-base hover:from-emerald-300 hover:to-teal-300 shadow-xl shadow-emerald-500/30 transition-all transform hover:-translate-y-1 flex items-center justify-center space-x-2">
-                            <span>🚀 Crear mi Clínica Gratis en 60s</span>
-                            <span class="text-xs bg-slate-950/20 px-2 py-0.5 rounded-full font-bold">15 días gratis</span>
+                            <span>🚀 Crear mi Clínica Gratis</span>
                         </button>
                         <a href="/v/vet-pet-patitas" target="_blank" class="w-full sm:w-auto px-7 py-4 rounded-2xl glass hover:bg-slate-800 text-slate-200 font-bold text-sm sm:text-base border border-slate-700 hover:border-slate-500 transition-all flex items-center justify-center space-x-2">
-                            <span>👀 Ver Clínica Piloto en Vivo (Patitas)</span>
+                            <span>👀 Ver Clínica Piloto en Vivo</span>
                             <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                         </a>
                     </div>
 
-                    <!-- SOCIAL PROOF / TRUST PILLS -->
-                    <div class="pt-6 flex flex-wrap items-center justify-center gap-4 text-xs font-semibold text-slate-400">
-                        <div class="flex items-center space-x-1.5 bg-slate-900/80 px-3 py-1.5 rounded-full border border-slate-800">
-                            <span class="text-emerald-400">✓</span>
-                            <span>Tu Propio Portal con tu Logo y Colores</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. CÓMO FUNCIONA AVI-PLAN (FLUJO VISUAL DE 6 PASOS) -->
+        <section id="como-funciona" class="py-16 bg-slate-900/40 border-y border-slate-800/80">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-12 space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-emerald-400">Flujo Operativo Simple</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Así funciona AVI-Plan</h2>
+                    <p class="text-xs sm:text-sm text-slate-400">Un circuito cerrado diseñado para la velocidad en clínica y recepción.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+                    <!-- PASO 01 -->
+                    <div class="glass-card p-5 rounded-2xl space-y-2 border border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <span class="text-2xl font-black font-mono text-emerald-400">01</span>
+                            <h3 class="text-sm font-bold text-white mt-1">Crea tus planes</h3>
                         </div>
-                        <div class="flex items-center space-x-1.5 bg-slate-900/80 px-3 py-1.5 rounded-full border border-slate-800">
-                            <span class="text-emerald-400">✓</span>
-                            <span>Afiche de Mostrador con QR para Imprimir</span>
+                        <p class="text-[11px] text-slate-400 leading-snug">
+                            Define tus beneficios: consultas, vacunas, desparasitaciones y fija tu tarifa mensual.
+                        </p>
+                    </div>
+
+                    <!-- PASO 02 -->
+                    <div class="glass-card p-5 rounded-2xl space-y-2 border border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <span class="text-2xl font-black font-mono text-teal-400">02</span>
+                            <h3 class="text-sm font-bold text-white mt-1">Escaneo en QR</h3>
                         </div>
-                        <div class="flex items-center space-x-1.5 bg-slate-900/80 px-3 py-1.5 rounded-full border border-slate-800">
-                            <span class="text-emerald-400">✓</span>
-                            <span>Validación Rápida por Cédula o QR en Recepción</span>
+                        <p class="text-[11px] text-slate-400 leading-snug">
+                            El cliente escanea el afiche oficial en la sala de espera o entra a tu enlace web.
+                        </p>
+                    </div>
+
+                    <!-- PASO 03 -->
+                    <div class="glass-card p-5 rounded-2xl space-y-2 border border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <span class="text-2xl font-black font-mono text-sky-400">03</span>
+                            <h3 class="text-sm font-bold text-white mt-1">Afiliación digital</h3>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-snug">
+                            Registra los datos de su mascota y adquiere su membresía en 2 minutos sin papeles.
+                        </p>
+                    </div>
+
+                    <!-- PASO 04 -->
+                    <div class="glass-card p-5 rounded-2xl space-y-2 border border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <span class="text-2xl font-black font-mono text-indigo-400">04</span>
+                            <h3 class="text-sm font-bold text-white mt-1">Carnet digital</h3>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-snug">
+                            Recibe al instante su carnet con código de barras en su celular y WhatsApp.
+                        </p>
+                    </div>
+
+                    <!-- PASO 05 -->
+                    <div class="glass-card p-5 rounded-2xl space-y-2 border border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <span class="text-2xl font-black font-mono text-purple-400">05</span>
+                            <h3 class="text-sm font-bold text-white mt-1">Canje en caja</h3>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-snug">
+                            La recepcionista digita la cédula o escanea el QR y descuenta cupos en 3 segundos.
+                        </p>
+                    </div>
+
+                    <!-- PASO 06 -->
+                    <div class="glass-card p-5 rounded-2xl space-y-2 border border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <span class="text-2xl font-black font-mono text-amber-400">06</span>
+                            <h3 class="text-sm font-bold text-white mt-1">Renovaciones</h3>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-snug">
+                            El sistema gestiona vencimientos y te ayuda a reactivar planes automáticamente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. LO QUE TU VETERINARIA RECIBE (LOS 5 ACTIVOS CON IA) -->
+        <section id="recibes" class="py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16 space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-teal-400">Todo Incluido</span>
+                    <h2 class="text-3xl sm:text-5xl font-black text-white">Lo que tu veterinaria recibe en 60 segundos</h2>
+                    <p class="text-sm sm:text-base text-slate-400">Herramientas completas para operar desde el primer día.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 1. PORTAL WEB -->
+                    <div class="glass p-6 rounded-3xl border border-slate-800 hover:border-emerald-500/50 transition-all space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl font-bold">
+                            🌐
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Portal Web Marca Blanca</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Tu propia página web personalizada con tu logo, fotos y colores (ej: <code class="text-emerald-400">avipetapp.com/v/tu-clinica</code>). Tus clientes consultan planes y se afilian online.
+                        </p>
+                    </div>
+
+                    <!-- 2. AFICHE QR -->
+                    <div class="glass p-6 rounded-3xl border border-slate-800 hover:border-teal-500/50 transition-all space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-teal-500/10 text-teal-400 flex items-center justify-center text-2xl font-bold">
+                            🖨️
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Afiche de Mostrador con QR</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Generado en tamaño Carta listo para imprimir en 1 clic. Colócalo en recepción para que los clientes en sala de espera se afilien con su celular sin recargar a tu equipo.
+                        </p>
+                    </div>
+
+                    <!-- 3. CARNET DIGITAL -->
+                    <div class="glass p-6 rounded-3xl border border-slate-800 hover:border-sky-500/50 transition-all space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-2xl font-bold">
+                            🪪
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Carnet Digital Oficial</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Cada mascota recibe un carnet interactivo con código de barras en el celular del tutor. Muestra datos del peludo, vigencia y saldos de beneficios disponibles.
+                        </p>
+                    </div>
+
+                    <!-- 4. MOSTRADOR DE CANJE -->
+                    <div class="glass p-6 rounded-3xl border border-slate-800 hover:border-purple-500/50 transition-all space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-2xl font-bold">
+                            ⚡
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Mostrador de Canje en Vivo</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Búsqueda instantánea por cédula, teléfono o lector QR. Tu recepcionista visualiza de inmediato qué servicios tiene derecho la mascota y descuenta cupos con auditoría.
+                        </p>
+                    </div>
+
+                    <!-- 5. ASISTENTE DE IA (AVI INTELLIGENCE) -->
+                    <div class="glass p-6 rounded-3xl border-2 border-emerald-500/40 bg-emerald-950/15 lg:col-span-2 space-y-3 relative overflow-hidden">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-2xl font-bold">
+                                🤖
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400">Inteligencia Operativa</span>
+                                <h3 class="text-lg font-bold text-white">Asistente de IA (AVI Intelligence)</h3>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Identifica vencimientos, consulta afiliados y te ayuda a crear acciones de retención automática para tu clínica:
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 font-mono text-[11px]">
+                            <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 text-slate-300">
+                                🔔 "12 planes vencen en los próximos 7 días."
+                            </div>
+                            <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 text-slate-300">
+                                🩺 "8 clientes no han usado sus beneficios."
+                            </div>
+                            <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 text-slate-300">
+                                💉 "5 mascotas tienen vacunas pendientes."
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 2. COMPARATIVA: VETERINARIA TRADICIONAL VS CON AVI-PLAN -->
-        <section id="como-funciona" class="py-16 bg-slate-900/40 border-y border-slate-800/80">
+        <!-- 5. EXPERIENCIA DEL CLIENTE (MOCKUP VISUAL DEL CARNET Y PORTAL) -->
+        <section id="experiencia-cliente" class="py-20 bg-slate-900/40 border-y border-slate-800/80">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-3xl mx-auto mb-12">
-                    <span class="text-xs font-black uppercase tracking-wider text-emerald-400">Evolución de Negocio</span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">¿Por qué las mejores veterinarias cambiaron al modelo de suscripción?</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    
+                    <div class="space-y-6">
+                        <span class="text-xs font-black uppercase tracking-wider text-emerald-400">El Lado del Paciente</span>
+                        <h2 class="text-3xl sm:text-5xl font-black text-white leading-tight">
+                            Tu cliente también tiene su propio portal
+                        </h2>
+                        <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                            Una experiencia móvil de primer nivel para el tutor de la mascota. Accede a su carnet digital, consulta los beneficios incluidos y conoce con exactitud qué servicios preventivos ya utilizó y cuáles tiene disponibles.
+                        </p>
+
+                        <ul class="space-y-3 text-xs sm:text-sm text-slate-300">
+                            <li class="flex items-center space-x-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span>Cero carnets de papel arrugados o perdidos.</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span>Transparencia total en saldos y fechas de renovación.</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span>Mayor sentido de pertenencia y fidelidad con tu clínica.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- MOCKUP VISUAL INTERACTIVO -->
+                    <div class="flex justify-center">
+                        <div class="w-full max-w-sm bg-gradient-to-b from-slate-900 to-slate-950 rounded-3xl p-6 border-2 border-emerald-500/40 shadow-2xl space-y-5">
+                            
+                            <!-- CABECERA CARNET -->
+                            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-12 h-12 rounded-2xl bg-amber-400/20 text-amber-300 flex items-center justify-center text-2xl font-bold">
+                                        🐶
+                                    </div>
+                                    <div>
+                                        <h4 class="text-base font-black text-white">Luna</h4>
+                                        <p class="text-[11px] text-slate-400">Golden Retriever • 2 años</p>
+                                    </div>
+                                </div>
+                                <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-black uppercase border border-emerald-500/30">
+                                    Activo ✓
+                                </span>
+                            </div>
+
+                            <!-- DETALLES DEL PLAN -->
+                            <div class="space-y-3 text-xs">
+                                <div class="flex justify-between items-center bg-slate-900 p-3 rounded-xl border border-slate-800">
+                                    <span class="text-slate-400 font-medium">Membresía:</span>
+                                    <span class="font-bold text-white">Plan Premium Patitas</span>
+                                </div>
+
+                                <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1.5">
+                                    <div class="flex justify-between text-[11px]">
+                                        <span class="text-slate-400">Próximo beneficio:</span>
+                                        <span class="font-bold text-teal-300">🩺 Consulta preventiva</span>
+                                    </div>
+                                    <div class="flex justify-between text-[11px]">
+                                        <span class="text-slate-400">Beneficios utilizados:</span>
+                                        <span class="font-bold text-white font-mono">2 / 5 cupos</span>
+                                    </div>
+                                    <div class="flex justify-between text-[11px]">
+                                        <span class="text-slate-400">Próximo vencimiento:</span>
+                                        <span class="font-bold text-amber-300">15 Oct 2026</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="/v/vet-pet-patitas/carnet/VP-2026-0001" target="_blank" class="block w-full py-2.5 text-center rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold text-xs border border-slate-700 transition">
+                                Ver Carnet Digital en Vivo →
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. EVOLUCIÓN: DE REACTIVA A RECURRENTE -->
+        <section class="py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-14 space-y-2">
+                    <span class="text-xs font-black uppercase tracking-wider text-emerald-400">Modelo de Atención</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white">De una veterinaria reactiva a un modelo recurrente</h2>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- MODELO TRADICIONAL -->
+                    <!-- SIN PLANES -->
                     <div class="glass-card p-6 sm:p-8 rounded-3xl border border-rose-500/20 bg-rose-950/10 space-y-4">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center font-bold text-xl">✕</div>
                             <div>
-                                <h3 class="text-lg font-bold text-white">Veterinaria Tradicional (Reactiva)</h3>
-                                <p class="text-xs text-rose-400/80 font-medium">Facturación impredecible y fuga de clientes</p>
+                                <h3 class="text-lg font-bold text-white">Sin planes de salud</h3>
+                                <p class="text-xs text-rose-400/80 font-medium">Ingresos dependientes de cada visita puntual</p>
                             </div>
                         </div>
                         <ul class="space-y-3 text-xs sm:text-sm text-slate-300">
                             <li class="flex items-start space-x-2">
                                 <span class="text-rose-400 font-bold">✕</span>
-                                <span>Los clientes solo visitan la clínica cuando la mascota ya está grave o enferma.</span>
+                                <span>El cliente paga únicamente cuando necesita un servicio de urgencia o enfermedad.</span>
                             </li>
                             <li class="flex items-start space-x-2">
                                 <span class="text-rose-400 font-bold">✕</span>
-                                <span>Discusiones en recepción por el valor imprevisto de consultas y vacunas.</span>
+                                <span>Las visitas preventivas se pierden o se posponen indefinidamente.</span>
                             </li>
                             <li class="flex items-start space-x-2">
                                 <span class="text-rose-400 font-bold">✕</span>
-                                <span>El 65% de los tutores olvidan las fechas de vacunación y desparasitación.</span>
+                                <span>El seguimiento clínico depende de llamadas manuales del equipo.</span>
                             </li>
                             <li class="flex items-start space-x-2">
                                 <span class="text-rose-400 font-bold">✕</span>
-                                <span>Si llueve o hay puente festivo, los ingresos caen a cero.</span>
+                                <span>La relación con el cliente se corta al terminar la consulta.</span>
                             </li>
                         </ul>
                     </div>
 
-                    <!-- MODELO CON AVI-PLAN -->
+                    <!-- CON AVI-PLAN -->
                     <div class="glass-card p-6 sm:p-8 rounded-3xl border-2 border-emerald-500/40 bg-emerald-950/20 space-y-4 shadow-xl shadow-emerald-500/5">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold text-xl">✓</div>
                             <div>
-                                <h3 class="text-lg font-bold text-white">Tu Clínica con AVI-Plan (Proactiva)</h3>
-                                <p class="text-xs text-emerald-400 font-semibold">Ingreso fijo garantizado el día 1 de cada mes</p>
+                                <h3 class="text-lg font-bold text-white">Con AVI-Plan</h3>
+                                <p class="text-xs text-emerald-400 font-semibold">Un programa para mantener la relación todo el año</p>
                             </div>
                         </div>
                         <ul class="space-y-3 text-xs sm:text-sm text-slate-200">
                             <li class="flex items-start space-x-2">
                                 <span class="text-emerald-400 font-bold">✓</span>
-                                <span><strong>Facturación mensual predecible (MRR):</strong> Cientos de tutores pagan su cuota mes a mes.</span>
+                                <span>El cliente adquiere una membresía con cobertura programada.</span>
                             </li>
                             <li class="flex items-start space-x-2">
                                 <span class="text-emerald-400 font-bold">✓</span>
-                                <span><strong>Clientes que visitan 3 veces más al año:</strong> Aprovechan sus chequeos y baños preventivos.</span>
+                                <span>Los beneficios prepagados incentivan chequeos y vacunas preventivas.</span>
                             </li>
                             <li class="flex items-start space-x-2">
                                 <span class="text-emerald-400 font-bold">✓</span>
-                                <span><strong>Fidelización blindada:</strong> El tutor nunca se va a otra veterinaria porque aquí tiene su plan activo.</span>
+                                <span>La clínica puede comunicar renovaciones y vencimientos oportunamente.</span>
                             </li>
                             <li class="flex items-start space-x-2">
                                 <span class="text-emerald-400 font-bold">✓</span>
-                                <span><strong>Ventas cruzadas automáticas:</strong> Al venir a canjear, compran snacks, medicamentos y accesorios.</span>
+                                <span>Creas nuevas oportunidades de venta cruzada en cada visita.</span>
                             </li>
                         </ul>
                     </div>
@@ -177,82 +415,13 @@
             </div>
         </section>
 
-        <!-- 3. LOS 4 PILARES QUE TE ENTREGAMOS -->
-        <section id="pilares" class="py-20">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-3xl mx-auto mb-16 space-y-2">
-                    <span class="text-xs font-black uppercase tracking-wider text-teal-400">Solución Todo en Uno</span>
-                    <h2 class="text-3xl sm:text-5xl font-black text-white">Lo que tu veterinaria recibe en 60 segundos</h2>
-                    <p class="text-sm sm:text-base text-slate-400">Sin programar, sin diseñadores y sin contratos complicados.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- PILAR 1 -->
-                    <div class="glass p-6 rounded-3xl border border-slate-800 hover:border-emerald-500/50 transition-all flex flex-col justify-between space-y-4 group">
-                        <div class="space-y-3">
-                            <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                                🌐
-                            </div>
-                            <h3 class="text-lg font-bold text-white">Portal Web Marca Blanca</h3>
-                            <p class="text-xs text-slate-400 leading-relaxed">
-                                Tu propia página web con tu nombre, logo, fotos y colores (ej: <code class="text-emerald-400">avipetapp.com/v/tu-clinica</code>). Tus clientes eligen su plan y se afilian desde su celular en 2 minutos.
-                            </p>
-                        </div>
-                        <span class="text-[11px] font-bold text-emerald-400">Personalizable 100% →</span>
-                    </div>
-
-                    <!-- PILAR 2 -->
-                    <div class="glass p-6 rounded-3xl border border-slate-800 hover:border-teal-500/50 transition-all flex flex-col justify-between space-y-4 group">
-                        <div class="space-y-3">
-                            <div class="w-12 h-12 rounded-2xl bg-teal-500/10 text-teal-400 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                                🖨️
-                            </div>
-                            <h3 class="text-lg font-bold text-white">Afiche de Mostrador con QR</h3>
-                            <p class="text-xs text-slate-400 leading-relaxed">
-                                Generado automáticamente en tamaño Carta/A4 de alta definición. Lo imprimes con 1 clic y lo colocas en tu recepción para captar clientes en sala de espera sin esfuerzo.
-                            </p>
-                        </div>
-                        <span class="text-[11px] font-bold text-teal-400">Listo para Imprimir →</span>
-                    </div>
-
-                    <!-- PILAR 3 -->
-                    <div class="glass p-6 rounded-3xl border border-slate-800 hover:border-sky-500/50 transition-all flex flex-col justify-between space-y-4 group">
-                        <div class="space-y-3">
-                            <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                                ⚡
-                            </div>
-                            <h3 class="text-lg font-bold text-white">Mostrador de Canje en Vivo</h3>
-                            <p class="text-xs text-slate-400 leading-relaxed">
-                                Tu recepcionista digita la cédula o escanea el QR del carnet y ve al instante qué vacunas o consultas tiene disponibles. Descuenta cupos en 1 segundo con auditoría total.
-                            </p>
-                        </div>
-                        <span class="text-[11px] font-bold text-sky-400">Cero Fricción en Caja →</span>
-                    </div>
-
-                    <!-- PILAR 4 -->
-                    <div class="glass p-6 rounded-3xl border border-slate-800 hover:border-purple-500/50 transition-all flex flex-col justify-between space-y-4 group">
-                        <div class="space-y-3">
-                            <div class="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                                🪪
-                            </div>
-                            <h3 class="text-lg font-bold text-white">Carnet Digital Oficial</h3>
-                            <p class="text-xs text-slate-400 leading-relaxed">
-                                Cada mascota recibe un carnet digital con código de barras y QR en el WhatsApp del dueño. Elimina el desorden de carnets de papel perdidos y eleva el prestigio de tu clínica.
-                            </p>
-                        </div>
-                        <span class="text-[11px] font-bold text-purple-400">En el celular del tutor →</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. CALCULADORA INTERACTIVA DE MRR & ROI -->
+        <!-- 7. CALCULADORA MRR ESTIMADA (DATOS CREÍBLES) -->
         <section id="calculadora" class="py-20 bg-slate-900/60 border-y border-slate-800">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-12 space-y-2">
-                    <span class="text-xs font-black uppercase tracking-wider text-emerald-400">Simulador Financiero</span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Calcula cuánto facturará tu veterinaria</h2>
-                    <p class="text-xs sm:text-sm text-slate-400">Mueve los valores para proyectar tus ingresos mensuales fijos.</p>
+                    <span class="text-xs font-black uppercase tracking-wider text-emerald-400">Simulador</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white">¿Cuánto podría generar tu programa?</h2>
+                    <p class="text-xs sm:text-sm text-slate-400">Ajusta los parámetros para estimar tus ingresos mensuales recurrentes.</p>
                 </div>
 
                 <div class="glass p-8 sm:p-10 rounded-3xl border border-slate-700/80 shadow-2xl space-y-8">
@@ -274,25 +443,23 @@
                             </div>
 
                             <div>
-                                <label class="text-xs font-bold text-slate-300 uppercase block mb-2">Precio promedio de tu plan mensual:</label>
+                                <label class="text-xs font-bold text-slate-300 uppercase block mb-2">Precio promedio mensual del plan:</label>
                                 <div class="grid grid-cols-3 gap-2">
-                                    <button type="button" onclick="setPlanPrice(49000)" class="price-btn py-2 px-3 rounded-xl border border-slate-700 bg-slate-800/80 text-xs font-bold text-slate-300 hover:border-emerald-500 focus:border-emerald-500 focus:bg-emerald-500/10 focus:text-emerald-300 active" data-price="49000">$49.000</button>
+                                    <button type="button" onclick="setPlanPrice(49000)" class="price-btn py-2 px-3 rounded-xl border border-slate-700 bg-slate-800/80 text-xs font-bold text-slate-300 hover:border-emerald-500" data-price="49000">$49.000</button>
                                     <button type="button" onclick="setPlanPrice(65000)" class="price-btn py-2 px-3 rounded-xl border border-emerald-500 bg-emerald-500/20 text-xs font-black text-emerald-300" data-price="65000">$65.000 ⭐</button>
-                                    <button type="button" onclick="setPlanPrice(89000)" class="price-btn py-2 px-3 rounded-xl border border-slate-700 bg-slate-800/80 text-xs font-bold text-slate-300 hover:border-emerald-500 focus:border-emerald-500 focus:bg-emerald-500/10 focus:text-emerald-300" data-price="89000">$89.000</button>
+                                    <button type="button" onclick="setPlanPrice(89000)" class="price-btn py-2 px-3 rounded-xl border border-slate-700 bg-slate-800/80 text-xs font-bold text-slate-300 hover:border-emerald-500" data-price="89000">$89.000</button>
                                 </div>
                             </div>
-
-                            <p class="text-[11px] text-slate-400 leading-tight">
-                                💡 <em>Dato real: Una veterinaria con 1 solo consultorio afilia entre 30 y 60 mascotas durante sus primeros 45 días usando el afiche de mostrador.</em>
-                            </p>
                         </div>
 
-                        <!-- RESULTADOS PROYECTADOS -->
-                        <div class="bg-gradient-to-br from-slate-900 to-slate-950 p-6 rounded-2xl border-2 border-emerald-500/40 space-y-5 text-center relative overflow-hidden">
+                        <!-- RESULTADOS ESTIMADOS -->
+                        <div class="bg-gradient-to-br from-slate-900 to-slate-950 p-6 rounded-2xl border-2 border-emerald-500/40 space-y-4 text-center">
                             <div class="space-y-1">
-                                <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400">Ingreso Recurrente Mensual (MRR)</span>
+                                <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400">Ingreso recurrente mensual estimado</span>
                                 <div id="mrr-monthly" class="text-4xl sm:text-5xl font-black text-white font-mono">$3.250.000</div>
-                                <span class="text-xs text-slate-400">COP / cada mes garantizados</span>
+                                <span class="text-[11px] text-slate-400 block pt-1">
+                                    Ejemplo calculado según el número de mascotas y precio mensual seleccionados.
+                                </span>
                             </div>
 
                             <hr class="border-slate-800">
@@ -300,17 +467,17 @@
                             <div class="grid grid-cols-2 gap-3 text-left">
                                 <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
                                     <span class="text-[9px] uppercase font-bold text-slate-400 block">Facturación Anual</span>
-                                    <span id="mrr-annual" class="text-lg font-black text-teal-300 font-mono">$39.000.000</span>
+                                    <span id="mrr-annual" class="text-base font-black text-teal-300 font-mono">$39.000.000</span>
                                 </div>
                                 <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
                                     <span class="text-[9px] uppercase font-bold text-slate-400 block">Costo AVI-Plan</span>
-                                    <span class="text-lg font-black text-slate-300 font-mono">$99.000<span class="text-[10px] font-normal text-slate-400">/mes</span></span>
+                                    <span class="text-base font-black text-slate-300 font-mono">$99.000<span class="text-[10px] font-normal text-slate-400">/mes</span></span>
                                 </div>
                             </div>
 
                             <div class="pt-2">
-                                <button type="button" onclick="openRegisterModal('pro')" class="w-full py-3.5 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 font-black text-sm rounded-xl shadow-lg shadow-emerald-500/20 transition-all transform hover:scale-[1.02]">
-                                    Comenzar a Facturar Esto (15 Días Gratis) →
+                                <button type="button" onclick="openRegisterModal('pro')" class="w-full py-3 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 font-black text-xs rounded-xl shadow-lg transition transform hover:scale-[1.02]">
+                                    Comenzar mi Programa →
                                 </button>
                             </div>
                         </div>
@@ -320,13 +487,13 @@
             </div>
         </section>
 
-        <!-- 5. PRECIOS TRANSPARENTES -->
+        <!-- 8. PRECIOS TRANSPARENTES -->
         <section id="precios" class="py-24">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
-                    <span class="text-xs font-black uppercase tracking-wider text-emerald-400">Planes Simples y Sin Sorpresas</span>
-                    <h2 class="text-3xl sm:text-5xl font-black text-white">Comienza con 15 días gratis</h2>
-                    <p class="text-sm sm:text-base text-slate-400">Sin cobros adelantados. Si el software no te genera ingresos en 15 días, no pagas un solo peso.</p>
+                    <span class="text-xs font-black uppercase tracking-wider text-emerald-400">Planes Transparentes</span>
+                    <h2 class="text-3xl sm:text-5xl font-black text-white">Prueba gratuita de 15 días</h2>
+                    <p class="text-sm sm:text-base text-slate-400">Sin tarjeta de crédito requerida. Explora la plataforma a tu ritmo.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
@@ -334,31 +501,33 @@
                     <!-- STARTER -->
                     <div class="glass p-8 rounded-3xl flex flex-col justify-between border border-slate-800 hover:border-slate-700 transition">
                         <div class="space-y-4">
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Consultorios & Veterinarios</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Consultorios</span>
                             <h3 class="text-2xl font-black text-white">Starter</h3>
                             <div class="flex items-baseline space-x-1">
                                 <span class="text-4xl sm:text-5xl font-extrabold text-white font-mono">$99.000</span>
                                 <span class="text-slate-400 text-sm">COP / mes</span>
                             </div>
-                            <p class="text-xs text-slate-400 leading-relaxed">Hasta 60 mascotas activas en planes de salud.</p>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                Hasta 60 mascotas activas*.
+                            </p>
                             <hr class="border-slate-800">
                             <ul class="space-y-2.5 text-xs text-slate-300">
                                 <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Portal web propio con tu marca</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Afiche de mostrador con QR oficial</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Afiche de mostrador con QR</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>1 Usuario para recepción</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Mostrador de canje en vivo</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Soporte estándar por WhatsApp</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Soporte por WhatsApp</span></li>
                             </ul>
                         </div>
                         <button type="button" onclick="openRegisterModal('starter')" class="mt-8 w-full py-3.5 text-center rounded-xl glass hover:bg-slate-800 text-white font-bold text-sm border border-slate-700 hover:border-slate-500 transition">
-                            Probar Starter (15 Días)
+                            Elegir Starter
                         </button>
                     </div>
 
                     <!-- PROFESIONAL (POPULAR) -->
                     <div class="glass p-8 rounded-3xl flex flex-col justify-between border-2 border-emerald-500 shadow-2xl shadow-emerald-500/15 relative transform lg:-translate-y-2">
                         <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-emerald-500 text-slate-950 font-black text-[11px] uppercase tracking-wider shadow-md">
-                            ⭐ MÁS ELEGIDO POR CLÍNICAS
+                            ⭐ MÁS ELEGIDO
                         </div>
                         <div class="space-y-4">
                             <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Clínicas en Crecimiento</span>
@@ -367,25 +536,27 @@
                                 <span class="text-4xl sm:text-5xl font-extrabold text-emerald-400 font-mono">$229.000</span>
                                 <span class="text-slate-400 text-sm">COP / mes</span>
                             </div>
-                            <p class="text-xs text-slate-300 leading-relaxed">Hasta 250 mascotas + Usuarios ilimitados + Asistente IA.</p>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Hasta 250 mascotas activas* + Usuarios ilimitados + AVI Intelligence.
+                            </p>
                             <hr class="border-slate-800">
                             <ul class="space-y-2.5 text-xs text-slate-200">
                                 <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span><strong>Todo lo del plan Starter</strong></span></li>
-                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span><strong>Usuarios ilimitados</strong> (doctores + recepción)</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Asistente IA de Retención & Vencimientos</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Métricas de facturación recurrente en vivo</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Soporte VIP prioritario NODIA</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span><strong>Usuarios ilimitados</strong> para tu equipo</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span><strong>AVI Intelligence:</strong> Detección automática de retención y vencimientos</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Reportes de facturación recurrente</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Soporte prioritario</span></li>
                             </ul>
                         </div>
                         <button type="button" onclick="openRegisterModal('pro')" class="mt-8 w-full py-4 text-center rounded-xl bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 font-black text-sm shadow-xl shadow-emerald-500/25 transition transform hover:scale-[1.02]">
-                            Comenzar 15 Días Gratis →
+                            Comenzar Prueba Gratuita →
                         </button>
                     </div>
 
                     <!-- ENTERPRISE -->
                     <div class="glass p-8 rounded-3xl flex flex-col justify-between border border-slate-800 hover:border-slate-700 transition">
                         <div class="space-y-4">
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Hospitales y Redes Multi-Sede</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Hospitales y Redes</span>
                             <h3 class="text-2xl font-black text-white">Enterprise</h3>
                             <div class="flex items-baseline space-x-1">
                                 <span class="text-4xl sm:text-5xl font-extrabold text-white font-mono">$489.000</span>
@@ -397,24 +568,28 @@
                                 <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span><strong>Mascotas y afiliados ilimitados</strong></span></li>
                                 <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Múltiples sedes y sucursales conectadas</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Dominio propio personalizado (<code class="text-teal-400">tuclinica.com</code>)</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Integración WhatsApp Bot n8n para avisos</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Gerente de cuenta y capacitación a tu equipo</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Integración WhatsApp</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-emerald-400 font-bold">✓</span> <span>Acompañamiento en puesta en marcha</span></li>
                             </ul>
                         </div>
-                        <a href="https://wa.me/573508742543?text=Hola%20Robinson,%20me%20interesa%20el%20plan%20Enterprise%20para%20mi%20red%20de%20veterinarias" target="_blank" class="mt-8 w-full py-3.5 text-center rounded-xl glass hover:bg-slate-800 text-white font-bold text-sm border border-slate-700 hover:border-slate-500 transition">
-                            Contactar Asesor Enterprise
+                        <a href="https://wa.me/573508742543?text=Hola%20Robinson,%20me%20interesa%20el%20plan%20Enterprise%20de%20AVI-Plan" target="_blank" class="mt-8 w-full py-3.5 text-center rounded-xl glass hover:bg-slate-800 text-white font-bold text-sm border border-slate-700 hover:border-slate-500 transition">
+                            Contactar Asesor
                         </a>
                     </div>
+                </div>
+
+                <div class="mt-8 text-center text-xs text-slate-500">
+                    * <strong>Mascota activa:</strong> Mascota que cuenta con un plan o membresía vigente en el mes. Si superas el límite de tu plan, puedes subir de nivel en cualquier momento sin perder datos ni interrumpir a tus afiliados.
                 </div>
             </div>
         </section>
 
-        <!-- 6. PREGUNTAS FRECUENTES (FAQ) -->
+        <!-- 9. PREGUNTAS FRECUENTES (FAQ AMPLIADA) -->
         <section id="faq" class="py-16 bg-slate-900/40 border-t border-slate-800">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                 <div class="text-center space-y-2">
                     <span class="text-xs font-black uppercase tracking-wider text-emerald-400">Dudas Frecuentes</span>
-                    <h2 class="text-3xl font-extrabold text-white">Todo lo que necesitas saber antes de empezar</h2>
+                    <h2 class="text-3xl font-extrabold text-white">Preguntas Frecuentes</h2>
                 </div>
 
                 <div class="space-y-4">
@@ -424,59 +599,76 @@
                             <span class="text-emerald-400 font-bold text-lg group-open:rotate-45 transition-transform">+</span>
                         </summary>
                         <p class="text-xs sm:text-sm text-slate-400 mt-3 leading-relaxed">
-                            <strong>No.</strong> AVI-Plan no busca competir con tu software de historia médica o inventarios (SoftVet, Gesvet, etc.). AVI-Plan es un <strong>motor especializado de membresías y facturación recurrente</strong>. Convive perfectamente con cualquier sistema que uses hoy.
+                            <strong>No.</strong> AVI-Plan no busca competir con tu software de historia médica o inventarios (SoftVet, Gesvet, etc.). AVI-Plan es una <strong>plataforma especializada en planes de bienestar, membresías y facturación recurrente</strong>. Convive perfectamente con cualquier sistema que uses hoy.
                         </p>
                     </details>
 
                     <details class="glass p-5 rounded-2xl border border-slate-800 group cursor-pointer">
                         <summary class="font-bold text-sm sm:text-base text-white flex justify-between items-center list-none">
-                            <span>¿Cómo cobran las suscripciones mis clientes?</span>
-                            <summary-icon class="text-emerald-400 font-bold text-lg group-open:rotate-45 transition-transform">+</summary-icon>
+                            <span>¿AVI-Plan cobra comisión por cada plan vendido?</span>
+                            <span class="text-emerald-400 font-bold text-lg group-open:rotate-45 transition-transform">+</span>
                         </summary>
                         <p class="text-xs sm:text-sm text-slate-400 mt-3 leading-relaxed">
-                            El dinero va <strong>100% directo a tus cuentas</strong>. Puedes configurar tu Nequi, Daviplata, transferencia Bancolombia o links de cobro Bold/Wompi. AVI-Plan no retiene tu dinero ni te cobra comisión por transacción.
+                            <strong>No.</strong> El 100% del dinero cobrado a tus clientes va directo a tus cuentas o medios de pago. No retenemos tu dinero ni cobramos porcentajes por transacción. Solo pagas la suscripción fija mensual de la plataforma.
                         </p>
                     </details>
 
                     <details class="glass p-5 rounded-2xl border border-slate-800 group cursor-pointer">
                         <summary class="font-bold text-sm sm:text-base text-white flex justify-between items-center list-none">
-                            <span>¿Qué pasa cuando terminen los 15 días gratis?</span>
-                            <summary-icon class="text-emerald-400 font-bold text-lg group-open:rotate-45 transition-transform">+</summary-icon>
+                            <span>¿Puedo crear mis propios beneficios y precios?</span>
+                            <span class="text-emerald-400 font-bold text-lg group-open:rotate-45 transition-transform">+</span>
                         </summary>
                         <p class="text-xs sm:text-sm text-slate-400 mt-3 leading-relaxed">
-                            No te pedimos tarjeta de crédito para iniciar la prueba. Al día 13 te avisaremos para que elijas tu plan (desde $99.000/mes). Si decides no continuar, tu cuenta simplemente se pausa sin penalidades ni cobros sorpresa.
+                            <strong>Sí, con total libertad.</strong> Puedes definir el nombre de tus planes, qué servicios incluye cada uno (número de consultas, vacunas, desparasitaciones, baños o profilaxis) y el precio que desees cobrar.
                         </p>
                     </details>
 
                     <details class="glass p-5 rounded-2xl border border-slate-800 group cursor-pointer">
                         <summary class="font-bold text-sm sm:text-base text-white flex justify-between items-center list-none">
-                            <span>¿Cuánto tiempo tardo en tener mi clínica lista para afiliar pacientes?</span>
-                            <summary-icon class="text-emerald-400 font-bold text-lg group-open:rotate-45 transition-transform">+</summary-icon>
+                            <span>¿Cómo pagan las suscripciones los clientes?</span>
+                            <span class="text-emerald-400 font-bold text-lg group-open:rotate-45 transition-transform">+</span>
                         </summary>
                         <p class="text-xs sm:text-sm text-slate-400 mt-3 leading-relaxed">
-                            <strong>Menos de 60 segundos.</strong> En cuanto completas el formulario de registro, el sistema te crea automáticamente tus 2 planes recomendados, tu enlace web público y tu afiche oficial con código QR listo para imprimir en recepción.
+                            Puedes configurar tus cuentas habituales: Nequi, Daviplata, transferencia Bancolombia, o enlazar botones de pago digitales como Bold o Wompi.
+                        </p>
+                    </details>
+
+                    <details class="glass p-5 rounded-2xl border border-slate-800 group cursor-pointer">
+                        <summary class="font-bold text-sm sm:text-base text-white flex justify-between items-center list-none">
+                            <span>¿Puedo utilizar mi propio dominio?</span>
+                            <span class="text-emerald-400 font-bold text-lg group-open:rotate-45 transition-transform">+</span>
+                        </summary>
+                        <p class="text-xs sm:text-sm text-slate-400 mt-3 leading-relaxed">
+                            Por defecto tienes un subdominio seguro (ej: <code class="text-emerald-400">avipetapp.com/v/tu-clinica</code>). En el plan Enterprise, puedes conectar directamente tu propio dominio o subdominio corporativo (ej: <code class="text-emerald-400">salud.tuclinica.com</code>).
+                        </p>
+                    </details>
+
+                    <details class="glass p-5 rounded-2xl border border-slate-800 group cursor-pointer">
+                        <summary class="font-bold text-sm sm:text-base text-white flex justify-between items-center list-none">
+                            <span>¿Qué ocurre cuando terminan los 15 días gratis?</span>
+                            <span class="text-emerald-400 font-bold text-lg group-open:rotate-45 transition-transform">+</span>
+                        </summary>
+                        <p class="text-xs sm:text-sm text-slate-400 mt-3 leading-relaxed">
+                            No solicitamos tarjeta de crédito para iniciar. Antes de finalizar el periodo te consultaremos si deseas continuar con el plan Starter o Profesional. Si decides no continuar, tu cuenta se pausa sin ningún cargo ni penalidad.
                         </p>
                     </details>
                 </div>
             </div>
         </section>
 
-        <!-- 7. BANNER FINAL CTA -->
+        <!-- 10. CTA FINAL -->
         <section class="py-20 relative overflow-hidden">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="glass p-8 sm:p-14 rounded-3xl border-2 border-emerald-500/30 text-center space-y-6 relative overflow-hidden glow-emerald">
-                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-black uppercase">
-                        <span>🚀 Comienza hoy mismo</span>
-                    </div>
                     <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
-                        Haz que tu veterinaria facture ingresos fijos todos los meses
+                        Crea el programa de salud de tu veterinaria hoy mismo
                     </h2>
                     <p class="text-sm sm:text-lg text-slate-300 max-w-2xl mx-auto font-normal">
-                        Únete a la nueva generación de clínicas veterinarias con planes de salud y carnet digital. Tu prueba de 15 días gratis está lista.
+                        Tu marca. Tus planes. Tus precios. Tus clientes.
                     </p>
                     <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
                         <button type="button" onclick="openRegisterModal('pro')" class="w-full sm:w-auto px-9 py-4 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 font-black text-base hover:from-emerald-300 hover:to-teal-300 shadow-xl shadow-emerald-500/30 transition transform hover:-translate-y-0.5">
-                            Crear mi Clínica Gratis en 60s →
+                            Comenzar prueba gratuita →
                         </button>
                     </div>
                 </div>
@@ -489,12 +681,12 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-2">
                 <span class="font-extrabold text-white">AVI<span class="text-emerald-400">Plan</span></span>
-                <span>— Plataforma SaaS Marca Blanca de Salud y Membresías Veterinarias.</span>
+                <span>— Plataforma de Planes de Bienestar para Veterinarias.</span>
             </div>
             <div class="flex space-x-6 font-semibold">
                 <a href="/admin" class="hover:text-emerald-400 transition-colors">Acceso Mostrador</a>
-                <a href="/v/vet-pet-patitas" class="hover:text-emerald-400 transition-colors">Clínica Piloto en Vivo</a>
-                <a href="https://wa.me/573508742543" target="_blank" class="hover:text-emerald-400 transition-colors">Soporte WhatsApp</a>
+                <a href="/v/vet-pet-patitas" class="hover:text-emerald-400 transition-colors">Clínica Piloto</a>
+                <a href="https://wa.me/573508742543" target="_blank" class="hover:text-emerald-400 transition-colors">Contacto WhatsApp</a>
             </div>
         </div>
     </footer>
@@ -503,17 +695,16 @@
     <div id="register-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 hidden transition-opacity opacity-0 pointer-events-none">
         <div class="relative w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 text-slate-100 transform scale-95 transition-transform">
             
-            <!-- BOTÓN CERRAR -->
             <button type="button" onclick="closeRegisterModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-xl bg-slate-800 hover:bg-slate-700 transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
 
             <div class="space-y-1">
                 <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase">
-                    <span>✨ Registro Express en 60 Segundos</span>
+                    <span>Prueba Gratuita de 15 Días</span>
                 </div>
                 <h3 class="text-2xl font-black text-white">Crea tu Clínica Veterinaria</h3>
-                <p class="text-xs text-slate-400">Disfruta de <strong class="text-emerald-400">15 días de prueba gratis</strong> con funciones Pro activadas.</p>
+                <p class="text-xs text-slate-400">Empieza a configurar tus planes y tu afiche en 60 segundos.</p>
             </div>
 
             <!-- FORMULARIO AJAX -->
@@ -522,7 +713,7 @@
                 <input type="hidden" name="saas_plan_tier" id="form-tier" value="pro">
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Nombre de tu Veterinaria o Clínica <span class="text-emerald-400">*</span></label>
+                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Nombre de tu Veterinaria <span class="text-emerald-400">*</span></label>
                     <input type="text" name="clinic_name" id="clinic-name-input" required placeholder="Ej. Veterinaria San Roque" oninput="updateSlugPreview(this.value)" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400 transition placeholder:text-slate-500">
                     <p class="text-[10px] text-slate-400 mt-1 font-mono">
                         Tu web será: <span id="slug-preview" class="text-emerald-400 font-bold">avipetapp.com/v/tu-clinica</span>
@@ -546,27 +737,26 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Contraseña de Acceso <span class="text-emerald-400">*</span></label>
+                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Contraseña <span class="text-emerald-400">*</span></label>
                     <input type="password" name="password" required minlength="6" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-400 transition placeholder:text-slate-500">
                 </div>
 
                 <div id="form-error-alert" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium"></div>
 
                 <button type="submit" id="submit-btn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-slate-950 font-black text-sm shadow-xl shadow-emerald-500/25 transition transform active:scale-95 flex items-center justify-center space-x-2">
-                    <span id="btn-text">🚀 Activar mi Clínica Gratis (15 Días)</span>
+                    <span id="btn-text">🚀 Activar mi Clínica Gratis</span>
                     <span id="btn-spinner" class="hidden animate-spin rounded-full h-4 w-4 border-2 border-slate-950 border-t-transparent"></span>
                 </button>
 
                 <p class="text-[10px] text-center text-slate-500">
-                    Al registrarte aceptas los términos del servicio. No se requiere tarjeta de crédito.
+                    Sin tarjeta de crédito requerida. Acceso inmediato.
                 </p>
             </form>
         </div>
     </div>
 
-    <!-- SCRIPTS DE INTERACCIÓN, CALCULADORA Y ONBOARDING -->
+    <!-- SCRIPTS -->
     <script>
-        // --- 1. MODAL REGISTRO ---
         function openRegisterModal(tier = 'pro') {
             document.getElementById('form-tier').value = tier;
             const modal = document.getElementById('register-modal');
@@ -595,7 +785,6 @@
             document.getElementById('slug-preview').innerText = `avipetapp.com/v/${preview}`;
         }
 
-        // --- 2. SUBMIT ONBOARDING AJAX ---
         async function submitOnboarding(event) {
             event.preventDefault();
             const form = event.target;
@@ -632,7 +821,6 @@
                     throw new Error(errorMsg);
                 }
 
-                // Éxito: redireccionar a la consola de la clínica
                 btnText.innerText = '¡Listo! Entrando a tu panel...';
                 window.location.href = data.redirect_url;
 
@@ -640,12 +828,11 @@
                 errorAlert.innerText = err.message;
                 errorAlert.classList.remove('hidden');
                 submitBtn.disabled = false;
-                btnText.innerText = '🚀 Activar mi Clínica Gratis (15 Días)';
+                btnText.innerText = '🚀 Activar mi Clínica Gratis';
                 btnSpinner.classList.add('hidden');
             }
         }
 
-        // --- 3. CALCULADORA MRR & ROI ---
         let currentPlanPrice = 65000;
         const petsSlider = document.getElementById('pets-slider');
         const petsCountDisplay = document.getElementById('pets-count-display');
@@ -682,7 +869,6 @@
             calculateMRR();
         }
 
-        // Calcular inicial
         calculateMRR();
     </script>
 </body>
