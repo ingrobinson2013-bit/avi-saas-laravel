@@ -44,7 +44,8 @@ class CounterRedeem extends Page
                 })
                 ->orWhereHas('pet', function ($q) use ($query) {
                     $q->where('name', 'ilike', "%{$query}%");
-                });
+                })
+                ->orWhere('subscriptions.gateway_subscription_id', 'ilike', "%{$query}%");
             })
             ->where('subscriptions.status', 'active')
             ->limit(8)

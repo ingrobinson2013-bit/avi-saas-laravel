@@ -11,7 +11,7 @@
                 <input 
                     type="text" 
                     wire:model.live.debounce.300ms="searchQuery" 
-                    placeholder="Buscar por cédula, teléfono, nombre..."
+                    placeholder="Buscar por contrato (ej. VP-2026-0001), cédula, teléfono, mascota..."
                     class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                     autofocus
                 />
@@ -28,9 +28,14 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <span class="font-bold text-gray-900 dark:text-white text-base">🐾 {{ $sub->pet->name }}</span>
-                                <span class="text-xs bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300 px-2 py-0.5 rounded-full ml-2">
+                                <span class="text-xs bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300 px-2 py-0.5 rounded-full ml-1">
                                     {{ $sub->plan->name }}
                                 </span>
+                                @if($sub->gateway_subscription_id)
+                                    <span class="text-[11px] font-mono bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded ml-1 font-bold">
+                                        {{ $sub->gateway_subscription_id }}
+                                    </span>
+                                @endif
                             </div>
                             <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase">Activo</span>
                         </div>
