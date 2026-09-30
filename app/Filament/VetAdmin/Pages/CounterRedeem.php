@@ -102,4 +102,18 @@ class CounterRedeem extends Page
         return Subscription::with(['pet.customer', 'plan', 'benefitBalances.benefitDefinition', 'benefitBalances.redemptions'])
             ->find($this->selectedSubscriptionId);
     }
+
+    protected function getHeaderActions(): array
+    {
+        $tenant = \Filament\Facades\Filament::getTenant() ?? auth()->user()?->tenant ?? \App\Models\Tenant::where('slug', 'vet-pet-patitas')->first() ?? \App\Models\Tenant::first();
+        $slug = $tenant?->slug ?? 'vet-pet-patitas';
+
+        return [
+            \Filament\Actions\Action::make('print_flyer')
+                ->label('🖨️ Afiche Mostrador (QR)')
+                ->icon('heroicon-o-qr-code')
+                ->color('success')
+                ->url("/v/{$slug}/afiche", shouldOpenInNewTab: true),
+        ];
+    }
 }
