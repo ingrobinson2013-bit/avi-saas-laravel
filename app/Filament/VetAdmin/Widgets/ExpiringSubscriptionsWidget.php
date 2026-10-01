@@ -13,7 +13,7 @@ class ExpiringSubscriptionsWidget extends BaseWidget
 {
     protected static ?int $sort = 2;
     protected int | string | array $columnSpan = ['md' => 2, 'xl' => 1];
-    protected static ?string $heading = '🔔 Atención: Próximas Renovaciones';
+    protected static ?string $heading = '🔔 Renovaciones';
 
     public function table(Table $table): Table
     {
@@ -72,8 +72,8 @@ class ExpiringSubscriptionsWidget extends BaseWidget
                     })
                     ->openUrlInNewTab(),
             ])
-            ->emptyStateHeading('Sin vencimientos en los próximos 15 días')
-            ->emptyStateDescription('Todos los planes de tus afiliados se encuentran con cobertura vigente.')
+            ->emptyStateHeading('Sin renovaciones pendientes')
+            ->emptyStateDescription('No tienes renovaciones pendientes. Siguiente revisión automática: mañana 08:00')
             ->emptyStateIcon('heroicon-o-shield-check')
             ->paginated(false);
     }

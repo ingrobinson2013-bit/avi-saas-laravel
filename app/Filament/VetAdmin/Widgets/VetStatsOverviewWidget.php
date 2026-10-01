@@ -39,21 +39,29 @@ class VetStatsOverviewWidget extends BaseWidget
             ->join('plans', 'subscriptions.plan_id', '=', 'plans.id')
             ->sum('plans.price_cop');
 
+        // Comparativa de MRR contra mes anterior
+        $prevMonthMrr = (float) Subscription::query()
+            ->where('subscriptions.status', 'active')
+            ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
+            ->where('subscriptions.created_at', '<', now()->startOfMonth())
+            ->join('plans', 'subscriptions.plan_id', '=', 'plans.id')
+            ->sum('plans.price_cop');
+
+        $mrrDiff = $mrrReal - $prevMonthMrr;
+        $mrrDesc = $prevMonthMrr > 0
+            ? (($mrrDiff >= 0 ? '+$' : '-$') . number_format(abs($mrrDiff), 0, ',', '.') . ' vs. mes anterior')
+            : 'Ingresos recurrentes actuales';
+
         // Total Mascotas
         $petsCount = Pet::query()
             ->when($tenantId, fn ($q) => $q->whereHas('customer', fn ($c) => $c->where('tenant_id', $tenantId)))
             ->count();
 
-        // Ratio de Uso de Beneficios Clínicos (excluyendo cupos ilimitados)
-        $totalGranted = (int) SubscriptionBenefitBalance::query()
-            ->where('total_granted', '<', 500)
-            ->when($tenantId, fn ($q) => $q->whereHas('subscription', fn ($s) => $s->where('tenant_id', $tenantId)))
-            ->sum('total_granted');
-
-        $totalUsed = (int) SubscriptionBenefitBalance::query()
-            ->where('total_granted', '<', 500)
-            ->when($tenantId, fn ($q) => $q->whereHas('subscription', fn ($s) => $s->where('tenant_id', $tenantId)))
-            ->sum('used_count');
+        // Nuevas Afiliaciones este mes
+        $newSubsThisMonth = Subscription::query()
+            ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
+            ->where('created_at', '>=', now()->startOfMonth())
+            ->count();
 
         // Membresías en Riesgo (Próximas a vencer en 15 días o en mora)
         $expiring15Days = Subscription::query()
@@ -74,29 +82,33 @@ class VetStatsOverviewWidget extends BaseWidget
             ->sum('plans.price_cop');
 
         $renovDesc = $expiring15Days > 0 
-            ? '$' . number_format($mrrAtRisk, 0, ',', '.') . ' COP en riesgo' 
-            : 'Próximos 15 días (Al día)';
+            ? '$' . number_format($mrrAtRisk, 0, ',', '.') . ' en riesgo' 
+            : 'Próximos 15 días';
 
         return [
+            // 1. MRR
             Stat::make('Ingresos recurrentes (MRR)', '$' . number_format($mrrReal, 0, ',', '.') . ' COP')
-                ->description('↑ Este mes')
+                ->description($mrrDesc)
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
 
+            // 2. Mascotas Activas
             Stat::make('Mascotas Activas', (string) $petsCount)
-                ->description('Con plan preventivo al día')
+                ->description($activeSubsCount . ($activeSubsCount === 1 ? ' plan activo' : ' planes activos'))
                 ->descriptionIcon('heroicon-m-heart')
                 ->color('info'),
 
-            Stat::make('Renovaciones Próximas', (string) $expiring15Days)
-                ->description($renovDesc)
-                ->descriptionIcon($expiring15Days > 0 ? 'heroicon-m-exclamation-triangle' : 'heroicon-m-check-badge')
-                ->color($expiring15Days > 0 ? 'warning' : 'success'),
-
-            Stat::make('Uso de Beneficios', "{$totalUsed} / {$totalGranted} utilizados")
-                ->description('Servicios canjeados este ciclo')
+            // 3. Nuevas Afiliaciones (Clave para saber si la veterinaria está creciendo)
+            Stat::make('Nuevas Afiliaciones', '+' . $newSubsThisMonth)
+                ->description('Este mes')
                 ->descriptionIcon('heroicon-m-sparkles')
                 ->color('primary'),
+
+            // 4. Renovaciones
+            Stat::make('Renovaciones', (string) $expiring15Days)
+                ->description($renovDesc)
+                ->descriptionIcon($expiring15Days > 0 ? 'heroicon-m-exclamation-triangle' : 'heroicon-m-check-badge')
+                ->color($expiring15Days > 0 ? 'warning' : 'gray'),
         ];
     }
 }

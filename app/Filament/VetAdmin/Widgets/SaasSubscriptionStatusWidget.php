@@ -8,9 +8,15 @@ use Filament\Widgets\Widget;
 
 class SaasSubscriptionStatusWidget extends Widget
 {
-    protected static ?int $sort = -1; // Primero en la parte superior
+    protected static ?int $sort = -1;
     protected int | string | array $columnSpan = 'full';
     protected static string $view = 'filament.vet-admin.widgets.saas-subscription-status';
+
+    public static function canView(): bool
+    {
+        $tenant = \Filament\Facades\Filament::getTenant();
+        return in_array($tenant?->saas_status, ['expired', 'past_due']);
+    }
 
     public ?string $slug = 'vet-pet-patitas';
     public ?string $tenantName = '';
