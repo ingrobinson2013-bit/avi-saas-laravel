@@ -19,7 +19,7 @@ class PlanResource extends Resource
     protected static ?string $navigationLabel = 'Constructor de Planes';
     protected static ?string $modelLabel = 'Plan de Salud y Bienestar';
     protected static ?string $pluralModelLabel = 'Planes de Bienestar';
-    protected static ?string $navigationGroup = 'Planes & Catálogo';
+    protected static ?string $navigationGroup = '💳 Planes y Beneficios';
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form

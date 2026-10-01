@@ -18,7 +18,7 @@ class BenefitDefinitionResource extends Resource
     protected static ?string $navigationLabel = 'Catálogo de Servicios';
     protected static ?string $modelLabel = 'Servicio / Beneficio';
     protected static ?string $pluralModelLabel = 'Catálogo de Servicios';
-    protected static ?string $navigationGroup = 'Planes & Catálogo';
+    protected static ?string $navigationGroup = '💳 Planes y Beneficios';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form

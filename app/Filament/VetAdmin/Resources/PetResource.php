@@ -21,8 +21,8 @@ class PetResource extends Resource
     protected static ?string $navigationLabel = 'Mascotas & Pacientes';
     protected static ?string $modelLabel = 'Mascota';
     protected static ?string $pluralModelLabel = 'Mascotas';
-    protected static ?string $navigationGroup = 'Gestión de Pacientes';
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = '🐾 Clientes y Mascotas';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

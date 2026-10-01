@@ -12,7 +12,7 @@ class RecentRedemptionsFeedWidget extends BaseWidget
 {
     protected static ?int $sort = 3;
     protected int | string | array $columnSpan = ['md' => 2, 'xl' => 1];
-    protected static ?string $heading = '⚡ Canjes Recientes en Mostrador (Feed en vivo)';
+    protected static ?string $heading = '🐾 Actividad Reciente (Canjes en Vivo)';
 
     public function table(Table $table): Table
     {

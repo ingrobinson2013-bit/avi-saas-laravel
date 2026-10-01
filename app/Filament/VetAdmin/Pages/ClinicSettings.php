@@ -17,11 +17,12 @@ class ClinicSettings extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+    protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
     protected static ?string $navigationLabel = 'Marca y Medios de Pago';
     protected static ?string $title = 'Personalización de Marca y Medios de Pago';
     protected static ?string $slug = 'clinic-settings';
-    protected static ?int $navigationSort = 10;
+    protected static ?string $navigationGroup = '⚙️ Configuración';
+    protected static ?int $navigationSort = 1;
     protected static string $view = 'filament.vet-admin.pages.clinic-settings';
 
     public ?array $data = [];

@@ -13,7 +13,7 @@ class ExpiringSubscriptionsWidget extends BaseWidget
 {
     protected static ?int $sort = 2;
     protected int | string | array $columnSpan = ['md' => 2, 'xl' => 1];
-    protected static ?string $heading = '⏰ Membresías Próximas a Renovar';
+    protected static ?string $heading = '🔔 Atención: Próximas Renovaciones';
 
     public function table(Table $table): Table
     {

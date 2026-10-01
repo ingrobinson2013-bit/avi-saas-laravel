@@ -2,6 +2,7 @@
 
 namespace App\Filament\VetAdmin\Pages;
 
+use App\Filament\VetAdmin\Widgets\AviRecommendsWidget;
 use App\Filament\VetAdmin\Widgets\ClinicOperationsToolbarWidget;
 use App\Filament\VetAdmin\Widgets\ExpiringSubscriptionsWidget;
 use App\Filament\VetAdmin\Widgets\RecentRedemptionsFeedWidget;
@@ -72,6 +73,7 @@ class Dashboard extends BaseDashboard
             ClinicOperationsToolbarWidget::class,
             ExpiringSubscriptionsWidget::class,
             RecentRedemptionsFeedWidget::class,
+            AviRecommendsWidget::class,
         ];
     }
 

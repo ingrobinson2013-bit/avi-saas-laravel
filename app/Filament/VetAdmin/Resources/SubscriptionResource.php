@@ -21,11 +21,11 @@ class SubscriptionResource extends Resource
     protected static ?string $model = Subscription::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
-    protected static ?string $navigationLabel = 'Membresías & Suscripciones';
+    protected static ?string $navigationLabel = 'Membresías & Afiliaciones';
     protected static ?string $modelLabel = 'Membresía';
     protected static ?string $pluralModelLabel = 'Membresías';
-    protected static ?string $navigationGroup = 'Gestión de Pacientes';
-    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = '🐾 Clientes y Mascotas';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
