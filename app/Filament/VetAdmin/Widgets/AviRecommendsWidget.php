@@ -65,10 +65,11 @@ class AviRecommendsWidget extends Widget
             $phone = preg_replace('/[^0-9]/', '', $inactiveSub->pet?->customer?->phone ?? '');
             
             $balances = $inactiveSub->benefitBalances;
-            $availCount = (int) $balances->where('remaining', '>', 0)->sum('remaining');
-            $exampleBenefit = $balances->where('remaining', '>', 0)->first()?->benefitDefinition?->name ?? 'chequeo preventivo';
+            $availCount = (int) $balances->sum(fn ($b) => $b->remaining_count ?? ($b->total_granted - $b->used_count));
+            $exampleBenefit = $balances->first(fn ($b) => ($b->remaining_count ?? ($b->total_granted - $b->used_count)) > 0)?->benefitDefinition?->name ?? 'chequeo preventivo';
 
             $waMsg = "🐾 Hola {$firstName}, te saludamos de la clínica veterinaria. Queríamos recordarte que {$petName} tiene {$availCount} beneficios disponibles en su plan de salud (incluyendo {$exampleBenefit}) y hace más de 60 días no nos visita. ¿Te gustaría agendar su cita esta semana para consentirlo?";
+            $waUrl = !empty($phone) ? "https://wa.me/{$phone}?text=" . urlencode($waMsg) : "https://wa.me/?text=" . urlencode($waMsg);
 
             $this->recommendation = [
                 'type' => 'activation',
@@ -76,7 +77,7 @@ class AviRecommendsWidget extends Widget
                 'badge_color' => 'blue',
                 'impact_text' => $inactiveCount . ' ' . ($inactiveCount === 1 ? 'oportunidad detectada' : 'oportunidades detectadas'),
                 'title' => "Te recomiendo contactar a {$firstName} porque {$petName} tiene {$availCount} " . ($availCount === 1 ? 'beneficio disponible' : 'beneficios disponibles') . " (como {$exampleBenefit}) y no ha realizado una visita en los últimos 60 días.",
-                'whatsapp_url' => !empty($phone) ? "https://wa.me/{$phone}?text=" . urlencode($waMsg) : null,
+                'whatsapp_url' => $waUrl,
                 'pet_url' => "/admin/{$this->slug}/pets/{$inactiveSub->pet_id}/edit",
                 'action_label' => 'Enviar WhatsApp',
                 'pet_label' => 'Ver Paciente',

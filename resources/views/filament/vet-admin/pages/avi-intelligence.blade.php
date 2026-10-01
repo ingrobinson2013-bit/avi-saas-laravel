@@ -68,11 +68,11 @@
                             $firstName = explode(' ', trim($customer?->name ?? 'Tutor'))[0];
                             $petName = $pet?->name ?? 'la mascota';
                             $phone = preg_replace('/[^0-9]/', '', $customer?->phone ?? '');
-                            $availCount = (int) $opp->benefitBalances->where('remaining', '>', 0)->sum('remaining');
-                            $firstBenefit = $opp->benefitBalances->where('remaining', '>', 0)->first()?->benefitDefinition?->name ?? 'Consulta preventiva';
+                            $availCount = (int) $opp->benefitBalances->sum(fn ($b) => $b->remaining_count ?? ($b->total_granted - $b->used_count));
+                            $firstBenefit = $opp->benefitBalances->first(fn ($b) => ($b->remaining_count ?? ($b->total_granted - $b->used_count)) > 0)?->benefitDefinition?->name ?? 'Consulta preventiva';
                             
                             $msg = "🐾 Hola {$firstName}, te saludamos de la clínica veterinaria. Queríamos recordarte que {$petName} tiene {$availCount} beneficios disponibles en su {$opp->plan?->name} (como {$firstBenefit}) y hace más de 60 días no nos visita. ¿Te gustaría agendar su chequeo esta semana?";
-                            $waUrl = !empty($phone) ? "https://wa.me/{$phone}?text=" . urlencode($msg) : null;
+                            $waUrl = !empty($phone) ? "https://wa.me/{$phone}?text=" . urlencode($msg) : "https://wa.me/?text=" . urlencode($msg);
                         @endphp
 
                         <div class="p-4 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-850 flex flex-col justify-between hover:border-blue-500/50 transition">
