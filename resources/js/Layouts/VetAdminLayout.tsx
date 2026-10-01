@@ -62,15 +62,15 @@ export default function VetAdminLayout({
         { label: 'Inicio', icon: Home, href: `/admin/${tenantSlug}`, active: activeItem === 'Inicio' },
         { label: 'Inteligencia Artificial', icon: Bot, href: `/admin/${tenantSlug}/ai`, badge: 'Beta', active: activeItem === 'Inteligencia Artificial' },
         { label: 'Planes de Salud', icon: Heart, href: `/admin/${tenantSlug}/plans`, active: activeItem === 'Planes de Salud' },
-        { label: 'Clientes y Mascotas', icon: Users, href: `/admin/${tenantSlug}/pets`, active: activeItem === 'Clientes y Mascotas' },
-        { label: 'Configuración', icon: Settings, href: `/admin/${tenantSlug}/configuracion-clinica`, active: activeItem === 'Configuración' },
-        { label: 'Marca y Medios de Pago', icon: CreditCard, href: `/admin/${tenantSlug}/renovar-saas`, active: activeItem === 'Marca y Medios de Pago' },
-        { label: 'Recepción', icon: Bell, href: `/admin/${tenantSlug}/recepcion`, active: activeItem === 'Recepción' },
+        { label: 'Clientes y Mascotas', icon: Users, href: `/admin/${tenantSlug}/pets`, hasChevron: true, active: activeItem === 'Clientes y Mascotas' },
+        { label: 'Configuración', icon: Settings, href: `/admin/${tenantSlug}/configuracion-clinica`, hasDownChevron: true, active: activeItem === 'Configuración' },
+        { label: 'Marca y Medios de Pago', icon: CreditCard, href: `/admin/${tenantSlug}/renovar-saas`, hasChevron: true, active: activeItem === 'Marca y Medios de Pago' },
+        { label: 'Recepción', icon: Bell, href: `/admin/${tenantSlug}/recepcion`, hasChevron: true, active: activeItem === 'Recepción' },
         { label: 'Canje en Recepción', icon: Tag, href: `/admin/${tenantSlug}/canje-mostrador`, active: activeItem === 'Canje en Recepción' },
-        { label: 'Reportes y Estadísticas', icon: BarChart3, href: `/admin/${tenantSlug}/reportes`, active: activeItem === 'Reportes y Estadísticas' },
-        { label: 'Membresías & Afiliaciones', icon: Shield, href: `/admin/${tenantSlug}/subscriptions`, active: activeItem === 'Membresías & Afiliaciones' },
+        { label: 'Reportes y Estadísticas', icon: BarChart3, href: `/admin/${tenantSlug}/reportes`, hasChevron: true, active: activeItem === 'Reportes y Estadísticas' },
+        { label: 'Membresías & Afiliaciones', icon: Shield, href: `/admin/${tenantSlug}/subscriptions`, hasChevron: true, active: activeItem === 'Membresías & Afiliaciones' },
         { label: 'Tutores', icon: User, href: `/admin/${tenantSlug}/customers`, active: activeItem === 'Tutores' },
-        { label: 'Planes y Beneficios', icon: FileText, href: `/admin/${tenantSlug}/plans`, active: activeItem === 'Planes y Beneficios' },
+        { label: 'Planes y Beneficios', icon: FileText, href: `/admin/${tenantSlug}/plans`, hasChevron: true, active: activeItem === 'Planes y Beneficios' },
         { label: 'Constructor de Planes', icon: Layers, href: `/admin/${tenantSlug}/plans/create`, active: activeItem === 'Constructor de Planes' },
         { label: 'Catálogo de Servicios', icon: BookOpen, href: `/admin/${tenantSlug}/servicios`, active: activeItem === 'Catálogo de Servicios' },
     ];
@@ -92,7 +92,7 @@ export default function VetAdminLayout({
                             />
                         </div>
                     ) : (
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 via-sky-500 to-cyan-400 flex items-center justify-center text-white text-base shadow-sm shrink-0 font-bold">
+                        <div className="w-10 h-10 rounded-full bg-[#0080ff] flex items-center justify-center text-white text-base shadow-sm shrink-0 font-bold">
                             🐾
                         </div>
                     )}
@@ -116,7 +116,7 @@ export default function VetAdminLayout({
                                 href={item.href}
                                 className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 ${
                                     item.active
-                                        ? 'bg-[#0284c7] text-white shadow-xs'
+                                        ? 'bg-[#0080ff] text-white shadow-xs'
                                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
                                 }`}
                             >
@@ -126,6 +126,12 @@ export default function VetAdminLayout({
                                     <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
                                         {item.badge}
                                     </span>
+                                )}
+                                {item.hasChevron && !item.badge && (
+                                    <span className="text-slate-400 text-xs font-semibold">›</span>
+                                )}
+                                {item.hasDownChevron && !item.badge && (
+                                    <span className="text-slate-400 text-xs font-semibold">⌄</span>
                                 )}
                             </a>
                         );
@@ -142,35 +148,57 @@ export default function VetAdminLayout({
 
                 {/* Footer Pet Card & Estado del Plan SaaS */}
                 <div className="p-3 border-t border-slate-100 shrink-0 bg-white space-y-2">
-                    <div className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs bg-white">
-                        <img 
-                            src="/images/dashboard/sidebar_pet_hd.png" 
-                            alt="Tu aliado en cada etapa de su vida" 
-                            className="w-full h-auto object-cover block"
-                        />
+                    <div className="rounded-2xl border border-slate-200/90 shadow-2xs bg-white p-2.5 relative overflow-hidden">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="w-6 h-6 rounded-full bg-[#0080ff] text-white flex items-center justify-center text-xs shrink-0 font-bold">
+                                🐾
+                            </div>
+                            <div className="flex flex-col min-w-0">
+                                <span className="text-[10.5px] font-black text-slate-800 leading-tight">
+                                    Tu aliado en cada etapa de su vida
+                                </span>
+                                <span className="text-[9px] font-medium text-slate-400">
+                                    Salud · Bienestar · Amor
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="rounded-xl overflow-hidden relative">
+                            <img 
+                                src="/images/dashboard/sidebar_pet_hd.png" 
+                                alt="Tu aliado en cada etapa de su vida" 
+                                className="w-full h-auto object-cover block"
+                            />
+                            {/* Cyan Doodle Heart */}
+                            <svg className="w-5 h-5 text-sky-400 stroke-current rotate-12 absolute right-2 bottom-2 drop-shadow-xs" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                            </svg>
+                        </div>
                     </div>
 
                     {/* Estado del Plan SaaS Card */}
-                    <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs">
+                    <div className="p-2 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs">
                         <div className="flex items-center justify-between mb-1">
-                            <span className="text-[11px] font-black text-slate-900 truncate">
-                                {saasPlan?.name || 'Plan Pro'}
+                            <span className="text-[10.5px] font-black text-slate-900 truncate flex items-center gap-1">
+                                <span className="text-amber-500">⭐</span>
+                                <span>{saasPlan?.name || 'Plan Starter'}</span>
                             </span>
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[8.5px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                 {saasPlan?.statusLabel || 'Activo'}
                             </span>
                         </div>
-                        <p className="text-[9.5px] text-slate-400 mb-2 font-medium">
-                            {saasPlan?.paidUntil ? `Hasta ${saasPlan.paidUntil}` : 'Licencia SaaS al día'}
-                        </p>
-                        <a 
-                            href={saasPlan?.manageUrl || `/admin/${tenantSlug}/renovar-saas`}
-                            className="w-full py-1.5 px-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[10.5px] font-bold flex items-center justify-center gap-1 transition shadow-2xs"
-                        >
-                            <span>Gestionar Plan</span>
-                            <span className="text-[9px]">→</span>
-                        </a>
+                        <div className="flex items-center justify-between">
+                            <span className="text-[9px] text-slate-400 font-medium">
+                                {saasPlan?.paidUntil ? `Hasta ${saasPlan.paidUntil}` : 'Licencia SaaS al día'}
+                            </span>
+                            <a 
+                                href={saasPlan?.manageUrl || `/admin/${tenantSlug}/renovar-saas`}
+                                className="text-[9.5px] font-bold text-blue-600 hover:text-blue-700 hover:underline"
+                            >
+                                Gestionar →
+                            </a>
+                        </div>
                     </div>
                 </div>
             </aside>
@@ -198,18 +226,6 @@ export default function VetAdminLayout({
 
                     {/* Right Icons & User Profile */}
                     <div className="flex items-center gap-3 shrink-0">
-                        {/* Quick Access to Public Storefront */}
-                        <a 
-                            href={`/v/${tenantSlug}`} 
-                            target="_blank" 
-                            rel="noreferrer"
-                            className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold text-teal-700 bg-teal-50 border border-teal-200/80 hover:bg-teal-100 hover:border-teal-300 transition shadow-2xs"
-                            title="Ver Portal Público de Planes para Clientes y Tutores"
-                        >
-                            <ExternalLink className="w-3.5 h-3.5" />
-                            <span>Portal Clientes</span>
-                        </a>
-                        
                         {/* Notification Bell with Red Badge 1 */}
                         <button 
                             type="button" 
@@ -244,22 +260,20 @@ export default function VetAdminLayout({
                                 <span className="text-xs font-black text-slate-900 whitespace-nowrap">
                                     {userName}
                                 </span>
-                                <span className="text-[10.5px] font-medium text-slate-400 whitespace-nowrap">
+                                <span className="text-[10px] font-medium text-slate-400 whitespace-nowrap">
                                     {userRole}
                                 </span>
                             </div>
+
+                            {/* Botón Salir / Logout sutil */}
+                            <a 
+                                href={logoutUrl}
+                                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition ml-1"
+                                title="Cerrar Sesión / Salir"
+                            >
+                                <LogOut className="w-4 h-4" />
+                            </a>
                         </div>
-
-                        {/* Botón Salir / Logout */}
-                        <a 
-                            href={logoutUrl}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 hover:border-rose-200 transition shadow-2xs ml-1"
-                            title="Cerrar Sesión y Salir del Sistema"
-                        >
-                            <LogOut className="w-3.5 h-3.5 text-rose-500" />
-                            <span className="hidden sm:inline">Salir</span>
-                        </a>
-
                     </div>
                 </header>
 

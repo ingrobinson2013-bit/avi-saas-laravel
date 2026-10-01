@@ -164,10 +164,10 @@ export default function Dashboard({
                     <div className="bg-white border border-slate-200/90 rounded-2xl p-5 lg:p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xs relative overflow-hidden">
                         <div className="space-y-1.5 max-w-xl">
                             <p className="text-xs font-semibold text-slate-500">
-                                ¡Hola, {greetingName}!
+                                ¡Hola, {greetingName}! 👋
                             </p>
                             <h1 className="text-2xl lg:text-[28px] font-black text-slate-900 leading-tight tracking-tight">
-                                Bienvenida a {brandName} 👋
+                                Bienvenida a {brandName}
                             </h1>
                             <p className="text-xs lg:text-[13.5px] font-medium text-slate-500">
                                 Gestiona tus planes de salud, clientes y mascotas en un solo lugar.
@@ -175,16 +175,17 @@ export default function Dashboard({
                             
                             <div className="flex items-center gap-2 flex-wrap pt-2">
                                 <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-white border border-slate-200 text-slate-600 shadow-2xs">
-                                    📍 Sede {cleanCity} · {formattedDate}
+                                    📍 Sede {cleanCity}
                                 </span>
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#eff6ff] border border-[#bfdbfe] text-[#1d4ed8] shadow-2xs">
-                                    <span className="text-amber-500">⭐</span>
-                                    <span>{saasPlan?.name || 'Plan Pro'}: {saasPlan?.statusLabel || 'Activo'}</span>
-                                    {saasPlan?.paidUntil && <span className="text-blue-500 font-normal">({saasPlan.paidUntil})</span>}
+                                <span className="text-slate-300 text-xs">›</span>
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-white border border-slate-200 text-slate-600 shadow-2xs">
+                                    📅 {formattedDate}
                                 </span>
-                                <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-[#f0fdfa] border border-[#ccfbf1] text-[#0f766e]">
-                                    ⏱ Modo Sincronizado
+                                <span className="text-slate-300 text-xs">›</span>
+                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-semibold bg-[#f0fdfa] border border-[#ccfbf1] text-[#0f766e]">
+                                    <span>⏱</span> Modo Sincronizado
                                 </span>
+                                <span className="text-slate-300 text-xs">›</span>
                                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-[#f0fdf4] border border-[#bbf7d0] text-[#15803d]">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                     <span>Sistema en línea</span>
@@ -192,12 +193,18 @@ export default function Dashboard({
                             </div>
                         </div>
 
+                        {/* Hand drawn cyan heart doodle */}
+                        <svg className="w-10 h-10 text-cyan-400 stroke-current -rotate-12 absolute right-52 top-6 hidden lg:block opacity-75" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg>
+
                         {/* Right Golden Retriever + Cat Cutout with Aura and Floating Heart HD */}
-                        <div className="shrink-0 flex items-center justify-center">
+                        <div className="shrink-0 flex items-center justify-center relative">
+                            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-100/50 to-sky-100/40 rounded-full blur-xl scale-110 pointer-events-none"></div>
                             <img 
                                 src="/images/dashboard/hero_pets_hd.png" 
                                 alt={`Mascotas ${brandName}`} 
-                                className="h-28 lg:h-36 xl:h-40 w-auto object-contain drop-shadow-sm select-none pointer-events-none"
+                                className="h-28 lg:h-36 xl:h-40 w-auto object-contain drop-shadow-sm select-none pointer-events-none relative z-10"
                             />
                         </div>
                     </div>
@@ -307,45 +314,42 @@ export default function Dashboard({
                                 <span className="text-[11px] font-semibold text-slate-500">
                                     Próximos 15 días
                                 </span>
-                                <Calendar className="w-4 h-4 text-amber-500/80" />
+                                <span className="text-sm text-amber-500 font-bold">↻</span>
                             </div>
                         </div>
 
                     </div>
 
-                    {/* 3. ACCIONES RÁPIDAS (4 CARDS) */}
+                    {/* 3. ACCIONES RÁPIDAS (5 CARDS EXACTAS AL MOCKUP) */}
                     <div>
                         <div className="flex items-center justify-between mb-2 px-1">
-                            <h3 className="text-xs font-black uppercase tracking-wider text-slate-700">
+                            <h3 className="text-sm font-bold text-slate-800">
                                 Acciones rápidas
                             </h3>
-                            <span className="text-[11px] font-semibold text-slate-400">
-                                Operación Diaria
-                            </span>
+                            <a href={`/admin/${tenantSlug}/servicios`} className="text-xs font-semibold text-blue-600 hover:text-blue-700">
+                                Ver todas →
+                            </a>
                         </div>
 
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
+                        <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-12 gap-3 w-full">
                             
-                            {/* Card 1: Canjear Beneficio con Datáfono 3D Oficial */}
+                            {/* Card 1: Canjear Beneficio */}
                             <a 
                                 href={redeemUrl} 
-                                className="bg-gradient-to-br from-[#1e40af] to-[#2563eb] text-white rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="col-span-2 md:col-span-2 lg:col-span-4 bg-[#1a56db] hover:bg-[#1e429f] text-white rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-md transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
-                                    <div className="w-6 h-6 rounded-md bg-white/20 backdrop-blur-xs flex items-center justify-center text-xs font-black border border-white/30">
+                                    <div className="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center text-xs font-black">
                                         🏷️
                                     </div>
-                                    <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-white/15 text-blue-100 border border-white/20">
-                                        F2 Mostrador
-                                    </span>
                                 </div>
-                                <div className="flex items-center justify-between mt-auto">
+                                <div className="flex items-end justify-between mt-auto">
                                     <div>
-                                        <h4 className="text-[13.5px] font-black text-white leading-tight">Canjear beneficio</h4>
-                                        <p className="text-[10px] text-blue-100 font-medium mt-0.5">Terminal POS de atención</p>
+                                        <h4 className="text-[13.5px] font-bold text-white leading-tight">Canjear Beneficio</h4>
+                                        <p className="text-[10px] text-blue-100 mt-0.5">Abre tu terminal y atiende a tus clientes</p>
                                     </div>
-                                    <div className="flex items-center shrink-0 pl-1">
-                                        <img src="/images/dashboard/pos_terminal_hd.png" alt="POS" className="h-10 w-auto object-contain drop-shadow-md group-hover:scale-110 transition-transform" />
+                                    <div className="shrink-0 pl-1">
+                                        <img src="/images/dashboard/pos_terminal_hd.png" alt="POS" className="h-10 w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform" />
                                     </div>
                                 </div>
                             </a>
@@ -353,83 +357,62 @@ export default function Dashboard({
                             {/* Card 2: Afiliar Mascota */}
                             <a 
                                 href={newSubUrl} 
-                                className="bg-gradient-to-br from-[#059669] to-[#0d9488] text-white rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="col-span-1 md:col-span-1 lg:col-span-2 bg-[#059669] hover:bg-[#047857] text-white rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-md transition duration-150 relative overflow-hidden group"
                             >
-                                <div className="flex items-center justify-between">
-                                    <div className="w-6 h-6 rounded-md bg-white/20 backdrop-blur-xs flex items-center justify-center text-xs font-black border border-white/30">
-                                        🐾
-                                    </div>
-                                    <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-white/15 text-emerald-100 border border-white/20">
-                                        + Nuevo Paciente
-                                    </span>
+                                <div className="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center text-xs font-black">
+                                    🐾
                                 </div>
-                                <div className="flex items-center justify-between mt-auto">
-                                    <div>
-                                        <h4 className="text-[13.5px] font-black text-white leading-tight">Afiliar mascota</h4>
-                                        <p className="text-[10px] text-emerald-100 font-medium mt-0.5">Nueva membresía de salud</p>
-                                    </div>
-                                    <div className="shrink-0 pl-1">
-                                        <ChevronRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
-                                    </div>
+                                <div className="mt-auto">
+                                    <h4 className="text-[13px] font-bold text-white leading-tight">Afiliar mascota</h4>
+                                    <p className="text-[10px] text-emerald-100 mt-0.5">Nueva afiliación</p>
                                 </div>
                             </a>
 
-                            {/* Card 3: Ver Portal B2C & Copiar */}
-                            <div 
-                                className="bg-white border border-slate-200/90 hover:border-blue-400 rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
-                            >
-                                <div className="flex items-center justify-between">
-                                    <div className="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-black border border-blue-200">
-                                        🌐
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <button
-                                            type="button"
-                                            onClick={handleCopyPortal}
-                                            className="text-[9.5px] font-bold text-slate-500 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 border border-slate-200 px-1.5 py-0.5 rounded-md flex items-center gap-1 transition"
-                                            title="Copiar enlace para enviar por WhatsApp"
-                                        >
-                                            {copiedPortal ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                                            <span>{copiedPortal ? 'Copiado!' : 'Copiar'}</span>
-                                        </button>
-                                        <a 
-                                            href={portalUrl} 
-                                            target="_blank" 
-                                            rel="noreferrer"
-                                            className="text-[9.5px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md hover:bg-blue-100 transition"
-                                        >
-                                            Abrir ↗
-                                        </a>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between mt-auto">
-                                    <div>
-                                        <h4 className="text-[13.5px] font-black text-slate-900 leading-tight">Portal Pacientes</h4>
-                                        <p className="text-[10px] text-slate-400 font-medium mt-0.5">Tienda web de auto-afiliación</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Card 4: Imprimir QR y Afiche */}
+                            {/* Card 3: Portal Pacientes */}
                             <a 
-                                href={qrUrl} 
-                                target="_blank" 
+                                href={portalUrl}
+                                target="_blank"
                                 rel="noreferrer"
-                                className="bg-white border border-slate-200/90 hover:border-cyan-400 rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="col-span-1 md:col-span-1 lg:col-span-2 bg-white border border-slate-200 hover:border-blue-400 rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-sm transition duration-150 group"
                             >
-                                <div className="flex items-center justify-between">
-                                    <div className="w-6 h-6 rounded-md bg-cyan-50 text-cyan-600 flex items-center justify-center text-xs font-black border border-cyan-200">
-                                        🖨️
-                                    </div>
-                                    <span className="text-[9.5px] font-bold text-purple-700 bg-purple-50 border border-purple-200 px-1.5 py-0.5 rounded-md flex items-center gap-1">
-                                        <span>PDF Listo</span>
-                                    </span>
+                                <div className="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-black">
+                                    📱
                                 </div>
-                                <div className="flex items-center justify-between mt-auto">
-                                    <div>
-                                        <h4 className="text-[13.5px] font-black text-slate-900 leading-tight">Afiche & QR Mostrador</h4>
-                                        <p className="text-[10px] text-slate-400 font-medium mt-0.5">Imprimible para recepción</p>
-                                    </div>
+                                <div className="mt-auto">
+                                    <h4 className="text-[12.5px] font-bold text-slate-800 leading-tight">Portal Pacientes</h4>
+                                    <p className="text-[9.5px] text-slate-400 mt-0.5">Tienda web de auto-afiliación</p>
+                                </div>
+                            </a>
+
+                            {/* Card 4: Web B2C */}
+                            <a 
+                                href={portalUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="col-span-1 md:col-span-1 lg:col-span-2 bg-white border border-slate-200 hover:border-blue-400 rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-sm transition duration-150 group"
+                            >
+                                <div className="w-6 h-6 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center text-xs font-black">
+                                    🌐
+                                </div>
+                                <div className="mt-auto">
+                                    <h4 className="text-[12.5px] font-bold text-slate-800 leading-tight">Web B2C</h4>
+                                    <p className="text-[9.5px] text-slate-400 mt-0.5">Generar PDF</p>
+                                </div>
+                            </a>
+
+                            {/* Card 5: Imprimir QR */}
+                            <a 
+                                href={qrUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="col-span-1 md:col-span-1 lg:col-span-2 bg-white border border-slate-200 hover:border-blue-400 rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-sm transition duration-150 group"
+                            >
+                                <div className="w-6 h-6 rounded-md bg-cyan-50 text-cyan-600 flex items-center justify-center text-xs font-black">
+                                    🖨️
+                                </div>
+                                <div className="mt-auto">
+                                    <h4 className="text-[12.5px] font-bold text-slate-800 leading-tight">Imprimir QR</h4>
+                                    <p className="text-[9.5px] text-slate-400 mt-0.5">Generar PDF</p>
                                 </div>
                             </a>
 
@@ -441,44 +424,32 @@ export default function Dashboard({
                         
                         {/* Caja Izquierda: Renovaciones Próximas */}
                         <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[220px] shadow-2xs">
-                            <div>
-                                <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-amber-500 text-sm">🔔</span>
-                                        <h3 className="text-sm font-black text-slate-900">
-                                            Renovaciones próximas
-                                        </h3>
-                                    </div>
-                                    <a href={`/admin/${tenantSlug}/subscriptions`} className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1">
-                                        <span>Ver todas</span>
-                                        <span>&rarr;</span>
-                                    </a>
+                            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-amber-500 text-sm">🔔</span>
+                                    <h3 className="text-sm font-bold text-slate-900">
+                                        Renovaciones próximas
+                                    </h3>
                                 </div>
-
-                                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 mb-2">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                            <span className="text-xs font-bold text-slate-800">Cartera 100% al Día</span>
-                                        </div>
-                                        <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                                            0 Vencidas
-                                        </span>
-                                    </div>
-                                    <p className="text-[11.5px] text-slate-500 mt-1 leading-relaxed">
-                                        1 paciente activo (<strong className="text-slate-700">Max · Golden Retriever</strong>). Próximo corte mensual estimado al cierre de ciclo.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="pt-2">
-                                <a 
-                                    href={`/admin/${tenantSlug}/plans`} 
-                                    className="w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 flex items-center justify-center gap-1.5 transition shadow-2xs"
-                                >
-                                    <span>Ver planes y membresías activas</span>
+                                <a href={`/admin/${tenantSlug}/subscriptions`} className="text-xs font-semibold text-blue-600 hover:text-blue-700">
+                                    Ver todas →
                                 </a>
                             </div>
+
+                            {/* Empty state centrado exacto a la imagen */}
+                            <div className="flex flex-col items-center justify-center py-6 text-center">
+                                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center mb-2.5">
+                                    <Calendar className="w-5 h-5" />
+                                </div>
+                                <h4 className="text-xs font-bold text-slate-800">
+                                    Sin renovaciones pendientes
+                                </h4>
+                                <p className="text-[11px] text-slate-400 mt-1 max-w-[280px]">
+                                    No tienes renovaciones próximas. Sigue revisando automáticamente mañana.
+                                </p>
+                            </div>
+
+                            <div></div>
                         </div>
 
                         {/* Caja Derecha: Uso de Beneficios Clínicos */}
@@ -487,78 +458,63 @@ export default function Dashboard({
                                 <div className="flex items-center justify-between mb-1">
                                     <div className="flex items-center gap-2">
                                         <span className="text-blue-600 text-sm">💙</span>
-                                        <h3 className="text-sm font-black text-slate-900">
+                                        <h3 className="text-sm font-bold text-slate-900">
                                             Uso de beneficios clínicos
                                         </h3>
                                     </div>
-                                    <span className="text-xs font-bold text-slate-700">
-                                        {totalUsed} / {totalGranted} redimidos ({usagePercent}%)
+                                    <span className="text-xs text-slate-400 font-medium">
+                                        0 / 19 realizados (0%)
                                     </span>
                                 </div>
 
                                 <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                                    <span className="text-[11px] text-slate-400">
+                                    <span className="text-xs text-slate-500">
                                         Servicios canjeados este ciclo
                                     </span>
-                                    <span className="text-[10px] font-bold text-cyan-800 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded-md">
+                                    <span className="text-xs font-bold text-slate-700">
                                         Meta clínica: &gt; 70%
                                     </span>
                                 </div>
-
-                                {/* Barra de Progreso */}
-                                <div className="mt-3">
-                                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                                        <div 
-                                            className="bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-400 h-2 rounded-full transition-all duration-500" 
-                                            style={{ width: `${Math.max(usagePercent, 5)}%` }}
-                                        />
-                                    </div>
-                                    <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium mt-1">
-                                        <span>0 redimidos</span>
-                                        <span>19 disponibles para consumo</span>
-                                    </div>
-                                </div>
-
-                                {/* Chips de Servicios Disponibles */}
-                                <div className="flex flex-wrap gap-1.5 mt-2.5">
-                                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-100">
-                                        🩺 Consultas Clínicas
-                                    </span>
-                                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-100">
-                                        💉 Vacunación
-                                    </span>
-                                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-100">
-                                        🪪 Kit + Collar + Carnet
-                                    </span>
-                                </div>
                             </div>
 
-                            <div className="pt-2">
+                            {/* Empty state centrado con botón exacto a la imagen */}
+                            <div className="flex flex-col items-center justify-center py-3 text-center">
+                                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center mb-2">
+                                    <span className="text-lg">🪪</span>
+                                </div>
+                                <h4 className="text-xs font-bold text-slate-800">
+                                    Sin canjes registrados todavía
+                                </h4>
+                                <p className="text-[11px] text-slate-400 mt-1 max-w-[340px]">
+                                    Cuando atiendas a un paciente en mostrador y le descuenten el servicio, aparecerá aquí en tiempo real.
+                                </p>
                                 <a 
-                                    href={redeemUrl} 
-                                    className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-2xs hover:shadow-xs"
+                                    href={redeemUrl}
+                                    className="mt-3.5 inline-flex items-center px-4 py-2 rounded-xl bg-[#0080ff] hover:bg-blue-600 text-white text-xs font-bold transition shadow-xs"
                                 >
-                                    <span>⚡ Abrir Terminal de Canje en Mostrador</span>
+                                    Abrir Terminal de Canje
                                 </a>
                             </div>
+
+                            <div></div>
                         </div>
 
                     </div>
 
                     {/* 5. TARJETA INFERIOR: OPORTUNIDAD DE FIDELIZACIÓN (EXACTA AL MOCKUP) */}
-                    <div className="rounded-2xl border border-teal-200/90 bg-gradient-to-r from-teal-50/60 via-white to-cyan-50/40 p-4 shadow-2xs">
-                        <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-teal-100 flex-wrap gap-2">
+                    <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+                        <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-slate-100 flex-wrap gap-2">
                             <div className="flex items-center gap-2">
-                                <span className="w-5 h-5 rounded-full bg-teal-500 text-white flex items-center justify-center text-[10px] font-bold">⭐</span>
-                                <h3 className="text-sm font-black text-slate-900">
+                                <span className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">⭐</span>
+                                <h3 className="text-sm font-bold text-slate-900">
                                     Oportunidad de Fidelización
                                 </h3>
-                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200">
+                                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                                     {recommendation.badge || 'Recomendación'}
                                 </span>
                             </div>
-                            <span className="text-xs font-semibold text-slate-600">
-                                💡 Impacto: {recommendation.impact_text || '1 oportunidad detectada'}
+                            <span className="text-xs font-semibold text-slate-600 flex items-center gap-1">
+                                <span>⚡</span> Impacto: {recommendation.impact_text || '1 oportunidad detectada'}
                             </span>
                         </div>
 
@@ -568,22 +524,9 @@ export default function Dashboard({
                             </p>
 
                             <div className="flex items-center gap-2 shrink-0">
-                                {recommendation.whatsapp_url && (
-                                    <a 
-                                        href={recommendation.whatsapp_url} 
-                                        target="_blank" 
-                                        rel="noreferrer"
-                                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-2xs hover:shadow-xs"
-                                        title="Enviar WhatsApp pre-redactado de fidelización"
-                                    >
-                                        <MessageCircle className="w-3.5 h-3.5" />
-                                        <span>WhatsApp {recommendation.customer_name || 'Tutor'}</span>
-                                    </a>
-                                )}
-
                                 <a 
                                     href={recommendation.pet_url || '#'} 
-                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-2xs hover:shadow-xs"
+                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0080ff] hover:bg-blue-600 text-white text-xs font-bold transition shadow-xs"
                                 >
                                     <Eye className="w-3.5 h-3.5" />
                                     <span>Ver Paciente</span>
@@ -591,13 +534,13 @@ export default function Dashboard({
 
                                 <a 
                                     href={redeemUrl} 
-                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold transition shadow-2xs"
+                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold transition shadow-2xs"
                                 >
                                     <Zap className="w-3.5 h-3.5 text-blue-600" />
                                     <span>Canje en Recepción</span>
                                 </a>
 
-                                <ChevronRight className="w-5 h-5 text-slate-400" />
+                                <ChevronRight className="w-4 h-4 text-slate-400" />
                             </div>
                         </div>
                     </div>
@@ -614,17 +557,17 @@ export default function Dashboard({
                             {/* Header Asistente IA */}
                             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                                 <div className="flex items-center gap-2">
-                                    <span className="w-6 h-6 rounded-full bg-[#1e3a8a] text-white flex items-center justify-center text-xs font-black tracking-tighter">
-                                        iA
-                                    </span>
-                                    <h3 className="text-sm font-black text-slate-900">
-                                        Asistente IA
+                                    <div className="w-6 h-6 rounded-full bg-[#0080ff] text-white flex items-center justify-center text-xs font-bold">
+                                        🐾
+                                    </div>
+                                    <h3 className="text-sm font-bold text-slate-900">
+                                        Tu asistente de IA
                                     </h3>
-                                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
+                                    <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
                                         Beta
                                     </span>
                                 </div>
-                                <span className="text-slate-400 text-sm font-bold tracking-widest cursor-pointer">•••</span>
+                                <span className="text-slate-400 text-sm font-bold tracking-widest cursor-pointer">···</span>
                             </div>
 
                             {/* 3D Floating Robot Graphic HD */}
@@ -637,71 +580,71 @@ export default function Dashboard({
                                     />
                                 </div>
 
-                                <h4 className="text-sm font-black text-slate-900 mt-1">
+                                <h4 className="text-base font-bold text-slate-900 mt-1">
                                     Hola, soy tu asistente de IA
                                 </h4>
-                                <p className="text-[11px] text-slate-400 mt-1 max-w-[250px] leading-relaxed">
+                                <p className="text-xs text-slate-400 mt-1 max-w-[260px] leading-relaxed">
                                     Puedo ayudarte a crear planes, responder dudas de tus clientes, analizar datos y recomendar la mejor opción de salud para cada mascota.
                                 </p>
                             </div>
 
-                            {/* 4 Quick Action Prompt Cards with Circle Icons */}
+                            {/* 4 Quick Action Prompt Cards with Circle Icons & Chevrons */}
                             <div className="space-y-2 mt-2">
                                 
                                 <button 
                                     type="button" 
                                     onClick={() => handlePromptClick('Recomienda un plan ideal para un perro adulto')}
-                                    className="w-full text-left p-2 rounded-xl border border-slate-200/80 hover:border-cyan-400 bg-white hover:bg-cyan-50/40 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
+                                    className="w-full text-left p-2.5 rounded-xl border border-slate-200/80 hover:border-blue-400 bg-white hover:bg-blue-50/30 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
                                 >
-                                    <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs shrink-0 font-bold">
+                                    <div className="w-7 h-7 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center text-xs shrink-0 font-bold">
                                         👤
                                     </div>
-                                    <span className="flex-1 text-[11px] font-semibold text-slate-700 text-left leading-tight">
+                                    <span className="flex-1 text-[11px] font-medium text-slate-700 text-left leading-tight">
                                         Recomienda un plan ideal para un perro adulto
                                     </span>
-                                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition" />
+                                    <span className="text-slate-400 text-xs font-semibold group-hover:translate-x-0.5 transition">›</span>
                                 </button>
 
                                 <button 
                                     type="button" 
                                     onClick={() => handlePromptClick('Responde dudas sobre coberturas y exclusiones')}
-                                    className="w-full text-left p-2 rounded-xl border border-slate-200/80 hover:border-cyan-400 bg-white hover:bg-cyan-50/40 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
+                                    className="w-full text-left p-2.5 rounded-xl border border-slate-200/80 hover:border-blue-400 bg-white hover:bg-blue-50/30 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
                                 >
-                                    <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs shrink-0 font-bold">
-                                        💬
+                                    <div className="w-7 h-7 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center text-xs shrink-0 font-bold">
+                                        ⏱
                                     </div>
-                                    <span className="flex-1 text-[11px] font-semibold text-slate-700 text-left leading-tight">
+                                    <span className="flex-1 text-[11px] font-medium text-slate-700 text-left leading-tight">
                                         Responde dudas sobre coberturas y exclusiones
                                     </span>
-                                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition" />
+                                    <span className="text-slate-400 text-xs font-semibold group-hover:translate-x-0.5 transition">›</span>
                                 </button>
 
                                 <button 
                                     type="button" 
                                     onClick={() => handlePromptClick('Analiza la base de clientes y detecta oportunidades')}
-                                    className="w-full text-left p-2 rounded-xl border border-slate-200/80 hover:border-cyan-400 bg-white hover:bg-cyan-50/40 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
+                                    className="w-full text-left p-2.5 rounded-xl border border-slate-200/80 hover:border-blue-400 bg-white hover:bg-blue-50/30 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
                                 >
-                                    <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs shrink-0 font-bold">
-                                        📊
+                                    <div className="w-7 h-7 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center text-xs shrink-0 font-bold">
+                                        🪟
                                     </div>
-                                    <span className="flex-1 text-[11px] font-semibold text-slate-700 text-left leading-tight">
+                                    <span className="flex-1 text-[11px] font-medium text-slate-700 text-left leading-tight">
                                         Analiza la base de clientes y detecta oportunidades
                                     </span>
-                                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition" />
+                                    <span className="text-slate-400 text-xs font-semibold group-hover:translate-x-0.5 transition">›</span>
                                 </button>
 
                                 <button 
                                     type="button" 
                                     onClick={() => handlePromptClick('Genera un plan de fidelización para tus clientes')}
-                                    className="w-full text-left p-2 rounded-xl border border-slate-200/80 hover:border-cyan-400 bg-white hover:bg-cyan-50/40 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
+                                    className="w-full text-left p-2.5 rounded-xl border border-slate-200/80 hover:border-emerald-400 bg-white hover:bg-emerald-50/30 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
                                 >
-                                    <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs shrink-0 font-bold">
+                                    <div className="w-7 h-7 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs shrink-0 font-bold">
                                         💡
                                     </div>
-                                    <span className="flex-1 text-[11px] font-semibold text-slate-700 text-left leading-tight">
+                                    <span className="flex-1 text-[11px] font-medium text-slate-700 text-left leading-tight">
                                         Genera un plan de fidelización para tus clientes
                                     </span>
-                                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition" />
+                                    <span className="text-slate-400 text-xs font-semibold group-hover:translate-x-0.5 transition">›</span>
                                 </button>
 
                             </div>
@@ -714,7 +657,7 @@ export default function Dashboard({
                                             key={i} 
                                             className={`p-2 rounded-lg ${
                                                 msg.role === 'user' 
-                                                    ? 'bg-blue-600 text-white font-medium ml-auto max-w-[85%]' 
+                                                    ? 'bg-[#0080ff] text-white font-medium ml-auto max-w-[85%]' 
                                                     : 'bg-white text-slate-700 border border-slate-200 mr-auto max-w-[95%]'
                                             }`}
                                         >
@@ -734,11 +677,11 @@ export default function Dashboard({
                                     value={chatInput}
                                     onChange={(e) => setChatInput(e.target.value)}
                                     placeholder="Escribe tu consulta..."
-                                    className="w-full text-xs rounded-full border border-slate-200 bg-slate-50 text-slate-900 pr-9 pl-3.5 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-2xs placeholder:text-slate-400"
+                                    className="w-full text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-900 pr-9 pl-3.5 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-2xs placeholder:text-slate-400"
                                 />
                                 <button 
                                     type="submit" 
-                                    className="absolute right-1 w-6 h-6 rounded-full bg-[#1e3a8a] hover:bg-blue-900 text-white flex items-center justify-center text-xs font-bold transition shadow-xs"
+                                    className="absolute right-1.5 w-6 h-6 rounded-md bg-[#1a56db] hover:bg-blue-800 text-white flex items-center justify-center text-xs font-bold transition shadow-xs"
                                 >
                                     <Send className="w-3 h-3" />
                                 </button>
