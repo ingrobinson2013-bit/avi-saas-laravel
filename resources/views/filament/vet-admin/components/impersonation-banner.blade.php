@@ -5,7 +5,7 @@
             <span>MODO SOPORTE SUPERADMIN: Estás administrando la clínica <u>{{ \Filament\Facades\Filament::getTenant()?->name }}</u></span>
         </div>
 
-        <a href="/super-admin/stop-impersonating" 
+        <a href="/impersonate-clinic-stop" 
            class="inline-flex items-center gap-1.5 px-3 py-1 bg-white text-orange-700 hover:bg-orange-50 font-extrabold rounded-lg shadow-sm transition-all transform hover:scale-105">
             <span>↩️ Salir y Volver al SuperAdmin</span>
         </a>

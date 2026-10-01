@@ -56,8 +56,8 @@ Route::get('/admin/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentContro
 Route::get('/v/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentController::class, 'showCheckout']);
 
 // 10. Impersonation de Clínicas (Soporte 1-Clic desde SuperAdmin)
-Route::get('/super-admin/impersonate/{tenant_id}', [App\Http\Controllers\ImpersonationController::class, 'impersonateTenant'])->name('superadmin.impersonate');
-Route::get('/super-admin/stop-impersonating', [App\Http\Controllers\ImpersonationController::class, 'stopImpersonating'])->name('superadmin.stop-impersonating');
+Route::get('/impersonate-clinic/{tenant_id}', [App\Http\Controllers\ImpersonationController::class, 'impersonateTenant'])->name('superadmin.impersonate');
+Route::get('/impersonate-clinic-stop', [App\Http\Controllers\ImpersonationController::class, 'stopImpersonating'])->name('superadmin.stop-impersonating');
 
 
 

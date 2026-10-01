@@ -28,16 +28,17 @@ class VetAdminPanelProvider extends PanelProvider
             ->id('vet-admin')
             ->path('admin')
             ->tenant(Tenant::class, slugAttribute: 'slug')
+            ->tenantMenu(false)
             ->login()
             ->brandName(fn () => \Filament\Facades\Filament::getTenant()?->name ?? 'Portal Veterinario')
             ->brandLogo(fn () => view('filament.vet-admin.logo'))
             ->brandLogoHeight('2.5rem')
-            ->favicon('https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=64')
+            ->favicon('/logo.svg')
             ->font('Plus Jakarta Sans')
             ->darkMode(true)
             ->colors([
-                'primary' => Color::Teal,
-                'info' => Color::Sky,
+                'primary' => Color::Blue,
+                'info' => Color::Cyan,
                 'success' => Color::Emerald,
                 'warning' => Color::Amber,
                 'danger' => Color::Rose,
