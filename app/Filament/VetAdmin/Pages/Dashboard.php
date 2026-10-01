@@ -14,6 +14,9 @@ use Filament\Pages\Dashboard as BaseDashboard;
 class Dashboard extends BaseDashboard
 {
     protected static ?string $title = 'Centro de Operaciones Clínicas';
+    protected static ?string $navigationLabel = 'Home';
+    protected static ?string $navigationIcon = 'heroicon-o-home';
+    protected static ?int $navigationSort = 1;
 
     protected function getHeaderActions(): array
     {
@@ -22,13 +25,13 @@ class Dashboard extends BaseDashboard
 
         return [
             Action::make('counter_redeem')
-                ->label('Canjear en Caja')
+                ->label('Canje en Recepción')
                 ->icon('heroicon-m-qr-code')
                 ->color('primary')
                 ->url("/admin/{$slug}/counter-redeem"),
 
             Action::make('view_flyer')
-                ->label('Afiche QR Mostrador')
+                ->label('Afiche QR')
                 ->icon('heroicon-m-printer')
                 ->color('gray')
                 ->url("/v/{$slug}/afiche")

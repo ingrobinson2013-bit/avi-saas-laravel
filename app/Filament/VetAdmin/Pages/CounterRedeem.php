@@ -17,6 +17,7 @@ class CounterRedeem extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-qr-code';
     protected static ?string $navigationLabel = 'Canje en Recepción';
+    protected static ?int $navigationSort = 2;
     protected static ?string $title = 'Terminal de Canje & Validación de Saldos';
     protected static ?string $slug = 'counter-redeem';
     protected static string $view = 'filament.vet-admin.pages.counter-redeem';

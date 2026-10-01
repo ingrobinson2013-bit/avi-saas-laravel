@@ -65,10 +65,6 @@ class VetAdminPanelProvider extends PanelProvider
                 fn () => view('filament.vet-admin.components.topbar-end')
             )
             ->renderHook(
-                'panels::sidebar.nav.start',
-                fn () => view('filament.vet-admin.components.quick-redeem-cta')
-            )
-            ->renderHook(
                 'panels::sidebar.footer',
                 fn () => view('filament.vet-admin.components.saas-plan-sidebar-badge')
             )
