@@ -21,8 +21,15 @@ class DashboardController extends Controller
         $tenant = Tenant::where('slug', $tenantSlug)->first() ?? Tenant::first();
         $tenantId = $tenant?->id;
 
-        // Brand name & User Greeting
-        $brandName = 'PetSalud+';
+        // Brand name: Extract real clinic name dynamically from tenant
+        $rawBrand = $tenant?->branding['brand_name'] ?? $tenant?->name ?? 'Vet-Pet Patitas';
+        // Clean common clinical suffixes to get the core punchy brand name (e.g. "Vet-Pet Patitas" from "Vet-Pet Patitas Consultorio Veterinario")
+        $brandName = trim(preg_replace('/\s+(Consultorio Veterinario|Clínica Veterinaria|Hospital Veterinario)$/i', '', $rawBrand));
+        if (empty($brandName)) {
+            $brandName = 'Vet-Pet Patitas';
+        }
+        $clinicSubtitle = $tenant?->branding['tagline'] ?? $tenant?->branding['subtitle'] ?? 'Planes de salud para su mascota';
+
         $greetingName = 'Dra. Vicky';
         $userName = 'Dra. Vicky Naranjo';
         $userRole = 'Administradora de Sede';
@@ -38,11 +45,18 @@ class DashboardController extends Controller
                 $greetingName = 'Dra. Vicky';
                 $userName = 'Dra. Vicky Naranjo';
                 $userRole = 'Administradora de Sede';
+            } else {
+                $greetingName = explode(' ', trim($rawName))[0];
+                $userName = $rawName;
             }
         }
 
-        // City & Date (matching Mockup)
-        $cleanCity = 'Cajicá';
+        // City & Date
+        $cityRaw = $tenant?->branding['city'] ?? 'Cajicá, Cundinamarca';
+        $cleanCity = trim(explode(',', $cityRaw)[0]);
+        if (empty($cleanCity)) {
+            $cleanCity = 'Cajicá';
+        }
         \Carbon\Carbon::setLocale('es');
         $formattedDate = ucfirst(now()->timezone('America/Bogota')->translatedFormat('l j \d\e F \d\e Y'));
 
@@ -131,6 +145,7 @@ class DashboardController extends Controller
             'userName' => $userName,
             'userRole' => $userRole,
             'brandName' => $brandName,
+            'clinicSubtitle' => $clinicSubtitle,
             'cleanCity' => $cleanCity,
             'formattedDate' => $formattedDate,
             'tenantSlug' => $tenantSlug,

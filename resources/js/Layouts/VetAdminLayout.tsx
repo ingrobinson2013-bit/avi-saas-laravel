@@ -21,6 +21,8 @@ import {
 interface VetAdminLayoutProps {
     children: ReactNode;
     tenantSlug?: string;
+    brandName?: string;
+    clinicSubtitle?: string;
     userName?: string;
     userRole?: string;
     activeItem?: string;
@@ -29,6 +31,8 @@ interface VetAdminLayoutProps {
 export default function VetAdminLayout({
     children,
     tenantSlug = 'vet-pet-patitas',
+    brandName = 'Vet-Pet Patitas',
+    clinicSubtitle = 'Planes de salud para su mascota',
     userName = 'Dra. Vicky Naranjo',
     userRole = 'Administradora de Sede',
     activeItem = 'Inicio'
@@ -54,20 +58,20 @@ export default function VetAdminLayout({
     return (
         <div className="min-h-screen flex bg-[#edf0f7] text-slate-900 font-sans antialiased">
             
-            {/* SIDEBAR FIJO (PETSALUD+ EXACTO AL MOCKUP) */}
+            {/* SIDEBAR FIJO */}
             <aside className="w-[230px] 2xl:w-[245px] bg-white border-r border-slate-200/90 flex flex-col shrink-0 min-h-screen sticky top-0 h-screen select-none z-40">
                 
-                {/* Brand Header */}
+                {/* Brand Header Dinámico */}
                 <div className="h-16 flex items-center gap-3 px-4 border-b border-slate-100 shrink-0">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 via-sky-500 to-cyan-400 flex items-center justify-center text-white text-base shadow-sm shrink-0">
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 via-sky-500 to-cyan-400 flex items-center justify-center text-white text-base shadow-sm shrink-0 font-bold">
                         🐾
                     </div>
                     <div className="flex flex-col min-w-0">
-                        <span className="text-[14.5px] font-black text-slate-900 leading-tight tracking-tight">
-                            PetSalud<span className="text-cyan-500">+</span>
+                        <span className="text-[14.5px] font-black text-slate-900 leading-tight tracking-tight truncate" title={brandName}>
+                            {brandName}
                         </span>
-                        <span className="text-[10px] font-medium text-slate-400 truncate">
-                            Planes de salud para su mascota
+                        <span className="text-[10px] font-medium text-slate-400 truncate" title={clinicSubtitle}>
+                            {clinicSubtitle}
                         </span>
                     </div>
                 </div>

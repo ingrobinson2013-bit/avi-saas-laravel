@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Head } from '@inertiajs/react';
 import VetAdminLayout from '@/Layouts/VetAdminLayout';
 import { 
     ChevronRight, 
@@ -21,6 +22,7 @@ interface DashboardProps {
     userName?: string;
     userRole?: string;
     brandName?: string;
+    clinicSubtitle?: string;
     cleanCity?: string;
     formattedDate?: string;
     tenantSlug?: string;
@@ -52,7 +54,8 @@ export default function Dashboard({
     greetingName = 'Dra. Vicky',
     userName = 'Dra. Vicky Naranjo',
     userRole = 'Administradora de Sede',
-    brandName = 'PetSalud+',
+    brandName = 'Vet-Pet Patitas',
+    clinicSubtitle = 'Planes de salud para su mascota',
     cleanCity = 'Cajicá',
     formattedDate = 'Jueves 1 de octubre de 2026',
     tenantSlug = 'vet-pet-patitas',
@@ -103,7 +106,14 @@ export default function Dashboard({
     const formattedMrr = new Intl.NumberFormat('es-CO').format(mrr);
 
     return (
-        <VetAdminLayout tenantSlug={tenantSlug} userName={userName} userRole={userRole}>
+        <VetAdminLayout 
+            tenantSlug={tenantSlug} 
+            brandName={brandName}
+            clinicSubtitle={clinicSubtitle}
+            userName={userName} 
+            userRole={userRole}
+        >
+            <Head title={`Dashboard · ${brandName}`} />
             
             {/* CONTENEDOR FLUIDO QUE LLENA LA PANTALLA NATURALMENTE */}
             <div className="flex flex-col xl:flex-row gap-4 items-start w-full">
@@ -144,7 +154,7 @@ export default function Dashboard({
                         <div className="shrink-0 flex items-center justify-center">
                             <img 
                                 src="/images/dashboard/hero_pets_4x.png" 
-                                alt="Mascotas PetSalud" 
+                                alt={`Mascotas ${brandName}`} 
                                 className="h-28 lg:h-32 xl:h-34 w-auto object-contain"
                             />
                         </div>

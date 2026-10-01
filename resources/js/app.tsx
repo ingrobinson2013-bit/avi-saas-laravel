@@ -3,7 +3,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 
-const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'PetSalud+';
+const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Vet-Pet Patitas';
 
 createInertiaApp({
     title: (title) => title ? `${title} - ${appName}` : appName,
