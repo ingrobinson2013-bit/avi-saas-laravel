@@ -131,27 +131,6 @@
                 </div>
             </div>
 
-            <!-- OPCIÓN MANUAL: TRANSFERENCIA DIRECTA -->
-            <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80 text-xs text-slate-400 space-y-2">
-                <div class="flex justify-between items-center text-slate-300 font-bold">
-                    <span>¿Prefieres transferir directamente a Bancolombia / Nequi?</span>
-                    <span class="text-indigo-400">Opción Directa</span>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-mono text-slate-300 pt-1">
-                    <div class="bg-slate-900 p-2 rounded-xl border border-slate-800">
-                        <span class="text-slate-500 block text-[10px]">Bancolombia Ahorros:</span>
-                        <strong># 123-456789-01</strong>
-                    </div>
-                    <div class="bg-slate-900 p-2 rounded-xl border border-slate-800">
-                        <span class="text-slate-500 block text-[10px]">Nequi / Daviplata:</span>
-                        <strong>3508742543</strong>
-                    </div>
-                </div>
-                <p class="text-[10px] text-slate-500 pt-1">
-                    Titular: Robinson Naranjo / NODIA. Envía tu comprobante al WhatsApp para activación inmediata.
-                </p>
-            </div>
-
             <!-- REGRESAR AL PANEL -->
             <div class="text-center pt-2">
                 <a href="/admin/{{ $tenant->slug }}" class="text-xs text-slate-500 hover:text-slate-300 transition underline">
