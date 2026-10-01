@@ -96,11 +96,13 @@ class Dashboard extends BaseDashboard
         }
 
         $user = auth()->user();
-        if ($user && !empty($user->name)) {
-            $firstName = explode(' ', trim($user->name))[0];
-            $this->greetingName = ($user->role === 'vet_doctor' ? 'Dra. ' : '') . $firstName;
+        $rawName = $user?->name ?? 'Dra. Vicky';
+        $firstName = explode(' ', trim($rawName))[0];
+        if (str_starts_with(mb_strtolower($firstName), 'dra')) {
+            $parts = explode(' ', trim($rawName));
+            $this->greetingName = 'Dra. ' . ($parts[1] ?? 'Vicky');
         } else {
-            $this->greetingName = 'Dra. Vicky';
+            $this->greetingName = ($user?->role === 'vet_doctor' ? 'Dra. ' : '') . $firstName;
         }
 
         // City & Date
