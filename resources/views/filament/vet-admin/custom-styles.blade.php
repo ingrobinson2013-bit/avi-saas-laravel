@@ -198,16 +198,16 @@
         text-overflow: ellipsis !important;
     }
 
-    /* FORZAR LOS 5 STATS EN UNA SOLA FILA HORIZONTAL (Desktop) */
+    /* 4 STATS OPERATIVOS EN FILA BALANCEADA (Desktop) */
     .fi-wi-stats-overview-stats-ctn {
         display: grid !important;
-        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-        gap: 0.75rem !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 0.875rem !important;
         width: 100% !important;
     }
-    @media (max-width: 1200px) {
+    @media (max-width: 1024px) {
         .fi-wi-stats-overview-stats-ctn {
-            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         }
     }
     @media (max-width: 640px) {

@@ -18,7 +18,7 @@ class VetStatsOverviewWidget extends BaseWidget
 
     protected function getColumns(): int
     {
-        return 5;
+        return 4;
     }
 
     protected function getStats(): array
@@ -55,65 +55,52 @@ class VetStatsOverviewWidget extends BaseWidget
             ->when($tenantId, fn ($q) => $q->whereHas('subscription', fn ($s) => $s->where('tenant_id', $tenantId)))
             ->sum('used_count');
 
-        $usageRatio = $totalGranted > 0 ? (int) round(($totalUsed / $totalGranted) * 100) : 0;
-
-        // Tutores / Membresías en Riesgo (Próximas a vencer o en mora)
-        $atRiskCount = Subscription::query()
+        // Membresías en Riesgo (Próximas a vencer en 15 días o en mora)
+        $expiring15Days = Subscription::query()
             ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
             ->where(function ($q) {
-                $q->whereBetween('current_period_end', [now(), now()->addDays(7)])
+                $q->whereBetween('current_period_end', [now(), now()->addDays(15)])
                   ->orWhere('status', 'past_due');
             })
             ->count();
 
-        // Tarifa de Plataforma AVI-SaaS
-        $branding = $tenant?->branding ?? [];
-        $tier = $tenant?->saas_plan_tier ?? $branding['saas_plan'] ?? 'pro';
-        $pricing = [
-            'pay_per_pet' => 5000,
-            'starter' => 99000,
-            'pro' => 229000,
-            'enterprise' => 489000,
-        ];
+        $mrrAtRisk = (float) Subscription::query()
+            ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
+            ->where(function ($q) {
+                $q->whereBetween('current_period_end', [now(), now()->addDays(15)])
+                  ->orWhere('status', 'past_due');
+            })
+            ->join('plans', 'subscriptions.plan_id', '=', 'plans.id')
+            ->sum('plans.price_cop');
 
-        if ($tier === 'pay_per_pet') {
-            $unitFee = (float) ($branding['saas_per_pet_fee'] ?? 5000);
-            $saasFee = $petsCount > 0 ? ($petsCount * $unitFee) : (float) ($branding['saas_monthly_fee'] ?? 50000);
-            $feeDesc = '$' . number_format($unitFee, 0, ',', '.') . " COP x {$petsCount} mascotas";
-        } else {
-            $saasFee = (float) ($branding['saas_monthly_fee'] ?? $pricing[$tier] ?? 229000);
-            $feeDesc = 'Canon mensual (' . ucfirst($tier) . ')';
-        }
+        $renovDesc = $expiring15Days > 0 
+            ? '$' . number_format($mrrAtRisk, 0, ',', '.') . ' COP en riesgo' 
+            : 'Próximos 15 días (Al día)';
 
         return [
-            Stat::make('MRR (Ingresos Recurrentes)', '$' . number_format($mrrReal, 0, ',', '.') . ' COP')
-                ->description('Ingresos mensuales por membresías')
-                ->descriptionIcon('heroicon-m-banknotes')
+            Stat::make('Ingresos recurrentes (MRR)', '$' . number_format($mrrReal, 0, ',', '.') . ' COP')
+                ->description('↑ Este mes')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
                 ->chart([max(0, $mrrReal * 0.7), max(0, $mrrReal * 0.85), $mrrReal]),
 
-            Stat::make('Pacientes con Plan Activo', "{$petsCount} mascotas")
-                ->description('Cobertura preventiva continua')
+            Stat::make('Mascotas Activas', (string) $petsCount)
+                ->description('Con plan de bienestar al día')
                 ->descriptionIcon('heroicon-m-heart')
                 ->color('info')
-                ->chart([max(0, $petsCount - 2), max(0, $petsCount - 1), $petsCount]),
+                ->chart([max(0, $petsCount - 1), $petsCount]),
 
-            Stat::make('Cuota Plataforma AVI-SaaS', '$' . number_format($saasFee, 0, ',', '.') . ' COP')
-                ->description($feeDesc)
-                ->descriptionIcon('heroicon-m-receipt-percent')
-                ->color('gray'),
+            Stat::make('🔔 Renovaciones', (string) $expiring15Days)
+                ->description($renovDesc)
+                ->descriptionIcon($expiring15Days > 0 ? 'heroicon-m-exclamation-triangle' : 'heroicon-m-check-badge')
+                ->color($expiring15Days > 0 ? 'warning' : 'emerald')
+                ->chart([$expiring15Days + 1, $expiring15Days]),
 
-            Stat::make('Uso de Beneficios Clínicos', "{$usageRatio}% de cupos")
-                ->description("{$totalUsed} de {$totalGranted} servicios canjeados")
+            Stat::make('Uso de Beneficios', "{$totalUsed} / {$totalGranted} utilizados")
+                ->description('Servicios canjeados este ciclo')
                 ->descriptionIcon('heroicon-m-sparkles')
                 ->color('primary')
-                ->chart([20, 35, $usageRatio]),
-
-            Stat::make('Membresías por Renovar', "{$atRiskCount} " . ($atRiskCount === 1 ? 'paciente' : 'pacientes'))
-                ->description('Próximos a vencer en 7 días')
-                ->descriptionIcon('heroicon-m-clock')
-                ->color($atRiskCount > 0 ? 'warning' : 'success')
-                ->chart([$atRiskCount + 1, $atRiskCount]),
+                ->chart([max(0, $totalUsed - 1), $totalUsed]),
         ];
     }
 }

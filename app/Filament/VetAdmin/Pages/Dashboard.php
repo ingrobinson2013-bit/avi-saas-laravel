@@ -13,7 +13,6 @@ use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
 {
-    protected static ?string $title = 'Centro de Operaciones Clínicas';
     protected static ?string $navigationLabel = 'Home';
     protected static ?string $navigationIcon = 'heroicon-o-home';
     protected static ?int $navigationSort = 1;
@@ -22,6 +21,35 @@ class Dashboard extends BaseDashboard
     {
         return 'Home';
     }
+    public function getTitle(): string
+    {
+        $tenant = Filament::getTenant();
+        $fullName = $tenant?->name ?? 'Clínica Veterinaria';
+        $brandName = $fullName;
+        if (preg_match('/^(.*?)\s+(Consultorio Veterinario|Clínica Veterinaria|Hospital Veterinario|Veterinaria|Vet)(.*)$/i', $fullName, $matches)) {
+            $extracted = trim($matches[1] . ' ' . $matches[3]);
+            if (!empty($extracted)) {
+                $brandName = $extracted;
+            }
+        }
+
+        $hour = (int) now()->timezone('America/Bogota')->format('H');
+        $greeting = $hour < 12 ? 'Buenos días' : ($hour < 18 ? 'Buenas tardes' : 'Buenas noches');
+
+        return "{$greeting}, {$brandName} 👋";
+    }
+
+    public function getSubheading(): ?string
+    {
+        $tenant = Filament::getTenant();
+        $rawCity = $tenant?->branding['city'] ?? 'Sede Principal';
+        $cleanCity = trim(explode(',', $rawCity)[0]);
+
+        \Carbon\Carbon::setLocale('es');
+        $dateFormatted = now()->timezone('America/Bogota')->translatedFormat('l j \d\e F');
+
+        return "Sede {$cleanCity} · " . ucfirst($dateFormatted);
+    }
 
     protected function getHeaderActions(): array
     {
@@ -29,26 +57,6 @@ class Dashboard extends BaseDashboard
         $slug = $tenant?->slug ?? session('current_tenant_slug') ?? 'vet-pet-patitas';
 
         return [
-            Action::make('counter_redeem')
-                ->label('Canje en Recepción')
-                ->icon('heroicon-m-qr-code')
-                ->color('primary')
-                ->url("/admin/{$slug}/counter-redeem"),
-
-            Action::make('view_flyer')
-                ->label('Afiche QR')
-                ->icon('heroicon-m-printer')
-                ->color('gray')
-                ->url("/v/{$slug}/afiche")
-                ->openUrlInNewTab(),
-
-            Action::make('view_storefront')
-                ->label('Ver Web Pacientes')
-                ->icon('heroicon-m-arrow-top-right-on-square')
-                ->color('gray')
-                ->url("/v/{$slug}")
-                ->openUrlInNewTab(),
-
             Action::make('new_subscription')
                 ->label('+ Afiliar Mascota')
                 ->icon('heroicon-m-user-plus')
@@ -60,9 +68,8 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            SaasSubscriptionStatusWidget::class,
-            ClinicOperationsToolbarWidget::class,
             VetStatsOverviewWidget::class,
+            ClinicOperationsToolbarWidget::class,
             ExpiringSubscriptionsWidget::class,
             RecentRedemptionsFeedWidget::class,
         ];
