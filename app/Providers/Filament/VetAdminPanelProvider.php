@@ -61,7 +61,7 @@ class VetAdminPanelProvider extends PanelProvider
                 fn () => view('filament.vet-admin.components.topbar-start')
             )
             ->renderHook(
-                'panels::user-menu.before',
+                'panels::global-search.before',
                 fn () => view('filament.vet-admin.components.topbar-end')
             )
             ->renderHook(

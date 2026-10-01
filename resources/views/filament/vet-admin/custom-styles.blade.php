@@ -93,8 +93,15 @@
     html:not(.dark) body,
     html:not(.dark) .fi-layout,
     html:not(.dark) .fi-main {
-        background-color: #f1f5f9 !important; /* Soft clinical slate */
+        background-color: #f0f4f9 !important; /* Soft MedTech Ice Slate */
         color: #0f172a !important;
+    }
+
+    .fi-logo {
+        height: auto !important;
+        max-height: 4rem !important;
+        display: flex !important;
+        align-items: center !important;
     }
 
     html:not(.dark) .fi-sidebar {
