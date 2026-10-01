@@ -116,11 +116,11 @@
                                 {{-- Avatar con Foto o Emoji --}}
                                 <div class="relative shrink-0">
                                     @if(!empty($photo))
-                                        <div class="w-13 h-13 rounded-2xl overflow-hidden shadow-md border-2 {{ $isSelected ? 'border-emerald-500 ring-2 ring-emerald-400/40' : 'border-slate-200 dark:border-slate-700' }} bg-slate-100 dark:bg-slate-800">
+                                        <div class="w-14 h-14 rounded-2xl overflow-hidden shadow-md border-2 {{ $isSelected ? 'border-emerald-500 ring-2 ring-emerald-400/40' : 'border-slate-200 dark:border-slate-700' }} bg-slate-100 dark:bg-slate-800 shrink-0" style="width: 3.5rem; height: 3.5rem;">
                                             <img src="{{ $photo }}" alt="{{ $pet->name }}" class="w-full h-full object-cover">
                                         </div>
                                     @else
-                                        <div class="w-13 h-13 rounded-2xl flex items-center justify-center text-2xl shadow-md border-2 {{ $isSelected ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60' : 'border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800' }}">
+                                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-md border-2 {{ $isSelected ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/60' : 'border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800' }} shrink-0" style="width: 3.5rem; height: 3.5rem;">
                                             {{ $isCat ? '🐱' : '🐶' }}
                                         </div>
                                     @endif

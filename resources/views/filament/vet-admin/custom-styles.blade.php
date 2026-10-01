@@ -133,18 +133,50 @@
         width: 100% !important;
     }
     .fi-wi-stats-overview-stat {
-        padding: 1rem 1.25rem !important;
+        padding: 0.875rem 1rem !important;
         border-radius: 1rem !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
     }
     .fi-wi-stats-overview-stat-value {
-        font-size: 1.35rem !important;
+        font-size: 1.2rem !important;
         line-height: 1.2 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
     .fi-wi-stats-overview-stat-label {
-        font-size: 0.75rem !important;
+        font-size: 0.7rem !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.04em !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    .fi-wi-stats-overview-stat-description {
+        font-size: 0.725rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* FORZAR LOS 5 STATS EN UNA SOLA FILA HORIZONTAL (Desktop) */
+    .fi-wi-stats-overview-stats-ctn {
+        display: grid !important;
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        gap: 0.75rem !important;
+        width: 100% !important;
+    }
+    @media (max-width: 1200px) {
+        .fi-wi-stats-overview-stats-ctn {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+    }
+    @media (max-width: 640px) {
+        .fi-wi-stats-overview-stats-ctn {
+            grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+        }
     }
 
     /* 4. GRID DE OPERACIONES CLÍNICAS (4 columnas forzadas en desktop) */
