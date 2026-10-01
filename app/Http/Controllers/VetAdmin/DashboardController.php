@@ -29,6 +29,7 @@ class DashboardController extends Controller
             $brandName = 'Vet-Pet Patitas';
         }
         $clinicSubtitle = $tenant?->branding['tagline'] ?? $tenant?->branding['subtitle'] ?? 'Planes de salud para su mascota';
+        $logoUrl = $tenant?->branding['logo_url'] ?? null;
 
         $greetingName = 'Dra. Vicky';
         $userName = 'Dra. Vicky Naranjo';
@@ -146,6 +147,7 @@ class DashboardController extends Controller
             'userRole' => $userRole,
             'brandName' => $brandName,
             'clinicSubtitle' => $clinicSubtitle,
+            'logoUrl' => $logoUrl,
             'cleanCity' => $cleanCity,
             'formattedDate' => $formattedDate,
             'tenantSlug' => $tenantSlug,

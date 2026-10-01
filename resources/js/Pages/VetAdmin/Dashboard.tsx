@@ -6,7 +6,13 @@ import {
     Eye, 
     Zap, 
     Send, 
-    Calendar 
+    Calendar,
+    Copy,
+    Check,
+    ExternalLink,
+    MessageCircle,
+    CheckCircle2,
+    Sparkles
 } from 'lucide-react';
 
 interface DashboardProps {
@@ -23,6 +29,7 @@ interface DashboardProps {
     userRole?: string;
     brandName?: string;
     clinicSubtitle?: string;
+    logoUrl?: string | null;
     cleanCity?: string;
     formattedDate?: string;
     tenantSlug?: string;
@@ -56,6 +63,7 @@ export default function Dashboard({
     userRole = 'Administradora de Sede',
     brandName = 'Vet-Pet Patitas',
     clinicSubtitle = 'Planes de salud para su mascota',
+    logoUrl = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp',
     cleanCity = 'Cajicá',
     formattedDate = 'Jueves 1 de octubre de 2026',
     tenantSlug = 'vet-pet-patitas',
@@ -74,9 +82,19 @@ export default function Dashboard({
     }
 }: DashboardProps) {
 
-    // Interactive AI Chat State
+    // Interactive States
+    const [copiedPortal, setCopiedPortal] = useState(false);
     const [chatInput, setChatInput] = useState('');
     const [chatMessages, setChatMessages] = useState<Array<{ role: 'user' | 'assistant'; text: string }>>([]);
+
+    const handleCopyPortal = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const fullUrl = window.location.origin + portalUrl;
+        navigator.clipboard.writeText(fullUrl);
+        setCopiedPortal(true);
+        setTimeout(() => setCopiedPortal(false), 2000);
+    };
 
     const handlePromptClick = (text: string) => {
         const userMsg = { role: 'user' as const, text };
@@ -110,6 +128,7 @@ export default function Dashboard({
             tenantSlug={tenantSlug} 
             brandName={brandName}
             clinicSubtitle={clinicSubtitle}
+            logoUrl={logoUrl}
             userName={userName} 
             userRole={userRole}
         >
@@ -287,20 +306,23 @@ export default function Dashboard({
                             {/* Card 1: Canjear Beneficio con Datáfono 3D Oficial */}
                             <a 
                                 href={redeemUrl} 
-                                className="bg-gradient-to-br from-[#1e40af] to-[#2563eb] text-white rounded-2xl p-3.5 flex flex-col justify-between h-[92px] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="bg-gradient-to-br from-[#1e40af] to-[#2563eb] text-white rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="w-6 h-6 rounded-md bg-white/20 backdrop-blur-xs flex items-center justify-center text-xs font-black border border-white/30">
                                         🏷️
                                     </div>
+                                    <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-white/15 text-blue-100 border border-white/20">
+                                        F2 Mostrador
+                                    </span>
                                 </div>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div>
                                         <h4 className="text-[13.5px] font-black text-white leading-tight">Canjear beneficio</h4>
-                                        <p className="text-[10px] text-blue-100 font-medium mt-0.5">Abre tu terminal y atiende a tus clientes</p>
+                                        <p className="text-[10px] text-blue-100 font-medium mt-0.5">Terminal POS de atención</p>
                                     </div>
                                     <div className="flex items-center shrink-0 pl-1">
-                                        <img src="/images/dashboard/pos_terminal_4x.png" alt="POS" className="h-9 w-auto object-contain drop-shadow-md" />
+                                        <img src="/images/dashboard/pos_terminal_4x.png" alt="POS" className="h-9 w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform" />
                                     </div>
                                 </div>
                             </a>
@@ -308,72 +330,82 @@ export default function Dashboard({
                             {/* Card 2: Afiliar Mascota */}
                             <a 
                                 href={newSubUrl} 
-                                className="bg-gradient-to-br from-[#059669] to-[#0d9488] text-white rounded-2xl p-3.5 flex flex-col justify-between h-[92px] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="bg-gradient-to-br from-[#059669] to-[#0d9488] text-white rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="w-6 h-6 rounded-md bg-white/20 backdrop-blur-xs flex items-center justify-center text-xs font-black border border-white/30">
                                         🐾
                                     </div>
+                                    <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-white/15 text-emerald-100 border border-white/20">
+                                        + Nuevo Paciente
+                                    </span>
                                 </div>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div>
                                         <h4 className="text-[13.5px] font-black text-white leading-tight">Afiliar mascota</h4>
-                                        <p className="text-[10px] text-emerald-100 font-medium mt-0.5">Nueva afiliación</p>
+                                        <p className="text-[10px] text-emerald-100 font-medium mt-0.5">Nueva membresía de salud</p>
                                     </div>
                                     <div className="shrink-0 pl-1">
-                                        <ChevronRight className="w-4 h-4 text-white" />
+                                        <ChevronRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
                                     </div>
                                 </div>
                             </a>
 
-                            {/* Card 3: Ver Portal */}
-                            <a 
-                                href={portalUrl} 
-                                target="_blank" 
-                                rel="noreferrer"
-                                className="bg-white border border-slate-200/90 hover:border-blue-400 rounded-2xl p-3.5 flex flex-col justify-between h-[92px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                            {/* Card 3: Ver Portal B2C & Copiar */}
+                            <div 
+                                className="bg-white border border-slate-200/90 hover:border-blue-400 rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-black border border-blue-200">
                                         🌐
                                     </div>
-                                    <div className="flex flex-col items-end">
-                                        <span className="text-[9.5px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md">
-                                            Web B2C
-                                        </span>
-                                        <span className="text-[8.5px] text-slate-400 mt-0.5">Abrir portal</span>
+                                    <div className="flex items-center gap-1.5">
+                                        <button
+                                            type="button"
+                                            onClick={handleCopyPortal}
+                                            className="text-[9.5px] font-bold text-slate-500 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 border border-slate-200 px-1.5 py-0.5 rounded-md flex items-center gap-1 transition"
+                                            title="Copiar enlace para enviar por WhatsApp"
+                                        >
+                                            {copiedPortal ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                                            <span>{copiedPortal ? 'Copiado!' : 'Copiar'}</span>
+                                        </button>
+                                        <a 
+                                            href={portalUrl} 
+                                            target="_blank" 
+                                            rel="noreferrer"
+                                            className="text-[9.5px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md hover:bg-blue-100 transition"
+                                        >
+                                            Abrir ↗
+                                        </a>
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div>
-                                        <h4 className="text-[13.5px] font-black text-slate-900 leading-tight">Ver portal</h4>
-                                        <p className="text-[10px] text-slate-400 font-medium mt-0.5">Abrir portal</p>
+                                        <h4 className="text-[13.5px] font-black text-slate-900 leading-tight">Portal Pacientes</h4>
+                                        <p className="text-[10px] text-slate-400 font-medium mt-0.5">Tienda web de auto-afiliación</p>
                                     </div>
                                 </div>
-                            </a>
+                            </div>
 
-                            {/* Card 4: Imprimir QR */}
+                            {/* Card 4: Imprimir QR y Afiche */}
                             <a 
                                 href={qrUrl} 
                                 target="_blank" 
                                 rel="noreferrer"
-                                className="bg-white border border-slate-200/90 hover:border-cyan-400 rounded-2xl p-3.5 flex flex-col justify-between h-[92px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="bg-white border border-slate-200/90 hover:border-cyan-400 rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="w-6 h-6 rounded-md bg-cyan-50 text-cyan-600 flex items-center justify-center text-xs font-black border border-cyan-200">
                                         🖨️
                                     </div>
-                                    <div className="flex flex-col items-end">
-                                        <span className="text-[9.5px] font-bold text-purple-700 bg-purple-50 border border-purple-200 px-1.5 py-0.5 rounded-md">
-                                            Generar PDF
-                                        </span>
-                                        <span className="text-[8.5px] text-slate-400 mt-0.5">Generar PDF</span>
-                                    </div>
+                                    <span className="text-[9.5px] font-bold text-purple-700 bg-purple-50 border border-purple-200 px-1.5 py-0.5 rounded-md flex items-center gap-1">
+                                        <span>PDF Listo</span>
+                                    </span>
                                 </div>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div>
-                                        <h4 className="text-[13.5px] font-black text-slate-900 leading-tight">Imprimir QR</h4>
-                                        <p className="text-[10px] text-slate-400 font-medium mt-0.5">Generar PDF</p>
+                                        <h4 className="text-[13.5px] font-black text-slate-900 leading-tight">Afiche & QR Mostrador</h4>
+                                        <p className="text-[10px] text-slate-400 font-medium mt-0.5">Imprimible para recepción</p>
                                     </div>
                                 </div>
                             </a>
@@ -385,9 +417,9 @@ export default function Dashboard({
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 w-full">
                         
                         {/* Caja Izquierda: Renovaciones Próximas */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[215px] shadow-2xs">
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[220px] shadow-2xs">
                             <div>
-                                <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
+                                <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
                                     <div className="flex items-center gap-2">
                                         <span className="text-amber-500 text-sm">🔔</span>
                                         <h3 className="text-sm font-black text-slate-900">
@@ -400,15 +432,18 @@ export default function Dashboard({
                                     </a>
                                 </div>
 
-                                <div className="py-4 text-center flex flex-col items-center justify-center">
-                                    <div className="w-11 h-11 rounded-full bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center text-lg mb-2 shadow-2xs">
-                                        📅
+                                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 mb-2">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                            <span className="text-xs font-bold text-slate-800">Cartera 100% al Día</span>
+                                        </div>
+                                        <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                            0 Vencidas
+                                        </span>
                                     </div>
-                                    <h4 className="text-sm font-black text-slate-900">
-                                        Sin renovaciones pendientes
-                                    </h4>
-                                    <p className="text-xs text-slate-400 mt-1 max-w-xs leading-relaxed">
-                                        No tienes renovaciones próximas. Sigue revisando automáticamente mañana.
+                                    <p className="text-[11.5px] text-slate-500 mt-1 leading-relaxed">
+                                        1 paciente activo (<strong className="text-slate-700">Max · Golden Retriever</strong>). Próximo corte mensual estimado al cierre de ciclo.
                                     </p>
                                 </div>
                             </div>
@@ -416,15 +451,15 @@ export default function Dashboard({
                             <div className="pt-2">
                                 <a 
                                     href={`/admin/${tenantSlug}/plans`} 
-                                    className="w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 flex items-center justify-center gap-1.5 transition"
+                                    className="w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 flex items-center justify-center gap-1.5 transition shadow-2xs"
                                 >
-                                    <span>Ver planes activos</span>
+                                    <span>Ver planes y membresías activas</span>
                                 </a>
                             </div>
                         </div>
 
                         {/* Caja Derecha: Uso de Beneficios Clínicos */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[215px] shadow-2xs">
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[220px] shadow-2xs">
                             <div>
                                 <div className="flex items-center justify-between mb-1">
                                     <div className="flex items-center gap-2">
@@ -433,39 +468,54 @@ export default function Dashboard({
                                             Uso de beneficios clínicos
                                         </h3>
                                     </div>
-                                    <span className="text-xs font-medium text-slate-500">
-                                        {totalUsed} / {totalGranted} utilizados ({usagePercent}%)
+                                    <span className="text-xs font-bold text-slate-700">
+                                        {totalUsed} / {totalGranted} redimidos ({usagePercent}%)
                                     </span>
                                 </div>
 
-                                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                                    <span className="text-xs text-slate-400">
+                                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                                    <span className="text-[11px] text-slate-400">
                                         Servicios canjeados este ciclo
                                     </span>
-                                    <span className="text-[11px] font-bold text-cyan-800 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded-md">
+                                    <span className="text-[10px] font-bold text-cyan-800 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded-md">
                                         Meta clínica: &gt; 70%
                                     </span>
                                 </div>
 
-                                <div className="py-4 text-center flex flex-col items-center justify-center">
-                                    <div className="w-11 h-11 rounded-full bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center text-lg mb-2 shadow-2xs">
-                                        📄
+                                {/* Barra de Progreso */}
+                                <div className="mt-3">
+                                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                        <div 
+                                            className="bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-400 h-2 rounded-full transition-all duration-500" 
+                                            style={{ width: `${Math.max(usagePercent, 5)}%` }}
+                                        />
                                     </div>
-                                    <h4 className="text-sm font-black text-slate-900">
-                                        Sin canjes registrados todavía
-                                    </h4>
-                                    <p className="text-xs text-slate-400 mt-1 max-w-xs leading-relaxed">
-                                        Cuando atiendas a un paciente en mostrador y le descuenten el servicio, aparecerá aquí en tiempo real.
-                                    </p>
+                                    <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium mt-1">
+                                        <span>0 redimidos</span>
+                                        <span>19 disponibles para consumo</span>
+                                    </div>
+                                </div>
+
+                                {/* Chips de Servicios Disponibles */}
+                                <div className="flex flex-wrap gap-1.5 mt-2.5">
+                                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-100">
+                                        🩺 Consultas Clínicas
+                                    </span>
+                                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                        💉 Vacunación
+                                    </span>
+                                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-100">
+                                        🪪 Kit + Collar + Carnet
+                                    </span>
                                 </div>
                             </div>
 
                             <div className="pt-2">
                                 <a 
                                     href={redeemUrl} 
-                                    className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-sm"
+                                    className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-2xs hover:shadow-xs"
                                 >
-                                    <span>⚡ Abrir Terminal de Canje</span>
+                                    <span>⚡ Abrir Terminal de Canje en Mostrador</span>
                                 </a>
                             </div>
                         </div>
@@ -495,9 +545,22 @@ export default function Dashboard({
                             </p>
 
                             <div className="flex items-center gap-2 shrink-0">
+                                {recommendation.whatsapp_url && (
+                                    <a 
+                                        href={recommendation.whatsapp_url} 
+                                        target="_blank" 
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-2xs hover:shadow-xs"
+                                        title="Enviar WhatsApp pre-redactado de fidelización"
+                                    >
+                                        <MessageCircle className="w-3.5 h-3.5" />
+                                        <span>WhatsApp {recommendation.customer_name || 'Tutor'}</span>
+                                    </a>
+                                )}
+
                                 <a 
                                     href={recommendation.pet_url || '#'} 
-                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-2xs"
+                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-2xs hover:shadow-xs"
                                 >
                                     <Eye className="w-3.5 h-3.5" />
                                     <span>Ver Paciente</span>
