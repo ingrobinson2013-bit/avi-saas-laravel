@@ -24,7 +24,13 @@ class SaaSPaymentController extends Controller
             'enterprise' => 489000,
         ];
 
-        $amount = (float) ($tenant->branding['saas_monthly_fee'] ?? $pricing[$tier] ?? 229000);
+        if ($tier === 'pay_per_pet') {
+            $petsCount = \App\Models\Pet::whereHas('customer', fn ($c) => $c->where('tenant_id', $tenant->id))->count();
+            $unitFee = (float) ($tenant->branding['saas_per_pet_fee'] ?? 5000);
+            $amount = $petsCount > 0 ? ($petsCount * $unitFee) : (float) ($tenant->branding['saas_monthly_fee'] ?? 50000);
+        } else {
+            $amount = (float) ($tenant->branding['saas_monthly_fee'] ?? $pricing[$tier] ?? 229000);
+        }
         $orderId = "SAAS-{$tenant->slug}-" . time();
         $currency = 'COP';
 

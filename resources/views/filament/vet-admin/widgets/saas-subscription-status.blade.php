@@ -72,7 +72,7 @@
 
                             <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white leading-tight mb-1">
                                 @if($status === 'paid')
-                                    Tu clínica tiene acceso total a AVI-Plan
+                                    Tu clínica tiene acceso total a AVI-Plan SaaS
                                 @elseif($status === 'trial_active')
                                     Estás en tu período de prueba de 15 días
                                 @else
@@ -82,9 +82,19 @@
 
                             <p class="text-sm text-slate-600 dark:text-slate-300 leading-normal">
                                 @if($status === 'paid')
-                                    Próxima fecha de renovación: <strong class="text-slate-900 dark:text-white">{{ $paidUntilFormatted ?: 'En 30 días' }}</strong>. Canon mensual: <strong class="text-emerald-600 dark:text-emerald-400 font-black">${{ number_format($amountCop, 0, ',', '.') }} COP</strong>.
+                                    Próxima fecha de renovación: <strong class="text-slate-900 dark:text-white">{{ $paidUntilFormatted ?: 'En 30 días' }}</strong>. 
+                                    @if($planTier === 'pay_per_pet')
+                                        Liquidación actual: <strong class="text-emerald-600 dark:text-emerald-400 font-bold">${{ number_format($amountCop, 0, ',', '.') }} COP</strong> ({{ $petsCount }} pacientes inscritos x $5.000 COP).
+                                    @else
+                                        Canon mensual: <strong class="text-emerald-600 dark:text-emerald-400 font-bold">${{ number_format($amountCop, 0, ',', '.') }} COP</strong>.
+                                    @endif
                                 @elseif($status === 'trial_active')
-                                    Tu prueba finaliza el <strong class="text-slate-900 dark:text-white">{{ $trialEndsAtFormatted ?: 'próximamente' }}</strong>. Activa hoy tu plan oficial por <strong class="text-blue-600 dark:text-blue-400 font-black">${{ number_format($amountCop, 0, ',', '.') }} COP/mes</strong>.
+                                    Tu prueba finaliza el <strong class="text-slate-900 dark:text-white">{{ $trialEndsAtFormatted ?: 'próximamente' }}</strong>. 
+                                    @if($planTier === 'pay_per_pet')
+                                        Activa tu plan de <strong class="text-blue-600 dark:text-blue-400 font-bold">${{ number_format($amountCop, 0, ',', '.') }} COP</strong> (calculado sobre {{ $petsCount }} pacientes registrados a $5.000 COP c/u).
+                                    @else
+                                        Activa hoy tu plan oficial por <strong class="text-blue-600 dark:text-blue-400 font-bold">${{ number_format($amountCop, 0, ',', '.') }} COP/mes</strong>.
+                                    @endif
                                 @else
                                     Tu período de prueba ha concluido. Para seguir registrando pacientes y emitiendo carnets digitales, activa tu plan oficial con Bold.
                                 @endif
@@ -92,26 +102,29 @@
                         </div>
                     </div>
 
-                    {{-- Bloque Derecho: Botones de Acción --}}
+                    {{-- Bloque Derecho: Botones de Acción Nativos Filament --}}
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-shrink-0">
-                        <a href="{{ $checkoutUrl }}" 
-                           class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow-md hover:shadow-lg transition-all text-center whitespace-nowrap">
-                            <span>💳</span>
-                            <span>
-                                @if($status === 'paid')
-                                    Renovar Plan (${{ number_format($amountCop, 0, ',', '.') }})
-                                @else
-                                    Activar Plan con Bold (${{ number_format($amountCop, 0, ',', '.') }})
-                                @endif
-                            </span>
-                        </a>
+                        <x-filament::button
+                            tag="a"
+                            href="{{ $checkoutUrl }}"
+                            color="primary"
+                            icon="heroicon-o-credit-card"
+                            size="lg"
+                            class="shadow-md font-bold"
+                        >
+                            {{ $status === 'paid' ? 'Renovar Plan' : 'Pagar con Bold' }} (${{ number_format($amountCop, 0, ',', '.') }} COP)
+                        </x-filament::button>
 
-                        <a href="https://wa.me/573508742543?text={{ urlencode('Hola Robinson, tengo una consulta sobre el pago y suscripción de AVI-Plan para mi clínica ' . $tenantName) }}" 
-                           target="_blank"
-                           class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition-colors text-center whitespace-nowrap">
-                            <span class="text-emerald-500">💬</span>
-                            <span>Soporte WhatsApp</span>
-                        </a>
+                        <x-filament::button
+                            tag="a"
+                            href="https://wa.me/573508742543?text={{ urlencode('Hola Robinson, tengo una consulta sobre el pago y suscripción de AVI-Plan para mi clínica ' . $tenantName) }}"
+                            target="_blank"
+                            color="gray"
+                            icon="heroicon-m-chat-bubble-left-ellipsis"
+                            size="lg"
+                        >
+                            Soporte WhatsApp
+                        </x-filament::button>
                     </div>
                 </div>
             </div>

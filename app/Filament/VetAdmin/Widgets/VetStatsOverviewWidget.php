@@ -60,8 +60,24 @@ class VetStatsOverviewWidget extends BaseWidget
             })
             ->count();
 
-        // Tarifa de Plataforma AVI-SaaS ($2.000 COP por mascota inscrita)
-        $saasFee = $petsCount * 2000;
+        // Tarifa de Plataforma AVI-SaaS
+        $branding = $tenant?->branding ?? [];
+        $tier = $tenant?->saas_plan_tier ?? $branding['saas_plan'] ?? 'pro';
+        $pricing = [
+            'pay_per_pet' => 5000,
+            'starter' => 99000,
+            'pro' => 229000,
+            'enterprise' => 489000,
+        ];
+
+        if ($tier === 'pay_per_pet') {
+            $unitFee = (float) ($branding['saas_per_pet_fee'] ?? 5000);
+            $saasFee = $petsCount > 0 ? ($petsCount * $unitFee) : (float) ($branding['saas_monthly_fee'] ?? 50000);
+            $feeDesc = '$' . number_format($unitFee, 0, ',', '.') . " COP x {$petsCount} mascotas";
+        } else {
+            $saasFee = (float) ($branding['saas_monthly_fee'] ?? $pricing[$tier] ?? 229000);
+            $feeDesc = 'Canon mensual (' . ucfirst($tier) . ')';
+        }
 
         return [
             Stat::make('MRR (Ingresos Recurrentes)', '$' . number_format($mrrReal, 0, ',', '.') . ' COP')
@@ -77,7 +93,7 @@ class VetStatsOverviewWidget extends BaseWidget
                 ->chart([max(0, $petsCount - 2), max(0, $petsCount - 1), $petsCount]),
 
             Stat::make('Cuota Plataforma AVI-SaaS', '$' . number_format($saasFee, 0, ',', '.') . ' COP')
-                ->description("Tarifa fija de $2.000 COP x {$petsCount} mascotas")
+                ->description($feeDesc)
                 ->descriptionIcon('heroicon-m-receipt-percent')
                 ->color('gray'),
 
