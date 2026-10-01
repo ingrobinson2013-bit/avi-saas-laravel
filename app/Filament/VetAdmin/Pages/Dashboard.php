@@ -18,6 +18,11 @@ class Dashboard extends BaseDashboard
     protected static ?string $navigationIcon = 'heroicon-o-home';
     protected static ?int $navigationSort = 1;
 
+    public static function getNavigationLabel(): string
+    {
+        return 'Home';
+    }
+
     protected function getHeaderActions(): array
     {
         $tenant = Filament::getTenant();
