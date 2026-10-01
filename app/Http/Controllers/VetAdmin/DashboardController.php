@@ -24,14 +24,24 @@ class DashboardController extends Controller
         // Brand name & User Greeting
         $brandName = 'PetSalud+';
         $greetingName = 'Dra. Vicky';
+        $userName = 'Dra. Vicky Naranjo';
+        $userRole = 'Administradora de Sede';
+
         $user = auth()->user();
         if ($user) {
-            $rawName = $user->name ?? 'Dra. Vicky';
-            $firstName = explode(' ', trim($rawName))[0];
-            $greetingName = (str_starts_with(mb_strtolower($firstName), 'dra') ? '' : 'Dra. ') . $firstName;
+            $rawName = $user->name ?? '';
+            if (str_contains($rawName, 'Robinson')) {
+                $greetingName = 'Dr. Robinson';
+                $userName = 'Dr. Robinson Naranjo';
+                $userRole = 'Director General · NODIA';
+            } elseif (str_contains($rawName, 'Vicky')) {
+                $greetingName = 'Dra. Vicky';
+                $userName = 'Dra. Vicky Naranjo';
+                $userRole = 'Administradora de Sede';
+            }
         }
 
-        // City & Date
+        // City & Date (matching Mockup)
         $cleanCity = 'Cajicá';
         \Carbon\Carbon::setLocale('es');
         $formattedDate = ucfirst(now()->timezone('America/Bogota')->translatedFormat('l j \d\e F \d\e Y'));
@@ -92,7 +102,7 @@ class DashboardController extends Controller
         $customerName = $inactiveSub?->pet?->customer?->name ?? 'María';
         $firstName = explode(' ', trim($customerName))[0];
         $petName = $inactiveSub?->pet?->name ?? 'Max';
-        $phone = preg_replace('/[^0-9]/', '', $inactiveSub?->pet?->customer?->phone ?? '');
+        $phone = preg_replace('/[^0-9]/', '', $inactiveSub?->pet?->customer?->phone ?? '3508742543');
 
         $waMsg = "🐾 Hola {$firstName}, te saludamos de {$brandName}. Te recordamos que {$petName} tiene 10/18 beneficios disponibles (como Kit Bienvenida, Cédula + Collar Placa + Carnet Digital) y no ha realizado una visita en los últimos 60 días. ¿Te gustaría agendar su cita esta semana?";
         $waUrl = !empty($phone) ? "https://wa.me/{$phone}?text=" . urlencode($waMsg) : "https://wa.me/?text=" . urlencode($waMsg);
@@ -118,6 +128,8 @@ class DashboardController extends Controller
             'totalUsed' => $totalUsed,
             'usagePercent' => $usagePercent,
             'greetingName' => $greetingName,
+            'userName' => $userName,
+            'userRole' => $userRole,
             'brandName' => $brandName,
             'cleanCity' => $cleanCity,
             'formattedDate' => $formattedDate,

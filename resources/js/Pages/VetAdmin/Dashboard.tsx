@@ -1,24 +1,11 @@
 import React, { useState } from 'react';
 import VetAdminLayout from '@/Layouts/VetAdminLayout';
 import { 
-    CreditCard, 
-    ArrowUpRight, 
-    Send, 
-    Star, 
-    Bell, 
-    FileText, 
     ChevronRight, 
     Eye, 
     Zap, 
-    Globe, 
-    Printer, 
-    Calendar,
-    Sparkles,
-    UserCheck,
-    MessageCircle,
-    Lightbulb,
-    BarChart2,
-    CheckCircle2
+    Send, 
+    Calendar 
 } from 'lucide-react';
 
 interface DashboardProps {
@@ -31,6 +18,8 @@ interface DashboardProps {
     totalUsed?: number;
     usagePercent?: number;
     greetingName?: string;
+    userName?: string;
+    userRole?: string;
     brandName?: string;
     cleanCity?: string;
     formattedDate?: string;
@@ -61,6 +50,8 @@ export default function Dashboard({
     totalUsed = 0,
     usagePercent = 0,
     greetingName = 'Dra. Vicky',
+    userName = 'Dra. Vicky Naranjo',
+    userRole = 'Administradora de Sede',
     brandName = 'PetSalud+',
     cleanCity = 'Cajicá',
     formattedDate = 'Jueves 1 de octubre de 2026',
@@ -73,14 +64,14 @@ export default function Dashboard({
         badge: 'Recomendación',
         impact_text: '1 oportunidad detectada',
         title: 'Te recomendamos contactar a María porque Max tiene 10/18 beneficios disponibles (como Kit Bienvenida, Cédula + Collar Placa + Carnet Digital) y no ha realizado una visita en los últimos 60 días.',
-        whatsapp_url: 'https://wa.me/573000000000',
+        whatsapp_url: 'https://wa.me/573508742543',
         pet_url: '/admin/vet-pet-patitas/pets',
         customer_name: 'María',
         pet_name: 'Max'
     }
 }: DashboardProps) {
 
-    // Interactive AI Chat State in pure React
+    // Interactive AI Chat State
     const [chatInput, setChatInput] = useState('');
     const [chatMessages, setChatMessages] = useState<Array<{ role: 'user' | 'assistant'; text: string }>>([]);
 
@@ -89,13 +80,13 @@ export default function Dashboard({
         let reply = '';
 
         if (text.includes('perro adulto')) {
-            reply = '🐶 **Plan Recomendado:** Para perros adultos mayores a 3 años, el Plan Preventivo Plus es ideal: incluye vacunación anual, desparasitaciones trimestrales, 1 profilaxis dental con 20% de descuento y chequeos generales.';
+            reply = '🐶 **Plan Recomendado:** Para perros adultos mayores a 3 años, el Plan Patitas Básico / Senior es ideal: incluye vacunación antirrábica y hexavalente, desparasitaciones periódicas trimestrales, 1 profilaxis con 20% de descuento y controles generales.';
         } else if (text.includes('coberturas')) {
-            reply = '🛡️ **Coberturas Clave:** Cubre consultas preventivas, vacunación obligatoria y urgencias menores en horario diurno. Excluye enfermedades congénitas no declaradas y cirugías cosméticas.';
+            reply = '🛡️ **Coberturas y Exclusiones:** Incluye chequeos clínicos, vacunación anual y urgencias diurnas. Excluye patologías preexistentes no declaradas, cirugías estéticas y medicamentos crónicos de farmacia externa.';
         } else if (text.includes('analiza')) {
-            reply = '📊 **Oportunidad Detectada:** El 75% de los tutores que acuden a consulta no tienen plan de salud. Afiliar solo 8 mascotas este mes aumentará el MRR a $400.000 COP recurrentes.';
+            reply = '📊 **Oportunidad Detectada:** El 80% de tus pacientes registrados aún no tienen débito automático activo. Afiliar 5 pacientes este mes elevará el MRR en $250.000 COP con 92% de retención anual.';
         } else {
-            reply = '💡 **Estrategia:** Te sugiero activar recordatorios vía WhatsApp para tutores con más de 45 días sin canjear beneficios. Esto aumenta la fidelización en un 40%.';
+            reply = '💡 **Plan de Fidelización:** 1) Envío de carnet digital con bienvenida. 2) Alerta automática a los 45 días si no han redimido su baño medicado o control preventivo. 3) Bono del 10% en tienda por renovación anual.';
         }
 
         setChatMessages(prev => [...prev, userMsg, { role: 'assistant', text: reply }]);
@@ -112,43 +103,43 @@ export default function Dashboard({
     const formattedMrr = new Intl.NumberFormat('es-CO').format(mrr);
 
     return (
-        <VetAdminLayout tenantSlug={tenantSlug} userName={`${greetingName} Naranjo`}>
+        <VetAdminLayout tenantSlug={tenantSlug} userName={userName} userRole={userRole}>
             
-            <div className="flex flex-col xl:flex-row gap-5 items-start w-full max-w-[1550px] mx-auto">
+            <div className="flex flex-col xl:flex-row gap-4 items-start w-full max-w-[1440px] mx-auto">
                 
                 {/* =========================================================
                      COLUMNA IZQUIERDA: ÁREA DE OPERACIÓN PRINCIPAL
                      ========================================================= */}
-                <div className="flex-1 min-w-0 flex flex-col gap-4 w-full">
+                <div className="flex-1 min-w-0 flex flex-col gap-3.5 w-full">
                     
                     {/* 1. HERO WELCOME CARD (EXACTO AL MOCKUP) */}
-                    <div className="bg-white border border-slate-200/90 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-5 shadow-2xs relative overflow-hidden">
-                        <div className="space-y-1.5 max-w-xl">
+                    <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xs relative overflow-hidden">
+                        <div className="space-y-1 max-w-xl">
                             <p className="text-xs font-semibold text-slate-500">
                                 ¡Hola, {greetingName}!
                             </p>
-                            <h1 className="text-2xl lg:text-[28px] font-black text-slate-900 leading-tight tracking-tight">
+                            <h1 className="text-2xl lg:text-[27px] font-black text-slate-900 leading-tight tracking-tight">
                                 Bienvenida a {brandName} 👋
                             </h1>
-                            <p className="text-xs lg:text-sm font-medium text-slate-500">
+                            <p className="text-xs lg:text-[13px] font-medium text-slate-500">
                                 Gestiona tus planes de salud, clientes y mascotas en un solo lugar.
                             </p>
                             
                             <div className="flex items-center gap-2 flex-wrap pt-2">
-                                <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-white border border-slate-200 text-slate-600 shadow-2xs">
+                                <span className="inline-flex items-center px-3 py-0.5 rounded-full text-[11px] font-semibold bg-white border border-slate-200 text-slate-600 shadow-2xs">
                                     📍 Sede {cleanCity} · {formattedDate}
                                 </span>
-                                <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-[#f0fdfa] border border-[#ccfbf1] text-[#0f766e]">
+                                <span className="inline-flex items-center px-3 py-0.5 rounded-full text-[11px] font-semibold bg-[#f0fdfa] border border-[#ccfbf1] text-[#0f766e]">
                                     ⏱ Modo Sincronizado
                                 </span>
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-[#f0fdf4] border border-[#bbf7d0] text-[#15803d]">
-                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-semibold bg-[#f0fdf4] border border-[#bbf7d0] text-[#15803d]">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                     <span>Sistema en línea</span>
                                 </span>
                             </div>
                         </div>
 
-                        {/* Right Golden Retriever + Cat Cutout */}
+                        {/* Right Golden Retriever + Cat Cutout with Aura and Floating Heart */}
                         <div className="shrink-0 flex items-center justify-center">
                             <img 
                                 src="/images/dashboard/hero_pets_2x.png" 
@@ -159,7 +150,7 @@ export default function Dashboard({
                     </div>
 
                     {/* 2. 4 KPI CARDS (FILA HORIZONTAL DE 4 COLUMNAS) */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 w-full">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
                         
                         {/* KPI 1: MRR */}
                         <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[125px] shadow-2xs hover:shadow-xs transition">
@@ -172,17 +163,17 @@ export default function Dashboard({
                                 </span>
                             </div>
 
-                            <div className="my-1.5">
-                                <div className="text-2xl lg:text-[26px] font-black text-slate-900 tracking-tight leading-none">
+                            <div className="my-1">
+                                <div className="text-2xl font-black text-slate-900 tracking-tight leading-none">
                                     ${formattedMrr} <span className="text-sm font-black text-slate-800">COP</span>
                                 </div>
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <span className="text-[11.5px] font-bold text-emerald-600 flex items-center gap-0.5">
+                                <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-0.5">
                                     <span>↗</span> +50% vs. mes anterior
                                 </span>
-                                <svg className="w-14 h-6 text-emerald-500" viewBox="0 0 60 24" fill="none" stroke="currentColor" stroke-width="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <svg className="w-14 h-5 text-emerald-500" viewBox="0 0 60 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M2 18 C 15 18, 25 14, 38 8 C 45 4, 52 4, 58 2" />
                                 </svg>
                             </div>
@@ -199,17 +190,17 @@ export default function Dashboard({
                                 </span>
                             </div>
 
-                            <div className="my-1.5">
-                                <div className="text-2xl lg:text-[26px] font-black text-slate-900 tracking-tight leading-none">
+                            <div className="my-1">
+                                <div className="text-2xl font-black text-slate-900 tracking-tight leading-none">
                                     {petsCount}
                                 </div>
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <span className="text-[11.5px] font-semibold text-blue-600">
+                                <span className="text-[11px] font-semibold text-blue-600">
                                     {activeSubsCount} plan activo
                                 </span>
-                                <span className="text-xl text-cyan-400/80 leading-none">
+                                <span className="text-lg text-cyan-400/80 leading-none">
                                     🐾
                                 </span>
                             </div>
@@ -226,17 +217,17 @@ export default function Dashboard({
                                 </span>
                             </div>
 
-                            <div className="my-1.5">
-                                <div className="text-2xl lg:text-[26px] font-black text-slate-900 tracking-tight leading-none">
+                            <div className="my-1">
+                                <div className="text-2xl font-black text-slate-900 tracking-tight leading-none">
                                     +{newSubsThisMonth}
                                 </div>
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <span className="text-[11.5px] font-semibold text-slate-500">
+                                <span className="text-[11px] font-semibold text-slate-500">
                                     Este mes
                                 </span>
-                                <svg className="w-10 h-6 text-purple-500" viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <svg className="w-10 h-5 text-purple-500" viewBox="0 0 40 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M2 20 L 14 14 L 24 17 L 38 4" />
                                 </svg>
                             </div>
@@ -253,17 +244,17 @@ export default function Dashboard({
                                 </span>
                             </div>
 
-                            <div className="my-1.5">
-                                <div className="text-2xl lg:text-[26px] font-black text-slate-900 tracking-tight leading-none">
+                            <div className="my-1">
+                                <div className="text-2xl font-black text-slate-900 tracking-tight leading-none">
                                     {expiring15Days}
                                 </div>
                             </div>
 
                             <div className="flex items-center justify-between">
-                                <span className="text-[11.5px] font-semibold text-slate-500">
+                                <span className="text-[11px] font-semibold text-slate-500">
                                     Próximos 15 días
                                 </span>
-                                <Calendar className="w-5 h-5 text-amber-500/80" />
+                                <Calendar className="w-4 h-4 text-amber-500/80" />
                             </div>
                         </div>
 
@@ -271,10 +262,13 @@ export default function Dashboard({
 
                     {/* 3. ACCIONES RÁPIDAS (4 CARDS) */}
                     <div>
-                        <div className="mb-2 px-1">
+                        <div className="flex items-center justify-between mb-2 px-1">
                             <h3 className="text-xs font-black uppercase tracking-wider text-slate-700">
                                 Acciones rápidas
                             </h3>
+                            <span className="text-[11px] font-semibold text-slate-400">
+                                Operación Diaria
+                            </span>
                         </div>
 
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
@@ -282,7 +276,7 @@ export default function Dashboard({
                             {/* Card 1: Canjear Beneficio con Datáfono */}
                             <a 
                                 href={redeemUrl} 
-                                className="bg-gradient-to-br from-blue-700 via-blue-600 to-sky-600 text-white rounded-2xl p-3.5 flex flex-col justify-between h-[88px] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="bg-gradient-to-br from-[#1e40af] to-[#2563eb] text-white rounded-2xl p-3 flex flex-col justify-between h-[86px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="w-6 h-6 rounded-md bg-white/20 backdrop-blur-xs flex items-center justify-center text-xs font-black border border-white/30">
@@ -291,10 +285,10 @@ export default function Dashboard({
                                 </div>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div>
-                                        <h4 className="text-sm font-black text-white leading-tight">Canjear beneficio</h4>
-                                        <p className="text-[10px] text-blue-100 font-medium mt-0.5">Abre tu terminal y atiende a tus clientes</p>
+                                        <h4 className="text-[13px] font-black text-white leading-tight">Canjear beneficio</h4>
+                                        <p className="text-[9.5px] text-blue-100 font-medium mt-0.5">Abre tu terminal y atiende a tus clientes</p>
                                     </div>
-                                    <div className="flex items-center gap-1.5 shrink-0 pl-1">
+                                    <div className="flex items-center gap-1 shrink-0 pl-1">
                                         <img src="/images/dashboard/pos_terminal_2x.png" alt="POS" className="h-8 w-auto object-contain drop-shadow-md" />
                                         <ChevronRight className="w-4 h-4 text-white" />
                                     </div>
@@ -304,7 +298,7 @@ export default function Dashboard({
                             {/* Card 2: Afiliar Mascota */}
                             <a 
                                 href={newSubUrl} 
-                                className="bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 text-white rounded-2xl p-3.5 flex flex-col justify-between h-[88px] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="bg-gradient-to-br from-[#059669] to-[#0d9488] text-white rounded-2xl p-3 flex flex-col justify-between h-[86px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="w-6 h-6 rounded-md bg-white/20 backdrop-blur-xs flex items-center justify-center text-xs font-black border border-white/30">
@@ -313,8 +307,8 @@ export default function Dashboard({
                                 </div>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div>
-                                        <h4 className="text-sm font-black text-white leading-tight">Afiliar mascota</h4>
-                                        <p className="text-[10px] text-emerald-100 font-medium mt-0.5">Nueva afiliación</p>
+                                        <h4 className="text-[13px] font-black text-white leading-tight">Afiliar mascota</h4>
+                                        <p className="text-[9.5px] text-emerald-100 font-medium mt-0.5">Nueva afiliación</p>
                                     </div>
                                     <div className="shrink-0 pl-1">
                                         <ChevronRight className="w-4 h-4 text-white" />
@@ -327,23 +321,23 @@ export default function Dashboard({
                                 href={portalUrl} 
                                 target="_blank" 
                                 rel="noreferrer"
-                                className="bg-white border border-slate-200/90 hover:border-blue-400 rounded-2xl p-3.5 flex flex-col justify-between h-[88px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="bg-white border border-slate-200/90 hover:border-blue-400 rounded-2xl p-3 flex flex-col justify-between h-[86px] shadow-2xs hover:shadow-2xs hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-black border border-blue-200">
                                         🌐
                                     </div>
                                     <div className="flex flex-col items-end">
-                                        <span className="text-[9.5px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md">
+                                        <span className="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md">
                                             Web B2C
                                         </span>
-                                        <span className="text-[8.5px] text-slate-400 mt-0.5">Generar PDF</span>
+                                        <span className="text-[8px] text-slate-400 mt-0.5">Abrir portal</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div>
-                                        <h4 className="text-sm font-black text-slate-900 leading-tight">Ver portal</h4>
-                                        <p className="text-[10px] text-slate-400 font-medium mt-0.5">Abrir portal</p>
+                                        <h4 className="text-[13px] font-black text-slate-900 leading-tight">Ver portal</h4>
+                                        <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">Abrir portal</p>
                                     </div>
                                 </div>
                             </a>
@@ -353,23 +347,23 @@ export default function Dashboard({
                                 href={qrUrl} 
                                 target="_blank" 
                                 rel="noreferrer"
-                                className="bg-white border border-slate-200/90 hover:border-cyan-400 rounded-2xl p-3.5 flex flex-col justify-between h-[88px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="bg-white border border-slate-200/90 hover:border-cyan-400 rounded-2xl p-3 flex flex-col justify-between h-[86px] shadow-2xs hover:shadow-2xs hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="w-6 h-6 rounded-md bg-cyan-50 text-cyan-600 flex items-center justify-center text-xs font-black border border-cyan-200">
                                         🖨️
                                     </div>
                                     <div className="flex flex-col items-end">
-                                        <span className="text-[9.5px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md">
-                                            Imprimir QR
+                                        <span className="text-[9px] font-bold text-purple-700 bg-purple-50 border border-purple-200 px-1.5 py-0.5 rounded-md">
+                                            Generar PDF
                                         </span>
-                                        <span className="text-[8.5px] text-slate-400 mt-0.5">Generar PDF</span>
+                                        <span className="text-[8px] text-slate-400 mt-0.5">Generar PDF</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div>
-                                        <h4 className="text-sm font-black text-slate-900 leading-tight">Imprimir QR</h4>
-                                        <p className="text-[10px] text-slate-400 font-medium mt-0.5">Generar PDF</p>
+                                        <h4 className="text-[13px] font-black text-slate-900 leading-tight">Imprimir QR</h4>
+                                        <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">Generar PDF</p>
                                     </div>
                                 </div>
                             </a>
@@ -378,12 +372,12 @@ export default function Dashboard({
                     </div>
 
                     {/* 4. FILA MEDIA: RENOVACIONES PRÓXIMAS & USO DE BENEFICIOS */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5 w-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 w-full">
                         
                         {/* Caja Izquierda: Renovaciones Próximas */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[220px] shadow-2xs">
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[210px] shadow-2xs">
                             <div>
-                                <div className="flex items-center justify-between mb-4 pb-2.5 border-b border-slate-100">
+                                <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
                                     <div className="flex items-center gap-2">
                                         <span className="text-amber-500 text-sm">🔔</span>
                                         <h3 className="text-sm font-black text-slate-900">
@@ -396,8 +390,8 @@ export default function Dashboard({
                                     </a>
                                 </div>
 
-                                <div className="py-5 text-center flex flex-col items-center justify-center">
-                                    <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center text-xl mb-3 shadow-2xs">
+                                <div className="py-4 text-center flex flex-col items-center justify-center">
+                                    <div className="w-11 h-11 rounded-full bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center text-lg mb-2 shadow-2xs">
                                         📅
                                     </div>
                                     <h4 className="text-sm font-black text-slate-900">
@@ -420,7 +414,7 @@ export default function Dashboard({
                         </div>
 
                         {/* Caja Derecha: Uso de Beneficios Clínicos */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[220px] shadow-2xs">
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[210px] shadow-2xs">
                             <div>
                                 <div className="flex items-center justify-between mb-1">
                                     <div className="flex items-center gap-2">
@@ -443,8 +437,8 @@ export default function Dashboard({
                                     </span>
                                 </div>
 
-                                <div className="py-5 text-center flex flex-col items-center justify-center">
-                                    <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center text-xl mb-3 shadow-2xs">
+                                <div className="py-4 text-center flex flex-col items-center justify-center">
+                                    <div className="w-11 h-11 rounded-full bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center text-lg mb-2 shadow-2xs">
                                         📄
                                     </div>
                                     <h4 className="text-sm font-black text-slate-900">
@@ -517,14 +511,14 @@ export default function Dashboard({
                 {/* =========================================================
                      COLUMNA DERECHA: ASISTENTE IA BETA DEDICADO (EXACTO AL MOCKUP)
                      ========================================================= */}
-                <div className="w-full xl:w-[335px] shrink-0 sticky top-20">
-                    <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs flex flex-col justify-between min-h-[590px]">
+                <div className="w-full xl:w-[325px] shrink-0 sticky top-20">
+                    <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs flex flex-col justify-between min-h-[580px]">
                         
                         <div>
                             {/* Header Asistente IA */}
                             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                                 <div className="flex items-center gap-2">
-                                    <span className="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-black tracking-tighter">
+                                    <span className="w-6 h-6 rounded-full bg-[#1e3a8a] text-white flex items-center justify-center text-xs font-black tracking-tighter">
                                         iA
                                     </span>
                                     <h3 className="text-sm font-black text-slate-900">
@@ -550,20 +544,20 @@ export default function Dashboard({
                                 <h4 className="text-sm font-black text-slate-900 mt-1">
                                     Hola, soy tu asistente de IA
                                 </h4>
-                                <p className="text-[11px] text-slate-400 mt-1 max-w-[260px] leading-relaxed">
+                                <p className="text-[11px] text-slate-400 mt-1 max-w-[250px] leading-relaxed">
                                     Puedo ayudarte a crear planes, responder dudas de tus clientes, analizar datos y recomendar la mejor opción de salud para cada mascota.
                                 </p>
                             </div>
 
-                            {/* 4 Quick Action Prompt Cards matching Mockup */}
+                            {/* 4 Quick Action Prompt Cards with Circle Icons */}
                             <div className="space-y-2 mt-2">
                                 
                                 <button 
                                     type="button" 
                                     onClick={() => handlePromptClick('Recomienda un plan ideal para un perro adulto')}
-                                    className="w-full text-left p-2.5 rounded-xl border border-slate-200/80 hover:border-cyan-400 bg-white hover:bg-cyan-50/40 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
+                                    className="w-full text-left p-2 rounded-xl border border-slate-200/80 hover:border-cyan-400 bg-white hover:bg-cyan-50/40 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
                                 >
-                                    <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs shrink-0">
+                                    <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs shrink-0 font-bold">
                                         👤
                                     </div>
                                     <span className="flex-1 text-[11px] font-semibold text-slate-700 text-left leading-tight">
@@ -575,9 +569,9 @@ export default function Dashboard({
                                 <button 
                                     type="button" 
                                     onClick={() => handlePromptClick('Responde dudas sobre coberturas y exclusiones')}
-                                    className="w-full text-left p-2.5 rounded-xl border border-slate-200/80 hover:border-cyan-400 bg-white hover:bg-cyan-50/40 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
+                                    className="w-full text-left p-2 rounded-xl border border-slate-200/80 hover:border-cyan-400 bg-white hover:bg-cyan-50/40 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
                                 >
-                                    <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs shrink-0">
+                                    <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs shrink-0 font-bold">
                                         💬
                                     </div>
                                     <span className="flex-1 text-[11px] font-semibold text-slate-700 text-left leading-tight">
@@ -589,9 +583,9 @@ export default function Dashboard({
                                 <button 
                                     type="button" 
                                     onClick={() => handlePromptClick('Analiza la base de clientes y detecta oportunidades')}
-                                    className="w-full text-left p-2.5 rounded-xl border border-slate-200/80 hover:border-cyan-400 bg-white hover:bg-cyan-50/40 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
+                                    className="w-full text-left p-2 rounded-xl border border-slate-200/80 hover:border-cyan-400 bg-white hover:bg-cyan-50/40 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
                                 >
-                                    <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs shrink-0">
+                                    <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs shrink-0 font-bold">
                                         📊
                                     </div>
                                     <span className="flex-1 text-[11px] font-semibold text-slate-700 text-left leading-tight">
@@ -603,9 +597,9 @@ export default function Dashboard({
                                 <button 
                                     type="button" 
                                     onClick={() => handlePromptClick('Genera un plan de fidelización para tus clientes')}
-                                    className="w-full text-left p-2.5 rounded-xl border border-slate-200/80 hover:border-cyan-400 bg-white hover:bg-cyan-50/40 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
+                                    className="w-full text-left p-2 rounded-xl border border-slate-200/80 hover:border-cyan-400 bg-white hover:bg-cyan-50/40 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
                                 >
-                                    <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs shrink-0">
+                                    <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xs shrink-0 font-bold">
                                         💡
                                     </div>
                                     <span className="flex-1 text-[11px] font-semibold text-slate-700 text-left leading-tight">
