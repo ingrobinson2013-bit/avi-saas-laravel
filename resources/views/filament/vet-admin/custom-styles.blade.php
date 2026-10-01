@@ -4,27 +4,27 @@
 
 <style>
     /* =========================================================
-       AVI PETSALUD+ MOCKUP: MOTOR DE DISEÑO PURO Y EXACTO
+       AVI PETSALUD+ MOCKUP: MOTOR DE DISEÑO MEDTECH PIXEL-PERFECT
        ========================================================= */
 
     *, html, body, .fi-body, .fi-main, .fi-sidebar, input, button, select, textarea {
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     }
 
-    /* Ocultar header por defecto en Dashboard customizado para que el Hero Welcome Card brille */
+    /* Ocultar header por defecto en Dashboard customizado */
     .fi-page-dashboard .fi-header,
     .fi-dashboard-page .fi-header,
     .fi-page-dashboard header.fi-header {
         display: none !important;
     }
 
-    /* Quitar paddings restrictivos del layout de Filament */
+    /* Quitar paddings restrictivos del layout de Filament para aprovechar el espacio con soltura */
     .fi-page-dashboard .fi-page {
-        padding: 0.75rem 1rem !important;
+        padding: 0.75rem 1.25rem !important;
         max-width: 100% !important;
     }
 
-    /* Modo Claro Clínico Nítido */
+    /* Modo Claro Clínico Moderno */
     html:not(.dark) body,
     html:not(.dark) .fi-layout,
     html:not(.dark) .fi-main {
@@ -35,15 +35,7 @@
         color: #0f172a !important;
     }
 
-    /* Modo Oscuro Clínico */
-    html.dark body,
-    html.dark .fi-layout,
-    html.dark .fi-main {
-        background-color: #0b1120 !important;
-        color: #f8fafc !important;
-    }
-
-    /* LAYOUT PRINCIPAL DE 2 COLUMNAS (100% FLUIDO Y SIN HUECOS) */
+    /* LAYOUT PRINCIPAL DE 2 COLUMNAS */
     .avi-workspace {
         display: flex !important;
         flex-direction: column !important;
@@ -72,7 +64,7 @@
     }
     @media (min-width: 1200px) {
         .avi-ai-area {
-            width: 340px !important;
+            width: 330px !important;
             position: sticky !important;
             top: 1rem !important;
         }
@@ -80,7 +72,7 @@
 
     /* HERO WELCOME CARD */
     .avi-hero-card {
-        background: linear-gradient(135deg, #e0f2fe 0%, #f0fdfa 55%, #ffffff 100%) !important;
+        background: linear-gradient(135deg, #e0f2fe 0%, #ecfeff 45%, #ffffff 100%) !important;
         border: 1.5px solid #bae6fd !important;
         border-radius: 1.25rem !important;
         padding: 1.5rem 1.75rem !important;
@@ -89,7 +81,7 @@
         justify-content: space-between !important;
         align-items: center !important;
         gap: 1.25rem !important;
-        box-shadow: 0 4px 20px -2px rgba(14, 165, 233, 0.08) !important;
+        box-shadow: 0 4px 20px -2px rgba(14, 165, 233, 0.1) !important;
         position: relative !important;
         overflow: hidden !important;
     }
@@ -104,11 +96,11 @@
     }
 
     .avi-hero-title {
-        font-size: 1.6rem !important;
+        font-size: 1.65rem !important;
         font-weight: 900 !important;
         color: #0f172a !important;
         letter-spacing: -0.025em !important;
-        line-height: 1.25 !important;
+        line-height: 1.2 !important;
         margin: 0 !important;
     }
     .dark .avi-hero-title {
@@ -128,7 +120,7 @@
     .avi-hero-badges {
         display: flex !important;
         flex-wrap: wrap !important;
-        gap: 0.6rem !important;
+        gap: 0.5rem !important;
         align-items: center !important;
     }
 
@@ -138,7 +130,7 @@
         color: #334155 !important;
         font-size: 0.75rem !important;
         font-weight: 700 !important;
-        padding: 0.35rem 0.85rem !important;
+        padding: 0.3rem 0.8rem !important;
         border-radius: 9999px !important;
         box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
     }
@@ -154,7 +146,7 @@
         color: #0e7490 !important;
         font-size: 0.75rem !important;
         font-weight: 700 !important;
-        padding: 0.35rem 0.85rem !important;
+        padding: 0.3rem 0.8rem !important;
         border-radius: 9999px !important;
     }
     .dark .avi-pill-cyan {
@@ -169,7 +161,7 @@
         color: #047857 !important;
         font-size: 0.75rem !important;
         font-weight: 700 !important;
-        padding: 0.35rem 0.85rem !important;
+        padding: 0.3rem 0.8rem !important;
         border-radius: 9999px !important;
         display: inline-flex !important;
         align-items: center !important;
@@ -238,12 +230,12 @@
         border: 1px solid #e2e8f0 !important;
         border-radius: 1rem !important;
         padding: 1.25rem !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.03) !important;
-        transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        box-shadow: 0 2px 8px -2px rgba(0,0,0,0.04) !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
-        min-height: 140px !important;
+        min-height: 135px !important;
     }
     .dark .avi-kpi-card {
         background: #162036 !important;
@@ -258,7 +250,7 @@
     .avi-kpi-icon-badge {
         width: 2.5rem !important;
         height: 2.5rem !important;
-        border-radius: 0.75rem !important;
+        border-radius: 9999px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -309,8 +301,8 @@
 
     .avi-action-btn {
         border-radius: 0.875rem !important;
-        padding: 1rem 1.15rem !important;
-        height: 92px !important;
+        padding: 0.9rem 1.15rem !important;
+        height: 90px !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
@@ -336,6 +328,7 @@
         background: #ffffff !important;
         border: 1.5px solid #e2e8f0 !important;
         color: #0f172a !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.03) !important;
     }
     .dark .avi-action-white {
         background: #162036 !important;
@@ -401,7 +394,7 @@
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
-        min-height: 600px !important;
+        min-height: 590px !important;
     }
     .dark .avi-ai-box {
         background: #162036 !important;

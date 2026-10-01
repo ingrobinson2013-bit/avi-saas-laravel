@@ -8,7 +8,7 @@
             
             {{-- 1. HERO WELCOME CARD --}}
             <div class="avi-hero-card">
-                <div class="space-y-2">
+                <div class="space-y-2 max-w-xl">
                     <h1 class="avi-hero-title">
                         ¡Hola, {{ $greetingName }}! Bienvenida a {{ $brandName }} 👋
                     </h1>
@@ -32,8 +32,8 @@
                 <!-- Right Mascot Photo with floating cyan heart -->
                 <div class="avi-hero-mascot">
                     <div class="avi-floating-heart">💙</div>
-                    <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&auto=format&fit=crop&q=80" 
-                         alt="Cachorro Feliz" 
+                    <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=600&auto=format&fit=crop&q=80" 
+                         alt="Mascotas Felices PetSalud" 
                          class="avi-hero-img" />
                 </div>
             </div>
@@ -138,7 +138,7 @@
                             <h4 class="avi-action-title">Canjear Beneficio</h4>
                             <p class="avi-action-sub text-blue-100">
                                 <span>Abrir terminal</span>
-                                <span>→</span>
+                                <span class="text-sm font-black">&rarr;</span>
                             </p>
                         </div>
                     </a>
@@ -157,7 +157,7 @@
                             <h4 class="avi-action-title">Afiliar Mascota</h4>
                             <p class="avi-action-sub text-emerald-100">
                                 <span>Nueva afiliac.</span>
-                                <span>→</span>
+                                <span class="text-sm font-black">&rarr;</span>
                             </p>
                         </div>
                     </a>
@@ -176,7 +176,7 @@
                             <h4 class="avi-action-title text-slate-900 dark:text-white">Ver Portal</h4>
                             <p class="avi-action-sub text-slate-500 dark:text-slate-400">
                                 <span>Abrir portal</span>
-                                <span>→</span>
+                                <span class="text-sm font-black">&rarr;</span>
                             </p>
                         </div>
                     </a>
@@ -195,7 +195,7 @@
                             <h4 class="avi-action-title text-slate-900 dark:text-white">Imprimir QR</h4>
                             <p class="avi-action-sub text-slate-500 dark:text-slate-400">
                                 <span>Afiche mostrador</span>
-                                <span>→</span>
+                                <span class="text-sm font-black">&rarr;</span>
                             </p>
                         </div>
                     </a>
@@ -217,7 +217,7 @@
                             </div>
                             <a href="/admin/{{ $tenantSlug }}/subscriptions" class="text-xs font-bold text-blue-600 dark:text-cyan-400 hover:underline flex items-center gap-1">
                                 <span>Ver todas</span>
-                                <span>→</span>
+                                <span>&rarr;</span>
                             </a>
                         </div>
 
@@ -226,10 +226,10 @@
                             <div class="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-2xl mb-2 text-slate-400">
                                 📅
                             </div>
-                            <h4 class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-200">
+                            <h4 class="text-sm font-black text-slate-800 dark:text-slate-200">
                                 Sin vencimientos en los próximos 15 días
                             </h4>
-                            <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1 max-w-xs">
+                            <p class="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-xs">
                                 No tienes renovaciones pendientes. Siguiente revisión automática: mañana 08:00 AM
                             </p>
                         </div>
@@ -238,7 +238,7 @@
                     <div class="pt-2">
                         <a href="/admin/{{ $tenantSlug }}/plans" class="w-full py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-center gap-1.5 transition">
                             <span>Ver planes activos</span>
-                            <span>›</span>
+                            <span>&rsaquo;</span>
                         </a>
                     </div>
                 </div>
@@ -253,20 +253,19 @@
                                     Uso de beneficios clínicos
                                 </h3>
                             </div>
-                            <span class="text-xs font-black px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
+                            <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
                                 {{ $totalUsed }} / {{ $totalGranted }} ({{ $usagePercent }}%)
                             </span>
                         </div>
 
-                        {{-- Barra de Progreso Visual --}}
+                        {{-- Barra de Progreso Visual Gruesa y Estilizada --}}
                         <div class="space-y-1.5 my-3">
                             <div class="flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-300">
                                 <span>Progreso de redención</span>
                                 <span class="text-cyan-600 dark:text-cyan-400">{{ $usagePercent }}%</span>
                             </div>
-                            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
-                                <div class="bg-gradient-to-r from-blue-500 to-cyan-500 h-2.5 rounded-full transition-all duration-500" 
-                                     style="width: {{ max(4, $usagePercent) }}%"></div>
+                            <div style="width: 100%; height: 10px; border-radius: 9999px; background: #e2e8f0; overflow: hidden;">
+                                <div style="height: 10px; border-radius: 9999px; background: linear-gradient(90deg, #2563eb, #06b6d4); width: {{ max(4, $usagePercent) }}%; transition: width 0.5s ease;"></div>
                             </div>
                             <p class="text-[11px] text-slate-400 font-medium">Servicios canjeados este ciclo de facturación</p>
                         </div>
@@ -279,14 +278,14 @@
                     <div class="pt-2">
                         <a href="{{ $redeemUrl }}" class="w-full py-2 px-3 rounded-xl bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-800 text-xs font-bold text-blue-700 dark:text-blue-300 flex items-center justify-center gap-1.5 transition">
                             <span>⚡ Abrir Terminal de Canje</span>
-                            <span>›</span>
+                            <span>&rsaquo;</span>
                         </a>
                     </div>
                 </div>
             </div>
 
             {{-- 5. TARJETA INFERIOR: OPORTUNIDAD DE FIDELIZACIÓN (AVI RECOMIENDA) --}}
-            <div class="rounded-2xl border border-blue-200/80 dark:border-blue-800/60 bg-gradient-to-r from-blue-50/70 via-white to-cyan-50/60 dark:from-slate-900 dark:via-slate-800/90 dark:to-blue-950/30 p-5 shadow-xs">
+            <div class="rounded-2xl border border-blue-200/90 dark:border-blue-800/60 bg-gradient-to-r from-blue-50/80 via-white to-cyan-50/60 dark:from-slate-900 dark:via-slate-800/90 dark:to-blue-950/30 p-5 shadow-xs">
                 <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-blue-100 dark:border-slate-800 flex-wrap gap-2">
                     <div class="flex items-center gap-2">
                         <span class="text-lg text-amber-500">⭐</span>
@@ -303,26 +302,26 @@
                 </div>
 
                 <div class="space-y-3">
-                    <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+                    <p class="text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
                         {{ $recommendation['title'] ?? 'Tienes 1 paciente con beneficios disponibles sin redimir.' }}
                     </p>
 
                     <div class="flex items-center gap-2.5 flex-wrap pt-1">
                         <a href="{{ $recommendation['pet_url'] ?? '#' }}" 
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition shadow-2xs">
+                           class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition shadow-2xs">
                             <span>👁️</span>
                             <span>Ver Paciente ({{ $recommendation['pet_name'] ?? 'Mascota' }})</span>
                         </a>
 
                         <a href="{{ $redeemUrl }}" 
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-bold text-blue-600 dark:text-cyan-400 transition shadow-2xs">
+                           class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-bold text-blue-600 dark:text-cyan-400 transition shadow-2xs">
                             <span>⚡</span>
                             <span>Canje en Recepción</span>
                         </a>
 
                         @if(!empty($recommendation['whatsapp_url']))
                             <a href="{{ $recommendation['whatsapp_url'] }}" target="_blank"
-                               class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs">
+                               style="background-color: #059669 !important; color: #ffffff !important; border: 1px solid #047857 !important; border-radius: 0.75rem !important; padding: 0.5rem 1.15rem !important; font-size: 0.75rem !important; font-weight: 800 !important; display: inline-flex !important; align-items: center !important; gap: 0.5rem !important; text-decoration: none !important; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25) !important;">
                                 <span>💬</span>
                                 <span>Enviar WhatsApp a {{ $recommendation['customer_name'] ?? 'Tutor' }}</span>
                             </a>
@@ -361,16 +360,16 @@
                     <div class="flex flex-col items-center text-center py-2">
                         <div class="relative w-20 h-20 mb-2 flex items-center justify-center">
                             <!-- Glowing halo ring -->
-                            <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-400/20 via-blue-500/20 to-purple-500/20 blur-md animate-pulse"></div>
+                            <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-400/25 via-blue-500/25 to-purple-500/25 blur-md animate-pulse"></div>
                             
                             <!-- Sleek 3D Robot SVG -->
-                            <div class="relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-b from-slate-800 to-slate-950 p-2 shadow-lg border border-cyan-400/30 flex items-center justify-center">
+                            <div class="relative z-10 w-16 h-16 rounded-2xl bg-gradient-to-b from-slate-800 to-slate-950 p-2 shadow-lg border border-cyan-400/40 flex items-center justify-center">
                                 <svg class="w-12 h-12" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <!-- Robot Antenna -->
                                     <circle cx="32" cy="8" r="3.5" fill="#06b6d4" />
                                     <line x1="32" y1="11.5" x2="32" y2="18" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" />
                                     <!-- Head Shell -->
-                                    <rect x="14" y="18" width="36" height="30" rx="10" fill="url(#bot_head_grad_modal)" stroke="#0ea5e9" stroke-width="1.5" />
+                                    <rect x="14" y="18" width="36" height="30" rx="10" fill="url(#bot_head_grad_modal2)" stroke="#0ea5e9" stroke-width="1.5" />
                                     <!-- Glossy Visor Screen -->
                                     <rect x="18" y="24" width="28" height="15" rx="6" fill="#0b132b" />
                                     <!-- Robot Glowing Eyes -->
@@ -383,7 +382,7 @@
                                     <rect x="50" y="27" width="4" height="10" rx="2" fill="#38bdf8" />
                                     <path d="M24 51L22 58H42L40 51" fill="#0284c7" />
                                     <defs>
-                                        <linearGradient id="bot_head_grad_modal" x1="14" y1="18" x2="50" y2="48" gradientUnits="userSpaceOnUse">
+                                        <linearGradient id="bot_head_grad_modal2" x1="14" y1="18" x2="50" y2="48" gradientUnits="userSpaceOnUse">
                                             <stop stop-color="#1e293b"/>
                                             <stop offset="1" stop-color="#0f172a"/>
                                         </linearGradient>
@@ -404,22 +403,22 @@
                     <div class="space-y-2">
                         <button type="button" wire:click="selectPrompt('mrr')" class="avi-prompt-pill">
                             <span>📊 ¿Cómo va el MRR de este mes?</span>
-                            <span class="text-slate-400 font-bold">›</span>
+                            <span class="text-slate-400 font-bold">&rsaquo;</span>
                         </button>
 
                         <button type="button" wire:click="selectPrompt('whatsapp')" class="avi-prompt-pill">
                             <span>💬 Redactar WhatsApp para María (Max)</span>
-                            <span class="text-slate-400 font-bold">›</span>
+                            <span class="text-slate-400 font-bold">&rsaquo;</span>
                         </button>
 
                         <button type="button" wire:click="selectPrompt('renewals')" class="avi-prompt-pill">
                             <span>📅 ¿Qué planes vencen esta semana?</span>
-                            <span class="text-slate-400 font-bold">›</span>
+                            <span class="text-slate-400 font-bold">&rsaquo;</span>
                         </button>
 
                         <button type="button" wire:click="selectPrompt('promo')" class="avi-prompt-pill">
                             <span>💡 Sugerir promoción para nuevos tutores</span>
-                            <span class="text-slate-400 font-bold">›</span>
+                            <span class="text-slate-400 font-bold">&rsaquo;</span>
                         </button>
                     </div>
 
