@@ -51,6 +51,10 @@ class VetAdminPanelProvider extends PanelProvider
                 'panels::sidebar.nav.start',
                 fn () => view('filament.vet-admin.components.quick-redeem-cta')
             )
+            ->renderHook(
+                'panels::sidebar.footer',
+                fn () => view('filament.vet-admin.components.saas-plan-sidebar-badge')
+            )
             ->discoverResources(in: app_path('Filament/VetAdmin/Resources'), for: 'App\\Filament\\VetAdmin\\Resources')
             ->discoverPages(in: app_path('Filament/VetAdmin/Pages'), for: 'App\\Filament\\VetAdmin\\Pages')
             ->pages([
