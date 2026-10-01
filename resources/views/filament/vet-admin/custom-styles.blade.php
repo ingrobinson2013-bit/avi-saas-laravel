@@ -236,21 +236,21 @@
         }
     }
 
-    /* 4. GRID DE OPERACIONES CLÍNICAS (4 columnas forzadas en desktop) */
+    /* 4. GRID DE OPERACIONES CLÍNICAS (1 SOLA FILA HORIZONTAL DE 4 COLUMNAS) */
     .avi-operations-grid {
         display: grid !important;
-        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-        gap: 0.875rem !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 0.75rem !important;
         width: 100% !important;
     }
-    @media (min-width: 640px) {
+    @media (max-width: 768px) {
         .avi-operations-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         }
     }
-    @media (min-width: 1024px) {
+    @media (max-width: 480px) {
         .avi-operations-grid {
-            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
         }
     }
 
