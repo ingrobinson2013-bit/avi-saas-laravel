@@ -81,26 +81,22 @@ class VetStatsOverviewWidget extends BaseWidget
             Stat::make('Ingresos recurrentes (MRR)', '$' . number_format($mrrReal, 0, ',', '.') . ' COP')
                 ->description('↑ Este mes')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success')
-                ->chart([max(0, $mrrReal * 0.7), max(0, $mrrReal * 0.85), $mrrReal]),
+                ->color('success'),
 
             Stat::make('Mascotas Activas', (string) $petsCount)
-                ->description('Con plan de bienestar al día')
+                ->description('Con plan preventivo al día')
                 ->descriptionIcon('heroicon-m-heart')
-                ->color('info')
-                ->chart([max(0, $petsCount - 1), $petsCount]),
+                ->color('info'),
 
-            Stat::make('🔔 Renovaciones', (string) $expiring15Days)
+            Stat::make('Renovaciones Próximas', (string) $expiring15Days)
                 ->description($renovDesc)
                 ->descriptionIcon($expiring15Days > 0 ? 'heroicon-m-exclamation-triangle' : 'heroicon-m-check-badge')
-                ->color($expiring15Days > 0 ? 'warning' : 'emerald')
-                ->chart([$expiring15Days + 1, $expiring15Days]),
+                ->color($expiring15Days > 0 ? 'warning' : 'success'),
 
             Stat::make('Uso de Beneficios', "{$totalUsed} / {$totalGranted} utilizados")
                 ->description('Servicios canjeados este ciclo')
                 ->descriptionIcon('heroicon-m-sparkles')
-                ->color('primary')
-                ->chart([max(0, $totalUsed - 1), $totalUsed]),
+                ->color('primary'),
         ];
     }
 }

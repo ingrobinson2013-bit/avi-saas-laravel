@@ -170,32 +170,52 @@
         width: 100% !important;
     }
     .fi-wi-stats-overview-stat {
-        padding: 0.875rem 1rem !important;
-        border-radius: 1rem !important;
+        padding: 1.15rem 1.25rem !important;
+        border-radius: 1.125rem !important;
         min-width: 0 !important;
         overflow: hidden !important;
+        min-height: 110px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
     }
     .fi-wi-stats-overview-stat-value {
-        font-size: 1.2rem !important;
-        line-height: 1.2 !important;
+        font-size: 1.65rem !important;
+        font-weight: 900 !important;
+        line-height: 1.25 !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
+        letter-spacing: -0.025em !important;
     }
     .fi-wi-stats-overview-stat-label {
-        font-size: 0.7rem !important;
-        font-weight: 700 !important;
+        font-size: 0.725rem !important;
+        font-weight: 800 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.04em !important;
+        letter-spacing: 0.05em !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
+        margin-bottom: 0.25rem !important;
     }
     .fi-wi-stats-overview-stat-description {
-        font-size: 0.725rem !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
+        margin-top: 0.35rem !important;
+    }
+
+    /* ELIMINAR CUALQUIER CHART O POLÍGONO DE SPARKLINE QUE CREE MANCHAS O DEFORME LA TARJETA */
+    .fi-wi-stats-overview-stat-chart,
+    .fi-wi-stats-overview-stat svg {
+        display: none !important;
+    }
+    .fi-wi-stats-overview-stat-description svg {
+        display: inline-block !important;
+        width: 1rem !important;
+        height: 1rem !important;
     }
 
     /* 4 STATS OPERATIVOS EN FILA BALANCEADA (Desktop) */
