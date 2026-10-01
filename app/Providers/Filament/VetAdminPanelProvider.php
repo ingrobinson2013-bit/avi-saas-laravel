@@ -31,7 +31,7 @@ class VetAdminPanelProvider extends PanelProvider
             ->tenant(Tenant::class, slugAttribute: 'slug')
             ->tenantMenu(false)
             ->maxContentWidth(MaxWidth::Full)
-            ->sidebarWidth('18rem')
+            ->sidebarWidth('18.5rem')
             ->sidebarCollapsibleOnDesktop(false)
             ->login()
             ->brandName(fn () => \Filament\Facades\Filament::getTenant()?->name ?? 'Portal Veterinario')

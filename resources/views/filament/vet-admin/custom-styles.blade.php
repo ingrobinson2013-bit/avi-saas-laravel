@@ -97,11 +97,18 @@
         color: #0f172a !important;
     }
 
+    .fi-sidebar-header {
+        padding-left: 1rem !important;
+        padding-right: 0.75rem !important;
+    }
+
     .fi-logo {
         height: auto !important;
         max-height: 4rem !important;
         display: flex !important;
         align-items: center !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
     html:not(.dark) .fi-sidebar {
