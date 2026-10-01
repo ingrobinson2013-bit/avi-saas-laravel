@@ -18,6 +18,7 @@ class SaasSubscriptionStatusWidget extends Widget
     public ?string $trialEndsAtFormatted = '';
     public ?string $paidUntilFormatted = '';
     public string $planTier = 'pro';
+    public string $planName = 'Plan Pro Oficial';
     public int $amountCop = 229000;
     public string $checkoutUrl = '';
     public bool $isJustPaid = false;
@@ -38,8 +39,24 @@ class SaasSubscriptionStatusWidget extends Widget
         $paidUntil = isset($branding['saas_paid_until']) ? \Carbon\Carbon::parse($branding['saas_paid_until']) : null;
         $this->paidUntilFormatted = $paidUntil ? $paidUntil->format('d/m/Y') : null;
         
+        $pricing = [
+            'pay_per_pet' => 50000,
+            'starter' => 99000,
+            'pro' => 229000,
+            'enterprise' => 489000,
+        ];
+
         $this->planTier = $tenant?->saas_plan_tier ?? $branding['saas_plan'] ?? 'pro';
-        $this->amountCop = (int) ($branding['saas_amount_cop'] ?? 229000);
+        $this->amountCop = (int) ($branding['saas_monthly_fee'] ?? $pricing[$this->planTier] ?? 229000);
+        
+        $this->planName = match ($this->planTier) {
+            'starter' => 'Plan Starter',
+            'pro' => 'Plan Pro',
+            'enterprise' => 'Plan Enterprise',
+            'pay_per_pet' => 'Plan Mascota Activa',
+            default => 'Plan Pro Oficial',
+        };
+
         $this->checkoutUrl = "/admin/{$this->slug}/renovar-saas";
         $this->isJustPaid = request()->has('saas_paid') || request()->has('bold_success');
     }
