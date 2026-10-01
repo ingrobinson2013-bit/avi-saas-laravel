@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tenant;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -15,20 +16,24 @@ class ImpersonationController extends Controller
      */
     public function impersonateTenant(string $tenantId)
     {
-        $currentUser = Auth::user();
-        if (!$currentUser) {
-            return redirect('/super-admin/login');
-        }
-
         $tenant = Tenant::findOrFail($tenantId);
+        $currentUser = Auth::user();
 
         // Guardar el ID del SuperAdmin en sesión si no estamos ya impersonando
-        if (!session()->has('impersonator_superadmin_id')) {
+        if ($currentUser && !session()->has('impersonator_superadmin_id')) {
             session(['impersonator_superadmin_id' => $currentUser->id]);
+        } elseif (!session()->has('impersonator_superadmin_id')) {
+            // Si vino por link directo, buscamos al superadmin
+            $superAdmin = User::whereNull('tenant_id')->orWhere('role', 'super_admin')->first();
+            if ($superAdmin) {
+                session(['impersonator_superadmin_id' => $superAdmin->id]);
+            }
         }
 
-        // Buscar un usuario de la clínica o aprovisionar uno administrador
-        $tenantUser = $tenant->users()->first();
+        // Buscar el usuario administrador principal de la clínica
+        $tenantUser = $tenant->users()->where('email', 'petmovilveterinario@gmail.com')->first() 
+            ?? $tenant->users()->first();
+
         if (!$tenantUser) {
             $tenantUser = User::create([
                 'name' => "Admin {$tenant->name}",
@@ -38,9 +43,14 @@ class ImpersonationController extends Controller
             ]);
         }
 
-        Auth::login($tenantUser);
+        // Iniciar sesión con el usuario de la clínica
+        Auth::guard('web')->login($tenantUser, true);
+        session()->regenerate();
+        
+        session(['current_tenant_id' => $tenant->id]);
+        session(['current_tenant_slug' => $tenant->slug]);
 
-        return redirect("/admin/{$tenant->slug}");
+        return redirect()->to("/admin/{$tenant->slug}");
     }
 
     /**
@@ -50,15 +60,17 @@ class ImpersonationController extends Controller
     {
         $superAdminId = session('impersonator_superadmin_id');
         session()->forget('impersonator_superadmin_id');
+        session()->forget('current_tenant_id');
+        session()->forget('current_tenant_slug');
 
-        if ($superAdminId) {
-            $superAdmin = User::find($superAdminId);
-            if ($superAdmin) {
-                Auth::login($superAdmin);
-                return redirect('/super-admin/tenants');
-            }
+        $superAdmin = $superAdminId ? User::find($superAdminId) : User::whereNull('tenant_id')->orWhere('role', 'super_admin')->first();
+
+        if ($superAdmin) {
+            Auth::guard('web')->login($superAdmin, true);
+            session()->regenerate();
+            return redirect()->to('/super-admin/tenants');
         }
 
-        return redirect('/super-admin');
+        return redirect()->to('/super-admin');
     }
 }
