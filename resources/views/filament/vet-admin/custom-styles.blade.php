@@ -110,16 +110,27 @@
         font-weight: 700 !important;
     }
 
-    /* 3. OPTIMIZACIÓN DE DENSIDAD CLÍNICA & REDUCCIÓN DE ESPACIOS EN BLANCO */
+    /* 3. OPTIMIZACIÓN DE DENSIDAD CLÍNICA & REDUCCIÓN TOTAL DE ESPACIOS EN BLANCO */
+    .fi-main {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
     .fi-main-ctn {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
         padding-top: 1rem !important;
         padding-bottom: 2rem !important;
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
     }
     .fi-page-header {
         margin-bottom: 1rem !important;
     }
     .fi-widgets-ctn {
         gap: 1.25rem !important;
+        width: 100% !important;
     }
     .fi-wi-stats-overview-stat {
         padding: 1rem 1.25rem !important;
@@ -134,5 +145,45 @@
         font-weight: 700 !important;
         text-transform: uppercase !important;
         letter-spacing: 0.04em !important;
+    }
+
+    /* 4. GRID DE OPERACIONES CLÍNICAS (4 columnas forzadas en desktop) */
+    .avi-operations-grid {
+        display: grid !important;
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+        gap: 0.875rem !important;
+        width: 100% !important;
+    }
+    @media (min-width: 640px) {
+        .avi-operations-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+    }
+    @media (min-width: 1024px) {
+        .avi-operations-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        }
+    }
+
+    /* 5. TARJETAS DE OPERACIONES EN MODO CLARO Y OSCURO */
+    .avi-op-card {
+        background-color: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 1rem !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+        transition: all 0.15s ease-in-out !important;
+    }
+    .avi-op-card:hover {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1) !important;
+        transform: translateY(-1px) !important;
+    }
+    .dark .avi-op-card {
+        background-color: #162036 !important;
+        border-color: #243452 !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
+    }
+    .dark .avi-op-card:hover {
+        border-color: #60a5fa !important;
     }
 </style>

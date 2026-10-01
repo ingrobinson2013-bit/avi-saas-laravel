@@ -10,6 +10,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -29,6 +30,9 @@ class VetAdminPanelProvider extends PanelProvider
             ->path('admin')
             ->tenant(Tenant::class, slugAttribute: 'slug')
             ->tenantMenu(false)
+            ->maxContentWidth(MaxWidth::Full)
+            ->sidebarWidth('17rem')
+            ->sidebarCollapsibleOnDesktop(true)
             ->login()
             ->brandName(fn () => \Filament\Facades\Filament::getTenant()?->name ?? 'Portal Veterinario')
             ->brandLogo(fn () => view('filament.vet-admin.logo'))
