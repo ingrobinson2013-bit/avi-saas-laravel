@@ -22,3 +22,7 @@ Route::post('/webhooks/payment/{gateway}', function (Request $request, string $g
     $subscription = $paymentService->handleSuccessfulPayment($request->all(), $gateway);
     return response()->json(['status' => 'processed', 'subscription_id' => $subscription->id]);
 });
+
+// Webhook Oficial de Bold (Automático con validación de firmas)
+Route::post('/webhooks/bold', [App\Http\Controllers\BoldWebhookController::class, 'handle']);
+

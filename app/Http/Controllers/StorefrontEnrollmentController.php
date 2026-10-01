@@ -148,9 +148,33 @@ class StorefrontEnrollmentController extends Controller
 
         $contractId = $subscription->gateway_subscription_id;
         $clinicPhone = preg_replace('/[^0-9]/', '', $tenant->branding['phone'] ?? '3508742543');
-        $planPrice = ($billingCycle === 'annual') ? '$' . number_format($plan->price_annual ?? 540000, 0, ',', '.') . ' COP/año' : '$' . number_format($plan->price_monthly ?? 50000, 0, ',', '.') . ' COP/mes';
+        $planPrice = ($billingCycle === 'annual') ? '$' . number_format($plan->price_annual ?? ($plan->price_cop * 12 * 0.9), 0, ',', '.') . ' COP/año' : '$' . number_format($plan->price_cop ?? 50000, 0, ',', '.') . ' COP/mes';
         $carnetUrl = url("/v/{$tenant->slug}/carnet/{$contractId}");
-        $boldPaymentUrl = $tenant->branding['payment_bold_link'] ?? null;
+        
+        // Generar Link dinámico de Bold
+        $boldPaymentUrl = null;
+        if (in_array($paymentMethod, ['bold', 'card', 'card_pse'])) {
+            $amountToCharge = ($billingCycle === 'annual') ? ($plan->price_annual ?? ($plan->price_cop * 12 * 0.9)) : $plan->price_cop;
+            $boldService = app(\App\Services\BoldPaymentService::class);
+            $boldRes = $boldService->createPaymentLink(
+                $contractId,
+                $amountToCharge,
+                "{$tenant->name} - {$plan->name} ({$validated['pet_name']})",
+                [
+                    'email' => $validated['tutor_email'],
+                    'name' => $validated['tutor_name'],
+                    'phone' => $validated['tutor_phone'],
+                ],
+                url("/v/{$tenant->slug}/carnet/{$contractId}?paid=1"),
+                $tenant
+            );
+            if ($boldRes['success']) {
+                $boldPaymentUrl = $boldRes['payment_url'];
+            }
+        }
+        if (!$boldPaymentUrl) {
+            $boldPaymentUrl = $tenant->branding['payment_bold_link'] ?? config('bold.default_payment_link');
+        }
 
         $paymentText = match($paymentMethod) {
             'bold', 'card_pse', 'card' => '💳 Tarjeta / PSE (Bold)',

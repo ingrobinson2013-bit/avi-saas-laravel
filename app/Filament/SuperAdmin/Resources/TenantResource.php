@@ -172,6 +172,38 @@ class TenantResource extends Resource
                                     }),
                             ]),
 
+                        Forms\Components\Tabs\Tab::make('Pasarela de Pagos (Bold & Cuentas)')
+                            ->icon('heroicon-o-banknotes')
+                            ->schema([
+                                Forms\Components\TextInput::make('branding.payment_bold_link')
+                                    ->label('Link de Pago de Bold de la Clínica (Smart Link)')
+                                    ->placeholder('https://checkout.bold.co/payment/LNK_...')
+                                    ->helperText('Enlace oficial para que los tutores paguen sus planes con PSE, Tarjeta y Botón Bancolombia.'),
+
+                                Forms\Components\Grid::make(2)->schema([
+                                    Forms\Components\TextInput::make('branding.bold_api_key')
+                                        ->label('Bold API Key (Para checkout automatizado)')
+                                        ->placeholder('B_pk_live_... / sandbox key')
+                                        ->password()
+                                        ->helperText('Para generar links dinámicos y validar pagos por Webhook.'),
+
+                                    Forms\Components\TextInput::make('branding.bold_secret_key')
+                                        ->label('Bold Secret Key (Firma SHA256)')
+                                        ->placeholder('Llave secreta de integridad')
+                                        ->password(),
+                                ]),
+
+                                Forms\Components\Grid::make(2)->schema([
+                                    Forms\Components\TextInput::make('branding.payment_nequi')
+                                        ->label('Número Nequi / Daviplata Oficial')
+                                        ->placeholder('3508742543'),
+
+                                    Forms\Components\TextInput::make('branding.payment_bank_info')
+                                        ->label('Cuenta Bancaria Oficial')
+                                        ->placeholder('Bancolombia Ahorros # 123-456789-01'),
+                                ]),
+                            ]),
+
                         Forms\Components\Tabs\Tab::make('Marca Blanca & Colores')
                             ->icon('heroicon-o-swatch')
                             ->schema([
