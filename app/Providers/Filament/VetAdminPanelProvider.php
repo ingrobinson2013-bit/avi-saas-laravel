@@ -62,7 +62,10 @@ class VetAdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/VetAdmin/Widgets'), for: 'App\\Filament\\VetAdmin\\Widgets')
             ->widgets([
-                // Widgets descubiertos automáticamente
+                \App\Filament\VetAdmin\Widgets\SaasSubscriptionStatusWidget::class,
+                \App\Filament\VetAdmin\Widgets\VetStatsOverviewWidget::class,
+                \App\Filament\VetAdmin\Widgets\ExpiringSubscriptionsWidget::class,
+                \App\Filament\VetAdmin\Widgets\RecentRedemptionsFeedWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

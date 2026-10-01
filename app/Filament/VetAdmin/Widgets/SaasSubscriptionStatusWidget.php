@@ -7,11 +7,11 @@ use Filament\Widgets\Widget;
 
 class SaasSubscriptionStatusWidget extends Widget
 {
-    protected static ?int $sort = 0; // Se muestra primero en la parte superior del Dashboard
+    protected static ?int $sort = -1; // Se muestra primero en la parte superior del Dashboard
     protected int | string | array $columnSpan = 'full';
     protected static string $view = 'filament.vet-admin.widgets.saas-subscription-status';
 
-    public function getViewData(): array
+    protected function getViewData(): array
     {
         $tenant = Filament::getTenant();
         $slug = $tenant?->slug ?? session('current_tenant_slug') ?? 'vet-pet-patitas';
