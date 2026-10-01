@@ -40,6 +40,7 @@ class VetAdminPanelProvider extends PanelProvider
             ->favicon('/logo.svg')
             ->font('Plus Jakarta Sans')
             ->darkMode(true)
+            ->defaultAvatarProvider(\App\AvatarProviders\ClinicAvatarProvider::class)
             ->colors([
                 'primary' => Color::Blue,
                 'info' => Color::Cyan,

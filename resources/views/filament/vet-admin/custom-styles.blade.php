@@ -288,4 +288,27 @@
             grid-template-columns: 390px minmax(0, 1fr) !important;
         }
     }
+
+    /* 7. BOTÓN DE TEMA & AVATAR EN TOPBAR */
+    #avi-theme-toggle-btn {
+        transition: all 0.15s ease-in-out !important;
+    }
+    #avi-theme-toggle-btn:hover {
+        transform: translateY(-1px) !important;
+    }
+    .fi-user-avatar,
+    .fi-avatar {
+        width: 2.15rem !important;
+        height: 2.15rem !important;
+        min-width: 2.15rem !important;
+        min-height: 2.15rem !important;
+        border-radius: 9999px !important;
+        border: 2px solid #3b82f6 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+        display: block !important;
+    }
+    .dark .fi-user-avatar,
+    .dark .fi-avatar {
+        border-color: #38bdf8 !important;
+    }
 </style>
