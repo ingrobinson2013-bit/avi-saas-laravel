@@ -1,28 +1,20 @@
 @php
     $tenant = \Filament\Facades\Filament::getTenant() ?? auth()->user()?->tenant ?? \App\Models\Tenant::first();
-    $slug = $tenant?->slug ?? session('current_tenant_slug') ?? 'vet-pet-patitas';
+    $clinicName = $tenant?->name ?? 'Clínica Veterinaria';
+    $rawCity = $tenant?->branding['city'] ?? 'Sede Principal';
+    $city = trim(explode(',', $rawCity)[0]);
 @endphp
 
-<div class="hidden sm:flex items-center gap-2 ml-2">
-    {{-- Indicador en Vivo --}}
-    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700">
+<div class="hidden md:flex items-center gap-2.5 ml-1">
+    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shadow-2xs">
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>En Vivo</span>
+        <span>Sede Activa</span>
     </span>
-
-    {{-- Accesos Rápidos Operativos en la Barra Superior --}}
-    <a href="/admin/{{ $slug }}/counter-redeem" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-2xs transition">
-        <span>🩺</span>
-        <span>Canje en Caja</span>
-    </a>
-
-    <a href="/v/{{ $slug }}/afiche" target="_blank" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition">
-        <span>🖨️</span>
-        <span>Afiche QR</span>
-    </a>
-
-    <a href="/v/{{ $slug }}" target="_blank" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition">
-        <span>🌐</span>
-        <span>Web Pacientes</span>
-    </a>
+    <span class="text-xs font-black text-slate-800 dark:text-slate-200">
+        {{ $clinicName }}
+    </span>
+    <span class="text-slate-300 dark:text-slate-600 text-xs">•</span>
+    <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">
+        {{ $city }}
+    </span>
 </div>

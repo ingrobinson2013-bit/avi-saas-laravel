@@ -89,11 +89,34 @@
         background-color: rgba(255, 255, 255, 0.03) !important;
     }
 
-    /* 2. MODO CLARO SANITARIO (Limpio y de Alto Contraste) */
+    /* 2. MODO CLARO CLÍNICO MODERNO (Estilo Apple Health / Epic MedTech) */
     html:not(.dark) body,
-    html:not(.dark) .fi-layout {
-        background-color: #f8fafc !important;
+    html:not(.dark) .fi-layout,
+    html:not(.dark) .fi-main {
+        background-color: #f1f5f9 !important; /* Soft clinical slate */
         color: #0f172a !important;
+    }
+
+    html:not(.dark) .fi-sidebar {
+        background-color: #ffffff !important;
+        border-right: 1px solid #e2e8f0 !important;
+        box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.02) !important;
+    }
+
+    html:not(.dark) .fi-topbar {
+        background-color: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+    }
+
+    /* Elevación limpia para tarjetas y widgets en modo claro */
+    html:not(.dark) .fi-section,
+    html:not(.dark) .fi-wi-stats-overview-stat,
+    html:not(.dark) .fi-ta-ctn {
+        background-color: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04) !important;
+        border-radius: 1rem !important;
     }
 
     html:not(.dark) .fi-header-heading,
