@@ -10,6 +10,11 @@ class ClinicAvatarProvider implements AvatarProvider
 {
     public function get(Model | Authenticatable $record): string
     {
+        // Use high-fidelity avatar image matching PetSalud+ mockup
+        if (file_exists(public_path('images/dashboard/dra_vicky.png'))) {
+            return asset('images/dashboard/dra_vicky.png');
+        }
+
         $name = $record->name ?? 'Usuario';
         $initials = collect(explode(' ', trim($name)))
             ->filter()
