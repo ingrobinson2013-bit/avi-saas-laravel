@@ -380,4 +380,80 @@
     .fi-page-dashboard header.fi-header {
         display: none !important;
     }
+
+    /* =========================================================
+       AVI PETSALUD+ MOCKUP: LAYOUT ENGINE PURO (Garantizado)
+       ========================================================= */
+    .avi-workspace-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1.25rem !important;
+        width: 100% !important;
+        align-items: flex-start !important;
+    }
+    @media (min-width: 1200px) {
+        .avi-workspace-layout {
+            flex-direction: row !important;
+        }
+    }
+
+    .avi-main-column {
+        width: 100% !important;
+        flex: 1 1 0% !important;
+        min-width: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+
+    .avi-ai-column {
+        width: 100% !important;
+        flex-shrink: 0 !important;
+    }
+    @media (min-width: 1200px) {
+        .avi-ai-column {
+            width: 320px !important;
+            position: sticky !important;
+            top: 1rem !important;
+        }
+    }
+
+    /* 4 KPIs en 1 fila */
+    .avi-kpi-row {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 0.875rem !important;
+        width: 100% !important;
+    }
+    @media (min-width: 1024px) {
+        .avi-kpi-row {
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        }
+    }
+
+    /* Acciones rápidas en 1 fila */
+    .avi-ops-row {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 0.75rem !important;
+        width: 100% !important;
+    }
+    @media (min-width: 1024px) {
+        .avi-ops-row {
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        }
+    }
+
+    /* Fila media (2 columnas) */
+    .avi-middle-row {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+        width: 100% !important;
+    }
+    @media (min-width: 1024px) {
+        .avi-middle-row {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+    }
 </style>

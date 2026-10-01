@@ -69,6 +69,16 @@ class Dashboard extends BaseDashboard
         return [];
     }
 
+    public function getHeaderWidgets(): array
+    {
+        return [];
+    }
+
+    public function getFooterWidgets(): array
+    {
+        return [];
+    }
+
     public function mount(): void
     {
         $tenant = Filament::getTenant();

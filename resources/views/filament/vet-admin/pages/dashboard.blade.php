@@ -1,10 +1,10 @@
 <x-filament-panels::page class="fi-dashboard-custom-page">
-    <div class="w-full flex flex-col xl:flex-row gap-5 items-start">
+    <div class="avi-workspace-layout">
         
         {{-- =========================================================
              COLUMNA IZQUIERDA: ÁREA DE OPERACIÓN PRINCIPAL (~72%)
              ========================================================= --}}
-        <div class="w-full xl:flex-1 min-w-0 space-y-4">
+        <div class="avi-main-column">
             
             {{-- 1. HERO WELCOME CARD --}}
             <div class="relative overflow-hidden rounded-2xl border border-cyan-100 dark:border-cyan-900/40 bg-gradient-to-r from-cyan-50/80 via-sky-50/40 to-white dark:from-slate-900 dark:via-slate-800/80 dark:to-cyan-950/30 p-5 sm:p-6 shadow-sm">
@@ -57,7 +57,7 @@
             </div>
 
             {{-- 2. 4 KPI CARDS (EN 1 SOLA FILA HORIZONTAL) --}}
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="avi-kpi-row">
                 <!-- KPI 1: MRR -->
                 <div class="relative overflow-hidden rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-xs hover:shadow-md transition-all">
                     <div class="flex items-center justify-between mb-2">
@@ -152,7 +152,7 @@
                     </span>
                 </div>
 
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="avi-ops-row">
                     {{-- 1. Canjear Beneficio (Destacado Azul Royal) --}}
                     <a href="{{ $redeemUrl }}" 
                        class="group relative overflow-hidden rounded-xl p-3 sm:p-3.5 flex flex-col justify-between h-[96px] text-white shadow-xs hover:shadow-md transition-all transform hover:-translate-y-0.5 border border-blue-600/50"
@@ -238,7 +238,7 @@
             </div>
 
             {{-- 4. FILA MEDIA: RENOVACIONES PRÓXIMAS & USO DE BENEFICIOS --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="avi-middle-row">
                 
                 {{-- Caja Izquierda: Renovaciones Próximas --}}
                 <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-xs flex flex-col justify-between">
@@ -371,7 +371,7 @@
         {{-- =========================================================
              COLUMNA DERECHA: ASISTENTE IA BETA DEDICADO (~28% / 330px)
              ========================================================= --}}
-        <div class="w-full xl:w-[330px] shrink-0 sticky top-4">
+        <div class="avi-ai-column">
             <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-xs flex flex-col justify-between min-h-[580px]">
                 
                 <div class="space-y-4">
