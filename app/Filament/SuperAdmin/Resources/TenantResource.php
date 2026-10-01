@@ -438,6 +438,12 @@ class TenantResource extends Resource
                     }),
 
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('impersonate')
+                        ->label('🔑 Entrar al Panel de la Clínica (Soporte)')
+                        ->icon('heroicon-o-key')
+                        ->color('warning')
+                        ->url(fn (Tenant $record): string => url("/super-admin/impersonate/{$record->id}")),
+
                     Tables\Actions\Action::make('registerPayment')
                         ->label('➕ Registrar Pago Manual / Renovación')
                         ->icon('heroicon-o-banknotes')

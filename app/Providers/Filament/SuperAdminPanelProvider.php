@@ -44,6 +44,9 @@ class SuperAdminPanelProvider extends PanelProvider
             ])
             ->widgets([
                 SuperAdminStatsOverviewWidget::class,
+                \App\Filament\SuperAdmin\Widgets\ExpiringTrialsWidget::class,
+                \App\Filament\SuperAdmin\Widgets\SaasRevenueChartWidget::class,
+                \App\Filament\SuperAdmin\Widgets\SaasPlanDistributionWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

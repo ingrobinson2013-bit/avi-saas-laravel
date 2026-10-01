@@ -48,6 +48,10 @@ class VetAdminPanelProvider extends PanelProvider
                 fn () => view('filament.vet-admin.custom-styles')
             )
             ->renderHook(
+                'panels::body.start',
+                fn () => view('filament.vet-admin.components.impersonation-banner')
+            )
+            ->renderHook(
                 'panels::sidebar.nav.start',
                 fn () => view('filament.vet-admin.components.quick-redeem-cta')
             )
