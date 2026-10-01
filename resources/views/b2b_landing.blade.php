@@ -199,7 +199,7 @@
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
                             </span>
-                            <span>15 días gratis · Luego desde $5.000 COP por mascota o tarifa plana mensual · Sin tarjeta</span>
+                            <span>15 días gratis · Luego desde $50.000 COP (paquete 10 mascotas) o tarifa plana · Sin tarjeta</span>
                         </div>
 
                         <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
@@ -1165,40 +1165,42 @@
                     </span>
                     <h2 class="text-3xl sm:text-5xl font-black text-slate-900 mt-2">Prueba gratuita de 15 días</h2>
                     <p class="text-sm sm:text-base text-slate-600">
-                        Sin tarjeta de crédito requerida. Luego tú decides: paga solo por mascota activa ($5.000 COP) mientras despegas o ahorra con una tarifa plana fija:
+                        Sin tarjeta de crédito requerida. Luego tú decides: paquetes prepago desde $50.000 COP (10 mascotas) o tarifa plana mensual anticipada:
                     </p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
                     
-                    <!-- 1. MODALIDAD FLEXIBLE: POR MASCOTA ACTIVA -->
+                    <!-- 1. MODALIDAD FLEXIBLE: POR MASCOTA ACTIVA (PREPAGO) -->
                     <div class="clinic-card p-6 sm:p-7 rounded-3xl flex flex-col justify-between bg-gradient-to-b from-blue-50/50 to-white border-2 border-blue-400/80 shadow-md reveal-on-scroll relative">
                         <div class="space-y-4">
                             <span class="inline-block px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-black uppercase tracking-wider">
-                                🌱 Cero Riesgo
+                                🌱 Cero Riesgo · Prepago
                             </span>
                             <h3 class="text-xl font-black text-slate-900">Por Mascota</h3>
                             <div class="flex items-baseline space-x-1">
                                 <span class="text-3xl sm:text-4xl font-extrabold text-blue-700 font-mono">$5.000</span>
-                                <span class="text-slate-500 text-xs font-semibold">COP / mascota / mes</span>
+                                <span class="text-slate-500 text-xs font-semibold">COP / mascota</span>
+                            </div>
+                            <div class="text-[11px] font-bold text-blue-900 bg-blue-100/60 px-2.5 py-1 rounded-lg border border-blue-200">
+                                Paquetes prepago desde 10 mascotas = $50.000 COP
                             </div>
                             <p class="text-xs text-slate-600 leading-relaxed">
-                                Sin cuota fija obligatoria. Pagas solo $5.000 COP por mascota activa mientras armas tu base.
+                                Sin deudas a mes vencido. Recargas cupos prepago a medida que tu clínica afilia mascotas.
                             </p>
                             <hr class="border-slate-200">
                             <ul class="space-y-2 text-xs text-slate-700 font-medium">
-                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span><strong>10 mascotas = solo $50.000/mes</strong></span></li>
-                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span><strong>20 mascotas = solo $100.000/mes</strong></span></li>
-                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Con 20+ mascotas te conviene pasar a Starter ($99k)</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Si un mes tienes 0 afiliados, pagas $0</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span><strong>Paquete de 10 mascotas = $50.000 mes</strong></span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Recaudas ~$650.000 y pagas solo $50.000 (92% margen)</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Con 20+ mascotas pasas a Starter ($99k) y ahorras</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Mes anticipado: cero cartera ni sorpresas</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Portal web propio con tu marca</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Afiche de mostrador con QR</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Carnet digital oficial de tutores</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Mostrador de canje en recepción</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Afiche de mostrador con QR oficial</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Carnet digital para tutores y mostrador</span></li>
                             </ul>
                         </div>
                         <button type="button" onclick="openRegisterModal('pay_per_pet')" class="mt-6 w-full py-3 text-center rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-xs border border-blue-300 transition">
-                            Elegir $5.000 / Mascota
+                            Elegir Paquete 10 Mascotas ($50.000)
                         </button>
                     </div>
 
@@ -1211,7 +1213,7 @@
                             <h3 class="text-xl font-black text-slate-900">Starter</h3>
                             <div class="flex items-baseline space-x-1">
                                 <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-mono">$99.000</span>
-                                <span class="text-slate-500 text-xs">COP / mes</span>
+                                <span class="text-slate-500 text-xs">COP / mes anticipado</span>
                             </div>
                             <p class="text-xs text-slate-600 leading-relaxed">
                                 Hasta 60 mascotas activas*. Te sale a solo <strong>$1.650 por mascota</strong>.
@@ -1219,8 +1221,9 @@
                             <hr class="border-slate-100">
                             <ul class="space-y-2 text-xs text-slate-700 font-medium">
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span><strong>Ahorro de hasta el 67%</strong> frente a $5.000/mascota</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Mes anticipado sin permanencia forzosa</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Portal web propio con tu marca</span></li>
-                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Afiche de mostrador con QR</span></li>
+                                <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Afiche de mostrador con QR oficial</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>1 Usuario para recepción</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Mostrador de canje en vivo</span></li>
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Soporte por WhatsApp</span></li>
@@ -1289,7 +1292,7 @@
                 </div>
 
                 <div class="mt-8 text-center text-xs text-slate-500 max-w-2xl mx-auto">
-                    * <strong>Mascota activa:</strong> Mascota que cuenta con un plan vigente en el mes. Al terminar tus 15 días gratis puedes elegir pagar por mascota activa ($5.000 COP) o activar una tarifa plana fija.
+                    * <strong>Modalidad Prepago / Mes Anticipado:</strong> Todo paquete o mensualidad se activa por mes anticipado. Así nunca tienes cobros sorpresa a mes vencido ni permanencias obligatorias.
                 </div>
             </div>
         </section>
@@ -1307,6 +1310,16 @@
                 <div class="space-y-4">
                     <details class="clinic-card p-5 rounded-2xl group cursor-pointer reveal-on-scroll">
                         <summary class="font-bold text-sm sm:text-base text-slate-900 flex justify-between items-center list-none">
+                            <span>¿En qué momento se paga el servicio? ¿Mes anticipado o mes vencido?</span>
+                            <span class="text-blue-600 font-bold text-lg group-open:rotate-45 transition-transform duration-200">+</span>
+                        </summary>
+                        <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+                            <strong>Siempre es mes anticipado (prepago)</strong>, garantizando cero deudas acumuladas y total claridad. Tienes tus primeros <strong>15 días 100% gratuitos</strong> para probar todo sin tarjeta de crédito. Al finalizar la prueba, tú decides cómo continuar: puedes recargar un paquete prepago de 10 mascotas por solo $50.000 COP ($5.000 por mascota), o activar tu mensualidad plana (Starter por $99.000 o Profesional por $229.000). Pagas por adelantado el mes de servicio mediante Bancolombia, Nequi o transferencia. Nunca acumulas deudas a mes vencido.
+                        </p>
+                    </details>
+
+                    <details class="clinic-card p-5 rounded-2xl group cursor-pointer reveal-on-scroll">
+                        <summary class="font-bold text-sm sm:text-base text-slate-900 flex justify-between items-center list-none">
                             <span>¿Tengo que reemplazar mi software actual de historia clínica?</span>
                             <span class="text-blue-600 font-bold text-lg group-open:rotate-45 transition-transform duration-200">+</span>
                         </summary>
@@ -1321,17 +1334,17 @@
                             <span class="text-blue-600 font-bold text-lg group-open:rotate-45 transition-transform duration-200">+</span>
                         </summary>
                         <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
-                            <strong>No.</strong> El 100% del dinero cobrado a tus clientes va directo a tus cuentas o medios de pago. No retenemos tu dinero ni cobramos porcentajes por transacción. Tú solo pagas el acceso al software: ya sea $5.000 COP al mes por mascota activa, o una tarifa plana fija mensual.
+                            <strong>No.</strong> El 100% del dinero cobrado a tus clientes va directo a tus cuentas o medios de pago. No retenemos tu dinero ni cobramos porcentajes por transacción. Tú solo pagas el acceso al software: ya sea tu paquete de cupos prepago ($50.000 por 10 mascotas) o tu tarifa plana mensual fija.
                         </p>
                     </details>
 
                     <details class="clinic-card p-5 rounded-2xl group cursor-pointer reveal-on-scroll">
                         <summary class="font-bold text-sm sm:text-base text-slate-900 flex justify-between items-center list-none">
-                            <span>¿Cómo funciona la modalidad de $5.000 COP por mascota activa?</span>
+                            <span>¿Cómo funciona la modalidad de paquetes de $5.000 COP por mascota?</span>
                             <span class="text-blue-600 font-bold text-lg group-open:rotate-45 transition-transform duration-200">+</span>
                         </summary>
                         <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
-                            Es la modalidad de <strong>cero riesgo</strong> para empezar sin costo fijo obligatorio. Solo pagas por cada mascota que tenga un plan activo en el mes. Por ejemplo, si tienes 15 mascotas afiliadas cobrando $65.000/mes, tu clínica recauda $975.000 COP y el costo del software es de solo $75.000 COP (15 × $5.000). Si un mes no tienes ninguna mascota afiliada, pagas $0. Cuando tu clínica alcance 20 o más mascotas, te conviene pasarte al plan Starter ($99.000 COP) para pagar aún menos por mascota.
+                            Es la modalidad de <strong>cero riesgo</strong> para empezar sin costo fijo grande. Funciona mediante <strong>paquetes prepago desde 10 mascotas por $50.000 COP</strong> ($5.000 por mascota activa al mes). Si cobras $65.000/mes a 10 tutores, tu clínica recauda $650.000 COP y el costo del software es de solo $50.000 COP (ganas el 92% limpio). Recargas más cupos solo cuando tu clínica afilie más pacientes. Y cuando alcances 20 o más mascotas, te conviene pasarte al plan Starter ($99.000 COP) para pagar aún menos por mascota.
                         </p>
                     </details>
 
@@ -1371,7 +1384,7 @@
                             <span class="text-blue-600 font-bold text-lg group-open:rotate-45 transition-transform duration-200">+</span>
                         </summary>
                         <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
-                            No solicitamos tarjeta de crédito para iniciar. Al finalizar tu prueba de 15 días, puedes elegir el modelo que prefieras: continuar pagando solo <strong>$5.000 COP por mascota activa</strong> (sin cargo fijo) mientras despegas, o activar una <strong>tarifa mensual fija</strong> con ahorro por volumen (Starter desde $99.000 o Pro por $229.000). Si decides no continuar, tu cuenta se pausa sin ningún cobro forzoso ni penalidad.
+                            No solicitamos tarjeta de crédito para iniciar. Al finalizar tu prueba de 15 días, puedes elegir el modelo que prefieras: recargar un <strong>paquete prepago de 10 mascotas por $50.000 COP</strong> (sin compromisos fijos) o activar una <strong>tarifa mensual fija</strong> con ahorro por volumen (Starter desde $99.000 o Pro por $229.000). Si decides no continuar, tu cuenta se pausa sin ningún cobro forzoso ni penalidad.
                         </p>
                     </details>
                 </div>
@@ -1512,7 +1525,7 @@
             const badge = document.getElementById('modal-tier-badge');
             if (badge) {
                 if (tier === 'pay_per_pet') {
-                    badge.innerText = 'Modalidad: $5.000 / Mascota';
+                    badge.innerText = 'Paquete 10 Mascotas ($50.000)';
                     badge.className = 'inline-flex items-center px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-800 border border-cyan-200 text-[10px] font-bold';
                 } else if (tier === 'starter') {
                     badge.innerText = 'Plan Starter ($99k)';
