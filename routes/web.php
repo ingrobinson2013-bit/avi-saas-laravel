@@ -17,6 +17,21 @@ Route::get('/admin', function () {
     return redirect('/admin/login');
 });
 
+// 2.0 Rutas de Salida / Logout
+Route::match(['get', 'post'], '/logout', function () {
+    auth()->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/admin/login');
+})->name('logout');
+
+Route::match(['get', 'post'], '/admin/{slug}/logout', function (string $slug) {
+    auth()->logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect("/admin/{$slug}/login");
+});
+
 // 2.1 Dashboard React + TypeScript + Inertia.js (Paradigma B: Monolito Moderno)
 Route::get('/admin/{slug}', function (string $slug) {
     if (in_array($slug, ['login', 'logout'])) {

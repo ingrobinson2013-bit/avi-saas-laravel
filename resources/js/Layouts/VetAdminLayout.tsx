@@ -16,7 +16,8 @@ import {
     BookOpen, 
     Search, 
     Headphones,
-    ExternalLink 
+    ExternalLink,
+    LogOut 
 } from 'lucide-react';
 
 interface VetAdminLayoutProps {
@@ -25,6 +26,15 @@ interface VetAdminLayoutProps {
     brandName?: string;
     clinicSubtitle?: string;
     logoUrl?: string | null;
+    saasPlan?: {
+        tier?: string;
+        name?: string;
+        status?: string;
+        statusLabel?: string;
+        paidUntil?: string;
+        manageUrl?: string;
+    };
+    logoutUrl?: string;
     userName?: string;
     userRole?: string;
     activeItem?: string;
@@ -36,6 +46,13 @@ export default function VetAdminLayout({
     brandName = 'Vet-Pet Patitas',
     clinicSubtitle = 'Planes de salud para su mascota',
     logoUrl = null,
+    saasPlan = {
+        name: 'Plan Pro',
+        statusLabel: 'Activo',
+        paidUntil: 'Al día',
+        manageUrl: `/admin/vet-pet-patitas/renovar-saas`
+    },
+    logoutUrl = `/admin/vet-pet-patitas/logout`,
     userName = 'Dra. Vicky Naranjo',
     userRole = 'Administradora de Sede',
     activeItem = 'Inicio'
@@ -113,16 +130,47 @@ export default function VetAdminLayout({
                             </a>
                         );
                     })}
+                    {/* Cerrar Sesión Link */}
+                    <a
+                        href={logoutUrl}
+                        className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-all duration-150 mt-1"
+                    >
+                        <LogOut className="w-4 h-4 shrink-0 text-slate-400" />
+                        <span className="flex-1 truncate">Cerrar Sesión</span>
+                    </a>
                 </nav>
 
-                {/* Footer Pet Card (Mockup Exact HD) */}
-                <div className="p-3 border-t border-slate-100 shrink-0 bg-white">
+                {/* Footer Pet Card & Estado del Plan SaaS */}
+                <div className="p-3 border-t border-slate-100 shrink-0 bg-white space-y-2">
                     <div className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs bg-white">
                         <img 
                             src="/images/dashboard/sidebar_pet_hd.png" 
                             alt="Tu aliado en cada etapa de su vida" 
                             className="w-full h-auto object-cover block"
                         />
+                    </div>
+
+                    {/* Estado del Plan SaaS Card */}
+                    <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs">
+                        <div className="flex items-center justify-between mb-1">
+                            <span className="text-[11px] font-black text-slate-900 truncate">
+                                {saasPlan?.name || 'Plan Pro'}
+                            </span>
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                {saasPlan?.statusLabel || 'Activo'}
+                            </span>
+                        </div>
+                        <p className="text-[9.5px] text-slate-400 mb-2 font-medium">
+                            {saasPlan?.paidUntil ? `Hasta ${saasPlan.paidUntil}` : 'Licencia SaaS al día'}
+                        </p>
+                        <a 
+                            href={saasPlan?.manageUrl || `/admin/${tenantSlug}/renovar-saas`}
+                            className="w-full py-1.5 px-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[10.5px] font-bold flex items-center justify-center gap-1 transition shadow-2xs"
+                        >
+                            <span>Gestionar Plan</span>
+                            <span className="text-[9px]">→</span>
+                        </a>
                     </div>
                 </div>
             </aside>
@@ -201,6 +249,16 @@ export default function VetAdminLayout({
                                 </span>
                             </div>
                         </div>
+
+                        {/* Botón Salir / Logout */}
+                        <a 
+                            href={logoutUrl}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 hover:border-rose-200 transition shadow-2xs ml-1"
+                            title="Cerrar Sesión y Salir del Sistema"
+                        >
+                            <LogOut className="w-3.5 h-3.5 text-rose-500" />
+                            <span className="hidden sm:inline">Salir</span>
+                        </a>
 
                     </div>
                 </header>

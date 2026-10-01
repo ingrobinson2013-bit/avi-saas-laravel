@@ -30,6 +30,15 @@ interface DashboardProps {
     brandName?: string;
     clinicSubtitle?: string;
     logoUrl?: string | null;
+    saasPlan?: {
+        tier?: string;
+        name?: string;
+        status?: string;
+        statusLabel?: string;
+        paidUntil?: string;
+        manageUrl?: string;
+    };
+    logoutUrl?: string;
     cleanCity?: string;
     formattedDate?: string;
     tenantSlug?: string;
@@ -64,6 +73,13 @@ export default function Dashboard({
     brandName = 'Vet-Pet Patitas',
     clinicSubtitle = 'Planes de salud para su mascota',
     logoUrl = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp',
+    saasPlan = {
+        name: 'Plan Pro',
+        statusLabel: 'Activo',
+        paidUntil: 'Al día',
+        manageUrl: `/admin/vet-pet-patitas/renovar-saas`
+    },
+    logoutUrl = `/admin/vet-pet-patitas/logout`,
     cleanCity = 'Cajicá',
     formattedDate = 'Jueves 1 de octubre de 2026',
     tenantSlug = 'vet-pet-patitas',
@@ -129,6 +145,8 @@ export default function Dashboard({
             brandName={brandName}
             clinicSubtitle={clinicSubtitle}
             logoUrl={logoUrl}
+            saasPlan={saasPlan}
+            logoutUrl={logoutUrl}
             userName={userName} 
             userRole={userRole}
         >
@@ -158,6 +176,11 @@ export default function Dashboard({
                             <div className="flex items-center gap-2 flex-wrap pt-2">
                                 <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-white border border-slate-200 text-slate-600 shadow-2xs">
                                     📍 Sede {cleanCity} · {formattedDate}
+                                </span>
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#eff6ff] border border-[#bfdbfe] text-[#1d4ed8] shadow-2xs">
+                                    <span className="text-amber-500">⭐</span>
+                                    <span>{saasPlan?.name || 'Plan Pro'}: {saasPlan?.statusLabel || 'Activo'}</span>
+                                    {saasPlan?.paidUntil && <span className="text-blue-500 font-normal">({saasPlan.paidUntil})</span>}
                                 </span>
                                 <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-[#f0fdfa] border border-[#ccfbf1] text-[#0f766e]">
                                     ⏱ Modo Sincronizado

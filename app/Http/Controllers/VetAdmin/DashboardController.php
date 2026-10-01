@@ -31,6 +31,32 @@ class DashboardController extends Controller
         $clinicSubtitle = $tenant?->branding['tagline'] ?? $tenant?->branding['subtitle'] ?? 'Planes de salud para su mascota';
         $logoUrl = $tenant?->branding['logo_url'] ?? null;
 
+        // Estado del Plan SaaS de la Clínica
+        $saasPlanTier = $tenant?->saas_plan_tier ?? $tenant?->branding['saas_plan'] ?? 'pro';
+        $saasPlanNames = [
+            'starter' => 'Plan Starter',
+            'pro' => 'Plan Pro',
+            'enterprise' => 'Plan Enterprise',
+            'pay_per_pet' => 'Plan Por Paciente',
+            'basic' => 'Plan Básico',
+        ];
+        $saasPlanName = $saasPlanNames[$saasPlanTier] ?? 'Plan Pro';
+        $saasStatus = $tenant?->saas_status ?? $tenant?->branding['saas_status'] ?? 'paid';
+        $saasStatusLabel = ($saasStatus === 'paid') ? 'Activo' : (($saasStatus === 'trial_active') ? 'Prueba Activa' : 'Por Renovar');
+        $saasPaidUntil = $tenant?->branding['saas_paid_until'] ?? null;
+        $saasPaidUntilFormatted = $saasPaidUntil ? \Carbon\Carbon::parse($saasPaidUntil)->format('d/m/Y') : 'Al día';
+        $managePlanUrl = "/admin/{$tenantSlug}/renovar-saas";
+        $logoutUrl = "/admin/{$tenantSlug}/logout";
+
+        $saasPlan = [
+            'tier' => $saasPlanTier,
+            'name' => $saasPlanName,
+            'status' => $saasStatus,
+            'statusLabel' => $saasStatusLabel,
+            'paidUntil' => $saasPaidUntilFormatted,
+            'manageUrl' => $managePlanUrl,
+        ];
+
         $greetingName = 'Dra. Vicky';
         $userName = 'Dra. Vicky Naranjo';
         $userRole = 'Administradora de Sede';
@@ -148,6 +174,8 @@ class DashboardController extends Controller
             'brandName' => $brandName,
             'clinicSubtitle' => $clinicSubtitle,
             'logoUrl' => $logoUrl,
+            'saasPlan' => $saasPlan,
+            'logoutUrl' => $logoutUrl,
             'cleanCity' => $cleanCity,
             'formattedDate' => $formattedDate,
             'tenantSlug' => $tenantSlug,
