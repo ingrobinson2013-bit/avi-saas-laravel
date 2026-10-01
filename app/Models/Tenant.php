@@ -25,6 +25,37 @@ class Tenant extends Model
         'is_active' => 'boolean',
     ];
 
+    public function getTrialEndsAtAttribute(): ?\Carbon\Carbon
+    {
+        $date = $this->branding['trial_ends_at'] ?? null;
+        if ($date) {
+            return \Carbon\Carbon::parse($date);
+        }
+        return $this->created_at ? $this->created_at->copy()->addDays(15) : now()->addDays(15);
+    }
+
+    public function getTrialDaysRemainingAttribute(): int
+    {
+        $endsAt = $this->trial_ends_at;
+        return (int) ceil(now()->diffInDays($endsAt, false));
+    }
+
+    public function getSaasStatusAttribute(): string
+    {
+        if (!$this->is_active) {
+            return 'suspended';
+        }
+        $status = $this->branding['saas_status'] ?? null;
+        if ($status === 'paid') {
+            return 'paid';
+        }
+        $days = $this->trial_days_remaining;
+        if ($days < 0) {
+            return 'trial_expired';
+        }
+        return 'trial_active';
+    }
+
     protected static function booted(): void
     {
         static::created(function (Tenant $tenant) {

@@ -49,7 +49,7 @@ class ClinicOnboardingController extends Controller
                 $counter++;
             }
 
-            // 2. Crear el Tenant con 15 días gratis de prueba en tier Pro
+            // 2. Crear el Tenant con 15 días gratis de prueba en tier Pro (provisionDefaultPlansAndBenefits se ejecuta automáticamente)
             $tenant = Tenant::create([
                 'name' => $validated['clinic_name'],
                 'slug' => $slug,
@@ -64,7 +64,7 @@ class ClinicOnboardingController extends Controller
                     'secondary_color' => '#0F172A',
                     'hero_title' => 'El cuidado de tu mascota, todo el año.',
                     'hero_subtitle' => 'Accede a servicios veterinarios y beneficios exclusivos con una membresía diseñada por ' . $validated['clinic_name'] . '.',
-                    'hero_price_badge' => 'Desde $49.000/mes',
+                    'hero_price_badge' => 'Desde $50.000/mes',
                     'payment_nequi' => $validated['phone'],
                     'payment_instructions' => 'Transfiere a nuestro Nequi o cuenta y envía tu comprobante indicando el código de tu carnet digital.',
                     'section_how_it_works' => true,
@@ -79,92 +79,7 @@ class ClinicOnboardingController extends Controller
                 ],
             ]);
 
-            // 3. Crear Catálogo Base de Beneficios para esta Clínica
-            $beneficiosBase = [
-                ['name' => 'Consulta Médica General Presencial', 'category' => 'consulta', 'days' => 365, 'desc' => 'Valoración clínica completa con médico veterinario.'],
-                ['name' => 'Vacunación Anual Completa', 'category' => 'vacuna', 'days' => 365, 'desc' => 'Dosis de refuerzo anual (Séxtuple, Triple Felina o Rabia).'],
-                ['name' => 'Desparasitación Interna', 'category' => 'desparasitacion', 'days' => 365, 'desc' => 'Tratamiento oral antiparasitario interno según peso.'],
-                ['name' => 'Antipulgas / Pipeta Externa', 'category' => 'desparasitacion', 'days' => 365, 'desc' => 'Control tópico o masticable contra pulgas y garrapatas.'],
-                ['name' => 'Baño & Estética Preventiva', 'category' => 'bano', 'days' => 365, 'desc' => 'Baño con champú medicado o cosmético y limpieza auricular.'],
-                ['name' => 'Examen Básico de Laboratorio', 'category' => 'laboratorio', 'days' => 365, 'desc' => 'Hemograma o coprológico de control preventivo.'],
-                ['name' => 'Orientación Veterinaria WhatsApp', 'category' => 'consulta', 'days' => 365, 'desc' => 'Canal directo para resolver dudas médicas no urgentes.'],
-            ];
-
-            $beneficiosGuardados = [];
-            foreach ($beneficiosBase as $b) {
-                $beneficiosGuardados[$b['name']] = BenefitDefinition::create([
-                    'tenant_id' => $tenant->id,
-                    'name' => $b['name'],
-                    'category' => $b['category'],
-                    'default_validity_days' => $b['days'],
-                    'description' => $b['desc'],
-                ]);
-            }
-
-            // 4. Crear Plan 1: Plan Bienestar Básico
-            $planBasico = Plan::create([
-                'tenant_id' => $tenant->id,
-                'name' => 'Plan Bienestar Básico',
-                'description' => 'Prevención esencial para cachorros y adultos. Consultas, vacunas y desparasitación garantizadas todo el año.',
-                'price_cop' => 49000,
-                'billing_interval' => 'monthly',
-                'is_active' => true,
-            ]);
-
-            // Asignar cupos Plan Básico
-            $cuposBasico = [
-                'Consulta Médica General Presencial' => 3,
-                'Vacunación Anual Completa' => 1,
-                'Desparasitación Interna' => 3,
-                'Antipulgas / Pipeta Externa' => 2,
-                'Baño & Estética Preventiva' => 1,
-                'Orientación Veterinaria WhatsApp' => 12,
-            ];
-
-            foreach ($cuposBasico as $nombre => $cantidad) {
-                if (isset($beneficiosGuardados[$nombre])) {
-                    PlanBenefit::create([
-                        'plan_id' => $planBasico->id,
-                        'benefit_definition_id' => $beneficiosGuardados[$nombre]->id,
-                        'quantity' => $cantidad,
-                        'expires_each_cycle' => true,
-                    ]);
-                }
-            }
-
-            // 5. Crear Plan 2: Plan Salud Total & Premium
-            $planPremium = Plan::create([
-                'tenant_id' => $tenant->id,
-                'name' => 'Plan Salud Total & Premium',
-                'description' => 'Máxima cobertura integral: incluye chequeo de laboratorio, más consultas presenciales y baños preventivos.',
-                'price_cop' => 79000,
-                'billing_interval' => 'monthly',
-                'is_active' => true,
-            ]);
-
-            // Asignar cupos Plan Premium
-            $cuposPremium = [
-                'Consulta Médica General Presencial' => 4,
-                'Vacunación Anual Completa' => 1,
-                'Desparasitación Interna' => 4,
-                'Antipulgas / Pipeta Externa' => 3,
-                'Baño & Estética Preventiva' => 2,
-                'Examen Básico de Laboratorio' => 1,
-                'Orientación Veterinaria WhatsApp' => 12,
-            ];
-
-            foreach ($cuposPremium as $nombre => $cantidad) {
-                if (isset($beneficiosGuardados[$nombre])) {
-                    PlanBenefit::create([
-                        'plan_id' => $planPremium->id,
-                        'benefit_definition_id' => $beneficiosGuardados[$nombre]->id,
-                        'quantity' => $cantidad,
-                        'expires_each_cycle' => true,
-                    ]);
-                }
-            }
-
-            // 6. Crear el Usuario Administrador de la Clínica
+            // 3. Crear el Usuario Administrador de la Clínica
             $user = User::create([
                 'tenant_id' => $tenant->id,
                 'name' => 'Dr(a). ' . $validated['clinic_name'],
