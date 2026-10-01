@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\SuperAdmin\Widgets\SuperAdminStatsOverviewWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -9,6 +10,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -26,16 +28,22 @@ class SuperAdminPanelProvider extends PanelProvider
             ->id('super-admin')
             ->path('super-admin')
             ->login()
+            ->brandName('AVI-Plan SaaS — SuperAdmin Central')
             ->colors([
                 'primary' => Color::Indigo,
+                'gray' => Color::Slate,
             ])
+            ->maxContentWidth(MaxWidth::Full)
+            ->sidebarWidth('17rem')
+            ->sidebarCollapsibleOnDesktop(false)
             ->discoverResources(in: app_path('Filament/SuperAdmin/Resources'), for: 'App\\Filament\\SuperAdmin\\Resources')
             ->discoverPages(in: app_path('Filament/SuperAdmin/Pages'), for: 'App\\Filament\\SuperAdmin\\Pages')
+            ->discoverWidgets(in: app_path('Filament/SuperAdmin/Widgets'), for: 'App\\Filament\\SuperAdmin\\Widgets')
             ->pages([
                 Pages\Dashboard::class,
             ])
             ->widgets([
-                Widgets\AccountWidget::class,
+                SuperAdminStatsOverviewWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

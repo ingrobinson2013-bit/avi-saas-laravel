@@ -10,7 +10,6 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class TenantResource extends Resource
 {
@@ -141,16 +140,21 @@ class TenantResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->poll('30s')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Clínica Veterinaria')
-                    ->searchable()
+                    ->searchable(['name', 'slug', 'domain'])
                     ->sortable()
                     ->weight('bold')
-                    ->description(fn (Tenant $record): string => ($record->branding['city'] ?? 'Sin ciudad') . ' • /v/' . $record->slug),
+                    ->description(function (Tenant $record): string {
+                        $city = $record->branding['city'] ?? 'Sin ciudad';
+                        $address = $record->branding['address'] ?? '';
+                        return "📍 {$city}" . ($address ? " • {$address}" : '') . " • /v/{$record->slug}";
+                    }),
 
                 Tables\Columns\TextColumn::make('saas_status_badge')
-                    ->label('Estado SaaS / Prueba')
+                    ->label('Estado SaaS / 15 Días')
                     ->badge()
                     ->state(function (Tenant $record): string {
                         $status = $record->saas_status;
@@ -162,9 +166,9 @@ class TenantResource extends Resource
                         }
                         $days = $record->trial_days_remaining;
                         if ($days < 0) {
-                            return '🔴 Prueba Vencida (' . abs($days) . 'd atrás)';
+                            return '🔴 Vencida (' . abs($days) . 'd atrás)';
                         }
-                        return '⏳ Prueba: ' . $days . ' días restantes';
+                        return '⏳ Prueba: ' . $days . 'd restantes';
                     })
                     ->color(function (Tenant $record): string {
                         $status = $record->saas_status;
@@ -175,7 +179,7 @@ class TenantResource extends Resource
                     }),
 
                 Tables\Columns\TextColumn::make('saas_plan_tier')
-                    ->label('Plan')
+                    ->label('Plan SaaS')
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => strtoupper($state))
                     ->color(fn (string $state): string => match ($state) {
@@ -183,10 +187,14 @@ class TenantResource extends Resource
                         'pro' => 'success',
                         'enterprise' => 'warning',
                         default => 'gray',
+                    })
+                    ->description(function (Tenant $record): ?string {
+                        $fee = $record->branding['saas_monthly_fee'] ?? null;
+                        return $fee ? '$' . number_format((float) $fee, 0, ',', '.') . '/mes' : null;
                     }),
 
                 Tables\Columns\TextColumn::make('contact_phone')
-                    ->label('WhatsApp')
+                    ->label('WhatsApp Contacto')
                     ->state(fn (Tenant $record): string => $record->branding['phone'] ?? 'N/A')
                     ->icon('heroicon-m-chat-bubble-left-ellipsis')
                     ->color('success')
@@ -194,14 +202,21 @@ class TenantResource extends Resource
                         $phone = preg_replace('/[^0-9]/', '', $record->branding['phone'] ?? '');
                         if (empty($phone)) return null;
                         $prefix = str_starts_with($phone, '57') ? $phone : "57{$phone}";
-                        return "https://wa.me/{$prefix}?text=" . urlencode("Hola Dr(a) de {$record->name}, te escribo de AVI-Plan...");
+                        return "https://wa.me/{$prefix}?text=" . urlencode("Hola Dr(a) de {$record->name}, te escribo de AVI-Plan para hacer seguimiento a tus 15 días de prueba.");
                     }, true),
 
                 Tables\Columns\TextColumn::make('customers_count')
-                    ->label('Tutores / Mascotas')
+                    ->label('Tutores')
                     ->counts('customers')
                     ->badge()
                     ->color('gray')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('subscriptions_count')
+                    ->label('Membresías')
+                    ->counts('subscriptions')
+                    ->badge()
+                    ->color('primary')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
@@ -217,11 +232,56 @@ class TenantResource extends Resource
                         'pro' => 'Profesional',
                         'enterprise' => 'Enterprise',
                     ]),
+                Tables\Filters\TernaryFilter::make('is_active')
+                    ->label('Activas / Suspendidas'),
             ])
             ->actions([
+                Tables\Actions\Action::make('extendTrial')
+                    ->label('+15 Días')
+                    ->icon('heroicon-o-clock')
+                    ->color('warning')
+                    ->button()
+                    ->size('xs')
+                    ->requiresConfirmation()
+                    ->modalHeading('¿Extender período de prueba?')
+                    ->modalDescription('Se sumarán 15 días adicionales a partir de hoy a la clínica para que continúe evaluando AVI-Plan.')
+                    ->action(function (Tenant $record) {
+                        $branding = $record->branding ?? [];
+                        $branding['trial_ends_at'] = now()->addDays(15)->toIso8601String();
+                        $branding['saas_status'] = 'trial';
+                        $record->update(['branding' => $branding, 'is_active' => true]);
+
+                        Notification::make()
+                            ->title('¡Prueba extendida con éxito!')
+                            ->body("La clínica {$record->name} tiene 15 días más de prueba activa.")
+                            ->success()
+                            ->send();
+                    }),
+
+                Tables\Actions\Action::make('activatePaid')
+                    ->label('Plan Pago')
+                    ->icon('heroicon-o-check-badge')
+                    ->color('success')
+                    ->button()
+                    ->size('xs')
+                    ->requiresConfirmation()
+                    ->modalHeading('¿Activar Suscripción Oficial de Pago?')
+                    ->modalDescription('Esta clínica pasará a estado oficial activo pagado en AVI-Plan.')
+                    ->action(function (Tenant $record) {
+                        $branding = $record->branding ?? [];
+                        $branding['saas_status'] = 'paid';
+                        $record->update(['branding' => $branding, 'is_active' => true]);
+
+                        Notification::make()
+                            ->title('¡Plan de Pago Activado!')
+                            ->body("La clínica {$record->name} ahora es un cliente SaaS de pago oficial.")
+                            ->success()
+                            ->send();
+                    }),
+
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('openAdmin')
-                        ->label('Ir al Panel de la Clínica')
+                        ->label('Ir al Panel Admin de la Clínica')
                         ->icon('heroicon-o-arrow-top-right-on-square')
                         ->color('info')
                         ->url(fn (Tenant $record): string => url("/admin/{$record->slug}"), true),
@@ -232,45 +292,6 @@ class TenantResource extends Resource
                         ->color('gray')
                         ->url(fn (Tenant $record): string => url("/v/{$record->slug}"), true),
 
-                    Tables\Actions\Action::make('extendTrial')
-                        ->label('Extender Prueba (+15 Días)')
-                        ->icon('heroicon-o-clock')
-                        ->color('warning')
-                        ->requiresConfirmation()
-                        ->modalHeading('¿Extender período de prueba?')
-                        ->modalDescription('Se sumarán 15 días adicionales a partir de hoy a la clínica para que continúe evaluando AVI-Plan.')
-                        ->action(function (Tenant $record) {
-                            $branding = $record->branding ?? [];
-                            $branding['trial_ends_at'] = now()->addDays(15)->toIso8601String();
-                            $branding['saas_status'] = 'trial';
-                            $record->update(['branding' => $branding, 'is_active' => true]);
-
-                            Notification::make()
-                                ->title('¡Prueba extendida con éxito!')
-                                ->body("La clínica {$record->name} tiene 15 días más de prueba activa.")
-                                ->success()
-                                ->send();
-                        }),
-
-                    Tables\Actions\Action::make('activatePaid')
-                        ->label('Marcar como Cliente Oficial (Plan Pago)')
-                        ->icon('heroicon-o-check-badge')
-                        ->color('success')
-                        ->requiresConfirmation()
-                        ->modalHeading('¿Activar Suscripción Oficial de Pago?')
-                        ->modalDescription('Esta clínica pasará a estado oficial activo pagado en AVI-Plan.')
-                        ->action(function (Tenant $record) {
-                            $branding = $record->branding ?? [];
-                            $branding['saas_status'] = 'paid';
-                            $record->update(['branding' => $branding, 'is_active' => true]);
-
-                            Notification::make()
-                                ->title('¡Plan de Pago Activado!')
-                                ->body("La clínica {$record->name} ahora es un cliente SaaS de pago oficial.")
-                                ->success()
-                                ->send();
-                        }),
-
                     Tables\Actions\Action::make('toggleActive')
                         ->label(fn (Tenant $record) => $record->is_active ? 'Suspender Acceso' : 'Reactivar Acceso')
                         ->icon(fn (Tenant $record) => $record->is_active ? 'heroicon-o-no-symbol' : 'heroicon-o-check-circle')
@@ -279,7 +300,7 @@ class TenantResource extends Resource
                         ->action(fn (Tenant $record) => $record->update(['is_active' => !$record->is_active])),
 
                     Tables\Actions\EditAction::make(),
-                ])
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
