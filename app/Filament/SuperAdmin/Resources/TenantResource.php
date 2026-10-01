@@ -39,7 +39,21 @@ class TenantResource extends Resource
                                             'suspended' => '⛔ Suspendido por Falta de Pago',
                                         ])
                                         ->default('trial')
-                                        ->required(),
+                                        ->required()
+                                        ->live()
+                                        ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                                            if ($state === 'paid') {
+                                                if (!$get('branding.saas_last_payment_date')) {
+                                                    $set('branding.saas_last_payment_date', now()->format('Y-m-d'));
+                                                }
+                                                if (!$get('branding.saas_next_payment_due')) {
+                                                    $set('branding.saas_next_payment_due', now()->addDays(30)->format('Y-m-d'));
+                                                }
+                                                if (!$get('branding.saas_payment_method')) {
+                                                    $set('branding.saas_payment_method', 'bold_wompi');
+                                                }
+                                            }
+                                        }),
 
                                     Forms\Components\DatePicker::make('branding.trial_ends_at')
                                         ->label('Fecha Fin de Prueba (15 Días)')
@@ -204,6 +218,32 @@ class TenantResource extends Resource
                                 ]),
                             ]),
 
+                        Forms\Components\Tabs\Tab::make('Historial de Pagos SaaS')
+                            ->icon('heroicon-o-document-text')
+                            ->schema([
+                                Forms\Components\Placeholder::make('payment_history')
+                                    ->label('Registro y Auditoría de Pagos')
+                                    ->content(function (?Tenant $record): \Illuminate\Contracts\Support\Htmlable {
+                                        if (!$record) return new \Illuminate\Support\HtmlString('<p class="text-sm text-gray-500">Guarda la clínica primero.</p>');
+                                        
+                                        $logs = $record->saasPaymentLogs()->latest('paid_at')->take(10)->get();
+                                        if ($logs->isEmpty()) {
+                                            return new \Illuminate\Support\HtmlString('<div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl text-sm text-gray-500">No hay pagos registrados aún para esta clínica en el log oficial.</div>');
+                                        }
+
+                                        $html = '<div class="overflow-x-auto"><table class="w-full text-xs text-left border border-gray-200 dark:border-gray-700 rounded-xl">';
+                                        $html .= '<thead class="bg-gray-100 dark:bg-gray-800 font-bold"><tr><th class="p-2.5">Fecha</th><th class="p-2.5">Monto</th><th class="p-2.5">Medio</th><th class="p-2.5">Plan</th><th class="p-2.5">Estado</th><th class="p-2.5">Vigencia Hasta</th><th class="p-2.5">Notas</th></tr></thead><tbody>';
+                                        foreach ($logs as $log) {
+                                            $amount = '$' . number_format($log->amount, 0, ',', '.') . ' COP';
+                                            $paidAt = $log->paid_at ? $log->paid_at->format('d/m/Y H:i') : '-';
+                                            $end = $log->period_end ? $log->period_end->format('d/m/Y') : '-';
+                                            $html .= "<tr class='border-t border-gray-200 dark:border-gray-700'><td class='p-2.5 font-bold'>{$paidAt}</td><td class='p-2.5 text-emerald-600 font-black'>{$amount}</td><td class='p-2.5 uppercase font-semibold'>{$log->gateway}</td><td class='p-2.5 uppercase'>{$log->plan_tier}</td><td class='p-2.5 text-emerald-600 font-bold'>{$log->status}</td><td class='p-2.5'>{$end}</td><td class='p-2.5 text-gray-500'>{$log->notes}</td></tr>";
+                                        }
+                                        $html .= '</tbody></table></div>';
+                                        return new \Illuminate\Support\HtmlString($html);
+                                    }),
+                            ]),
+
                         Forms\Components\Tabs\Tab::make('Marca Blanca & Colores')
                             ->icon('heroicon-o-swatch')
                             ->schema([
@@ -363,20 +403,109 @@ class TenantResource extends Resource
                     ->size('xs')
                     ->requiresConfirmation()
                     ->modalHeading('¿Activar Suscripción Oficial de Pago?')
-                    ->modalDescription('Esta clínica pasará a estado oficial activo pagado en AVI-Plan.')
+                    ->modalDescription('Esta clínica pasará a estado oficial activo pagado en AVI-Plan y se sumarán 30 días de cobertura.')
                     ->action(function (Tenant $record) {
                         $branding = $record->branding ?? [];
                         $branding['saas_status'] = 'paid';
+                        $branding['saas_last_payment_date'] = now()->toDateString();
+                        $branding['saas_next_payment_due'] = now()->addDays(30)->toDateString();
+                        $branding['saas_paid_until'] = now()->addDays(30)->toDateString();
+                        $branding['saas_payment_method'] = $branding['saas_payment_method'] ?? 'bold_wompi';
+                        $fee = (float) ($branding['saas_monthly_fee'] ?? 229000);
                         $record->update(['branding' => $branding, 'is_active' => true]);
 
+                        // Registrar en Log Oficial de Pagos
+                        \App\Models\SaasPaymentLog::create([
+                            'tenant_id' => $record->id,
+                            'order_id' => "ADMIN-ACTIVATE-{$record->slug}-" . time(),
+                            'gateway' => $branding['saas_payment_method'] ?? 'manual',
+                            'amount' => $fee,
+                            'currency' => 'COP',
+                            'plan_tier' => $record->saas_plan_tier ?? 'pro',
+                            'status' => 'approved',
+                            'payer_name' => $record->name,
+                            'period_start' => now()->toDateString(),
+                            'period_end' => now()->addDays(30)->toDateString(),
+                            'notes' => 'Activación directa desde el panel de SuperAdmin.',
+                            'paid_at' => now(),
+                        ]);
+
                         Notification::make()
-                            ->title('¡Plan de Pago Activado!')
-                            ->body("La clínica {$record->name} ahora es un cliente SaaS de pago oficial.")
+                            ->title('¡Plan de Pago Activado y Registrado!')
+                            ->body("La clínica {$record->name} quedó al día hasta el " . now()->addDays(30)->format('d/m/Y') . " y se registró en el Historial de Pagos.")
                             ->success()
                             ->send();
                     }),
 
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('registerPayment')
+                        ->label('➕ Registrar Pago Manual / Renovación')
+                        ->icon('heroicon-o-banknotes')
+                        ->color('success')
+                        ->form([
+                            Forms\Components\TextInput::make('amount')
+                                ->label('Monto Pagado (COP)')
+                                ->numeric()
+                                ->prefix('$')
+                                ->default(fn (Tenant $record) => $record->branding['saas_monthly_fee'] ?? 229000)
+                                ->required(),
+
+                            Forms\Components\Select::make('gateway')
+                                ->label('Medio de Pago')
+                                ->options([
+                                    'nequi' => '📱 Transferencia Nequi / Daviplata',
+                                    'bancolombia' => '🏦 Transferencia Bancolombia',
+                                    'bold' => '💳 Pasarela Bold',
+                                    'cash' => '💵 Efectivo Directo',
+                                ])
+                                ->default('nequi')
+                                ->required(),
+
+                            Forms\Components\DatePicker::make('paid_date')
+                                ->label('Fecha del Pago')
+                                ->default(now()->toDateString())
+                                ->required(),
+
+                            Forms\Components\Textarea::make('notes')
+                                ->label('Notas / Comprobante')
+                                ->placeholder('Ej. Comprobante de Nequi recibido por WhatsApp')
+                                ->rows(2),
+                        ])
+                        ->action(function (Tenant $record, array $data) {
+                            $paidDate = \Carbon\Carbon::parse($data['paid_date']);
+                            $nextDue = $paidDate->copy()->addDays(30);
+
+                            $branding = $record->branding ?? [];
+                            $branding['saas_status'] = 'paid';
+                            $branding['saas_last_payment_date'] = $paidDate->toDateString();
+                            $branding['saas_next_payment_due'] = $nextDue->toDateString();
+                            $branding['saas_paid_until'] = $nextDue->toDateString();
+                            $branding['saas_payment_method'] = $data['gateway'];
+                            $branding['saas_monthly_fee'] = $data['amount'];
+                            $record->update(['branding' => $branding, 'is_active' => true]);
+
+                            \App\Models\SaasPaymentLog::create([
+                                'tenant_id' => $record->id,
+                                'order_id' => "MANUAL-{$record->slug}-" . time(),
+                                'gateway' => $data['gateway'],
+                                'amount' => $data['amount'],
+                                'currency' => 'COP',
+                                'plan_tier' => $record->saas_plan_tier ?? 'pro',
+                                'status' => 'approved',
+                                'payer_name' => $record->name,
+                                'period_start' => $paidDate->toDateString(),
+                                'period_end' => $nextDue->toDateString(),
+                                'notes' => $data['notes'] ?? 'Pago manual registrado desde SuperAdmin',
+                                'paid_at' => $paidDate,
+                            ]);
+
+                            Notification::make()
+                                ->title('¡Pago Registrado Exitosamente!')
+                                ->body("La clínica {$record->name} quedó al día hasta el {$nextDue->format('d/m/Y')}.")
+                                ->success()
+                                ->send();
+                        }),
+
                     Tables\Actions\Action::make('openSaasCheckout')
                         ->label('💳 Abrir Pasarela de Pago Bold SaaS')
                         ->icon('heroicon-o-credit-card')

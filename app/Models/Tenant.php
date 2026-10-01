@@ -191,4 +191,9 @@ class Tenant extends Model
     {
         return $this->hasMany(Subscription::class);
     }
+
+    public function saasPaymentLogs(): HasMany
+    {
+        return $this->hasMany(SaasPaymentLog::class);
+    }
 }

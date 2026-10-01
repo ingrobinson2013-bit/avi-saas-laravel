@@ -52,10 +52,32 @@ class BoldWebhookController extends Controller
                 $branding = $tenant->branding ?? [];
                 $branding['saas_status'] = 'paid';
                 $branding['saas_last_payment_date'] = now()->toDateString();
-                $branding['saas_next_payment_due'] = now()->addMonth()->toDateString();
+                $branding['saas_next_payment_due'] = now()->addDays(30)->toDateString();
+                $branding['saas_paid_until'] = now()->addDays(30)->toDateString();
+                $branding['saas_payment_method'] = 'bold_wompi';
                 $tenant->update(['branding' => $branding, 'is_active' => true]);
 
-                Log::info("Bold Webhook: Tenant SaaS {$tenant->slug} renewed and marked as PAID.");
+                // Registrar en el Log Oficial de Pagos SaaS
+                \App\Models\SaasPaymentLog::create([
+                    'tenant_id' => $tenant->id,
+                    'order_id' => $orderId,
+                    'gateway' => 'bold',
+                    'amount' => $amount > 0 ? $amount : (float) ($branding['saas_monthly_fee'] ?? 229000),
+                    'currency' => 'COP',
+                    'plan_tier' => $tenant->saas_plan_tier ?? 'pro',
+                    'status' => 'approved',
+                    'transaction_id' => $payload['id'] ?? $payload['transaction_id'] ?? null,
+                    'payer_name' => $tenant->name,
+                    'payer_email' => $tenant->branding['email'] ?? null,
+                    'payer_phone' => $tenant->branding['phone'] ?? null,
+                    'period_start' => now()->toDateString(),
+                    'period_end' => now()->addDays(30)->toDateString(),
+                    'notes' => 'Pago automático procesado exitosamente vía pasarela Bold.',
+                    'raw_payload' => $payload,
+                    'paid_at' => now(),
+                ]);
+
+                Log::info("Bold Webhook: Tenant SaaS {$tenant->slug} renewed, logged in SaasPaymentLog, and marked as PAID.");
                 return response()->json(['success' => true, 'type' => 'tenant_saas', 'status' => $status]);
             }
         }
