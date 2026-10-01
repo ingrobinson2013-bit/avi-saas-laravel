@@ -68,6 +68,7 @@ class VetAdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/VetAdmin/Widgets'), for: 'App\\Filament\\VetAdmin\\Widgets')
             ->widgets([
                 \App\Filament\VetAdmin\Widgets\SaasSubscriptionStatusWidget::class,
+                \App\Filament\VetAdmin\Widgets\ClinicOperationsToolbarWidget::class,
                 \App\Filament\VetAdmin\Widgets\VetStatsOverviewWidget::class,
                 \App\Filament\VetAdmin\Widgets\ExpiringSubscriptionsWidget::class,
                 \App\Filament\VetAdmin\Widgets\RecentRedemptionsFeedWidget::class,
