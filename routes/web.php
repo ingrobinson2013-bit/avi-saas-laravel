@@ -51,6 +51,11 @@ Route::get('/v/{slug}/afiche/pdf', [App\Http\Controllers\ClinicFlyerController::
 // 8. Onboarding Express B2B en 60 Segundos (15 Días Gratis)
 Route::post('/registro-clinica', [App\Http\Controllers\ClinicOnboardingController::class, 'register'])->name('clinic.register');
 
+// 9. Pasarela B2B: Checkout Oficial Bold para Pago del Canon SaaS de Veterinarias
+Route::get('/admin/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentController::class, 'showCheckout'])->name('saas.checkout');
+Route::get('/v/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentController::class, 'showCheckout']);
+
+
 
 
 

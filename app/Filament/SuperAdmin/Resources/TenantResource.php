@@ -377,6 +377,26 @@ class TenantResource extends Resource
                     }),
 
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('openSaasCheckout')
+                        ->label('💳 Abrir Pasarela de Pago Bold SaaS')
+                        ->icon('heroicon-o-credit-card')
+                        ->color('success')
+                        ->url(fn (Tenant $record): string => url("/admin/{$record->slug}/renovar-saas"), true),
+
+                    Tables\Actions\Action::make('sendBoldLinkWhatsApp')
+                        ->label('📲 Enviar Link de Cobro Bold por WhatsApp')
+                        ->icon('heroicon-m-chat-bubble-left-ellipsis')
+                        ->color('success')
+                        ->url(function (Tenant $record): ?string {
+                            $phone = preg_replace('/[^0-9]/', '', $record->branding['phone'] ?? '');
+                            if (empty($phone)) return null;
+                            $prefix = str_starts_with($phone, '57') ? $phone : "57{$phone}";
+                            $fee = '$' . number_format((float) ($record->branding['saas_monthly_fee'] ?? 229000), 0, ',', '.') . ' COP';
+                            $link = url("/admin/{$record->slug}/renovar-saas");
+                            $msg = "Hola Dr(a) de {$record->name}, te escribo de AVI-Plan. Tu período de prueba de 15 días vence pronto. Para continuar activo con tu suscripción mensual ({$fee}), puedes realizar tu pago seguro con PSE, Tarjeta o Botón Bancolombia en el siguiente link oficial de Bold: {$link} . ¡Muchas gracias!";
+                            return "https://wa.me/{$prefix}?text=" . urlencode($msg);
+                        }, true),
+
                     Tables\Actions\Action::make('openAdmin')
                         ->label('Ir al Panel Admin de la Clínica')
                         ->icon('heroicon-o-arrow-top-right-on-square')
