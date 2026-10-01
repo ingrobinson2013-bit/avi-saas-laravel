@@ -373,4 +373,11 @@
         background-size: 200% 200% !important;
         animation: avi-gradient-flow 3.5s ease infinite !important;
     }
+
+    /* Ocultar header por defecto en Dashboard customizado para que el Hero Welcome Card brille */
+    .fi-page-dashboard .fi-header,
+    .fi-dashboard-page .fi-header,
+    .fi-page-dashboard header.fi-header {
+        display: none !important;
+    }
 </style>
