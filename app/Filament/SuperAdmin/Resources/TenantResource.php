@@ -19,6 +19,7 @@ class TenantResource extends Resource
     protected static ?string $navigationLabel = 'Clínicas Veterinarias';
     protected static ?string $modelLabel = 'Clínica Veterinaria';
     protected static ?string $pluralModelLabel = 'Clínicas Veterinarias';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -41,31 +42,63 @@ class TenantResource extends Resource
                                         ->required(),
 
                                     Forms\Components\DatePicker::make('branding.trial_ends_at')
-                                        ->label('Fecha Fin de Prueba')
+                                        ->label('Fecha Fin de Prueba (15 Días)')
                                         ->helperText('Fecha en que expiran los 15 días gratis'),
 
                                     Forms\Components\Select::make('saas_plan_tier')
                                         ->label('Nivel de Plan AVI-Plan')
                                         ->options([
-                                            'starter' => 'Starter ($150.000/mes - Hasta 100 mascotas)',
-                                            'pro' => 'Profesional ($280.000/mes - Hasta 500 mascotas)',
-                                            'enterprise' => 'Enterprise ($450.000/mes - Ilimitado)',
+                                            'pay_per_pet' => '🌱 Por Mascota Activa ($5.000 COP / mascota)',
+                                            'starter' => '🚀 Starter ($99.000 COP/mes — Hasta 60 mascotas)',
+                                            'pro' => '⭐ Profesional ($229.000 COP/mes — Hasta 250 mascotas)',
+                                            'enterprise' => '👑 Enterprise ($489.000 COP/mes — Ilimitado)',
                                         ])
                                         ->default('pro')
-                                        ->required(),
+                                        ->required()
+                                        ->live()
+                                        ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                            $defaultFees = [
+                                                'pay_per_pet' => 50000,
+                                                'starter' => 99000,
+                                                'pro' => 229000,
+                                                'enterprise' => 489000,
+                                            ];
+                                            if (isset($defaultFees[$state])) {
+                                                $set('branding.saas_monthly_fee', $defaultFees[$state]);
+                                            }
+                                        }),
                                 ]),
 
-                                Forms\Components\Grid::make(2)->schema([
+                                Forms\Components\Grid::make(3)->schema([
                                     Forms\Components\TextInput::make('branding.saas_monthly_fee')
                                         ->label('Canon Mensual SaaS Acordado (COP)')
                                         ->numeric()
                                         ->prefix('$')
-                                        ->placeholder('280000'),
+                                        ->placeholder('229000')
+                                        ->helperText('Monto mensual cobrado a la clínica'),
+
+                                    Forms\Components\Select::make('branding.saas_payment_method')
+                                        ->label('Medio de Pago del Canon')
+                                        ->options([
+                                            'nequi' => '📱 Nequi / Daviplata',
+                                            'bancolombia' => '🏦 Transferencia Bancaria',
+                                            'bold_wompi' => '💳 Débito / Tarjeta / PSE (Bold o Wompi)',
+                                            'cash' => '💵 Efectivo / Directo',
+                                        ])
+                                        ->default('nequi'),
 
                                     Forms\Components\Toggle::make('is_active')
                                         ->label('Acceso al Software Activo')
-                                        ->helperText('Si se apaga, ni el administrador ni los clientes podrán acceder.')
+                                        ->helperText('Si se apaga, el acceso para esta clínica quedará bloqueado.')
                                         ->default(true),
+                                ]),
+
+                                Forms\Components\Grid::make(2)->schema([
+                                    Forms\Components\DatePicker::make('branding.saas_last_payment_date')
+                                        ->label('Fecha del Último Pago Recibido'),
+
+                                    Forms\Components\DatePicker::make('branding.saas_next_payment_due')
+                                        ->label('Próxima Fecha Límite de Pago'),
                                 ]),
 
                                 Forms\Components\Textarea::make('branding.admin_notes')
@@ -114,6 +147,29 @@ class TenantResource extends Resource
                                     ->label('Dominio Personalizado (Opcional)')
                                     ->placeholder('ej. mi-veterinaria.com')
                                     ->maxLength(255),
+                            ]),
+
+                        Forms\Components\Tabs\Tab::make('Métricas & Rendimiento')
+                            ->icon('heroicon-o-chart-bar')
+                            ->schema([
+                                Forms\Components\Placeholder::make('clinic_summary')
+                                    ->label('Rendimiento en Vivo de esta Clínica')
+                                    ->content(function (?Tenant $record): string {
+                                        if (!$record) return 'Guarda la clínica primero para ver sus métricas.';
+
+                                        $tutores = $record->customers()->count();
+                                        $subs = $record->subscriptions()->where('status', 'active')->count();
+                                        
+                                        $gmv = $record->subscriptions()
+                                            ->where('subscriptions.status', 'active')
+                                            ->join('plans', 'subscriptions.plan_id', '=', 'plans.id')
+                                            ->sum('plans.price_cop');
+
+                                        $mrr = '$' . number_format($gmv, 0, ',', '.') . ' COP/mes';
+                                        $canon = '$' . number_format((float) ($record->branding['saas_monthly_fee'] ?? 229000), 0, ',', '.') . ' COP/mes';
+
+                                        return "📊 {$tutores} Tutores Registrados | 🐕 {$subs} Membresías Activas | 💰 Facturación Clínica: {$mrr} | 🏷️ Canon AVI-Plan: {$canon}";
+                                    }),
                             ]),
 
                         Forms\Components\Tabs\Tab::make('Marca Blanca & Colores')
@@ -181,9 +237,16 @@ class TenantResource extends Resource
                 Tables\Columns\TextColumn::make('saas_plan_tier')
                     ->label('Plan SaaS')
                     ->badge()
-                    ->formatStateUsing(fn (string $state): string => strtoupper($state))
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'pay_per_pet' => '🌱 POR MASCOTA',
+                        'starter' => '🚀 STARTER ($99k)',
+                        'pro' => '⭐ PRO ($229k)',
+                        'enterprise' => '👑 ENTERPRISE ($489k)',
+                        default => strtoupper($state),
+                    })
                     ->color(fn (string $state): string => match ($state) {
-                        'starter' => 'info',
+                        'pay_per_pet' => 'info',
+                        'starter' => 'gray',
                         'pro' => 'success',
                         'enterprise' => 'warning',
                         default => 'gray',
@@ -202,7 +265,8 @@ class TenantResource extends Resource
                         $phone = preg_replace('/[^0-9]/', '', $record->branding['phone'] ?? '');
                         if (empty($phone)) return null;
                         $prefix = str_starts_with($phone, '57') ? $phone : "57{$phone}";
-                        return "https://wa.me/{$prefix}?text=" . urlencode("Hola Dr(a) de {$record->name}, te escribo de AVI-Plan para hacer seguimiento a tus 15 días de prueba.");
+                        $fee = $record->branding['saas_monthly_fee'] ?? '229.000';
+                        return "https://wa.me/{$prefix}?text=" . urlencode("Hola Dr(a) de {$record->name}, te escribo de AVI-Plan para hacer seguimiento a tus 15 días de prueba de tu plataforma de membresías de bienestar.");
                     }, true),
 
                 Tables\Columns\TextColumn::make('customers_count')
@@ -228,9 +292,10 @@ class TenantResource extends Resource
                 Tables\Filters\SelectFilter::make('saas_plan_tier')
                     ->label('Filtrar por Plan')
                     ->options([
-                        'starter' => 'Starter',
-                        'pro' => 'Profesional',
-                        'enterprise' => 'Enterprise',
+                        'pay_per_pet' => 'Por Mascota Activa ($5.000)',
+                        'starter' => 'Starter ($99.000)',
+                        'pro' => 'Profesional ($229.000)',
+                        'enterprise' => 'Enterprise ($489.000)',
                     ]),
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label('Activas / Suspendidas'),
