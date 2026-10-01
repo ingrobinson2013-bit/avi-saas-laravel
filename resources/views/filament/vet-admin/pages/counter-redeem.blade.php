@@ -37,13 +37,13 @@
             }
         </style>
 
-        {{-- Grid Principal: 2 Columnas --}}
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {{-- Grid Principal: 2 Columnas (Master-Detail) --}}
+        <div class="avi-redeem-layout items-start">
             
             {{-- ======================================================== --}}
-            {{-- COLUMNA IZQUIERDA: BUSCADOR & LISTA REACTIVA (5 COLS) --}}
+            {{-- COLUMNA IZQUIERDA: BUSCADOR & LISTA REACTIVA (390px)     --}}
             {{-- ======================================================== --}}
-            <div class="lg:col-span-5 space-y-4">
+            <div class="space-y-4 w-full">
                 
                 {{-- Caja de Búsqueda con Luces y Estados --}}
                 <div class="glass-card rounded-2xl p-5 shadow-sm border border-slate-200/80 dark:border-slate-700/80 relative overflow-hidden">
@@ -183,9 +183,9 @@
             </div>
 
             {{-- ======================================================== --}}
-            {{-- COLUMNA DERECHA: CENTRO DE CANJE Y LEDGER (7 COLS)       --}}
+            {{-- COLUMNA DERECHA: CENTRO DE CANJE Y LEDGER                --}}
             {{-- ======================================================== --}}
-            <div class="lg:col-span-7">
+            <div class="w-full min-w-0">
                 @if($this->selectedSubscription)
                     @php 
                         $sub = $this->selectedSubscription; 
@@ -212,10 +212,22 @@
                                 {{-- Fila Superior: Contrato & Botones de Acción Rápida --}}
                                 <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
                                     <div class="flex items-center space-x-2">
-                                        <span class="px-3 py-1 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-black tracking-wider flex items-center space-x-1.5">
-                                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                                            <span>MEMBRESÍA ACTIVA</span>
-                                        </span>
+                                        @if($sub->status === 'active')
+                                            <span class="px-3 py-1 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-black tracking-wider flex items-center space-x-1.5">
+                                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                                <span>MEMBRESÍA ACTIVA</span>
+                                            </span>
+                                        @elseif($sub->status === 'past_due')
+                                            <span class="px-3 py-1 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-black tracking-wider flex items-center space-x-1.5">
+                                                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                                                <span>EN MORA / SUSPENDIDA</span>
+                                            </span>
+                                        @else
+                                            <span class="px-3 py-1 rounded-xl bg-rose-500/20 border border-rose-400/40 text-rose-300 text-xs font-black tracking-wider flex items-center space-x-1.5">
+                                                <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+                                                <span>INACTIVA ({{ strtoupper($sub->status) }})</span>
+                                            </span>
+                                        @endif
                                         <span class="font-mono text-xs font-bold text-slate-300 bg-white/10 px-2.5 py-1 rounded-xl">
                                             {{ $sub->gateway_subscription_id }}
                                         </span>

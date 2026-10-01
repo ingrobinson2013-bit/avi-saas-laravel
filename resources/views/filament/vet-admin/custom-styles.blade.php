@@ -218,4 +218,17 @@
     .dark .avi-op-card:hover {
         border-color: #60a5fa !important;
     }
+
+    /* 6. LAYOUT MAESTRO-DETALLE DEL TERMINAL DE CANJE EN MOSTRADOR */
+    .avi-redeem-layout {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+        width: 100% !important;
+    }
+    @media (min-width: 1024px) {
+        .avi-redeem-layout {
+            grid-template-columns: 390px minmax(0, 1fr) !important;
+        }
+    }
 </style>

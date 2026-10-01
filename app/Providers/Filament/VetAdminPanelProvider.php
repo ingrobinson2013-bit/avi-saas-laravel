@@ -36,7 +36,7 @@ class VetAdminPanelProvider extends PanelProvider
             ->login()
             ->brandName(fn () => \Filament\Facades\Filament::getTenant()?->name ?? 'Portal Veterinario')
             ->brandLogo(fn () => view('filament.vet-admin.logo'))
-            ->brandLogoHeight('2.5rem')
+            ->brandLogoHeight('2.85rem')
             ->favicon('/logo.svg')
             ->font('Plus Jakarta Sans')
             ->darkMode(true)
@@ -55,6 +55,14 @@ class VetAdminPanelProvider extends PanelProvider
             ->renderHook(
                 'panels::body.start',
                 fn () => view('filament.vet-admin.components.impersonation-banner')
+            )
+            ->renderHook(
+                'panels::topbar.start',
+                fn () => view('filament.vet-admin.components.topbar-start')
+            )
+            ->renderHook(
+                'panels::user-menu.before',
+                fn () => view('filament.vet-admin.components.topbar-end')
             )
             ->renderHook(
                 'panels::sidebar.nav.start',

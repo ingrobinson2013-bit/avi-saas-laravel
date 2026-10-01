@@ -39,6 +39,12 @@ class CounterRedeem extends Page
     {
         if (request()->has('sub')) {
             $this->selectedSubscriptionId = request()->get('sub');
+        } else {
+            // Auto-seleccionar primer paciente para experiencia táctil inmediata
+            $first = $this->search()->first();
+            if ($first) {
+                $this->selectedSubscriptionId = $first->id;
+            }
         }
     }
 
@@ -51,7 +57,7 @@ class CounterRedeem extends Page
 
         $builder = Subscription::with(['pet.customer', 'plan', 'benefitBalances.benefitDefinition'])
             ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
-            ->where('subscriptions.status', 'active');
+            ->whereIn('subscriptions.status', ['active', 'past_due', 'paused', 'expired']);
 
         if (strlen($query) >= 2) {
             $builder->where(function ($mainQuery) use ($query) {
@@ -68,7 +74,11 @@ class CounterRedeem extends Page
             });
         }
 
-        return $builder->latest()->limit(10)->get();
+        return $builder
+            ->orderByRaw("CASE WHEN subscriptions.status = 'active' THEN 0 ELSE 1 END")
+            ->latest('subscriptions.created_at')
+            ->limit(10)
+            ->get();
     }
 
     public function selectSubscription(string $id): void
