@@ -33,7 +33,7 @@ class AviRecommendsWidget extends Widget
         $unusedBenefitsCount = Subscription::query()
             ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
             ->where('status', 'active')
-            ->whereDoesntHave('redemptions', fn ($q) => $q->where('redeemed_at', '>=', now()->subDays(60)))
+            ->whereDoesntHave('benefitBalances.redemptions', fn ($q) => $q->where('redeemed_at', '>=', now()->subDays(60)))
             ->count();
 
         // 3. Plan más popular
