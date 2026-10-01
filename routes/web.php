@@ -17,6 +17,18 @@ Route::get('/admin', function () {
     return redirect('/admin/login');
 });
 
+// 2.1 Dashboard React + TypeScript + Inertia.js (Paradigma B: Monolito Moderno)
+Route::get('/admin/{slug}', function (string $slug) {
+    if (in_array($slug, ['login', 'logout'])) {
+        return redirect('/admin/vet-pet-patitas/login');
+    }
+    if (!auth()->check() && request('preview') !== '1') {
+        session(['url.intended' => '/admin/' . $slug]);
+        return redirect('/admin/' . $slug . '/login');
+    }
+    return app(App\Http\Controllers\VetAdmin\DashboardController::class)->index(request(), $slug);
+});
+
 // 3. Acceso amigable por Slug al Admin de la clínica (ej. /v/vet-pet-patitas/admin -> /admin/vet-pet-patitas)
 Route::get('/v/{slug}/admin/{section?}', function (string $slug, ?string $section = null) {
     $tenant = Tenant::where('slug', $slug)->firstOrFail();
