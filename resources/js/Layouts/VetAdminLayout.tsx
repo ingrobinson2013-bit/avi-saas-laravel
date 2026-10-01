@@ -52,10 +52,10 @@ export default function VetAdminLayout({
     ];
 
     return (
-        <div className="min-h-screen flex bg-[#edf0f7] text-slate-900 font-sans">
+        <div className="min-h-screen flex bg-[#edf0f7] text-slate-900 font-sans antialiased">
             
             {/* SIDEBAR FIJO (PETSALUD+ EXACTO AL MOCKUP) */}
-            <aside className="w-[235px] bg-white border-r border-slate-200/80 flex flex-col shrink-0 min-h-screen sticky top-0 h-screen select-none z-40">
+            <aside className="w-[230px] 2xl:w-[245px] bg-white border-r border-slate-200/90 flex flex-col shrink-0 min-h-screen sticky top-0 h-screen select-none z-40">
                 
                 {/* Brand Header */}
                 <div className="h-16 flex items-center gap-3 px-4 border-b border-slate-100 shrink-0">
@@ -63,7 +63,7 @@ export default function VetAdminLayout({
                         🐾
                     </div>
                     <div className="flex flex-col min-w-0">
-                        <span className="text-sm font-black text-slate-900 leading-tight tracking-tight">
+                        <span className="text-[14.5px] font-black text-slate-900 leading-tight tracking-tight">
                             PetSalud<span className="text-cyan-500">+</span>
                         </span>
                         <span className="text-[10px] font-medium text-slate-400 truncate">
@@ -73,14 +73,14 @@ export default function VetAdminLayout({
                 </div>
 
                 {/* Nav Links */}
-                <nav className="flex-1 overflow-y-auto px-2.5 py-3 space-y-0.5 scrollbar-thin scrollbar-thumb-slate-200">
+                <nav className="flex-1 overflow-y-auto px-2.5 py-2.5 space-y-0.5 scrollbar-thin scrollbar-thumb-slate-200">
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         return (
                             <a
                                 key={item.label}
                                 href={item.href}
-                                className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 ${
+                                className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 ${
                                     item.active
                                         ? 'bg-[#0284c7] text-white shadow-xs'
                                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
@@ -99,10 +99,10 @@ export default function VetAdminLayout({
                 </nav>
 
                 {/* Footer Pet Card (Mockup Exact) */}
-                <div className="p-2.5 border-t border-slate-100 mt-auto shrink-0">
-                    <div className="rounded-2xl overflow-hidden border border-slate-200/80 shadow-2xs bg-white">
+                <div className="p-3 border-t border-slate-100 shrink-0 bg-white">
+                    <div className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs bg-white">
                         <img 
-                            src="/images/dashboard/sidebar_pet_2x.png" 
+                            src="/images/dashboard/sidebar_pet_4x.png" 
                             alt="Tu aliado en cada etapa de su vida" 
                             className="w-full h-auto object-cover block"
                         />
@@ -110,15 +110,15 @@ export default function VetAdminLayout({
                 </div>
             </aside>
 
-            {/* MAIN CONTENT AREA */}
+            {/* MAIN CONTENT AREA (EXPANDE AL 100% SIN DESIERTOS GRISES) */}
             <div className="flex-1 flex flex-col min-w-0">
                 
                 {/* TOPBAR (EXACTO AL MOCKUP) */}
-                <header className="h-16 bg-white border-b border-slate-200/80 flex items-center justify-between px-6 sticky top-0 z-30 shadow-2xs">
+                <header className="h-16 bg-white border-b border-slate-200/90 flex items-center justify-between px-6 sticky top-0 z-30 shadow-2xs">
                     
                     {/* Centered Search Pill */}
-                    <div className="flex-1 flex justify-center px-4 max-w-xl mx-auto">
-                        <div className="w-full relative">
+                    <div className="flex-1 flex justify-center px-4 max-w-2xl mx-auto">
+                        <div className="w-full max-w-md relative">
                             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                             <input 
                                 type="text" 
@@ -162,10 +162,10 @@ export default function VetAdminLayout({
                                 className="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-2xs"
                             />
                             <div className="flex flex-col text-left leading-tight">
-                                <span className="text-xs font-black text-slate-900">
+                                <span className="text-xs font-black text-slate-900 whitespace-nowrap">
                                     {userName}
                                 </span>
-                                <span className="text-[10px] font-medium text-slate-400">
+                                <span className="text-[10.5px] font-medium text-slate-400 whitespace-nowrap">
                                     {userRole}
                                 </span>
                             </div>
@@ -174,8 +174,8 @@ export default function VetAdminLayout({
                     </div>
                 </header>
 
-                {/* PAGE CANVAS */}
-                <main className="flex-1 p-5 lg:p-6 overflow-y-auto">
+                {/* PAGE CANVAS - FULL WIDTH NATURAL */}
+                <main className="flex-1 p-4 lg:p-5 overflow-y-auto">
                     {children}
                 </main>
 

@@ -105,7 +105,8 @@ export default function Dashboard({
     return (
         <VetAdminLayout tenantSlug={tenantSlug} userName={userName} userRole={userRole}>
             
-            <div className="flex flex-col xl:flex-row gap-4 items-start w-full max-w-[1440px] mx-auto">
+            {/* CONTENEDOR FLUIDO QUE LLENA LA PANTALLA NATURALMENTE */}
+            <div className="flex flex-col xl:flex-row gap-4 items-start w-full">
                 
                 {/* =========================================================
                      COLUMNA IZQUIERDA: ÁREA DE OPERACIÓN PRINCIPAL
@@ -113,26 +114,26 @@ export default function Dashboard({
                 <div className="flex-1 min-w-0 flex flex-col gap-3.5 w-full">
                     
                     {/* 1. HERO WELCOME CARD (EXACTO AL MOCKUP) */}
-                    <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xs relative overflow-hidden">
-                        <div className="space-y-1 max-w-xl">
+                    <div className="bg-white border border-slate-200/90 rounded-2xl p-5 lg:p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xs relative overflow-hidden">
+                        <div className="space-y-1.5 max-w-xl">
                             <p className="text-xs font-semibold text-slate-500">
                                 ¡Hola, {greetingName}!
                             </p>
-                            <h1 className="text-2xl lg:text-[27px] font-black text-slate-900 leading-tight tracking-tight">
+                            <h1 className="text-2xl lg:text-[28px] font-black text-slate-900 leading-tight tracking-tight">
                                 Bienvenida a {brandName} 👋
                             </h1>
-                            <p className="text-xs lg:text-[13px] font-medium text-slate-500">
+                            <p className="text-xs lg:text-[13.5px] font-medium text-slate-500">
                                 Gestiona tus planes de salud, clientes y mascotas en un solo lugar.
                             </p>
                             
                             <div className="flex items-center gap-2 flex-wrap pt-2">
-                                <span className="inline-flex items-center px-3 py-0.5 rounded-full text-[11px] font-semibold bg-white border border-slate-200 text-slate-600 shadow-2xs">
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-white border border-slate-200 text-slate-600 shadow-2xs">
                                     📍 Sede {cleanCity} · {formattedDate}
                                 </span>
-                                <span className="inline-flex items-center px-3 py-0.5 rounded-full text-[11px] font-semibold bg-[#f0fdfa] border border-[#ccfbf1] text-[#0f766e]">
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-[#f0fdfa] border border-[#ccfbf1] text-[#0f766e]">
                                     ⏱ Modo Sincronizado
                                 </span>
-                                <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[11px] font-semibold bg-[#f0fdf4] border border-[#bbf7d0] text-[#15803d]">
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-[#f0fdf4] border border-[#bbf7d0] text-[#15803d]">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                     <span>Sistema en línea</span>
                                 </span>
@@ -142,9 +143,9 @@ export default function Dashboard({
                         {/* Right Golden Retriever + Cat Cutout with Aura and Floating Heart */}
                         <div className="shrink-0 flex items-center justify-center">
                             <img 
-                                src="/images/dashboard/hero_pets_2x.png" 
+                                src="/images/dashboard/hero_pets_4x.png" 
                                 alt="Mascotas PetSalud" 
-                                className="h-24 lg:h-28 w-auto object-contain"
+                                className="h-28 lg:h-32 xl:h-34 w-auto object-contain"
                             />
                         </div>
                     </div>
@@ -153,8 +154,8 @@ export default function Dashboard({
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
                         
                         {/* KPI 1: MRR */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[125px] shadow-2xs hover:shadow-xs transition">
-                            <div className="flex items-center gap-2">
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[130px] shadow-2xs hover:shadow-xs transition">
+                            <div className="flex items-center gap-2.5">
                                 <div className="w-7 h-7 rounded-full bg-[#1e3a8a] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-2xs">
                                     $
                                 </div>
@@ -163,8 +164,8 @@ export default function Dashboard({
                                 </span>
                             </div>
 
-                            <div className="my-1">
-                                <div className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                            <div className="my-1.5">
+                                <div className="text-2xl lg:text-[27px] font-black text-slate-900 tracking-tight leading-none">
                                     ${formattedMrr} <span className="text-sm font-black text-slate-800">COP</span>
                                 </div>
                             </div>
@@ -180,8 +181,8 @@ export default function Dashboard({
                         </div>
 
                         {/* KPI 2: Mascotas Activas */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[125px] shadow-2xs hover:shadow-xs transition">
-                            <div className="flex items-center gap-2">
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[130px] shadow-2xs hover:shadow-xs transition">
+                            <div className="flex items-center gap-2.5">
                                 <div className="w-7 h-7 rounded-full bg-[#0d9488] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-2xs">
                                     🐾
                                 </div>
@@ -190,8 +191,8 @@ export default function Dashboard({
                                 </span>
                             </div>
 
-                            <div className="my-1">
-                                <div className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                            <div className="my-1.5">
+                                <div className="text-2xl lg:text-[27px] font-black text-slate-900 tracking-tight leading-none">
                                     {petsCount}
                                 </div>
                             </div>
@@ -207,8 +208,8 @@ export default function Dashboard({
                         </div>
 
                         {/* KPI 3: Nuevas Afiliaciones */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[125px] shadow-2xs hover:shadow-xs transition">
-                            <div className="flex items-center gap-2">
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[130px] shadow-2xs hover:shadow-xs transition">
+                            <div className="flex items-center gap-2.5">
                                 <div className="w-7 h-7 rounded-full bg-[#7c3aed] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-2xs">
                                     👥
                                 </div>
@@ -217,8 +218,8 @@ export default function Dashboard({
                                 </span>
                             </div>
 
-                            <div className="my-1">
-                                <div className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                            <div className="my-1.5">
+                                <div className="text-2xl lg:text-[27px] font-black text-slate-900 tracking-tight leading-none">
                                     +{newSubsThisMonth}
                                 </div>
                             </div>
@@ -234,8 +235,8 @@ export default function Dashboard({
                         </div>
 
                         {/* KPI 4: Renovaciones */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[125px] shadow-2xs hover:shadow-xs transition">
-                            <div className="flex items-center gap-2">
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[130px] shadow-2xs hover:shadow-xs transition">
+                            <div className="flex items-center gap-2.5">
                                 <div className="w-7 h-7 rounded-full bg-[#f59e0b] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-2xs">
                                     📅
                                 </div>
@@ -244,8 +245,8 @@ export default function Dashboard({
                                 </span>
                             </div>
 
-                            <div className="my-1">
-                                <div className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                            <div className="my-1.5">
+                                <div className="text-2xl lg:text-[27px] font-black text-slate-900 tracking-tight leading-none">
                                     {expiring15Days}
                                 </div>
                             </div>
@@ -273,10 +274,10 @@ export default function Dashboard({
 
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
                             
-                            {/* Card 1: Canjear Beneficio con Datáfono */}
+                            {/* Card 1: Canjear Beneficio con Datáfono 3D Oficial */}
                             <a 
                                 href={redeemUrl} 
-                                className="bg-gradient-to-br from-[#1e40af] to-[#2563eb] text-white rounded-2xl p-3 flex flex-col justify-between h-[86px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="bg-gradient-to-br from-[#1e40af] to-[#2563eb] text-white rounded-2xl p-3.5 flex flex-col justify-between h-[92px] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="w-6 h-6 rounded-md bg-white/20 backdrop-blur-xs flex items-center justify-center text-xs font-black border border-white/30">
@@ -285,12 +286,11 @@ export default function Dashboard({
                                 </div>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div>
-                                        <h4 className="text-[13px] font-black text-white leading-tight">Canjear beneficio</h4>
-                                        <p className="text-[9.5px] text-blue-100 font-medium mt-0.5">Abre tu terminal y atiende a tus clientes</p>
+                                        <h4 className="text-[13.5px] font-black text-white leading-tight">Canjear beneficio</h4>
+                                        <p className="text-[10px] text-blue-100 font-medium mt-0.5">Abre tu terminal y atiende a tus clientes</p>
                                     </div>
-                                    <div className="flex items-center gap-1 shrink-0 pl-1">
-                                        <img src="/images/dashboard/pos_terminal_2x.png" alt="POS" className="h-8 w-auto object-contain drop-shadow-md" />
-                                        <ChevronRight className="w-4 h-4 text-white" />
+                                    <div className="flex items-center shrink-0 pl-1">
+                                        <img src="/images/dashboard/pos_terminal_4x.png" alt="POS" className="h-9 w-auto object-contain drop-shadow-md" />
                                     </div>
                                 </div>
                             </a>
@@ -298,7 +298,7 @@ export default function Dashboard({
                             {/* Card 2: Afiliar Mascota */}
                             <a 
                                 href={newSubUrl} 
-                                className="bg-gradient-to-br from-[#059669] to-[#0d9488] text-white rounded-2xl p-3 flex flex-col justify-between h-[86px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="bg-gradient-to-br from-[#059669] to-[#0d9488] text-white rounded-2xl p-3.5 flex flex-col justify-between h-[92px] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="w-6 h-6 rounded-md bg-white/20 backdrop-blur-xs flex items-center justify-center text-xs font-black border border-white/30">
@@ -307,8 +307,8 @@ export default function Dashboard({
                                 </div>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div>
-                                        <h4 className="text-[13px] font-black text-white leading-tight">Afiliar mascota</h4>
-                                        <p className="text-[9.5px] text-emerald-100 font-medium mt-0.5">Nueva afiliación</p>
+                                        <h4 className="text-[13.5px] font-black text-white leading-tight">Afiliar mascota</h4>
+                                        <p className="text-[10px] text-emerald-100 font-medium mt-0.5">Nueva afiliación</p>
                                     </div>
                                     <div className="shrink-0 pl-1">
                                         <ChevronRight className="w-4 h-4 text-white" />
@@ -321,23 +321,23 @@ export default function Dashboard({
                                 href={portalUrl} 
                                 target="_blank" 
                                 rel="noreferrer"
-                                className="bg-white border border-slate-200/90 hover:border-blue-400 rounded-2xl p-3 flex flex-col justify-between h-[86px] shadow-2xs hover:shadow-2xs hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="bg-white border border-slate-200/90 hover:border-blue-400 rounded-2xl p-3.5 flex flex-col justify-between h-[92px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-black border border-blue-200">
                                         🌐
                                     </div>
                                     <div className="flex flex-col items-end">
-                                        <span className="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md">
+                                        <span className="text-[9.5px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded-md">
                                             Web B2C
                                         </span>
-                                        <span className="text-[8px] text-slate-400 mt-0.5">Abrir portal</span>
+                                        <span className="text-[8.5px] text-slate-400 mt-0.5">Abrir portal</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div>
-                                        <h4 className="text-[13px] font-black text-slate-900 leading-tight">Ver portal</h4>
-                                        <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">Abrir portal</p>
+                                        <h4 className="text-[13.5px] font-black text-slate-900 leading-tight">Ver portal</h4>
+                                        <p className="text-[10px] text-slate-400 font-medium mt-0.5">Abrir portal</p>
                                     </div>
                                 </div>
                             </a>
@@ -347,23 +347,23 @@ export default function Dashboard({
                                 href={qrUrl} 
                                 target="_blank" 
                                 rel="noreferrer"
-                                className="bg-white border border-slate-200/90 hover:border-cyan-400 rounded-2xl p-3 flex flex-col justify-between h-[86px] shadow-2xs hover:shadow-2xs hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
+                                className="bg-white border border-slate-200/90 hover:border-cyan-400 rounded-2xl p-3.5 flex flex-col justify-between h-[92px] shadow-2xs hover:shadow-sm hover:-translate-y-0.5 transition duration-150 relative overflow-hidden group"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="w-6 h-6 rounded-md bg-cyan-50 text-cyan-600 flex items-center justify-center text-xs font-black border border-cyan-200">
                                         🖨️
                                     </div>
                                     <div className="flex flex-col items-end">
-                                        <span className="text-[9px] font-bold text-purple-700 bg-purple-50 border border-purple-200 px-1.5 py-0.5 rounded-md">
+                                        <span className="text-[9.5px] font-bold text-purple-700 bg-purple-50 border border-purple-200 px-1.5 py-0.5 rounded-md">
                                             Generar PDF
                                         </span>
-                                        <span className="text-[8px] text-slate-400 mt-0.5">Generar PDF</span>
+                                        <span className="text-[8.5px] text-slate-400 mt-0.5">Generar PDF</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div>
-                                        <h4 className="text-[13px] font-black text-slate-900 leading-tight">Imprimir QR</h4>
-                                        <p className="text-[9.5px] text-slate-400 font-medium mt-0.5">Generar PDF</p>
+                                        <h4 className="text-[13.5px] font-black text-slate-900 leading-tight">Imprimir QR</h4>
+                                        <p className="text-[10px] text-slate-400 font-medium mt-0.5">Generar PDF</p>
                                     </div>
                                 </div>
                             </a>
@@ -375,7 +375,7 @@ export default function Dashboard({
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 w-full">
                         
                         {/* Caja Izquierda: Renovaciones Próximas */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[210px] shadow-2xs">
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[215px] shadow-2xs">
                             <div>
                                 <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-100">
                                     <div className="flex items-center gap-2">
@@ -414,7 +414,7 @@ export default function Dashboard({
                         </div>
 
                         {/* Caja Derecha: Uso de Beneficios Clínicos */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[210px] shadow-2xs">
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[215px] shadow-2xs">
                             <div>
                                 <div className="flex items-center justify-between mb-1">
                                     <div className="flex items-center gap-2">
@@ -511,7 +511,7 @@ export default function Dashboard({
                 {/* =========================================================
                      COLUMNA DERECHA: ASISTENTE IA BETA DEDICADO (EXACTO AL MOCKUP)
                      ========================================================= */}
-                <div className="w-full xl:w-[325px] shrink-0 sticky top-20">
+                <div className="w-full xl:w-[340px] 2xl:w-[360px] shrink-0 sticky top-20">
                     <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs flex flex-col justify-between min-h-[580px]">
                         
                         <div>
@@ -533,9 +533,9 @@ export default function Dashboard({
 
                             {/* 3D Floating Robot Graphic */}
                             <div className="flex flex-col items-center text-center py-3">
-                                <div className="relative w-32 h-20 flex items-center justify-center mb-1">
+                                <div className="relative w-36 h-20 flex items-center justify-center mb-1">
                                     <img 
-                                        src="/images/dashboard/robot_ai_2x.png" 
+                                        src="/images/dashboard/robot_ai_4x.png" 
                                         alt="Robot IA" 
                                         className="h-16 w-auto object-contain drop-shadow-md"
                                     />
