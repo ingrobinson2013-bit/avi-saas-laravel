@@ -7,34 +7,40 @@ use Filament\Widgets\Widget;
 
 class SaasSubscriptionStatusWidget extends Widget
 {
-    protected static ?int $sort = -1; // Se muestra primero en la parte superior del Dashboard
+    protected static ?int $sort = -1; // Primero en la parte superior
     protected int | string | array $columnSpan = 'full';
     protected static string $view = 'filament.vet-admin.widgets.saas-subscription-status';
 
-    protected function getViewData(): array
+    public ?string $slug = 'vet-pet-patitas';
+    public ?string $tenantName = '';
+    public string $status = 'trial_active';
+    public int $daysRemaining = 14;
+    public ?string $trialEndsAtFormatted = '';
+    public ?string $paidUntilFormatted = '';
+    public string $planTier = 'pro';
+    public int $amountCop = 229000;
+    public string $checkoutUrl = '';
+    public bool $isJustPaid = false;
+
+    public function mount(): void
     {
         $tenant = Filament::getTenant();
-        $slug = $tenant?->slug ?? session('current_tenant_slug') ?? 'vet-pet-patitas';
+        $this->tenantName = $tenant?->name ?? 'Clínica Veterinaria';
+        $this->slug = $tenant?->slug ?? session('current_tenant_slug') ?? 'vet-pet-patitas';
         
         $branding = $tenant?->branding ?? [];
-        $status = $tenant?->saas_status ?? 'trial_active';
-        $daysRemaining = $tenant?->trial_days_remaining ?? 14;
+        $this->status = $tenant?->saas_status ?? 'trial_active';
+        $this->daysRemaining = max(0, $tenant?->trial_days_remaining ?? 14);
+        
         $trialEndsAt = $tenant?->trial_ends_at;
+        $this->trialEndsAtFormatted = $trialEndsAt ? $trialEndsAt->format('d/m/Y') : null;
+        
         $paidUntil = isset($branding['saas_paid_until']) ? \Carbon\Carbon::parse($branding['saas_paid_until']) : null;
-        $planTier = $tenant?->saas_plan_tier ?? $branding['saas_plan'] ?? 'pro';
-        $amountCop = $branding['saas_amount_cop'] ?? 229000;
-
-        return [
-            'tenant' => $tenant,
-            'slug' => $slug,
-            'status' => $status,
-            'daysRemaining' => max(0, $daysRemaining),
-            'trialEndsAt' => $trialEndsAt,
-            'paidUntil' => $paidUntil,
-            'planTier' => $planTier,
-            'amountCop' => $amountCop,
-            'checkoutUrl' => "/admin/{$slug}/renovar-saas",
-            'isJustPaid' => request()->has('saas_paid') || request()->has('bold_success'),
-        ];
+        $this->paidUntilFormatted = $paidUntil ? $paidUntil->format('d/m/Y') : null;
+        
+        $this->planTier = $tenant?->saas_plan_tier ?? $branding['saas_plan'] ?? 'pro';
+        $this->amountCop = (int) ($branding['saas_amount_cop'] ?? 229000);
+        $this->checkoutUrl = "/admin/{$this->slug}/renovar-saas";
+        $this->isJustPaid = request()->has('saas_paid') || request()->has('bold_success');
     }
 }

@@ -58,7 +58,7 @@ class VetAdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/VetAdmin/Resources'), for: 'App\\Filament\\VetAdmin\\Resources')
             ->discoverPages(in: app_path('Filament/VetAdmin/Pages'), for: 'App\\Filament\\VetAdmin\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\VetAdmin\Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/VetAdmin/Widgets'), for: 'App\\Filament\\VetAdmin\\Widgets')
             ->widgets([

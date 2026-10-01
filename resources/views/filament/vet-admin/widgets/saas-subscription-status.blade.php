@@ -67,7 +67,7 @@
                             @endif
 
                             <span class="text-xs text-slate-400 font-medium">
-                                • {{ $tenant?->name ?? 'Clínica Veterinaria' }}
+                                • {{ $tenantName }}
                             </span>
                         </div>
 
@@ -83,9 +83,9 @@
 
                         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">
                             @if($status === 'paid')
-                                Próxima fecha de renovación: <strong class="text-slate-800 dark:text-slate-200">{{ $paidUntil ? $paidUntil->format('d/m/Y') : 'En 30 días' }}</strong>. Incluye pasarela Bold, portal de clientes, carnets QR ilimitados y módulo de teleconsultas.
+                                Próxima fecha de renovación: <strong class="text-slate-800 dark:text-slate-200">{{ $paidUntilFormatted ?: 'En 30 días' }}</strong>. Incluye pasarela Bold, portal de clientes, carnets QR ilimitados y módulo de teleconsultas.
                             @elseif($status === 'trial_active')
-                                Tu prueba vence el <strong class="text-slate-800 dark:text-slate-200">{{ $trialEndsAt ? $trialEndsAt->format('d/m/Y') : 'próximamente' }}</strong>. Activa hoy tu plan oficial por solo <strong>${{ number_format($amountCop, 0, ',', '.') }} COP/mes</strong> y garantiza la continuidad para tus pacientes.
+                                Tu prueba vence el <strong class="text-slate-800 dark:text-slate-200">{{ $trialEndsAtFormatted ?: 'próximamente' }}</strong>. Activa hoy tu plan oficial por solo <strong>${{ number_format($amountCop, 0, ',', '.') }} COP/mes</strong> y garantiza la continuidad para tus pacientes.
                             @else
                                 Tu período de prueba ha concluido. Para seguir emitiendo planes de salud, registrando mascotas y recibiendo pagos en línea, activa tu plan oficial con Bold.
                             @endif
@@ -109,7 +109,7 @@
                         </span>
                     </a>
 
-                    <a href="https://wa.me/573508742543?text={{ urlencode('Hola Robinson, tengo una consulta sobre el pago y suscripción de AVI-Plan para mi clínica ' . ($tenant?->name ?? '')) }}" 
+                    <a href="https://wa.me/573508742543?text={{ urlencode('Hola Robinson, tengo una consulta sobre el pago y suscripción de AVI-Plan para mi clínica ' . $tenantName) }}" 
                        target="_blank"
                        class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl font-semibold text-xs text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors text-center">
                         <span class="text-emerald-500">💬</span>
