@@ -16,7 +16,7 @@
         <div class="avi-operations-grid" style="display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 0.75rem !important; width: 100% !important;">
             {{-- 1. HERO CTA: Canjear Beneficio (Destacado) --}}
             <a href="{{ $redeemUrl }}" 
-               class="group relative overflow-hidden rounded-xl p-3 sm:p-3.5 flex flex-col justify-between h-[96px] min-w-0 shadow-xs hover:shadow-md transition-all transform hover:-translate-y-0.5 border border-blue-600/50 text-white"
+               class="avi-hero-cta group relative overflow-hidden rounded-xl p-3 sm:p-3.5 flex flex-col justify-between h-[96px] min-w-0 shadow-xs hover:shadow-md transition-all transform hover:-translate-y-0.5 border border-blue-600/50 text-white"
                style="background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 55%, #0284c7 100%) !important;">
                 <div class="flex items-center justify-between">
                     <div class="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-xs flex items-center justify-center text-sm font-black border border-white/30 shrink-0">

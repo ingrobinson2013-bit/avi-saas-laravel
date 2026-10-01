@@ -9,6 +9,11 @@
     .dark .fi-layout,
     .dark .fi-main {
         background-color: #0b1120 !important; /* Navy Profundo */
+        background-image: 
+            radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.22) 0px, transparent 55%),
+            radial-gradient(at 100% 0%, rgba(14, 116, 144, 0.16) 0px, transparent 50%),
+            radial-gradient(at 50% 100%, rgba(88, 28, 135, 0.10) 0px, transparent 55%) !important;
+        background-attachment: fixed !important;
         color: #f8fafc !important;
     }
 
@@ -93,7 +98,12 @@
     html:not(.dark) body,
     html:not(.dark) .fi-layout,
     html:not(.dark) .fi-main {
-        background-color: #f0f4f9 !important; /* Soft MedTech Ice Slate */
+        background-color: #f1f5f9 !important; /* Soft MedTech Ice Slate */
+        background-image: 
+            radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.05) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.045) 0px, transparent 45%),
+            radial-gradient(at 50% 100%, rgba(99, 102, 241, 0.03) 0px, transparent 50%) !important;
+        background-attachment: fixed !important;
         color: #0f172a !important;
     }
 
@@ -186,7 +196,9 @@
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-        letter-spacing: -0.025em !important;
+        letter-spacing: -0.035em !important;
+        font-feature-settings: "tnum" on, "cv02" on, "cv03" on, "cv04" on !important;
+        font-variant-numeric: tabular-nums !important;
     }
     .fi-wi-stats-overview-stat-label {
         font-size: 0.725rem !important;
@@ -310,5 +322,55 @@
     .dark .fi-user-avatar,
     .dark .fi-avatar {
         border-color: #38bdf8 !important;
+    }
+
+    /* 8. ANIMACIONES Y FÍSICAS DE INTERACCIÓN PREMIUM (Stripe & Linear Polish) */
+    .fi-wi-stats-overview-stat,
+    .fi-section,
+    .fi-ta-ctn,
+    .avi-operations-grid > a {
+        transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease !important;
+    }
+
+    .fi-wi-stats-overview-stat:hover,
+    .avi-operations-grid > a:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03) !important;
+    }
+
+    .dark .fi-wi-stats-overview-stat:hover,
+    .dark .avi-operations-grid > a:hover {
+        box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Shimmer continuo en Hero CTA de Mostrador */
+    @keyframes avi-shimmer-sweep {
+        0% { transform: translateX(-150%); }
+        35% { transform: translateX(150%); }
+        100% { transform: translateX(150%); }
+    }
+    .avi-hero-cta {
+        position: relative;
+        overflow: hidden;
+    }
+    .avi-hero-cta::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.18) 50%, transparent 100%);
+        transform: translateX(-150%);
+        animation: avi-shimmer-sweep 6s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events-none;
+    }
+
+    /* Flujo de gradiente animado para la barra de beneficios */
+    @keyframes avi-gradient-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    .avi-progress-bar {
+        background-size: 200% 200% !important;
+        animation: avi-gradient-flow 3.5s ease infinite !important;
     }
 </style>

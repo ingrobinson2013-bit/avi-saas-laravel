@@ -12,7 +12,7 @@
                 </span>
             </div>
             <div class="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden border border-slate-200/60 dark:border-slate-700/60">
-                <div class="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-500" 
+                <div class="avi-progress-bar h-full rounded-full bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400 transition-all duration-500 shadow-2xs" 
                      style="width: {{ $percent > 0 ? max(4, $percent) : 0 }}%"></div>
             </div>
             <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 mt-1.5">
