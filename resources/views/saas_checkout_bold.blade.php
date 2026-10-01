@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-900 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+<html lang="es" class="h-full bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,136 +15,222 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .glow-box {
-            box-shadow: 0 0 50px -10px rgba(99, 102, 241, 0.25);
+        .hero-bg {
+            background: radial-gradient(circle at 50% -20%, rgba(37, 99, 235, 0.08) 0%, rgba(248, 250, 252, 0.9) 70%);
         }
     </style>
 </head>
-<body class="min-h-full flex flex-col justify-between bg-slate-950 text-slate-100 py-10 px-4 sm:px-6">
+<body class="min-h-full flex flex-col justify-between bg-slate-50 text-slate-900 hero-bg">
 
-    <div class="max-w-xl mx-auto w-full space-y-8 my-auto">
-        
-        <!-- HEADER DE MARCA SAAS -->
-        <div class="text-center space-y-2">
-            <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold uppercase tracking-wider">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                <span>Pasarela de Pago Oficial Segura</span>
+    <!-- 1. TOP NAVBAR CLARA Y MODERNA -->
+    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-2.5">
+                <img src="/logo.svg" alt="AVI-Plan" class="w-8 h-8 object-contain">
+                <div class="flex items-center space-x-1.5">
+                    <span class="text-lg font-black text-slate-900 tracking-tight">AVI<span class="text-blue-600">Plan</span></span>
+                    <span class="text-[10px] font-bold uppercase bg-blue-50 text-blue-800 px-2 py-0.5 rounded-md border border-blue-200">
+                        Checkout Seguro
+                    </span>
+                </div>
+            </a>
+
+            <div class="flex items-center space-x-3 text-xs font-semibold">
+                <div class="hidden sm:flex items-center space-x-1.5 text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span>Cifrado SSL 256 bits · Bold.co</span>
+                </div>
+                <a href="/admin/{{ $tenant->slug }}" class="text-slate-600 hover:text-slate-900 font-bold hover:underline transition">
+                    ← Volver a la Clínica
+                </a>
             </div>
-            <h1 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
-                Activa tu Suscripción AVI-Plan
-            </h1>
-            <p class="text-sm text-slate-400">
-                Clínica: <strong class="text-white">{{ $tenant->name }}</strong>
-            </p>
         </div>
+    </header>
 
-        <!-- TARJETA PRINCIPAL DE LIQUIDACIÓN Y PAGO -->
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl glow-box relative overflow-hidden">
+    <!-- 2. CONTENIDO PRINCIPAL: 2 COLUMNAS CLARAS (ESTILO STRIPE / FINTECH MODERNO) -->
+    <main class="flex-grow py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            <!-- DETALLES DEL PLAN SAAS -->
-            <div class="space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-                    <div>
-                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Plan Seleccionado</span>
-                        <h3 class="text-xl font-black text-white mt-0.5">
-                            @if($tier === 'starter') Plan Starter (Hasta 60 mascotas)
-                            @elseif($tier === 'enterprise') Plan Enterprise (Ilimitado + Sedes)
-                            @elseif($tier === 'pay_per_pet') Modalidad por Mascota Activa
-                            @else Plan Profesional (Hasta 250 mascotas)
-                            @endif
-                        </h3>
+            <!-- COLUMNA IZQUIERDA: RESUMEN DE LA CLÍNICA Y BENEFICIOS INCLUIDOS -->
+            <div class="lg:col-span-6 space-y-6">
+                
+                <div class="space-y-2">
+                    <div class="inline-flex items-center space-x-2 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full text-blue-800 text-xs font-bold uppercase tracking-wider shadow-xs">
+                        <span>🏥 Suscripción SaaS para Clínicas</span>
                     </div>
-                    <span class="px-3 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-black rounded-full uppercase">
-                        SaaS 30 Días
-                    </span>
-                </div>
-
-                <!-- VALOR A PAGAR -->
-                <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
-                    <div>
-                        <span class="text-xs text-slate-400 font-medium">Total mensual a liquidar:</span>
-                        <div class="text-3xl sm:text-4xl font-black text-white font-mono mt-0.5">
-                            ${{ number_format($amount, 0, ',', '.') }} <span class="text-xs font-normal text-slate-400">COP</span>
-                        </div>
-                    </div>
-                    <div class="text-right text-xs text-slate-400">
-                        <span class="text-emerald-400 font-bold">✓ Sin permanencia</span><br>
-                        <span>✓ Factura y recibo digital</span>
-                    </div>
-                </div>
-
-                <!-- BENEFICIOS DEL SOFTWARE -->
-                <div class="space-y-2 text-xs text-slate-300">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-indigo-400 font-bold">✓</span>
-                        <span>Plataforma web activa de afiliación de tutores y mascotas.</span>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-indigo-400 font-bold">✓</span>
-                        <span>Terminal de canje con lector QR en mostrador en tiempo real.</span>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-indigo-400 font-bold">✓</span>
-                        <span>Carnets digitales interactivos para clientes vía WhatsApp.</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BOTÓN OFICIAL DE BOLD (PSE / TARJETAS / BOTÓN BANCOLOMBIA / NEQUI) -->
-            <div class="pt-4 border-t border-slate-800 space-y-4">
-                <div class="text-center space-y-1">
-                    <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                        Elige tu medio de pago con Bold:
-                    </span>
-                    <p class="text-[11px] text-slate-500">
-                        PSE (Todos los bancos), Tarjeta Crédito/Débito, Botón Bancolombia y Nequi
+                    <h1 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+                        Activa tu plataforma oficial de salud y bienestar
+                    </h1>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Clínica: <strong class="text-slate-900">{{ $tenant->name }}</strong>
                     </p>
                 </div>
 
-                <!-- CONTAINER DEL BOTÓN BOLD -->
-                <div class="flex justify-center items-center py-2">
-                    <script 
-                        data-bold-button="DARK"
-                        data-api-key="{{ $identityKey }}"
-                        data-order-id="{{ $orderId }}"
-                        data-amount="{{ (int) round($amount) }}"
-                        data-currency="COP"
-                        data-integrity-signature="{{ $integritySignature }}"
-                        data-description="Mensualidad SaaS AVI-Plan - {{ $tenant->name }}"
-                        data-redirection-url="{{ $redirectUrl }}"
-                        data-webhook-url="{{ $webhookUrl }}"
-                        data-payer-email="{{ $payerEmail }}"
-                        data-payer-name="{{ $payerName }}"
-                        data-payer-phone="{{ $payerPhone }}"
-                    ></script>
+                <!-- RESUMEN DEL PLAN SELECCIONADO -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Plan Seleccionado</span>
+                            <h3 class="text-lg sm:text-xl font-black text-slate-900 mt-0.5">
+                                @if($tier === 'starter') Plan Starter (Hasta 60 mascotas)
+                                @elseif($tier === 'enterprise') Plan Enterprise (Ilimitado + Sedes)
+                                @elseif($tier === 'pay_per_pet') Modalidad por Mascota Activa
+                                @else Plan Profesional (Hasta 250 mascotas)
+                                @endif
+                            </h3>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-50 text-blue-800 border border-blue-200 text-xs font-black rounded-full uppercase">
+                            SaaS 30 Días
+                        </span>
+                    </div>
+
+                    <hr class="border-slate-100">
+
+                    <p class="text-xs font-bold text-slate-900 uppercase tracking-wider">Tu suscripción incluye todo el ecosistema:</p>
+
+                    <div class="space-y-3 text-xs text-slate-700 font-medium">
+                        <div class="flex items-start space-x-2.5">
+                            <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                            <span><strong>Página Web Oficial de Afiliación:</strong> Portal B2C con tu propia marca para que tus tutores se afilien digitalmente sin filas.</span>
+                        </div>
+                        <div class="flex items-start space-x-2.5">
+                            <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                            <span><strong>Terminal de Canje Rápido en Mostrador:</strong> POS médico interactivo con lector de código QR para redimir consultas y vacunas en 3 segundos.</span>
+                        </div>
+                        <div class="flex items-start space-x-2.5">
+                            <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                            <span><strong>Carnet Digital Interactivo:</strong> Los tutores consultan su saldo de beneficios en vivo desde su celular sin descargar aplicaciones.</span>
+                        </div>
+                        <div class="flex items-start space-x-2.5">
+                            <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                            <span><strong>Afiche Oficial para Sala de Espera:</strong> Diseño listo para imprimir con código QR para captura masiva de pacientes.</span>
+                        </div>
+                        <div class="flex items-start space-x-2.5">
+                            <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                            <span><strong>Soporte Prioritario & Acompañamiento:</strong> Asesoría directa por WhatsApp con el equipo de AVI-Plan y NODIA.</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flex items-center justify-center space-x-4 pt-2 text-[11px] text-slate-500">
-                    <span class="flex items-center space-x-1">
-                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                        <span>Cifrado SSL 256 bits</span>
-                    </span>
-                    <span>•</span>
-                    <span>Procesado por <strong>Bold.co</strong></span>
-                    <span>•</span>
-                    <span>Activación Inmediata</span>
+                <!-- BADGES DE TRANQUILIDAD -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-semibold text-slate-600">
+                    <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs flex items-center space-x-2">
+                        <span class="text-base">🛡️</span>
+                        <span>Sin cláusula de permanencia</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs flex items-center space-x-2">
+                        <span class="text-base">⚡</span>
+                        <span>Activación inmediata al pagar</span>
+                    </div>
                 </div>
+
             </div>
 
-            <!-- REGRESAR AL PANEL -->
-            <div class="text-center pt-2">
-                <a href="/admin/{{ $tenant->slug }}" class="text-xs text-slate-500 hover:text-slate-300 transition underline">
-                    ← Regresar al Panel de {{ $tenant->name }}
-                </a>
+            <!-- COLUMNA DERECHA: CAJA DE PAGO CON BOLD CHECKOUT -->
+            <div class="lg:col-span-6 space-y-6">
+                
+                <div class="bg-white rounded-3xl border-2 border-blue-500/80 p-6 sm:p-8 shadow-xl space-y-6 relative overflow-hidden">
+                    
+                    <div class="border-b border-slate-100 pb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Resumen de Liquidación</span>
+                        <div class="flex items-baseline justify-between mt-1">
+                            <div class="text-3xl sm:text-4xl font-black text-slate-900 font-mono">
+                                ${{ number_format($amount, 0, ',', '.') }}
+                            </div>
+                            <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200">
+                                COP / Mes
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">
+                            Facturación recurrente mensual · Cero comisiones por transacción.
+                        </p>
+                    </div>
+
+                    <!-- MEDIOS DE PAGO HABILITADOS EN BOLD -->
+                    <div class="space-y-3">
+                        <span class="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+                            Medios de pago disponibles con Bold:
+                        </span>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-[11px] font-bold text-slate-700">
+                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 shadow-2xs flex flex-col items-center justify-center space-y-0.5">
+                                <span class="text-base">🏦</span>
+                                <span>PSE</span>
+                            </div>
+                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 shadow-2xs flex flex-col items-center justify-center space-y-0.5">
+                                <span class="text-base">📱</span>
+                                <span>Nequi</span>
+                            </div>
+                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 shadow-2xs flex flex-col items-center justify-center space-y-0.5">
+                                <span class="text-base">🟢</span>
+                                <span>Bancolombia</span>
+                            </div>
+                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 shadow-2xs flex flex-col items-center justify-center space-y-0.5">
+                                <span class="text-base">💳</span>
+                                <span>Tarjetas</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOTÓN OFICIAL DE BOLD (INTEGRACIÓN BOTÓN DE PAGOS) -->
+                    <div class="pt-4 border-t border-slate-100 space-y-4 text-center">
+                        <p class="text-xs font-semibold text-slate-600">
+                            Haz clic en el botón a continuación para abrir la pasarela segura:
+                        </p>
+
+                        <!-- CONTENEDOR DEL BOTÓN OFICIAL BOLD -->
+                        <div class="flex justify-center items-center py-2">
+                            <script 
+                                data-bold-button="DARK"
+                                data-api-key="{{ $identityKey }}"
+                                data-order-id="{{ $orderId }}"
+                                data-amount="{{ (int) round($amount) }}"
+                                data-currency="COP"
+                                data-integrity-signature="{{ $integritySignature }}"
+                                data-description="Mensualidad SaaS AVI-Plan - {{ $tenant->name }}"
+                                data-redirection-url="{{ $redirectUrl }}"
+                                data-webhook-url="{{ $webhookUrl }}"
+                                data-payer-email="{{ $payerEmail }}"
+                                data-payer-name="{{ $payerName }}"
+                                data-payer-phone="{{ $payerPhone }}"
+                            ></script>
+                        </div>
+
+                        <!-- TRUST & SEGURIDAD -->
+                        <div class="pt-2 flex flex-wrap items-center justify-center gap-3 text-[11px] text-slate-500 font-medium">
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                <span>Transacción Cifrada</span>
+                            </div>
+                            <span>•</span>
+                            <span>Procesado por <strong>Bold Colombia</strong></span>
+                            <span>•</span>
+                            <span>Activación 24/7</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- SOPORTE WHATSAPP DIRECTO SI TIENE DUDAS -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 text-xs text-slate-600 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <span>💬</span>
+                        <span>¿Tienes alguna duda con tu facturación?</span>
+                    </div>
+                    <a href="https://wa.me/573508742543?text=Hola%20Robinson,%20tengo%20una%20duda%20sobre%20el%20pago%20SaaS%20de%20{{ urlencode($tenant->name) }}" target="_blank" class="text-blue-600 font-bold hover:underline">
+                        Hablar con Asesor →
+                    </a>
+                </div>
+
             </div>
 
         </div>
+    </main>
 
-        <p class="text-center text-xs text-slate-600">
-            AVI-Plan by AviPetApp & NODIA · Todos los derechos reservados.
-        </p>
-
-    </div>
+    <!-- 3. FOOTER SENCILLO -->
+    <footer class="border-t border-slate-200 py-6 bg-white text-center text-xs text-slate-500">
+        <p>AVI-Plan by AviPetApp & NODIA · Facturación y Recaudo Seguro de Software Veterinario.</p>
+    </footer>
 
 </body>
 </html>
