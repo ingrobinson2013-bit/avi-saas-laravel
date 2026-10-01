@@ -27,11 +27,11 @@
                 <div class="h-1.5 w-full bg-amber-500"></div>
             @endif
 
-            <div class="p-6">
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div class="p-4 sm:p-5">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     {{-- Bloque Izquierdo: Icono + Información --}}
-                    <div class="flex items-start sm:items-center gap-4 min-w-0 flex-1">
-                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0 shadow-inner
+                    <div class="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
+                        <div class="w-11 h-11 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 shadow-inner
                             {{ $status === 'paid' ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 border border-emerald-200 dark:border-emerald-800' : ($status === 'trial_active' ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 border border-blue-200 dark:border-blue-800' : 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 border border-amber-200 dark:border-amber-800') }}">
                             @if($status === 'paid')
                                 🏆
@@ -43,24 +43,24 @@
                         </div>
 
                         <div class="min-w-0 flex-1">
-                            <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                                <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                                     Licencia AVI-Plan SaaS
                                 </span>
 
                                 @if($status === 'paid')
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">
-                                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                         {{ $planName }} (Activo)
                                     </span>
                                 @elseif($status === 'trial_active')
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300">
-                                        <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-black bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
                                         Prueba Gratuita ({{ $daysRemaining }} días restantes)
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300">
-                                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-black bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                                         Prueba Expirada
                                     </span>
                                 @endif
@@ -70,7 +70,7 @@
                                 </span>
                             </div>
 
-                            <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white leading-tight mb-1">
+                            <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight mb-0.5">
                                 @if($status === 'paid')
                                     Tu clínica tiene acceso total a AVI-Plan SaaS
                                 @elseif($status === 'trial_active')
@@ -80,7 +80,7 @@
                                 @endif
                             </h3>
 
-                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-normal">
+                            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-normal">
                                 @if($status === 'paid')
                                     Próxima fecha de renovación: <strong class="text-slate-900 dark:text-white">{{ $paidUntilFormatted ?: 'En 30 días' }}</strong>. 
                                     @if($planTier === 'pay_per_pet')
@@ -91,7 +91,7 @@
                                 @elseif($status === 'trial_active')
                                     Tu prueba finaliza el <strong class="text-slate-900 dark:text-white">{{ $trialEndsAtFormatted ?: 'próximamente' }}</strong>. 
                                     @if($planTier === 'pay_per_pet')
-                                        Activa tu plan de <strong class="text-blue-600 dark:text-blue-400 font-bold">${{ number_format($amountCop, 0, ',', '.') }} COP</strong> (calculado sobre {{ $petsCount }} pacientes registrados a $5.000 COP c/u).
+                                        Activa tu plan de <strong class="text-blue-600 dark:text-blue-400 font-bold">${{ number_format($amountCop, 0, ',', '.') }} COP</strong> (calculado sobre {{ $petsCount }} pacientes a $5.000 COP c/u).
                                     @else
                                         Activa hoy tu plan oficial por <strong class="text-blue-600 dark:text-blue-400 font-bold">${{ number_format($amountCop, 0, ',', '.') }} COP/mes</strong>.
                                     @endif
@@ -103,14 +103,14 @@
                     </div>
 
                     {{-- Bloque Derecho: Botones de Acción Nativos Filament --}}
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-shrink-0">
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-shrink-0">
                         <x-filament::button
                             tag="a"
                             href="{{ $checkoutUrl }}"
                             color="primary"
                             icon="heroicon-o-credit-card"
-                            size="lg"
-                            class="shadow-md font-bold"
+                            size="md"
+                            class="shadow-sm font-bold"
                         >
                             {{ $status === 'paid' ? 'Renovar Plan' : 'Pagar con Bold' }} (${{ number_format($amountCop, 0, ',', '.') }} COP)
                         </x-filament::button>
@@ -121,7 +121,7 @@
                             target="_blank"
                             color="gray"
                             icon="heroicon-m-chat-bubble-left-ellipsis"
-                            size="lg"
+                            size="md"
                         >
                             Soporte WhatsApp
                         </x-filament::button>

@@ -72,6 +72,9 @@ class ExpiringSubscriptionsWidget extends BaseWidget
                     })
                     ->openUrlInNewTab(),
             ])
+            ->emptyStateHeading('Sin vencimientos en los próximos 15 días')
+            ->emptyStateDescription('Todos los planes de tus afiliados se encuentran con cobertura vigente.')
+            ->emptyStateIcon('heroicon-o-shield-check')
             ->paginated(false);
     }
 }

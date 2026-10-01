@@ -44,6 +44,16 @@ class RecentRedemptionsFeedWidget extends BaseWidget
                     ->badge()
                     ->color('success'),
             ])
+            ->emptyStateHeading('Sin canjes registrados aún')
+            ->emptyStateDescription('Cuando atiendas a un paciente en recepción y descuentes un servicio, aparecerá aquí en tiempo real.')
+            ->emptyStateIcon('heroicon-o-qr-code')
+            ->emptyStateActions([
+                Tables\Actions\Action::make('openCounter')
+                    ->label('Abrir Mostrador de Canje')
+                    ->icon('heroicon-m-qr-code')
+                    ->color('primary')
+                    ->url(fn () => '/admin/' . (\Filament\Facades\Filament::getTenant()?->slug ?? 'vet-pet-patitas') . '/counter-redeem'),
+            ])
             ->paginated(false);
     }
 }

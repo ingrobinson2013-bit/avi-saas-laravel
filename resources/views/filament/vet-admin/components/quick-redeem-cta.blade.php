@@ -5,8 +5,9 @@
 
 <div class="px-3 py-2">
     <a href="/admin/{{ $tenantSlug }}/counter-redeem" 
-       class="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-sm shadow-blue-600/20 transition-all transform hover:-translate-y-0.5">
-        <span class="text-sm">🩺</span>
-        <span class="tracking-tight uppercase font-extrabold text-[11px]">Canje en Mostrador</span>
+       style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); color: #ffffff !important; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border-radius: 12px; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none; box-shadow: 0 2px 4px rgba(13, 148, 136, 0.25);"
+       class="transition-all transform hover:-translate-y-0.5">
+        <span style="font-size: 14px;">🩺</span>
+        <span style="color: #ffffff !important;">Canje en Mostrador</span>
     </a>
 </div>

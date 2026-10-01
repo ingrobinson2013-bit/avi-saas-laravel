@@ -109,4 +109,30 @@
         border-radius: 9999px !important;
         font-weight: 700 !important;
     }
+
+    /* 3. OPTIMIZACIÓN DE DENSIDAD CLÍNICA & REDUCCIÓN DE ESPACIOS EN BLANCO */
+    .fi-main-ctn {
+        padding-top: 1rem !important;
+        padding-bottom: 2rem !important;
+    }
+    .fi-page-header {
+        margin-bottom: 1rem !important;
+    }
+    .fi-widgets-ctn {
+        gap: 1.25rem !important;
+    }
+    .fi-wi-stats-overview-stat {
+        padding: 1rem 1.25rem !important;
+        border-radius: 1rem !important;
+    }
+    .fi-wi-stats-overview-stat-value {
+        font-size: 1.35rem !important;
+        line-height: 1.2 !important;
+    }
+    .fi-wi-stats-overview-stat-label {
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+    }
 </style>
