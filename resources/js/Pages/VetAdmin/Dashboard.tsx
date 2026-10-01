@@ -169,12 +169,12 @@ export default function Dashboard({
                             </div>
                         </div>
 
-                        {/* Right Golden Retriever + Cat Cutout with Aura and Floating Heart */}
+                        {/* Right Golden Retriever + Cat Cutout with Aura and Floating Heart HD */}
                         <div className="shrink-0 flex items-center justify-center">
                             <img 
-                                src="/images/dashboard/hero_pets_4x.png" 
+                                src="/images/dashboard/hero_pets_hd.png" 
                                 alt={`Mascotas ${brandName}`} 
-                                className="h-28 lg:h-32 xl:h-34 w-auto object-contain"
+                                className="h-28 lg:h-36 xl:h-40 w-auto object-contain drop-shadow-sm select-none pointer-events-none"
                             />
                         </div>
                     </div>
@@ -322,7 +322,7 @@ export default function Dashboard({
                                         <p className="text-[10px] text-blue-100 font-medium mt-0.5">Terminal POS de atención</p>
                                     </div>
                                     <div className="flex items-center shrink-0 pl-1">
-                                        <img src="/images/dashboard/pos_terminal_4x.png" alt="POS" className="h-9 w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform" />
+                                        <img src="/images/dashboard/pos_terminal_hd.png" alt="POS" className="h-10 w-auto object-contain drop-shadow-md group-hover:scale-110 transition-transform" />
                                     </div>
                                 </div>
                             </a>
@@ -604,13 +604,13 @@ export default function Dashboard({
                                 <span className="text-slate-400 text-sm font-bold tracking-widest cursor-pointer">•••</span>
                             </div>
 
-                            {/* 3D Floating Robot Graphic */}
-                            <div className="flex flex-col items-center text-center py-3">
-                                <div className="relative w-36 h-20 flex items-center justify-center mb-1">
+                            {/* 3D Floating Robot Graphic HD */}
+                            <div className="flex flex-col items-center text-center py-2.5">
+                                <div className="relative w-36 h-22 flex items-center justify-center mb-1">
                                     <img 
-                                        src="/images/dashboard/robot_ai_4x.png" 
+                                        src="/images/dashboard/robot_ai_hd.png" 
                                         alt="Robot IA" 
-                                        className="h-16 w-auto object-contain drop-shadow-md"
+                                        className="h-20 w-auto object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300 select-none pointer-events-none"
                                     />
                                 </div>
 

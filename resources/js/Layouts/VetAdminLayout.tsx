@@ -115,11 +115,11 @@ export default function VetAdminLayout({
                     })}
                 </nav>
 
-                {/* Footer Pet Card (Mockup Exact) */}
+                {/* Footer Pet Card (Mockup Exact HD) */}
                 <div className="p-3 border-t border-slate-100 shrink-0 bg-white">
                     <div className="rounded-2xl overflow-hidden border border-slate-200/90 shadow-2xs bg-white">
                         <img 
-                            src="/images/dashboard/sidebar_pet_4x.png" 
+                            src="/images/dashboard/sidebar_pet_hd.png" 
                             alt="Tu aliado en cada etapa de su vida" 
                             className="w-full h-auto object-cover block"
                         />
@@ -188,7 +188,7 @@ export default function VetAdminLayout({
                         {/* Doctor Avatar & Role */}
                         <div className="flex items-center gap-2.5 pl-2 border-l border-slate-200">
                             <img 
-                                src="/images/dashboard/dra_vicky.png" 
+                                src="/images/dashboard/dra_vicky_hd.png" 
                                 alt={userName} 
                                 className="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-2xs"
                             />
