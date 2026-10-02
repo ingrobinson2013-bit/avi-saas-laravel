@@ -257,13 +257,17 @@
                                     CHIP
                                 </div>
                             </div>
-                            <div class="col-span-5 min-w-0 pl-1">
+                            <div class="col-span-4 min-w-0 pl-1">
                                 <p class="text-[7px] uppercase tracking-wider text-white/60 font-bold">Plan</p>
                                 <p class="font-black text-amber-300 truncate">{{ $planName }}</p>
                             </div>
-                            <div class="col-span-5 text-right min-w-0">
-                                <p class="text-[7px] uppercase tracking-wider text-white/60 font-bold">Contrato Digital</p>
-                                <p class="font-mono font-bold text-white text-[11px] truncate">{{ $contractId }}</p>
+                            <div class="col-span-3 min-w-0 text-center bg-amber-500/20 py-1 px-1 rounded-lg border border-amber-400/40">
+                                <p class="text-[6.5px] uppercase tracking-wider text-amber-200 font-black">Fondo Quirúrgico</p>
+                                <p class="font-black text-white text-[10.5px] truncate">{{ $subscription->wallet ? $subscription->wallet->formatted_balance : '$20.000 COP' }}</p>
+                            </div>
+                            <div class="col-span-3 text-right min-w-0">
+                                <p class="text-[7px] uppercase tracking-wider text-white/60 font-bold">Contrato</p>
+                                <p class="font-mono font-bold text-white text-[10px] truncate">{{ $contractId }}</p>
                             </div>
                         </div>
 
@@ -475,6 +479,17 @@
                     @endif
 
                 </div>
+            </div>
+
+            <!-- 5.1 CONDICIÓN DE USO DEL CRÉDITO CLÍNICO DE EMERGENCIA (BLINDAJE LEGAL) -->
+            <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 text-xs text-amber-200 space-y-1">
+                <p class="font-bold flex items-center space-x-1.5 text-amber-300">
+                    <span>🛡️</span>
+                    <span>Condición de Uso del Crédito Clínico de Emergencia (Fondo Quirúrgico):</span>
+                </p>
+                <p class="text-[11px] leading-relaxed text-slate-300">
+                    El Crédito Clínico de Emergencia acumulado (10% de cada cuota mensual pagada) corresponde a un beneficio comercial acumulativo de la clínica para ser aplicado exclusivamente como descuento en procedimientos quirúrgicos mayores, exámenes de diagnóstico avanzado (Rayos X / Ecografías) u hospitalización de emergencia no cubierta al 100%. <strong>En ningún caso es canjeable por dinero en efectivo ni transferencias bancarias. La mora o cancelación de la membresía extingue el saldo acumulado de forma automática e irreversible.</strong>
+                </p>
             </div>
 
             <!-- 6. POLÍTICA DE VALIDACIÓN Y FIRMA DIGITAL -->

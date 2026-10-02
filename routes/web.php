@@ -107,6 +107,11 @@ Route::get('/admin/{slug}/inteligencia', function (string $slug) use ($checkAdmi
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->intelligence(request(), $slug);
 });
 
+Route::get('/admin/{slug}/logistica', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->logistics(request(), $slug);
+});
+
 // Aliases amigables hacia los módulos conectados a la base de datos
 Route::get('/admin/{slug}/canje-mostrador', fn(string $slug) => redirect("/admin/{$slug}/counter-redeem" . (request('preview') === '1' ? '?preview=1' : '')));
 Route::get('/admin/{slug}/configuracion-clinica', fn(string $slug) => redirect("/admin/{$slug}/clinic-settings" . (request('preview') === '1' ? '?preview=1' : '')));
@@ -114,6 +119,8 @@ Route::get('/admin/{slug}/servicios', fn(string $slug) => redirect("/admin/{$slu
 Route::get('/admin/{slug}/ai', fn(string $slug) => redirect("/admin/{$slug}/inteligencia" . (request('preview') === '1' ? '?preview=1' : '')));
 Route::get('/admin/{slug}/recepcion', fn(string $slug) => redirect("/admin/{$slug}/counter-redeem" . (request('preview') === '1' ? '?preview=1' : '')));
 Route::get('/admin/{slug}/reportes', fn(string $slug) => redirect("/admin/{$slug}/subscriptions" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/despachos', fn(string $slug) => redirect("/admin/{$slug}/logistica" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/envios', fn(string $slug) => redirect("/admin/{$slug}/logistica" . (request('preview') === '1' ? '?preview=1' : '')));
 
 // 3. Acceso amigable por Slug al Admin de la clínica (ej. /v/vet-pet-patitas/admin -> /admin/vet-pet-patitas)
 Route::get('/v/{slug}/admin/{section?}', function (string $slug, ?string $section = null) {

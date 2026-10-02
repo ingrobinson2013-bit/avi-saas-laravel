@@ -18,7 +18,8 @@ import {
     Search, 
     Headphones,
     ExternalLink,
-    LogOut 
+    LogOut,
+    Truck
 } from 'lucide-react';
 
 interface VetAdminLayoutProps {
@@ -74,6 +75,7 @@ export default function VetAdminLayout({
         { label: 'Planes y Beneficios', icon: FileText, href: `/admin/${tenantSlug}/plans`, hasChevron: true, active: activeItem === 'Planes y Beneficios' },
         { label: 'Constructor de Planes', icon: Layers, href: `/admin/${tenantSlug}/plans/create`, active: activeItem === 'Constructor de Planes' },
         { label: 'Catálogo de Servicios', icon: BookOpen, href: `/admin/${tenantSlug}/benefit-definitions`, active: activeItem === 'Catálogo de Servicios' },
+        { label: 'Logística & Envíos', icon: Truck, href: `/admin/${tenantSlug}/logistica`, badge: 'Auto', active: activeItem === 'Logística & Envíos' },
     ];
 
     const isPreview = typeof window !== 'undefined' && (window.location.search.includes('preview=1') || window.location.href.includes('preview=1'));

@@ -52,6 +52,11 @@ class Subscription extends Model
         return $this->hasManyThrough(BenefitRedemption::class, SubscriptionBenefitBalance::class, 'subscription_id', 'balance_id');
     }
 
+    public function wallet(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(SubscriptionWallet::class);
+    }
+
     public function isExpiringSoon(): bool
     {
         if ($this->status !== 'active' || !$this->current_period_end) {

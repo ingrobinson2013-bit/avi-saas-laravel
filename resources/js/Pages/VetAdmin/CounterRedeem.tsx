@@ -22,6 +22,14 @@ interface PetDetails {
     status: string;
 }
 
+interface WalletDetails {
+    balance_cop: number;
+    formatted_balance: string;
+    reserve_percentage: number;
+    total_accrued_cop: number;
+    total_redeemed_cop: number;
+}
+
 interface CounterRedeemProps {
     tenantSlug: string;
     brandName: string;
@@ -33,6 +41,7 @@ interface CounterRedeemProps {
     userRole: string;
     pet: PetDetails;
     balances: BalanceItem[];
+    wallet?: WalletDetails;
 }
 
 export default function CounterRedeem({
@@ -46,10 +55,31 @@ export default function CounterRedeem({
     userRole,
     pet,
     balances = [],
+    wallet = {
+        balance_cop: 20000,
+        formatted_balance: '$20.000 COP',
+        reserve_percentage: 10,
+        total_accrued_cop: 20000,
+        total_redeemed_cop: 0,
+    },
 }: CounterRedeemProps) {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [localBalances, setLocalBalances] = useState<BalanceItem[]>(balances);
+    const [currentWalletBalance, setCurrentWalletBalance] = useState<number>(wallet.balance_cop);
     const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+    const handleRedeemWallet = () => {
+        if (!currentWalletBalance || currentWalletBalance <= 0) {
+            setToastMessage('⚠️ No hay saldo disponible en el Crédito Clínico de Emergencia.');
+            setTimeout(() => setToastMessage(null), 4000);
+            return;
+        }
+
+        const deduct = Math.min(currentWalletBalance, 10000);
+        setCurrentWalletBalance((prev) => prev - deduct);
+        setToastMessage(`✓ ¡Se aplicaron $${deduct.toLocaleString('es-CO')} COP de Crédito de Emergencia a la cuenta de ${pet.name}! Saldo restante: $${(currentWalletBalance - deduct).toLocaleString('es-CO')} COP.`);
+        setTimeout(() => setToastMessage(null), 5000);
+    };
 
     const handleRedeem = (item: BalanceItem) => {
         if (item.available <= 0) return;
@@ -138,6 +168,39 @@ export default function CounterRedeem({
                     <div className="text-right">
                         <span className="text-xs font-bold text-slate-400 block">Plan Afiliado</span>
                         <span className="text-sm font-black text-blue-900">{pet.plan_name}</span>
+                    </div>
+                </div>
+
+                {/* 🛡️ Smart Health Wallet Card (Crédito Clínico de Emergencia) */}
+                <div className="bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-teal-500/10 border-2 border-amber-300/80 rounded-2xl p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center text-xl shrink-0 shadow-xs font-black">
+                            🛡️
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <h3 className="text-sm font-extrabold text-slate-900">
+                                    Crédito Clínico de Emergencia (Fondo Quirúrgico 10%)
+                                </h3>
+                                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                                    ${currentWalletBalance.toLocaleString('es-CO')} COP Disponible
+                                </span>
+                            </div>
+                            <p className="text-xs text-slate-600 mt-1 max-w-xl">
+                                Bono acumulativo por antigüedad de cuotas mensuales. <strong>Redimible exclusivamente como descuento en cirugías mayores, ecografías o urgencias no cubiertas al 100%.</strong> No canjeable por efectivo.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                        <button
+                            type="button"
+                            onClick={handleRedeemWallet}
+                            className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5"
+                        >
+                            <span>💳</span>
+                            <span>Aplicar $10.000 a Cuenta</span>
+                        </button>
                     </div>
                 </div>
 

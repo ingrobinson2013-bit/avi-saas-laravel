@@ -12,6 +12,8 @@ interface SubItem {
     plan_name: string;
     price_cop: number;
     formatted_price: string;
+    wallet_balance?: number;
+    formatted_wallet?: string;
     status: string;
     status_label: string;
     start_date: string;
@@ -100,7 +102,7 @@ export default function Subscriptions({
                 </div>
 
                 {/* KPI Metrics Summary */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
                     <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs">
                         <span className="text-xs font-bold text-slate-400 block mb-1">MRR Recurrente Mensual</span>
                         <div className="text-2xl font-black text-slate-900">{formattedMrr}</div>
@@ -117,6 +119,14 @@ export default function Subscriptions({
                         <span className="text-xs font-bold text-slate-400 block mb-1">Renovaciones Próximos 15 Días</span>
                         <div className="text-2xl font-black text-slate-900">0</div>
                         <span className="text-[10.5px] font-medium text-slate-500 mt-1 block">Sin riesgo de vencimiento</span>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-amber-50 to-white border-2 border-amber-200 rounded-2xl p-4 shadow-2xs">
+                        <span className="text-xs font-bold text-amber-800 block mb-1 flex items-center gap-1">
+                            <span>🛡️</span> Fondo Reserva en Custodia
+                        </span>
+                        <div className="text-2xl font-black text-amber-950">$20.000 COP</div>
+                        <span className="text-[10.5px] font-bold text-amber-700 mt-1 block">10% Cuotas Acumuladas</span>
                     </div>
                 </div>
 
@@ -143,6 +153,7 @@ export default function Subscriptions({
                                     <th className="py-3 px-4">Paciente</th>
                                     <th className="py-3 px-4">Tutor</th>
                                     <th className="py-3 px-4">Plan & Cuota</th>
+                                    <th className="py-3 px-4">Crédito Emergencia (10%)</th>
                                     <th className="py-3 px-4">Vigencia Periodo</th>
                                     <th className="py-3 px-4">Estado</th>
                                     <th className="py-3 px-4 text-right">Acciones</th>
@@ -165,6 +176,12 @@ export default function Subscriptions({
                                         <td className="py-3.5 px-4">
                                             <div className="font-bold text-blue-900">{s.plan_name}</div>
                                             <span className="text-[11px] text-emerald-700 font-semibold">{s.formatted_price}</span>
+                                        </td>
+                                        <td className="py-3.5 px-4">
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-black bg-amber-50 text-amber-900 border border-amber-200">
+                                                <span>🛡️</span>
+                                                <span>{s.formatted_wallet || '$20.000 COP'}</span>
+                                            </span>
                                         </td>
                                         <td className="py-3.5 px-4 text-slate-600 font-medium">
                                             {s.start_date} – {s.end_date}
