@@ -80,7 +80,7 @@ export default function VetAdminLayout({
     const getHref = (href: string) => (isPreview && !href.includes('preview=1')) ? `${href}${href.includes('?') ? '&' : '?'}preview=1` : href;
 
     return (
-        <div className="min-h-screen flex bg-[#edf0f7] text-slate-900 font-sans antialiased">
+        <div className="min-h-screen flex bg-[#F3F6FB] text-slate-800 font-sans antialiased">
             
             {/* SIDEBAR FIJO */}
             <aside className="w-[230px] 2xl:w-[245px] bg-white border-r border-slate-200/90 flex flex-col shrink-0 min-h-screen sticky top-0 h-screen select-none z-40">

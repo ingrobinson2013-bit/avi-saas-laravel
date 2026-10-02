@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import VetAdminLayout from '@/Layouts/VetAdminLayout';
 import { 
-    ChevronRight, 
-    Eye, 
-    Zap, 
-    Send, 
-    Calendar,
-    Copy,
-    Check,
-    ExternalLink,
+    PawPrint,
+    HeartPulse,
+    Users,
+    BrainCircuit,
+    CreditCard,
+    CalendarDays,
+    TrendingUp,
+    ChevronRight,
+    Sparkles,
+    Building2,
+    QrCode,
     MessageCircle,
-    CheckCircle2,
-    Sparkles
+    Send,
+    Eye,
+    MessageSquare
 } from 'lucide-react';
 
 interface DashboardProps {
@@ -58,6 +62,14 @@ interface DashboardProps {
     };
 }
 
+function SectionTitle({ children }: { children: React.ReactNode }) {
+    return (
+        <h2 className="mb-4 flex items-center gap-2 text-sm font-bold text-slate-800">
+            {children}
+        </h2>
+    );
+}
+
 export default function Dashboard({
     mrr = 50000,
     petsCount = 1,
@@ -81,49 +93,39 @@ export default function Dashboard({
     },
     logoutUrl = `/admin/vet-pet-patitas/logout`,
     cleanCity = 'Cajicá',
-    formattedDate = 'Jueves 1 de octubre de 2026',
+    formattedDate = 'Viernes 2 de octubre de 2026',
     tenantSlug = 'vet-pet-patitas',
     redeemUrl = `/admin/vet-pet-patitas/counter-redeem`,
-    newSubUrl = `/admin/vet-pet-patitas/subscriptions/create`,
+    newSubUrl = `/admin/vet-pet-patitas/plans`,
     portalUrl = `/v/vet-pet-patitas`,
     qrUrl = `/v/vet-pet-patitas/afiche`,
     recommendation = {
         badge: 'Recomendación',
         impact_text: '1 oportunidad detectada',
         title: 'Te recomendamos contactar a María porque Max tiene 10/18 beneficios disponibles (como Kit Bienvenida, Cédula + Collar Placa + Carnet Digital) y no ha realizado una visita en los últimos 60 días.',
-        whatsapp_url: 'https://wa.me/573508742543',
+        whatsapp_url: 'https://wa.me/573508742543?text=%F0%9F%90%BE+Hola+Mar%C3%ADa%2C+te+recordamos+que+Max+tiene+consultas+y+vacunas+disponibles+en+Vet-Pet+Patitas.',
         pet_url: '/admin/vet-pet-patitas/pets',
         customer_name: 'María',
         pet_name: 'Max'
     }
 }: DashboardProps) {
 
-    // Interactive States
-    const [copiedPortal, setCopiedPortal] = useState(false);
+    // Chat interactivo del Asistente IA
     const [chatInput, setChatInput] = useState('');
     const [chatMessages, setChatMessages] = useState<Array<{ role: 'user' | 'assistant'; text: string }>>([]);
-
-    const handleCopyPortal = (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const fullUrl = window.location.origin + portalUrl;
-        navigator.clipboard.writeText(fullUrl);
-        setCopiedPortal(true);
-        setTimeout(() => setCopiedPortal(false), 2000);
-    };
 
     const handlePromptClick = (text: string) => {
         const userMsg = { role: 'user' as const, text };
         let reply = '';
 
-        if (text.includes('perro adulto')) {
-            reply = '🐶 **Plan Recomendado:** Para perros adultos mayores a 3 años, el Plan Patitas Básico / Senior es ideal: incluye vacunación antirrábica y hexavalente, desparasitaciones periódicas trimestrales, 1 profilaxis con 20% de descuento y controles generales.';
-        } else if (text.includes('coberturas')) {
-            reply = '🛡️ **Coberturas y Exclusiones:** Incluye chequeos clínicos, vacunación anual y urgencias diurnas. Excluye patologías preexistentes no declaradas, cirugías estéticas y medicamentos crónicos de farmacia externa.';
-        } else if (text.includes('analiza')) {
-            reply = '📊 **Oportunidad Detectada:** El 80% de tus pacientes registrados aún no tienen débito automático activo. Afiliar 5 pacientes este mes elevará el MRR en $250.000 COP con 92% de retención anual.';
+        if (text.includes('perro adulto') || text.includes('coberturas')) {
+            reply = '🐶 **Plan Recomendado:** Para perros adultos mayores a 3 años, el Plan Patitas Básico / Senior incluye vacunación anual, 3 desparasitaciones, consultas médicas preventivas y carnet digital oficial.';
+        } else if (text.includes('afiliación') || text.includes('dudas')) {
+            reply = '🛡️ **Afiliación Rápida:** El tutor puede ingresar al portal web B2C o escanear el afiche QR en mostrador para afiliar a su mascota en 2 minutos con pago por Nequi o Bold.';
+        } else if (text.includes('comerciales') || text.includes('oportunidades') || text.includes('analiza')) {
+            reply = '📊 **Oportunidad Detectada:** Max no asiste a la clínica hace más de 60 días y tiene 10 beneficios vigentes. Escríbele por WhatsApp para agendar su control trimestral.';
         } else {
-            reply = '💡 **Plan de Fidelización:** 1) Envío de carnet digital con bienvenida. 2) Alerta automática a los 45 días si no han redimido su baño medicado o control preventivo. 3) Bono del 10% en tienda por renovación anual.';
+            reply = '💡 **Plan de Fidelización:** 1) Envío de carnet digital con bienvenida. 2) Alerta a los 45 días si no ha redimido baño o vacunas. 3) 10% en tienda veterinaria por renovación.';
         }
 
         setChatMessages(prev => [...prev, userMsg, { role: 'assistant', text: reply }]);
@@ -139,6 +141,78 @@ export default function Dashboard({
 
     const formattedMrr = new Intl.NumberFormat('es-CO').format(mrr);
 
+    // Módulos de métricas dinámicas
+    const metrics = [
+        {
+            title: 'Ingresos recurrentes',
+            value: `$${formattedMrr}`,
+            suffix: 'COP',
+            note: '+5% vs. mes anterior',
+            icon: CreditCard,
+            color: 'blue' as const,
+        },
+        {
+            title: 'Mascotas activas',
+            value: `${petsCount}`,
+            note: `${activeSubsCount} plan activo`,
+            icon: PawPrint,
+            color: 'teal' as const,
+        },
+        {
+            title: 'Nuevas afiliaciones',
+            value: `+${newSubsThisMonth}`,
+            note: 'Este mes',
+            icon: Users,
+            color: 'violet' as const,
+        },
+        {
+            title: 'Renovaciones',
+            value: `${expiring15Days}`,
+            note: 'Próximos 15 días',
+            icon: CalendarDays,
+            color: 'amber' as const,
+        },
+    ];
+
+    // Acciones rápidas operativas con enlaces reales
+    const actions = [
+        {
+            title: 'Canjear beneficio',
+            subtitle: 'Terminal POS de atención',
+            icon: CreditCard,
+            style: 'primary' as const,
+            href: redeemUrl,
+            isExternal: false,
+        },
+        {
+            title: 'Afiliar mascota',
+            subtitle: 'Nueva membresía de salud',
+            icon: PawPrint,
+            style: 'teal' as const,
+            href: newSubUrl,
+            isExternal: false,
+        },
+        {
+            title: 'Portal pacientes',
+            subtitle: 'Tienda web de afiliación',
+            icon: Building2,
+            style: 'white' as const,
+            href: portalUrl,
+            isExternal: true,
+        },
+        {
+            title: 'Ficha & QR',
+            subtitle: 'Imprimir para recepción',
+            icon: QrCode,
+            style: 'white' as const,
+            href: qrUrl,
+            isExternal: true,
+        },
+    ];
+
+    const isPreview = typeof window !== 'undefined' && (window.location.search.includes('preview=1') || window.location.href.includes('preview=1'));
+    const formatLink = (url: string) => isPreview && !url.includes('preview=1') ? `${url}${url.includes('?') ? '&' : '?'}preview=1` : url;
+
     return (
         <VetAdminLayout 
             tenantSlug={tenantSlug} 
@@ -149,516 +223,364 @@ export default function Dashboard({
             logoutUrl={logoutUrl}
             userName={userName} 
             userRole={userRole}
+            activeItem="Inicio"
         >
             <Head title={`Dashboard · ${brandName}`} />
-            
-            {/* CONTENEDOR FLUIDO QUE LLENA LA PANTALLA NATURALMENTE */}
-            <div className="flex flex-col xl:flex-row gap-4 items-start w-full">
+
+            <div className="flex flex-col 2xl:flex-row gap-5 items-start w-full">
                 
                 {/* =========================================================
-                     COLUMNA IZQUIERDA: ÁREA DE OPERACIÓN PRINCIPAL
+                     CONTENIDO PRINCIPAL
                      ========================================================= */}
-                <div className="flex-1 min-w-0 flex flex-col gap-3.5 w-full">
-                    
-                    {/* 1. HERO WELCOME CARD (EXACTO AL MOCKUP) */}
-                    <div className="bg-white border border-slate-200/90 rounded-2xl p-5 lg:p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xs relative overflow-hidden">
-                        <div className="space-y-1.5 max-w-xl">
-                            <p className="text-xs font-semibold text-slate-500">
+                <div className="min-w-0 flex-1 w-full space-y-6">
+
+                    {/* 1. BIENVENIDA HERO CARD */}
+                    <section className="relative flex min-h-40 items-center justify-between overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-r from-white via-cyan-50 to-blue-100 p-6 shadow-xs">
+                        <div className="relative z-10 max-w-xl">
+                            <p className="text-sm font-semibold text-slate-500">
                                 ¡Hola, {greetingName}! 👋
                             </p>
-                            <h1 className="text-2xl lg:text-[28px] font-black text-slate-900 leading-tight tracking-tight">
+                            <h2 className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl text-slate-900">
                                 Bienvenida a {brandName}
-                            </h1>
-                            <p className="text-xs lg:text-[13.5px] font-medium text-slate-500">
+                            </h2>
+                            <p className="mt-2 text-sm text-slate-600">
                                 Gestiona tus planes de salud, clientes y mascotas en un solo lugar.
                             </p>
-                            
-                            <div className="flex items-center gap-2 flex-wrap pt-2">
-                                <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-white border border-slate-200 text-slate-600 shadow-2xs">
+
+                            <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
+                                <span className="rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 font-medium text-slate-700 shadow-2xs">
                                     📍 Sede {cleanCity}
                                 </span>
-                                <span className="text-slate-300 text-xs">›</span>
-                                <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-white border border-slate-200 text-slate-600 shadow-2xs">
+                                <span className="rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 font-medium text-slate-700 shadow-2xs">
                                     📅 {formattedDate}
                                 </span>
-                                <span className="text-slate-300 text-xs">›</span>
-                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-semibold bg-[#f0fdfa] border border-[#ccfbf1] text-[#0f766e]">
-                                    <span>⏱</span> Modo Sincronizado
+                                <span className="rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 font-medium text-teal-800">
+                                    ◷ Modo sincronizado
                                 </span>
-                                <span className="text-slate-300 text-xs">›</span>
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-[#f0fdf4] border border-[#bbf7d0] text-[#15803d]">
+                                <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-700 flex items-center gap-1.5">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    <span>Sistema en línea</span>
+                                    Sistema en línea
                                 </span>
                             </div>
                         </div>
 
-                        {/* Hand drawn cyan heart doodle */}
-                        <svg className="w-10 h-10 text-cyan-400 stroke-current -rotate-12 absolute right-52 top-6 hidden lg:block opacity-75" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                        </svg>
-
-                        {/* Right Golden Retriever + Cat Cutout with Aura and Floating Heart HD */}
-                        <div className="shrink-0 flex items-center justify-center relative">
-                            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-100/50 to-sky-100/40 rounded-full blur-xl scale-110 pointer-events-none"></div>
+                        {/* Pet Cutout Graphic */}
+                        <div className="hidden md:flex shrink-0 items-center justify-center relative pr-4">
+                            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-100/60 to-blue-200/40 rounded-full blur-xl scale-110 pointer-events-none"></div>
                             <img 
                                 src="/images/dashboard/hero_pets_hd.png" 
                                 alt={`Mascotas ${brandName}`} 
-                                className="h-28 lg:h-36 xl:h-40 w-auto object-contain drop-shadow-sm select-none pointer-events-none relative z-10"
+                                className="h-32 xl:h-36 w-auto object-contain drop-shadow-sm select-none pointer-events-none relative z-10"
                             />
                         </div>
-                    </div>
+                    </section>
 
-                    {/* 2. 4 KPI CARDS (FILA HORIZONTAL DE 4 COLUMNAS) */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
-                        
-                        {/* KPI 1: MRR */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[130px] shadow-2xs hover:shadow-xs transition">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-7 h-7 rounded-full bg-[#1e3a8a] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-2xs">
-                                    $
-                                </div>
-                                <span className="text-xs font-bold text-slate-600">
-                                    Ingresos recurrentes (MRR)
-                                </span>
-                            </div>
+                    {/* 2. INDICADORES (METRICS) */}
+                    <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                        {metrics.map((metric) => {
+                            const Icon = metric.icon;
 
-                            <div className="my-1.5">
-                                <div className="text-2xl lg:text-[27px] font-black text-slate-900 tracking-tight leading-none">
-                                    ${formattedMrr} <span className="text-sm font-black text-slate-800">COP</span>
-                                </div>
-                            </div>
+                            const colors: Record<string, string> = {
+                                blue: "bg-blue-100 text-blue-700",
+                                teal: "bg-teal-100 text-teal-700",
+                                violet: "bg-violet-100 text-violet-700",
+                                amber: "bg-amber-100 text-amber-700",
+                            };
 
-                            <div className="flex items-center justify-between">
-                                <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-0.5">
-                                    <span>↗</span> +50% vs. mes anterior
-                                </span>
-                                <svg className="w-14 h-5 text-emerald-500" viewBox="0 0 60 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M2 18 C 15 18, 25 14, 38 8 C 45 4, 52 4, 58 2" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        {/* KPI 2: Mascotas Activas */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[130px] shadow-2xs hover:shadow-xs transition">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-7 h-7 rounded-full bg-[#0d9488] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-2xs">
-                                    🐾
-                                </div>
-                                <span className="text-xs font-bold text-slate-600">
-                                    Mascotas activas
-                                </span>
-                            </div>
-
-                            <div className="my-1.5">
-                                <div className="text-2xl lg:text-[27px] font-black text-slate-900 tracking-tight leading-none">
-                                    {petsCount}
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <span className="text-[11px] font-semibold text-blue-600">
-                                    {activeSubsCount} plan activo
-                                </span>
-                                <span className="text-lg text-cyan-400/80 leading-none">
-                                    🐾
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* KPI 3: Nuevas Afiliaciones */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[130px] shadow-2xs hover:shadow-xs transition">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-7 h-7 rounded-full bg-[#7c3aed] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-2xs">
-                                    👥
-                                </div>
-                                <span className="text-xs font-bold text-slate-600">
-                                    Nuevas afiliaciones
-                                </span>
-                            </div>
-
-                            <div className="my-1.5">
-                                <div className="text-2xl lg:text-[27px] font-black text-slate-900 tracking-tight leading-none">
-                                    +{newSubsThisMonth}
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <span className="text-[11px] font-semibold text-slate-500">
-                                    Este mes
-                                </span>
-                                <svg className="w-10 h-5 text-purple-500" viewBox="0 0 40 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M2 20 L 14 14 L 24 17 L 38 4" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        {/* KPI 4: Renovaciones */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 flex flex-col justify-between min-h-[130px] shadow-2xs hover:shadow-xs transition">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-7 h-7 rounded-full bg-[#f59e0b] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-2xs">
-                                    📅
-                                </div>
-                                <span className="text-xs font-bold text-slate-600">
-                                    Renovaciones
-                                </span>
-                            </div>
-
-                            <div className="my-1.5">
-                                <div className="text-2xl lg:text-[27px] font-black text-slate-900 tracking-tight leading-none">
-                                    {expiring15Days}
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <span className="text-[11px] font-semibold text-slate-500">
-                                    Próximos 15 días
-                                </span>
-                                <span className="text-sm text-amber-500 font-bold">↻</span>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    {/* 3. ACCIONES RÁPIDAS (5 CARDS EXACTAS AL MOCKUP) */}
-                    <div>
-                        <div className="flex items-center justify-between mb-2 px-1">
-                            <h3 className="text-sm font-bold text-slate-800">
-                                Acciones rápidas
-                            </h3>
-                            <a href={`/admin/${tenantSlug}/servicios`} className="text-xs font-semibold text-blue-600 hover:text-blue-700">
-                                Ver todas →
-                            </a>
-                        </div>
-
-                        <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-12 gap-3 w-full">
-                            
-                            {/* Card 1: Canjear Beneficio */}
-                            <a 
-                                href={redeemUrl} 
-                                className="col-span-2 md:col-span-2 lg:col-span-4 bg-[#1a56db] hover:bg-[#1e429f] text-white rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-md transition duration-150 relative overflow-hidden group"
-                            >
-                                <div className="flex items-center justify-between">
-                                    <div className="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center text-xs font-black">
-                                        🏷️
-                                    </div>
-                                </div>
-                                <div className="flex items-end justify-between mt-auto">
-                                    <div>
-                                        <h4 className="text-[13.5px] font-bold text-white leading-tight">Canjear Beneficio</h4>
-                                        <p className="text-[10px] text-blue-100 mt-0.5">Abre tu terminal y atiende a tus clientes</p>
-                                    </div>
-                                    <div className="shrink-0 pl-1">
-                                        <img src="/images/dashboard/pos_terminal_hd.png" alt="POS" className="h-10 w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform" />
-                                    </div>
-                                </div>
-                            </a>
-
-                            {/* Card 2: Afiliar Mascota */}
-                            <a 
-                                href={newSubUrl} 
-                                className="col-span-1 md:col-span-1 lg:col-span-2 bg-[#059669] hover:bg-[#047857] text-white rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-md transition duration-150 relative overflow-hidden group"
-                            >
-                                <div className="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center text-xs font-black">
-                                    🐾
-                                </div>
-                                <div className="mt-auto">
-                                    <h4 className="text-[13px] font-bold text-white leading-tight">Afiliar mascota</h4>
-                                    <p className="text-[10px] text-emerald-100 mt-0.5">Nueva afiliación</p>
-                                </div>
-                            </a>
-
-                            {/* Card 3: Portal Pacientes */}
-                            <a 
-                                href={portalUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="col-span-1 md:col-span-1 lg:col-span-2 bg-white border border-slate-200 hover:border-blue-400 rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-sm transition duration-150 group"
-                            >
-                                <div className="w-6 h-6 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-black">
-                                    📱
-                                </div>
-                                <div className="mt-auto">
-                                    <h4 className="text-[12.5px] font-bold text-slate-800 leading-tight">Portal Pacientes</h4>
-                                    <p className="text-[9.5px] text-slate-400 mt-0.5">Tienda web de auto-afiliación</p>
-                                </div>
-                            </a>
-
-                            {/* Card 4: Web B2C */}
-                            <a 
-                                href={portalUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="col-span-1 md:col-span-1 lg:col-span-2 bg-white border border-slate-200 hover:border-blue-400 rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-sm transition duration-150 group"
-                            >
-                                <div className="w-6 h-6 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center text-xs font-black">
-                                    🌐
-                                </div>
-                                <div className="mt-auto">
-                                    <h4 className="text-[12.5px] font-bold text-slate-800 leading-tight">Web B2C</h4>
-                                    <p className="text-[9.5px] text-slate-400 mt-0.5">Generar PDF</p>
-                                </div>
-                            </a>
-
-                            {/* Card 5: Imprimir QR */}
-                            <a 
-                                href={qrUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="col-span-1 md:col-span-1 lg:col-span-2 bg-white border border-slate-200 hover:border-blue-400 rounded-2xl p-3.5 flex flex-col justify-between h-[96px] shadow-2xs hover:shadow-sm transition duration-150 group"
-                            >
-                                <div className="w-6 h-6 rounded-md bg-cyan-50 text-cyan-600 flex items-center justify-center text-xs font-black">
-                                    🖨️
-                                </div>
-                                <div className="mt-auto">
-                                    <h4 className="text-[12.5px] font-bold text-slate-800 leading-tight">Imprimir QR</h4>
-                                    <p className="text-[9.5px] text-slate-400 mt-0.5">Generar PDF</p>
-                                </div>
-                            </a>
-
-                        </div>
-                    </div>
-
-                    {/* 4. FILA MEDIA: RENOVACIONES PRÓXIMAS & USO DE BENEFICIOS */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 w-full">
-                        
-                        {/* Caja Izquierda: Renovaciones Próximas */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[220px] shadow-2xs">
-                            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-amber-500 text-sm">🔔</span>
-                                    <h3 className="text-sm font-bold text-slate-900">
-                                        Renovaciones próximas
-                                    </h3>
-                                </div>
-                                <a href={`/admin/${tenantSlug}/subscriptions`} className="text-xs font-semibold text-blue-600 hover:text-blue-700">
-                                    Ver todas →
-                                </a>
-                            </div>
-
-                            {/* Empty state centrado exacto a la imagen */}
-                            <div className="flex flex-col items-center justify-center py-6 text-center">
-                                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center mb-2.5">
-                                    <Calendar className="w-5 h-5" />
-                                </div>
-                                <h4 className="text-xs font-bold text-slate-800">
-                                    Sin renovaciones pendientes
-                                </h4>
-                                <p className="text-[11px] text-slate-400 mt-1 max-w-[280px]">
-                                    No tienes renovaciones próximas. Sigue revisando automáticamente mañana.
-                                </p>
-                            </div>
-
-                            <div></div>
-                        </div>
-
-                        {/* Caja Derecha: Uso de Beneficios Clínicos */}
-                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 flex flex-col justify-between min-h-[220px] shadow-2xs">
-                            <div>
-                                <div className="flex items-center justify-between mb-1">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-blue-600 text-sm">💙</span>
-                                        <h3 className="text-sm font-bold text-slate-900">
-                                            Uso de beneficios clínicos
-                                        </h3>
-                                    </div>
-                                    <span className="text-xs text-slate-400 font-medium">
-                                        0 / 19 realizados (0%)
-                                    </span>
-                                </div>
-
-                                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                                    <span className="text-xs text-slate-500">
-                                        Servicios canjeados este ciclo
-                                    </span>
-                                    <span className="text-xs font-bold text-slate-700">
-                                        Meta clínica: &gt; 70%
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Empty state centrado con botón exacto a la imagen */}
-                            <div className="flex flex-col items-center justify-center py-3 text-center">
-                                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center mb-2">
-                                    <span className="text-lg">🪪</span>
-                                </div>
-                                <h4 className="text-xs font-bold text-slate-800">
-                                    Sin canjes registrados todavía
-                                </h4>
-                                <p className="text-[11px] text-slate-400 mt-1 max-w-[340px]">
-                                    Cuando atiendas a un paciente en mostrador y le descuenten el servicio, aparecerá aquí en tiempo real.
-                                </p>
-                                <a 
-                                    href={redeemUrl}
-                                    className="mt-3.5 inline-flex items-center px-4 py-2 rounded-xl bg-[#0080ff] hover:bg-blue-600 text-white text-xs font-bold transition shadow-xs"
+                            return (
+                                <article 
+                                    key={metric.title}
+                                    className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition hover:-translate-y-0.5 hover:shadow-md"
                                 >
-                                    Abrir Terminal de Canje
-                                </a>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`rounded-xl p-3 ${colors[metric.color]}`}>
+                                                <Icon size={20} />
+                                            </div>
+                                            <p className="text-sm font-semibold text-slate-500">
+                                                {metric.title}
+                                            </p>
+                                        </div>
+                                        <TrendingUp size={18} className="text-slate-300" />
+                                    </div>
+
+                                    <div className="mt-5 flex items-baseline gap-2">
+                                        <p className="text-3xl font-extrabold tracking-tight text-slate-900">
+                                            {metric.value}
+                                        </p>
+                                        {metric.suffix && (
+                                            <span className="text-sm font-bold text-slate-600">
+                                                {metric.suffix}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <p className="mt-2 text-xs font-medium text-slate-500">
+                                        {metric.note}
+                                    </p>
+                                </article>
+                            );
+                        })}
+                    </section>
+
+                    {/* 3. ACCIONES RÁPIDAS */}
+                    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs">
+                        <SectionTitle>⚡ Acciones rápidas</SectionTitle>
+
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                            {actions.map((action) => {
+                                const Icon = action.icon;
+                                const primary = action.style === 'primary';
+                                const teal = action.style === 'teal';
+
+                                const cardContent = (
+                                    <>
+                                        <div className={`rounded-xl p-3 shrink-0 ${
+                                            primary || teal ? 'bg-white/15' : 'bg-blue-50 text-blue-600'
+                                        }`}>
+                                            <Icon size={23} />
+                                        </div>
+
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-sm font-bold leading-tight">
+                                                {action.title}
+                                            </p>
+                                            <p className={`mt-1 text-xs leading-tight ${
+                                                primary || teal ? 'text-white/75' : 'text-slate-500'
+                                            }`}>
+                                                {action.subtitle}
+                                            </p>
+                                        </div>
+
+                                        <ChevronRight size={18} className="shrink-0 opacity-80" />
+                                    </>
+                                );
+
+                                const cardClasses = `flex min-h-24 items-center gap-3 rounded-xl border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-md ${
+                                    primary
+                                        ? 'border-blue-700 bg-gradient-to-r from-blue-700 to-blue-600 text-white'
+                                        : teal
+                                            ? 'border-teal-600 bg-gradient-to-r from-teal-600 to-emerald-600 text-white'
+                                            : 'border-slate-200 bg-white hover:border-blue-300 text-slate-800'
+                                }`;
+
+                                if (action.isExternal) {
+                                    return (
+                                        <a 
+                                            key={action.title}
+                                            href={action.href}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className={cardClasses}
+                                        >
+                                            {cardContent}
+                                        </a>
+                                    );
+                                }
+
+                                return (
+                                    <Link 
+                                        key={action.title}
+                                        href={formatLink(action.href)}
+                                        preserveScroll
+                                        className={cardClasses}
+                                    >
+                                        {cardContent}
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    </section>
+
+                    {/* 4. PANELES OPERATIVOS (RENOVACIONES & BENEFICIOS) */}
+                    <section className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+
+                        {/* Renovaciones próximas */}
+                        <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs flex flex-col justify-between">
+                            <div>
+                                <div className="mb-5 flex items-center justify-between">
+                                    <SectionTitle>🔔 Renovaciones próximas</SectionTitle>
+                                    <Link 
+                                        href={formatLink(`/admin/${tenantSlug}/subscriptions`)}
+                                        preserveScroll
+                                        className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+                                    >
+                                        Ver todas →
+                                    </Link>
+                                </div>
+
+                                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-sm font-semibold text-slate-800">
+                                            Próximas renovaciones
+                                        </p>
+                                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-700">
+                                            Al día
+                                        </span>
+                                    </div>
+                                    <p className="mt-2 text-sm text-slate-500">
+                                        No hay renovaciones pendientes en este momento.
+                                    </p>
+                                </div>
                             </div>
 
-                            <div></div>
-                        </div>
+                            <Link 
+                                href={formatLink(`/admin/${tenantSlug}/subscriptions`)}
+                                preserveScroll
+                                className="mt-5 block w-full rounded-xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                            >
+                                Ver planes y membresías activas
+                            </Link>
+                        </article>
 
-                    </div>
+                        {/* Uso de beneficios clínicos */}
+                        <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs flex flex-col justify-between">
+                            <div>
+                                <div className="mb-5 flex items-center justify-between">
+                                    <SectionTitle>
+                                        <HeartPulse size={18} className="text-blue-600"/>
+                                        Uso de beneficios clínicos
+                                    </SectionTitle>
+                                    <span className="text-xs font-semibold text-slate-500">
+                                        {totalUsed} / {totalGranted} utilizados ({usagePercent}%)
+                                    </span>
+                                </div>
 
-                    {/* 5. TARJETA INFERIOR: OPORTUNIDAD DE FIDELIZACIÓN (EXACTA AL MOCKUP) */}
-                    <div className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
-                        <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-slate-100 flex-wrap gap-2">
-                            <div className="flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">⭐</span>
-                                <h3 className="text-sm font-bold text-slate-900">
-                                    Oportunidad de Fidelización
-                                </h3>
-                                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-100">
+                                    <div 
+                                        className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-500"
+                                        style={{ width: `${Math.max(usagePercent, 8)}%` }}
+                                    />
+                                </div>
+
+                                <div className="flex flex-wrap gap-2">
+                                    {["Consultas clínicas", "Vacunación", "Kit de bienvenida", "Desparasitaciones"].map((benefit) => (
+                                        <span 
+                                            key={benefit}
+                                            className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700"
+                                        >
+                                            {benefit}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <Link 
+                                href={formatLink(redeemUrl)}
+                                preserveScroll
+                                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-bold text-white transition hover:bg-blue-700 shadow-xs"
+                            >
+                                <QrCode size={17}/>
+                                Abrir terminal de canje
+                            </Link>
+                        </article>
+                    </section>
+
+                    {/* 5. OPORTUNIDAD DE FIDELIZACIÓN */}
+                    <section className="flex flex-col justify-between gap-4 rounded-2xl border border-teal-200 bg-gradient-to-r from-white to-teal-50 p-5 lg:flex-row lg:items-center shadow-2xs">
+                        <div className="max-w-3xl">
+                            <div className="mb-2 flex items-center gap-2">
+                                <Sparkles size={19} className="text-teal-600"/>
+                                <h2 className="font-bold text-slate-900 text-sm">
+                                    Oportunidad de fidelización
+                                </h2>
+                                <span className="rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-bold text-teal-800">
                                     {recommendation.badge || 'Recomendación'}
                                 </span>
                             </div>
-                            <span className="text-xs font-semibold text-slate-600 flex items-center gap-1">
-                                <span>⚡</span> Impacto: {recommendation.impact_text || '1 oportunidad detectada'}
-                            </span>
-                        </div>
-
-                        <div className="flex items-center justify-between gap-4 flex-wrap lg:flex-nowrap">
-                            <p className="text-xs text-slate-600 leading-relaxed font-normal flex-1">
-                                {recommendation.title}
+                            <p className="text-xs leading-5 text-slate-600 font-normal">
+                                {recommendation.title || 'Identifica clientes que podrían aprovechar sus beneficios y programa un seguimiento personalizado.'}
                             </p>
-
-                            <div className="flex items-center gap-2 shrink-0">
-                                <a 
-                                    href={recommendation.pet_url || '#'} 
-                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0080ff] hover:bg-blue-600 text-white text-xs font-bold transition shadow-xs"
-                                >
-                                    <Eye className="w-3.5 h-3.5" />
-                                    <span>Ver Paciente</span>
-                                </a>
-
-                                <a 
-                                    href={redeemUrl} 
-                                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold transition shadow-2xs"
-                                >
-                                    <Zap className="w-3.5 h-3.5 text-blue-600" />
-                                    <span>Canje en Recepción</span>
-                                </a>
-
-                                <ChevronRight className="w-4 h-4 text-slate-400" />
-                            </div>
                         </div>
-                    </div>
+
+                        <div className="flex flex-wrap items-center gap-2 shrink-0">
+                            <Link 
+                                href={formatLink(recommendation.pet_url || `/admin/${tenantSlug}/pets`)}
+                                preserveScroll
+                                className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-blue-700 shadow-xs transition"
+                            >
+                                <Eye size={15} />
+                                Ver paciente
+                            </Link>
+
+                            {recommendation.whatsapp_url && (
+                                <a 
+                                    href={recommendation.whatsapp_url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-2xs transition"
+                                >
+                                    <MessageSquare size={15} className="text-emerald-600" />
+                                    Contactar
+                                </a>
+                            )}
+                        </div>
+                    </section>
 
                 </div>
 
                 {/* =========================================================
-                     COLUMNA DERECHA: ASISTENTE IA BETA DEDICADO (EXACTO AL MOCKUP)
+                     BARRA LATERAL DERECHA: ASISTENTE IA (DEDICADO)
                      ========================================================= */}
-                <div className="w-full xl:w-[340px] 2xl:w-[360px] shrink-0 sticky top-20">
-                    <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs flex flex-col justify-between min-h-[580px]">
-                        
+                <aside className="w-full 2xl:w-80 shrink-0 sticky top-20">
+                    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs flex flex-col justify-between min-h-[580px]">
+
                         <div>
-                            {/* Header Asistente IA */}
+                            {/* Cabecera IA */}
                             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-6 h-6 rounded-full bg-[#0080ff] text-white flex items-center justify-center text-xs font-bold">
-                                        🐾
+                                    <div className="rounded-lg bg-blue-600 p-2 text-white">
+                                        <BrainCircuit size={19}/>
                                     </div>
-                                    <h3 className="text-sm font-bold text-slate-900">
-                                        Tu asistente de IA
-                                    </h3>
-                                    <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
-                                        Beta
-                                    </span>
+                                    <h2 className="font-bold text-sm text-slate-900">Asistente IA</h2>
                                 </div>
-                                <span className="text-slate-400 text-sm font-bold tracking-widest cursor-pointer">···</span>
+                                <span className="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-bold text-violet-700">
+                                    BETA
+                                </span>
                             </div>
 
-                            {/* 3D Floating Robot Graphic HD */}
-                            <div className="flex flex-col items-center text-center py-2.5">
-                                <div className="relative w-36 h-22 flex items-center justify-center mb-1">
-                                    <img 
-                                        src="/images/dashboard/robot_ai_hd.png" 
-                                        alt="Robot IA" 
-                                        className="h-20 w-auto object-contain drop-shadow-lg hover:scale-105 transition-transform duration-300 select-none pointer-events-none"
-                                    />
+                            {/* Hero Card Asistente */}
+                            <div className="my-6 text-center">
+                                <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-cyan-100 to-blue-100 shadow-2xs">
+                                    <BrainCircuit size={40} className="text-blue-600"/>
                                 </div>
-
-                                <h4 className="text-base font-bold text-slate-900 mt-1">
-                                    Hola, soy tu asistente de IA
-                                </h4>
-                                <p className="text-xs text-slate-400 mt-1 max-w-[260px] leading-relaxed">
-                                    Puedo ayudarte a crear planes, responder dudas de tus clientes, analizar datos y recomendar la mejor opción de salud para cada mascota.
+                                <h3 className="font-bold text-sm text-slate-900">Hola, soy tu asistente</h3>
+                                <p className="mt-1 text-xs leading-5 text-slate-500 max-w-[240px] mx-auto">
+                                    Puedo ayudarte a consultar información y gestionar tus tareas.
                                 </p>
                             </div>
 
-                            {/* 4 Quick Action Prompt Cards with Circle Icons & Chevrons */}
-                            <div className="space-y-2 mt-2">
-                                
-                                <button 
-                                    type="button" 
-                                    onClick={() => handlePromptClick('Recomienda un plan ideal para un perro adulto')}
-                                    className="w-full text-left p-2.5 rounded-xl border border-slate-200/80 hover:border-blue-400 bg-white hover:bg-blue-50/30 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
-                                >
-                                    <div className="w-7 h-7 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center text-xs shrink-0 font-bold">
-                                        👤
-                                    </div>
-                                    <span className="flex-1 text-[11px] font-medium text-slate-700 text-left leading-tight">
-                                        Recomienda un plan ideal para un perro adulto
-                                    </span>
-                                    <span className="text-slate-400 text-xs font-semibold group-hover:translate-x-0.5 transition">›</span>
-                                </button>
-
-                                <button 
-                                    type="button" 
-                                    onClick={() => handlePromptClick('Responde dudas sobre coberturas y exclusiones')}
-                                    className="w-full text-left p-2.5 rounded-xl border border-slate-200/80 hover:border-blue-400 bg-white hover:bg-blue-50/30 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
-                                >
-                                    <div className="w-7 h-7 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center text-xs shrink-0 font-bold">
-                                        ⏱
-                                    </div>
-                                    <span className="flex-1 text-[11px] font-medium text-slate-700 text-left leading-tight">
-                                        Responde dudas sobre coberturas y exclusiones
-                                    </span>
-                                    <span className="text-slate-400 text-xs font-semibold group-hover:translate-x-0.5 transition">›</span>
-                                </button>
-
-                                <button 
-                                    type="button" 
-                                    onClick={() => handlePromptClick('Analiza la base de clientes y detecta oportunidades')}
-                                    className="w-full text-left p-2.5 rounded-xl border border-slate-200/80 hover:border-blue-400 bg-white hover:bg-blue-50/30 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
-                                >
-                                    <div className="w-7 h-7 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center text-xs shrink-0 font-bold">
-                                        🪟
-                                    </div>
-                                    <span className="flex-1 text-[11px] font-medium text-slate-700 text-left leading-tight">
-                                        Analiza la base de clientes y detecta oportunidades
-                                    </span>
-                                    <span className="text-slate-400 text-xs font-semibold group-hover:translate-x-0.5 transition">›</span>
-                                </button>
-
-                                <button 
-                                    type="button" 
-                                    onClick={() => handlePromptClick('Genera un plan de fidelización para tus clientes')}
-                                    className="w-full text-left p-2.5 rounded-xl border border-slate-200/80 hover:border-emerald-400 bg-white hover:bg-emerald-50/30 flex items-center gap-2.5 transition duration-150 group shadow-2xs"
-                                >
-                                    <div className="w-7 h-7 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs shrink-0 font-bold">
-                                        💡
-                                    </div>
-                                    <span className="flex-1 text-[11px] font-medium text-slate-700 text-left leading-tight">
-                                        Genera un plan de fidelización para tus clientes
-                                    </span>
-                                    <span className="text-slate-400 text-xs font-semibold group-hover:translate-x-0.5 transition">›</span>
-                                </button>
-
+                            {/* Sugerencias Rápidas */}
+                            <div className="space-y-2">
+                                {[
+                                    "Consultar planes y coberturas",
+                                    "Resolver dudas de afiliación",
+                                    "Analizar oportunidades comerciales",
+                                    "Preparar mensajes para clientes",
+                                ].map((suggestion) => (
+                                    <button 
+                                        key={suggestion}
+                                        type="button"
+                                        onClick={() => handlePromptClick(suggestion)}
+                                        className="flex w-full items-center gap-2.5 rounded-xl border border-slate-200/80 p-2.5 text-left text-xs transition hover:border-blue-300 hover:bg-blue-50/50 shadow-2xs group"
+                                    >
+                                        <MessageCircle size={16} className="shrink-0 text-blue-600"/>
+                                        <span className="flex-1 font-medium text-slate-700 leading-tight">{suggestion}</span>
+                                        <ChevronRight size={15} className="text-slate-400 group-hover:translate-x-0.5 transition"/>
+                                    </button>
+                                ))}
                             </div>
 
-                            {/* Chat History */}
+                            {/* Historial de Respuestas del Chat */}
                             {chatMessages.length > 0 && (
-                                <div className="space-y-2 max-h-36 overflow-y-auto mt-2.5 p-2 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                                <div className="space-y-2 max-h-36 overflow-y-auto mt-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
                                     {chatMessages.map((msg, i) => (
                                         <div 
                                             key={i} 
-                                            className={`p-2 rounded-lg ${
+                                            className={`p-2 rounded-lg leading-relaxed ${
                                                 msg.role === 'user' 
-                                                    ? 'bg-[#0080ff] text-white font-medium ml-auto max-w-[85%]' 
-                                                    : 'bg-white text-slate-700 border border-slate-200 mr-auto max-w-[95%]'
+                                                    ? 'bg-blue-600 text-white font-medium ml-auto max-w-[85%]' 
+                                                    : 'bg-white text-slate-700 border border-slate-200 mr-auto max-w-[95%] shadow-2xs'
                                             }`}
                                         >
                                             {msg.text}
@@ -666,38 +588,37 @@ export default function Dashboard({
                                     ))}
                                 </div>
                             )}
-
                         </div>
 
-                        {/* Interactive Input Form */}
-                        <div className="pt-3 border-t border-slate-100 space-y-1.5 mt-3">
-                            <form onSubmit={handleSendChat} className="relative flex items-center">
-                                <input 
-                                    type="text" 
+                        {/* Input de Consulta */}
+                        <div className="pt-3 border-t border-slate-100 mt-4">
+                            <form onSubmit={handleSendChat} className="flex gap-2">
+                                <input
+                                    type="text"
                                     value={chatInput}
                                     onChange={(e) => setChatInput(e.target.value)}
                                     placeholder="Escribe tu consulta..."
-                                    className="w-full text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-900 pr-9 pl-3.5 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition shadow-2xs placeholder:text-slate-400"
+                                    className="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2 text-xs outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition shadow-2xs"
                                 />
                                 <button 
-                                    type="submit" 
-                                    className="absolute right-1.5 w-6 h-6 rounded-md bg-[#1a56db] hover:bg-blue-800 text-white flex items-center justify-center text-xs font-bold transition shadow-xs"
+                                    type="submit"
+                                    aria-label="Enviar consulta"
+                                    className="rounded-xl bg-blue-600 px-3 text-white hover:bg-blue-700 flex items-center justify-center shadow-xs transition"
                                 >
-                                    <Send className="w-3 h-3" />
+                                    <Send size={15}/>
                                 </button>
                             </form>
 
-                            <div className="flex items-center gap-1.5 text-[10.5px] text-slate-400 justify-start pl-1">
-                                <span>⏱</span>
-                                <span>IA en preparación</span>
-                            </div>
+                            <p className="mt-2.5 text-[10.5px] text-slate-400 flex items-center gap-1.5">
+                                <span className="text-emerald-500">●</span>
+                                Asistente de demostración
+                            </p>
                         </div>
 
                     </div>
-                </div>
+                </aside>
 
             </div>
-
         </VetAdminLayout>
     );
 }
