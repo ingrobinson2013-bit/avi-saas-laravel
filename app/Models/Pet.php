@@ -50,7 +50,7 @@ class Pet extends Model
 
     public function activeSubscription()
     {
-        return $this->hasOne(Subscription::class)->where('status', 'active')->latestOfMany();
+        return $this->hasOne(Subscription::class)->where('status', 'active');
     }
 
     /**

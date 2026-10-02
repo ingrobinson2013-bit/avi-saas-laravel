@@ -27,30 +27,93 @@ Route::match(['get', 'post'], '/logout', function () {
 
 Route::match(['get', 'post'], '/admin/{slug}/logout', function (string $slug) {
     auth()->logout();
+    session()->forget('admin_preview');
     request()->session()->invalidate();
     request()->session()->regenerateToken();
     return redirect("/admin/{$slug}/login");
 });
 
+// Helper de acceso Admin / Staging Preview
+$checkAdminAccess = function (string $slug) {
+    if (request('preview') === '1') {
+        session(['admin_preview' => true]);
+        return true;
+    }
+    if (session('admin_preview')) {
+        return true;
+    }
+    return auth()->check();
+};
+
 // 2.1 Dashboard React + TypeScript + Inertia.js (Paradigma B: Monolito Moderno)
-Route::get('/admin/{slug}', function (string $slug) {
+Route::get('/admin/{slug}', function (string $slug) use ($checkAdminAccess) {
     if (in_array($slug, ['login', 'logout'])) {
         return redirect('/admin/vet-pet-patitas/login');
     }
-    if (!auth()->check() && request('preview') !== '1') {
+    if (!$checkAdminAccess($slug)) {
         session(['url.intended' => '/admin/' . $slug]);
         return redirect('/admin/' . $slug . '/login');
     }
     return app(App\Http\Controllers\VetAdmin\DashboardController::class)->index(request(), $slug);
 });
 
+// 2.2 Módulos Completos de Gestión Clínica conectados a la Base de Datos (Inertia + React)
+Route::get('/admin/{slug}/pets', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->pets(request(), $slug);
+});
+
+Route::get('/admin/{slug}/customers', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->customers(request(), $slug);
+});
+
+Route::get('/admin/{slug}/plans', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->plans(request(), $slug);
+});
+
+Route::get('/admin/{slug}/plans/create', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->planCreate(request(), $slug);
+});
+
+Route::get('/admin/{slug}/subscriptions', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->subscriptions(request(), $slug);
+});
+
+Route::get('/admin/{slug}/subscriptions/create', function (string $slug) {
+    return redirect("/admin/{$slug}/plans");
+});
+
+Route::get('/admin/{slug}/counter-redeem', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->counterRedeem(request(), $slug);
+});
+
+Route::get('/admin/{slug}/benefit-definitions', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->services(request(), $slug);
+});
+
+Route::get('/admin/{slug}/clinic-settings', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->settings(request(), $slug);
+});
+
+Route::get('/admin/{slug}/inteligencia', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->intelligence(request(), $slug);
+});
+
 // Aliases amigables hacia los módulos conectados a la base de datos
-Route::get('/admin/{slug}/canje-mostrador', fn(string $slug) => redirect("/admin/{$slug}/counter-redeem"));
-Route::get('/admin/{slug}/configuracion-clinica', fn(string $slug) => redirect("/admin/{$slug}/clinic-settings"));
-Route::get('/admin/{slug}/servicios', fn(string $slug) => redirect("/admin/{$slug}/benefit-definitions"));
-Route::get('/admin/{slug}/ai', fn(string $slug) => redirect("/admin/{$slug}/inteligencia"));
-Route::get('/admin/{slug}/recepcion', fn(string $slug) => redirect("/admin/{$slug}/counter-redeem"));
-Route::get('/admin/{slug}/reportes', fn(string $slug) => redirect("/admin/{$slug}/subscriptions"));
+Route::get('/admin/{slug}/canje-mostrador', fn(string $slug) => redirect("/admin/{$slug}/counter-redeem" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/configuracion-clinica', fn(string $slug) => redirect("/admin/{$slug}/clinic-settings" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/servicios', fn(string $slug) => redirect("/admin/{$slug}/benefit-definitions" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/ai', fn(string $slug) => redirect("/admin/{$slug}/inteligencia" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/recepcion', fn(string $slug) => redirect("/admin/{$slug}/counter-redeem" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/reportes', fn(string $slug) => redirect("/admin/{$slug}/subscriptions" . (request('preview') === '1' ? '?preview=1' : '')));
 
 // 3. Acceso amigable por Slug al Admin de la clínica (ej. /v/vet-pet-patitas/admin -> /admin/vet-pet-patitas)
 Route::get('/v/{slug}/admin/{section?}', function (string $slug, ?string $section = null) {

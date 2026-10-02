@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { Link } from '@inertiajs/react';
 import { 
     Home, 
     Bot, 
@@ -75,6 +76,9 @@ export default function VetAdminLayout({
         { label: 'Catálogo de Servicios', icon: BookOpen, href: `/admin/${tenantSlug}/benefit-definitions`, active: activeItem === 'Catálogo de Servicios' },
     ];
 
+    const isPreview = typeof window !== 'undefined' && (window.location.search.includes('preview=1') || window.location.href.includes('preview=1'));
+    const getHref = (href: string) => (isPreview && !href.includes('preview=1')) ? `${href}${href.includes('?') ? '&' : '?'}preview=1` : href;
+
     return (
         <div className="min-h-screen flex bg-[#edf0f7] text-slate-900 font-sans antialiased">
             
@@ -110,10 +114,12 @@ export default function VetAdminLayout({
                 <nav className="flex-1 overflow-y-auto px-2.5 py-2.5 space-y-0.5 scrollbar-thin scrollbar-thumb-slate-200">
                     {navItems.map((item) => {
                         const Icon = item.icon;
+                        const linkHref = getHref(item.href);
                         return (
-                            <a
+                            <Link
                                 key={item.label}
-                                href={item.href}
+                                href={linkHref}
+                                preserveScroll
                                 className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 ${
                                     item.active
                                         ? 'bg-[#0080ff] text-white shadow-xs'
@@ -133,7 +139,7 @@ export default function VetAdminLayout({
                                 {item.hasDownChevron && !item.badge && (
                                     <span className="text-slate-400 text-xs font-semibold">⌄</span>
                                 )}
-                            </a>
+                            </Link>
                         );
                     })}
                     {/* Cerrar Sesión Link */}

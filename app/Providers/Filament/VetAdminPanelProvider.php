@@ -27,7 +27,7 @@ class VetAdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('vet-admin')
-            ->path('admin')
+            ->path('filament-vet-admin')
             ->tenant(Tenant::class, slugAttribute: 'slug')
             ->tenantMenu(false)
             ->maxContentWidth(MaxWidth::Full)
