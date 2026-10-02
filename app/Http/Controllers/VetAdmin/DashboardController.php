@@ -179,7 +179,7 @@ class DashboardController extends Controller
             'cleanCity' => $cleanCity,
             'formattedDate' => $formattedDate,
             'tenantSlug' => $tenantSlug,
-            'redeemUrl' => "/admin/{$tenantSlug}/canje-mostrador",
+            'redeemUrl' => "/admin/{$tenantSlug}/counter-redeem",
             'newSubUrl' => "/admin/{$tenantSlug}/subscriptions/create",
             'portalUrl' => "/v/{$tenantSlug}",
             'qrUrl' => "/v/{$tenantSlug}/afiche",

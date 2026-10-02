@@ -44,6 +44,14 @@ Route::get('/admin/{slug}', function (string $slug) {
     return app(App\Http\Controllers\VetAdmin\DashboardController::class)->index(request(), $slug);
 });
 
+// Aliases amigables hacia los módulos conectados a la base de datos
+Route::get('/admin/{slug}/canje-mostrador', fn(string $slug) => redirect("/admin/{$slug}/counter-redeem"));
+Route::get('/admin/{slug}/configuracion-clinica', fn(string $slug) => redirect("/admin/{$slug}/clinic-settings"));
+Route::get('/admin/{slug}/servicios', fn(string $slug) => redirect("/admin/{$slug}/benefit-definitions"));
+Route::get('/admin/{slug}/ai', fn(string $slug) => redirect("/admin/{$slug}/inteligencia"));
+Route::get('/admin/{slug}/recepcion', fn(string $slug) => redirect("/admin/{$slug}/counter-redeem"));
+Route::get('/admin/{slug}/reportes', fn(string $slug) => redirect("/admin/{$slug}/subscriptions"));
+
 // 3. Acceso amigable por Slug al Admin de la clínica (ej. /v/vet-pet-patitas/admin -> /admin/vet-pet-patitas)
 Route::get('/v/{slug}/admin/{section?}', function (string $slug, ?string $section = null) {
     $tenant = Tenant::where('slug', $slug)->firstOrFail();

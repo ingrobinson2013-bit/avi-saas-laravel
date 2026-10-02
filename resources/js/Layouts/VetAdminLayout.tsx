@@ -60,19 +60,19 @@ export default function VetAdminLayout({
 
     const navItems = [
         { label: 'Inicio', icon: Home, href: `/admin/${tenantSlug}`, active: activeItem === 'Inicio' },
-        { label: 'Inteligencia Artificial', icon: Bot, href: `/admin/${tenantSlug}/ai`, badge: 'Beta', active: activeItem === 'Inteligencia Artificial' },
+        { label: 'Inteligencia Artificial', icon: Bot, href: `/admin/${tenantSlug}/inteligencia`, badge: 'Beta', active: activeItem === 'Inteligencia Artificial' },
         { label: 'Planes de Salud', icon: Heart, href: `/admin/${tenantSlug}/plans`, active: activeItem === 'Planes de Salud' },
         { label: 'Clientes y Mascotas', icon: Users, href: `/admin/${tenantSlug}/pets`, hasChevron: true, active: activeItem === 'Clientes y Mascotas' },
-        { label: 'Configuración', icon: Settings, href: `/admin/${tenantSlug}/configuracion-clinica`, hasDownChevron: true, active: activeItem === 'Configuración' },
-        { label: 'Marca y Medios de Pago', icon: CreditCard, href: `/admin/${tenantSlug}/renovar-saas`, hasChevron: true, active: activeItem === 'Marca y Medios de Pago' },
-        { label: 'Recepción', icon: Bell, href: `/admin/${tenantSlug}/recepcion`, hasChevron: true, active: activeItem === 'Recepción' },
-        { label: 'Canje en Recepción', icon: Tag, href: `/admin/${tenantSlug}/canje-mostrador`, active: activeItem === 'Canje en Recepción' },
-        { label: 'Reportes y Estadísticas', icon: BarChart3, href: `/admin/${tenantSlug}/reportes`, hasChevron: true, active: activeItem === 'Reportes y Estadísticas' },
+        { label: 'Configuración', icon: Settings, href: `/admin/${tenantSlug}/clinic-settings`, hasDownChevron: true, active: activeItem === 'Configuración' },
+        { label: 'Marca y Medios de Pago', icon: CreditCard, href: `/admin/${tenantSlug}/clinic-settings`, hasChevron: true, active: activeItem === 'Marca y Medios de Pago' },
+        { label: 'Recepción', icon: Bell, href: `/admin/${tenantSlug}/counter-redeem`, hasChevron: true, active: activeItem === 'Recepción' },
+        { label: 'Canje en Recepción', icon: Tag, href: `/admin/${tenantSlug}/counter-redeem`, active: activeItem === 'Canje en Recepción' },
+        { label: 'Reportes y Estadísticas', icon: BarChart3, href: `/admin/${tenantSlug}/subscriptions`, hasChevron: true, active: activeItem === 'Reportes y Estadísticas' },
         { label: 'Membresías & Afiliaciones', icon: Shield, href: `/admin/${tenantSlug}/subscriptions`, hasChevron: true, active: activeItem === 'Membresías & Afiliaciones' },
         { label: 'Tutores', icon: User, href: `/admin/${tenantSlug}/customers`, active: activeItem === 'Tutores' },
         { label: 'Planes y Beneficios', icon: FileText, href: `/admin/${tenantSlug}/plans`, hasChevron: true, active: activeItem === 'Planes y Beneficios' },
         { label: 'Constructor de Planes', icon: Layers, href: `/admin/${tenantSlug}/plans/create`, active: activeItem === 'Constructor de Planes' },
-        { label: 'Catálogo de Servicios', icon: BookOpen, href: `/admin/${tenantSlug}/servicios`, active: activeItem === 'Catálogo de Servicios' },
+        { label: 'Catálogo de Servicios', icon: BookOpen, href: `/admin/${tenantSlug}/benefit-definitions`, active: activeItem === 'Catálogo de Servicios' },
     ];
 
     return (

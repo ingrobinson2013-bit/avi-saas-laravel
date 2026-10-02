@@ -83,7 +83,7 @@ export default function Dashboard({
     cleanCity = 'Cajicá',
     formattedDate = 'Jueves 1 de octubre de 2026',
     tenantSlug = 'vet-pet-patitas',
-    redeemUrl = `/admin/vet-pet-patitas/canje-mostrador`,
+    redeemUrl = `/admin/vet-pet-patitas/counter-redeem`,
     newSubUrl = `/admin/vet-pet-patitas/subscriptions/create`,
     portalUrl = `/v/vet-pet-patitas`,
     qrUrl = `/v/vet-pet-patitas/afiche`,
