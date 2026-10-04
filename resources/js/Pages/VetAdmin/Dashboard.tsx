@@ -5,18 +5,24 @@ import {
     PawPrint,
     HeartPulse,
     Users,
-    BrainCircuit,
     CreditCard,
     CalendarDays,
-    TrendingUp,
     ChevronRight,
     Sparkles,
-    Building2,
+    Globe,
     QrCode,
     MessageCircle,
     Send,
-    Eye,
-    MessageSquare
+    ExternalLink,
+    Printer,
+    Bell,
+    Activity,
+    CheckCircle2,
+    Calendar,
+    ArrowRight,
+    Smartphone,
+    Share2,
+    Bot
 } from 'lucide-react';
 
 interface DashboardProps {
@@ -62,53 +68,37 @@ interface DashboardProps {
     };
 }
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
-    return (
-        <h2 className="mb-4 flex items-center gap-2 text-sm font-bold text-slate-800">
-            {children}
-        </h2>
-    );
-}
-
 export default function Dashboard({
     mrr = 50000,
     petsCount = 1,
     activeSubsCount = 1,
-    newSubsThisMonth = 0,
+    newSubsThisMonth = 1,
     expiring15Days = 0,
     totalGranted = 19,
     totalUsed = 0,
     usagePercent = 0,
     greetingName = 'Dra. Vicky',
     userName = 'Dra. Vicky Naranjo',
-    userRole = 'Administradora de Sede',
+    userRole = 'Administradora',
     brandName = 'Vet-Pet Patitas',
     clinicSubtitle = 'Planes de salud para su mascota',
-    logoUrl = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp',
+    logoUrl = null,
     saasPlan = {
-        name: 'Plan Pro',
+        name: 'Plan Profesional',
         statusLabel: 'Activo',
-        paidUntil: 'Al día',
+        paidUntil: '30/10/2026',
         manageUrl: `/admin/vet-pet-patitas/renovar-saas`
     },
     logoutUrl = `/admin/vet-pet-patitas/logout`,
     cleanCity = 'Cajicá',
-    formattedDate = 'Viernes 2 de octubre de 2026',
     tenantSlug = 'vet-pet-patitas',
     redeemUrl = `/admin/vet-pet-patitas/counter-redeem`,
     newSubUrl = `/admin/vet-pet-patitas/plans`,
     portalUrl = `/v/vet-pet-patitas`,
     qrUrl = `/v/vet-pet-patitas/afiche`,
-    recommendation = {
-        badge: 'Recomendación',
-        impact_text: '1 oportunidad detectada',
-        title: 'Te recomendamos contactar a María porque Max tiene 10/18 beneficios disponibles (como Kit Bienvenida, Cédula + Collar Placa + Carnet Digital) y no ha realizado una visita en los últimos 60 días.',
-        whatsapp_url: 'https://wa.me/573508742543?text=%F0%9F%90%BE+Hola+Mar%C3%ADa%2C+te+recordamos+que+Max+tiene+consultas+y+vacunas+disponibles+en+Vet-Pet+Patitas.',
-        pet_url: '/admin/vet-pet-patitas/pets',
-        customer_name: 'María',
-        pet_name: 'Max'
-    }
 }: DashboardProps) {
+    const isPreview = typeof window !== 'undefined' && (window.location.search.includes('preview=1') || window.location.href.includes('preview=1'));
+    const formatLink = (url: string) => isPreview && !url.includes('preview=1') ? `${url}${url.includes('?') ? '&' : '?'}preview=1` : url;
 
     // Chat interactivo del Asistente IA
     const [chatInput, setChatInput] = useState('');
@@ -118,14 +108,16 @@ export default function Dashboard({
         const userMsg = { role: 'user' as const, text };
         let reply = '';
 
-        if (text.includes('perro adulto') || text.includes('coberturas')) {
-            reply = '🐶 **Plan Recomendado:** Para perros adultos mayores a 3 años, el Plan Patitas Básico / Senior incluye vacunación anual, 3 desparasitaciones, consultas médicas preventivas y carnet digital oficial.';
-        } else if (text.includes('afiliación') || text.includes('dudas')) {
-            reply = '🛡️ **Afiliación Rápida:** El tutor puede ingresar al portal web B2C o escanear el afiche QR en mostrador para afiliar a su mascota en 2 minutos con pago por Nequi o Bold.';
-        } else if (text.includes('comerciales') || text.includes('oportunidades') || text.includes('analiza')) {
-            reply = '📊 **Oportunidad Detectada:** Max no asiste a la clínica hace más de 60 días y tiene 10 beneficios vigentes. Escríbele por WhatsApp para agendar su control trimestral.';
+        if (text.includes('vacunas')) {
+            reply = '🐾 **Vacunas pendientes:** Max (Golden Retriever) tiene su refuerzo anual programado para el 25 de octubre. Tienes la dosis ya reservada en clínica.';
+        } else if (text.includes('inactivos') || text.includes('60 días')) {
+            reply = '📊 **Clientes inactivos:** Max y su tutora María Rodríguez no visitan la sede hace 62 días. Tienen acumulados $20.000 COP en Crédito de Emergencia listos para usar.';
+        } else if (text.includes('plan más vendido')) {
+            reply = '⭐ **Plan Estrella:** El "Plan Patitas Básico" ($50.000 COP/mes) representa el 100% de tus suscripciones activas este mes.';
+        } else if (text.includes('WhatsApp') || text.includes('campaña')) {
+            reply = '💬 **Campaña WhatsApp Lista:** "🐾 Hola María, te recordamos que Max tiene consultas gratuitas y acumula $20.000 COP en crédito clínico en Vet-Pet Patitas."';
         } else {
-            reply = '💡 **Plan de Fidelización:** 1) Envío de carnet digital con bienvenida. 2) Alerta a los 45 días si no ha redimido baño o vacunas. 3) 10% en tienda veterinaria por renovación.';
+            reply = '💡 **Recomendación:** El triaje multimodal con Gemini 2.5 Flash y la reposición domiciliaria Post2Pet incrementarán tu tasa de retención al 98.5%.';
         }
 
         setChatMessages(prev => [...prev, userMsg, { role: 'assistant', text: reply }]);
@@ -138,80 +130,6 @@ export default function Dashboard({
         setChatInput('');
         handlePromptClick(text);
     };
-
-    const formattedMrr = new Intl.NumberFormat('es-CO').format(mrr);
-
-    // Módulos de métricas dinámicas
-    const metrics = [
-        {
-            title: 'Ingresos recurrentes',
-            value: `$${formattedMrr}`,
-            suffix: 'COP',
-            note: '+5% vs. mes anterior',
-            icon: CreditCard,
-            color: 'blue' as const,
-        },
-        {
-            title: 'Mascotas activas',
-            value: `${petsCount}`,
-            note: `${activeSubsCount} plan activo`,
-            icon: PawPrint,
-            color: 'teal' as const,
-        },
-        {
-            title: 'Nuevas afiliaciones',
-            value: `+${newSubsThisMonth}`,
-            note: 'Este mes',
-            icon: Users,
-            color: 'violet' as const,
-        },
-        {
-            title: 'Renovaciones',
-            value: `${expiring15Days}`,
-            note: 'Próximos 15 días',
-            icon: CalendarDays,
-            color: 'amber' as const,
-        },
-    ];
-
-    // Acciones rápidas operativas con enlaces reales
-    const actions = [
-        {
-            title: 'Canjear beneficio',
-            subtitle: 'Terminal POS de atención',
-            icon: CreditCard,
-            style: 'primary' as const,
-            href: redeemUrl,
-            isExternal: false,
-        },
-        {
-            title: 'Afiliar mascota',
-            subtitle: 'Nueva membresía de salud',
-            icon: PawPrint,
-            style: 'teal' as const,
-            href: newSubUrl,
-            isExternal: false,
-        },
-        {
-            title: 'Portal pacientes',
-            subtitle: 'Tienda web de afiliación',
-            icon: Building2,
-            style: 'white' as const,
-            href: portalUrl,
-            isExternal: true,
-        },
-        {
-            title: 'Ficha & QR',
-            subtitle: 'Imprimir para recepción',
-            icon: QrCode,
-            style: 'white' as const,
-            href: qrUrl,
-            isExternal: true,
-        },
-    ];
-
-    const isPreview = typeof window !== 'undefined' && (window.location.search.includes('preview=1') || window.location.href.includes('preview=1'));
-    const formatLink = (url: string) => isPreview && !url.includes('preview=1') ? `${url}${url.includes('?') ? '&' : '?'}preview=1` : url;
 
     return (
         <VetAdminLayout 
@@ -227,396 +145,665 @@ export default function Dashboard({
         >
             <Head title={`Dashboard · ${brandName}`} />
 
-            <div className="flex flex-col 2xl:flex-row gap-5 items-start w-full">
+            <div className="flex flex-col xl:flex-row gap-6 items-start w-full">
                 
                 {/* =========================================================
-                     CONTENIDO PRINCIPAL
+                     COLUMNA CENTRAL: DASHBOARD PRINCIPAL
                      ========================================================= */}
                 <div className="min-w-0 flex-1 w-full space-y-6">
 
-                    {/* 1. BIENVENIDA HERO CARD */}
-                    <section className="relative flex min-h-40 items-center justify-between overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-r from-white via-cyan-50 to-blue-100 p-6 shadow-xs">
-                        <div className="relative z-10 max-w-xl">
-                            <p className="text-sm font-semibold text-slate-500">
-                                ¡Hola, {greetingName}! 👋
-                            </p>
-                            <h2 className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl text-slate-900">
-                                Bienvenida a {brandName}
-                            </h2>
-                            <p className="mt-2 text-sm text-slate-600">
-                                Gestiona tus planes de salud, clientes y mascotas en un solo lugar.
+                    {/* 1. HERO GREETING BANNER */}
+                    <section className="relative flex items-center justify-between overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-6 shadow-2xs">
+                        <div className="relative z-10 max-w-lg space-y-3">
+                            <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
+                                ¡Buenos días, {greetingName}!
+                            </h1>
+                            <p className="text-xs text-slate-500 font-medium">
+                                Aquí tienes el resumen de tu programa de bienestar.
                             </p>
 
-                            <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
-                                <span className="rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 font-medium text-slate-700 shadow-2xs">
-                                    📍 Sede {cleanCity}
+                            <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                                <span className="rounded-full bg-slate-100 px-3 py-1 font-medium text-slate-600 border border-slate-200/80">
+                                    📍 {brandName} · {cleanCity}
                                 </span>
-                                <span className="rounded-full border border-slate-200 bg-white/90 px-3 py-1.5 font-medium text-slate-700 shadow-2xs">
-                                    📅 {formattedDate}
-                                </span>
-                                <span className="rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 font-medium text-teal-800">
-                                    ◷ Modo sincronizado
-                                </span>
-                                <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 font-semibold text-emerald-700 flex items-center gap-1.5">
+                                <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 font-bold text-emerald-700 flex items-center gap-1.5">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                     Sistema en línea
                                 </span>
                             </div>
                         </div>
 
-                        {/* Pet Cutout Graphic */}
-                        <div className="hidden md:flex shrink-0 items-center justify-center relative pr-4">
-                            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-100/60 to-blue-200/40 rounded-full blur-xl scale-110 pointer-events-none"></div>
-                            <img 
-                                src="/images/dashboard/hero_pets_hd.png" 
-                                alt={`Mascotas ${brandName}`} 
-                                className="h-32 xl:h-36 w-auto object-contain drop-shadow-sm select-none pointer-events-none relative z-10"
-                            />
+                        {/* Pet Cutout Graphic & Doodle */}
+                        <div className="hidden lg:flex shrink-0 items-center justify-center relative pr-4">
+                            <div className="relative">
+                                <img 
+                                    src="/images/dashboard/hero_pets_hd.png" 
+                                    alt="Mascotas Sanas" 
+                                    className="h-32 xl:h-36 w-auto object-contain select-none pointer-events-none"
+                                />
+                                <div className="absolute -top-3 -left-8 text-blue-500 font-serif italic text-xs rotate-[-6deg] drop-shadow-2xs select-none">
+                                    Mascotas sanas, clientes felices
+                                    <svg className="w-6 h-6 text-sky-400 stroke-current -rotate-12 absolute -left-4 -top-2" viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
-                    {/* 2. INDICADORES (METRICS) */}
-                    <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                        {metrics.map((metric) => {
-                            const Icon = metric.icon;
+                    {/* 2. LOS 5 INDICADORES KPI CON SPARKLINES */}
+                    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5">
+                        
+                        {/* KPI 1: MRR */}
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs flex flex-col justify-between hover:-translate-y-0.5 transition">
+                            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold">
+                                <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                                    <CreditCard className="w-4 h-4" />
+                                </div>
+                                <span className="truncate">Ingresos recurrentes (MRR)</span>
+                            </div>
+                            <div className="mt-3">
+                                <div className="text-xl font-black text-slate-900">$50.000 <span className="text-xs font-bold text-slate-400">COP</span></div>
+                                <div className="text-[10.5px] font-bold text-emerald-600 mt-0.5">^ +$50.000 vs. mes anterior</div>
+                            </div>
+                            {/* Sparkline verde */}
+                            <svg className="w-full h-6 mt-2 stroke-emerald-500 fill-none" viewBox="0 0 100 24" strokeWidth="2.5" strokeLinecap="round">
+                                <path d="M0 20 Q 30 18, 55 12 T 100 4" />
+                            </svg>
+                        </div>
 
-                            const colors: Record<string, string> = {
-                                blue: "bg-blue-100 text-blue-700",
-                                teal: "bg-teal-100 text-teal-700",
-                                violet: "bg-violet-100 text-violet-700",
-                                amber: "bg-amber-100 text-amber-700",
-                            };
+                        {/* KPI 2: Mascotas activas */}
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs flex flex-col justify-between hover:-translate-y-0.5 transition">
+                            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold">
+                                <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
+                                    <PawPrint className="w-4 h-4" />
+                                </div>
+                                <span className="truncate">Mascotas activas</span>
+                            </div>
+                            <div className="mt-3">
+                                <div className="text-xl font-black text-slate-900">1</div>
+                                <div className="text-[10.5px] font-medium text-slate-500 mt-0.5">1 plan activo</div>
+                            </div>
+                            {/* Sparkline azul */}
+                            <svg className="w-full h-6 mt-2 stroke-blue-500 fill-none" viewBox="0 0 100 24" strokeWidth="2.5" strokeLinecap="round">
+                                <path d="M0 22 Q 40 20, 65 14 T 100 8" />
+                            </svg>
+                        </div>
 
-                            return (
-                                <article 
-                                    key={metric.title}
-                                    className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs transition hover:-translate-y-0.5 hover:shadow-md"
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className={`rounded-xl p-3 ${colors[metric.color]}`}>
-                                                <Icon size={20} />
-                                            </div>
-                                            <p className="text-sm font-semibold text-slate-500">
-                                                {metric.title}
-                                            </p>
-                                        </div>
-                                        <TrendingUp size={18} className="text-slate-300" />
-                                    </div>
+                        {/* KPI 3: Nuevas afiliaciones */}
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs flex flex-col justify-between hover:-translate-y-0.5 transition">
+                            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold">
+                                <div className="w-7 h-7 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center">
+                                    <Users className="w-4 h-4" />
+                                </div>
+                                <span className="truncate">Nuevas afiliaciones</span>
+                            </div>
+                            <div className="mt-3">
+                                <div className="text-xl font-black text-slate-900">+1</div>
+                                <div className="text-[10.5px] font-medium text-slate-500 mt-0.5">Este mes</div>
+                            </div>
+                            {/* Sparkline violeta */}
+                            <svg className="w-full h-6 mt-2 stroke-purple-500 fill-none" viewBox="0 0 100 24" strokeWidth="2.5" strokeLinecap="round">
+                                <path d="M0 20 Q 30 19, 60 15 T 100 6" />
+                            </svg>
+                        </div>
 
-                                    <div className="mt-5 flex items-baseline gap-2">
-                                        <p className="text-3xl font-extrabold tracking-tight text-slate-900">
-                                            {metric.value}
-                                        </p>
-                                        {metric.suffix && (
-                                            <span className="text-sm font-bold text-slate-600">
-                                                {metric.suffix}
-                                            </span>
-                                        )}
-                                    </div>
+                        {/* KPI 4: Renovaciones próximas */}
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs flex flex-col justify-between hover:-translate-y-0.5 transition">
+                            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold">
+                                <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
+                                    <CalendarDays className="w-4 h-4" />
+                                </div>
+                                <span className="truncate">Renovaciones próximas</span>
+                            </div>
+                            <div className="mt-3">
+                                <div className="text-xl font-black text-slate-900">0</div>
+                                <div className="text-[10.5px] font-medium text-slate-500 mt-0.5">Próximos 15 días</div>
+                            </div>
+                            {/* Sparkline magenta */}
+                            <svg className="w-full h-6 mt-2 stroke-fuchsia-500 fill-none" viewBox="0 0 100 24" strokeWidth="2.5" strokeLinecap="round">
+                                <path d="M0 22 Q 45 21, 75 16 T 100 10" />
+                            </svg>
+                        </div>
 
-                                    <p className="mt-2 text-xs font-medium text-slate-500">
-                                        {metric.note}
-                                    </p>
-                                </article>
-                            );
-                        })}
+                        {/* KPI 5: Uso de beneficios */}
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs flex flex-col justify-between hover:-translate-y-0.5 transition">
+                            <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold">
+                                <div className="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center">
+                                    <HeartPulse className="w-4 h-4" />
+                                </div>
+                                <span className="truncate">Uso de beneficios</span>
+                            </div>
+                            <div className="mt-2">
+                                <div className="text-xl font-black text-slate-900">0 / 19</div>
+                                <div className="w-full h-1.5 bg-slate-100 rounded-full mt-1.5 overflow-hidden">
+                                    <div className="h-full bg-blue-500 rounded-full" style={{ width: '0%' }}></div>
+                                </div>
+                                <div className="text-[10px] text-slate-400 font-medium mt-1 flex justify-between">
+                                    <span>Meta clínica: 70%</span>
+                                    <span>0%</span>
+                                </div>
+                            </div>
+                        </div>
+
                     </section>
 
-                    {/* 3. ACCIONES RÁPIDAS */}
-                    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs">
-                        <SectionTitle>⚡ Acciones rápidas</SectionTitle>
+                    {/* 3. ACCIONES RÁPIDAS (5 TARJETAS HORIZONTALES) */}
+                    <section className="space-y-3">
+                        <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+                            <span className="text-blue-600">⚡</span>
+                            <h2>Acciones rápidas</h2>
+                        </div>
 
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                            {actions.map((action) => {
-                                const Icon = action.icon;
-                                const primary = action.style === 'primary';
-                                const teal = action.style === 'teal';
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                            
+                            {/* 1. Canjear beneficio (AZUL) */}
+                            <Link
+                                href={formatLink(redeemUrl)}
+                                className="p-4 rounded-xl bg-[#0080ff] hover:bg-blue-600 text-white flex items-center justify-between shadow-xs transition hover:-translate-y-0.5 group"
+                            >
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                                        <QrCode className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="text-xs font-bold truncate leading-tight">Canjear beneficio</div>
+                                        <div className="text-[10.5px] text-white/80 truncate leading-tight mt-0.5">Escanea o busca por cédula</div>
+                                    </div>
+                                </div>
+                                <ChevronRight className="w-4 h-4 text-white/70 group-hover:translate-x-0.5 transition shrink-0" />
+                            </Link>
 
-                                const cardContent = (
-                                    <>
-                                        <div className={`rounded-xl p-3 shrink-0 ${
-                                            primary || teal ? 'bg-white/15' : 'bg-blue-50 text-blue-600'
-                                        }`}>
-                                            <Icon size={23} />
-                                        </div>
+                            {/* 2. Afiliar mascota (VERDE) */}
+                            <Link
+                                href={formatLink(newSubUrl)}
+                                className="p-4 rounded-xl bg-[#10b981] hover:bg-emerald-600 text-white flex items-center justify-between shadow-xs transition hover:-translate-y-0.5 group"
+                            >
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                                        <PawPrint className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="text-xs font-bold truncate leading-tight">Afiliar mascota</div>
+                                        <div className="text-[10.5px] text-white/80 truncate leading-tight mt-0.5">Nueva membresía</div>
+                                    </div>
+                                </div>
+                                <ChevronRight className="w-4 h-4 text-white/70 group-hover:translate-x-0.5 transition shrink-0" />
+                            </Link>
 
-                                        <div className="min-w-0 flex-1">
-                                            <p className="text-sm font-bold leading-tight">
-                                                {action.title}
-                                            </p>
-                                            <p className={`mt-1 text-xs leading-tight ${
-                                                primary || teal ? 'text-white/75' : 'text-slate-500'
-                                            }`}>
-                                                {action.subtitle}
-                                            </p>
-                                        </div>
+                            {/* 3. Portal de pacientes */}
+                            <a
+                                href={portalUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="p-4 rounded-xl bg-white border border-slate-200 text-slate-800 flex items-center justify-between shadow-2xs transition hover:-translate-y-0.5 hover:border-blue-300 group"
+                            >
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                                        <Globe className="w-5 h-5" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="text-xs font-bold truncate leading-tight">Portal de pacientes</div>
+                                        <div className="text-[10.5px] text-slate-400 truncate leading-tight mt-0.5">Área privada</div>
+                                    </div>
+                                </div>
+                                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition shrink-0" />
+                            </a>
 
-                                        <ChevronRight size={18} className="shrink-0 opacity-80" />
-                                    </>
-                                );
+                            {/* 4. Web pública */}
+                            <a
+                                href={portalUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="p-4 rounded-xl bg-white border border-slate-200 text-slate-800 flex items-center justify-between shadow-2xs transition hover:-translate-y-0.5 hover:border-blue-300 group"
+                            >
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                                        <ExternalLink className="w-5 h-5" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="text-xs font-bold truncate leading-tight">Web pública</div>
+                                        <div className="text-[10.5px] text-slate-400 truncate leading-tight mt-0.5">Página de afiliación</div>
+                                    </div>
+                                </div>
+                                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition shrink-0" />
+                            </a>
 
-                                const cardClasses = `flex min-h-24 items-center gap-3 rounded-xl border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-md ${
-                                    primary
-                                        ? 'border-blue-700 bg-gradient-to-r from-blue-700 to-blue-600 text-white'
-                                        : teal
-                                            ? 'border-teal-600 bg-gradient-to-r from-teal-600 to-emerald-600 text-white'
-                                            : 'border-slate-200 bg-white hover:border-blue-300 text-slate-800'
-                                }`;
+                            {/* 5. Imprimir QR */}
+                            <a
+                                href={qrUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="p-4 rounded-xl bg-white border border-slate-200 text-slate-800 flex items-center justify-between shadow-2xs transition hover:-translate-y-0.5 hover:border-blue-300 group"
+                            >
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                                        <Printer className="w-5 h-5" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="text-xs font-bold truncate leading-tight">Imprimir QR</div>
+                                        <div className="text-[10.5px] text-slate-400 truncate leading-tight mt-0.5">Afiche y material</div>
+                                    </div>
+                                </div>
+                                <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-0.5 transition shrink-0" />
+                            </a>
 
-                                if (action.isExternal) {
-                                    return (
-                                        <a 
-                                            key={action.title}
-                                            href={action.href}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className={cardClasses}
-                                        >
-                                            {cardContent}
-                                        </a>
-                                    );
-                                }
-
-                                return (
-                                    <Link 
-                                        key={action.title}
-                                        href={formatLink(action.href)}
-                                        preserveScroll
-                                        className={cardClasses}
-                                    >
-                                        {cardContent}
-                                    </Link>
-                                );
-                            })}
                         </div>
                     </section>
 
-                    {/* 4. PANELES OPERATIVOS (RENOVACIONES & BENEFICIOS) */}
-                    <section className="grid grid-cols-1 gap-5 xl:grid-cols-2">
-
+                    {/* 4. MEDIO: RENOVACIONES PRÓXIMAS & ACTIVIDAD RECIENTE */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        
                         {/* Renovaciones próximas */}
-                        <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs flex flex-col justify-between">
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs flex flex-col justify-between">
                             <div>
-                                <div className="mb-5 flex items-center justify-between">
-                                    <SectionTitle>🔔 Renovaciones próximas</SectionTitle>
-                                    <Link 
-                                        href={formatLink(`/admin/${tenantSlug}/subscriptions`)}
-                                        preserveScroll
-                                        className="text-sm font-semibold text-blue-600 hover:text-blue-700"
-                                    >
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                                        <Bell className="w-4 h-4 text-amber-500" />
+                                        Renovaciones próximas
+                                    </h3>
+                                    <Link href={formatLink(`/admin/${tenantSlug}/subscriptions`)} className="text-[11px] font-bold text-blue-600 hover:underline">
                                         Ver todas →
                                     </Link>
                                 </div>
 
-                                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-sm font-semibold text-slate-800">
-                                            Próximas renovaciones
-                                        </p>
-                                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-700">
-                                            Al día
-                                        </span>
+                                <div className="py-6 text-center space-y-2">
+                                    <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center mx-auto text-blue-600">
+                                        <Calendar className="w-6 h-6" />
                                     </div>
-                                    <p className="mt-2 text-sm text-slate-500">
-                                        No hay renovaciones pendientes en este momento.
+                                    <div className="text-xs font-bold text-slate-900">
+                                        No tienes renovaciones pendientes
+                                    </div>
+                                    <p className="text-[11px] text-slate-400 max-w-[260px] mx-auto">
+                                        Tus planes están al día. ¡Excelente trabajo!
                                     </p>
                                 </div>
                             </div>
 
-                            <Link 
+                            <Link
                                 href={formatLink(`/admin/${tenantSlug}/subscriptions`)}
-                                preserveScroll
-                                className="mt-5 block w-full rounded-xl border border-slate-200 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                                className="block w-full py-2 px-3 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-center text-xs font-bold transition"
                             >
-                                Ver planes y membresías activas
+                                Ver historial
                             </Link>
-                        </article>
-
-                        {/* Uso de beneficios clínicos */}
-                        <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs flex flex-col justify-between">
-                            <div>
-                                <div className="mb-5 flex items-center justify-between">
-                                    <SectionTitle>
-                                        <HeartPulse size={18} className="text-blue-600"/>
-                                        Uso de beneficios clínicos
-                                    </SectionTitle>
-                                    <span className="text-xs font-semibold text-slate-500">
-                                        {totalUsed} / {totalGranted} utilizados ({usagePercent}%)
-                                    </span>
-                                </div>
-
-                                <div className="mb-4 h-2 overflow-hidden rounded-full bg-slate-100">
-                                    <div 
-                                        className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-500"
-                                        style={{ width: `${Math.max(usagePercent, 8)}%` }}
-                                    />
-                                </div>
-
-                                <div className="flex flex-wrap gap-2">
-                                    {["Consultas clínicas", "Vacunación", "Kit de bienvenida", "Desparasitaciones"].map((benefit) => (
-                                        <span 
-                                            key={benefit}
-                                            className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700"
-                                        >
-                                            {benefit}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <Link 
-                                href={formatLink(redeemUrl)}
-                                preserveScroll
-                                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-bold text-white transition hover:bg-blue-700 shadow-xs"
-                            >
-                                <QrCode size={17}/>
-                                Abrir terminal de canje
-                            </Link>
-                        </article>
-                    </section>
-
-                    {/* 5. OPORTUNIDAD DE FIDELIZACIÓN */}
-                    <section className="flex flex-col justify-between gap-4 rounded-2xl border border-teal-200 bg-gradient-to-r from-white to-teal-50 p-5 lg:flex-row lg:items-center shadow-2xs">
-                        <div className="max-w-3xl">
-                            <div className="mb-2 flex items-center gap-2">
-                                <Sparkles size={19} className="text-teal-600"/>
-                                <h2 className="font-bold text-slate-900 text-sm">
-                                    Oportunidad de fidelización
-                                </h2>
-                                <span className="rounded-full bg-teal-100 px-2 py-0.5 text-[10px] font-bold text-teal-800">
-                                    {recommendation.badge || 'Recomendación'}
-                                </span>
-                            </div>
-                            <p className="text-xs leading-5 text-slate-600 font-normal">
-                                {recommendation.title || 'Identifica clientes que podrían aprovechar sus beneficios y programa un seguimiento personalizado.'}
-                            </p>
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-2 shrink-0">
-                            <Link 
-                                href={formatLink(recommendation.pet_url || `/admin/${tenantSlug}/pets`)}
-                                preserveScroll
-                                className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-blue-700 shadow-xs transition"
-                            >
-                                <Eye size={15} />
-                                Ver paciente
-                            </Link>
+                        {/* Actividad reciente */}
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs">
+                            <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
+                                <h3 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                                    <Activity className="w-4 h-4 text-amber-500" />
+                                    Actividad reciente
+                                </h3>
+                                <Link href={formatLink(`/admin/${tenantSlug}/counter-redeem`)} className="text-[11px] font-bold text-blue-600 hover:underline">
+                                    Ver todas →
+                                </Link>
+                            </div>
 
-                            {recommendation.whatsapp_url && (
-                                <a 
-                                    href={recommendation.whatsapp_url}
+                            <div className="divide-y divide-slate-100 text-xs">
+                                <div className="py-2.5 flex items-center justify-between">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-7 h-7 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[10px]">
+                                            MR
+                                        </div>
+                                        <div>
+                                            <span className="font-bold text-slate-800">María Rodríguez</span>
+                                            <div className="text-[11px] text-slate-400">Canje de beneficio · Consulta preventiva</div>
+                                        </div>
+                                    </div>
+                                    <span className="text-[10px] text-slate-400 font-medium">Hace 12 min</span>
+                                </div>
+
+                                <div className="py-2.5 flex items-center justify-between">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-[10px]">
+                                            CG
+                                        </div>
+                                        <div>
+                                            <span className="font-bold text-slate-800">Carlos Gómez</span>
+                                            <div className="text-[11px] text-slate-400">Nueva afiliación · Plan Premium</div>
+                                        </div>
+                                    </div>
+                                    <span className="text-[10px] text-slate-400 font-medium">Hace 32 min</span>
+                                </div>
+
+                                <div className="py-2.5 flex items-center justify-between">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">
+                                            AT
+                                        </div>
+                                        <div>
+                                            <span className="font-bold text-slate-800">Ana Torres</span>
+                                            <div className="text-[11px] text-slate-400">Pago recibido · $50.000</div>
+                                        </div>
+                                    </div>
+                                    <span className="text-[10px] text-slate-400 font-medium">Hace 1 h</span>
+                                </div>
+
+                                <div className="py-2.5 flex items-center justify-between">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-7 h-7 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-[10px]">
+                                            LP
+                                        </div>
+                                        <div>
+                                            <span className="font-bold text-slate-800">Luis Pérez</span>
+                                            <div className="text-[11px] text-slate-400">Registro de mascota · Max</div>
+                                        </div>
+                                    </div>
+                                    <span className="text-[10px] text-slate-400 font-medium">Hace 2 h</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {/* 5. AVI RECOMIENDA (OPORTUNIDAD DE FIDELIZACIÓN CON MASCOTA) */}
+                    <section className="bg-gradient-to-r from-amber-50/50 via-white to-blue-50/30 border border-amber-200/80 rounded-2xl p-5 shadow-2xs">
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900 mb-3">
+                            <span>🎯</span>
+                            <span>AVI recomienda</span>
+                            <span className="text-slate-400 font-normal">· Oportunidad de fidelización</span>
+                        </div>
+
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div className="flex items-start gap-3.5">
+                                <img 
+                                    src="/images/dashboard/sidebar_pet_hd.png" 
+                                    alt="Max Cachorro" 
+                                    className="w-14 h-14 rounded-2xl object-cover border border-amber-200 shrink-0 shadow-2xs"
+                                />
+                                <div>
+                                    <h4 className="text-xs font-black text-slate-900 leading-tight">
+                                        Max no ha utilizado sus beneficios en los últimos 60 días.
+                                    </h4>
+                                    <p className="text-[11px] text-slate-500 mt-0.5">
+                                        Tiene 10 beneficios disponibles (consulta preventiva, vacunación, desparasitación, baño y más).
+                                    </p>
+
+                                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800">
+                                            +10 beneficios
+                                        </span>
+                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                                            Sin visita en 60 días
+                                        </span>
+                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                                            Alta probabilidad de renovación
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 shrink-0">
+                                <a
+                                    href={`https://wa.me/3508742543?text=${encodeURIComponent("🐾 Hola María, te recordamos que Max tiene consultas preventivas y acumula $20.000 COP en Crédito Clínico de Emergencia en Vet-Pet Patitas. ¡Te esperamos para su chequeo!")}`}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-2xs transition"
+                                    className="px-3.5 py-2 rounded-xl bg-[#10b981] hover:bg-emerald-600 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs"
                                 >
-                                    <MessageSquare size={15} className="text-emerald-600" />
-                                    Contactar
+                                    <MessageCircle className="w-3.5 h-3.5" />
+                                    <span>Enviar recordatorio por WhatsApp</span>
                                 </a>
-                            )}
+
+                                <Link
+                                    href={formatLink(`/admin/${tenantSlug}/pets`)}
+                                    className="px-3.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition"
+                                >
+                                    Ver paciente
+                                </Link>
+                            </div>
                         </div>
                     </section>
+
+                    {/* 6. TABLAS INFERIORES: PRÓXIMAS RENOVACIONES & CANJES RECIENTES */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        
+                        {/* Tabla: Próximas renovaciones */}
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-3">
+                            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                                <h3 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                                    <span className="text-rose-500">▲</span>
+                                    Próximas renovaciones
+                                </h3>
+                                <Link href={formatLink(`/admin/${tenantSlug}/subscriptions`)} className="text-[11px] font-bold text-blue-600 hover:underline">
+                                    Ver todas →
+                                </Link>
+                            </div>
+
+                            <table className="w-full text-left text-xs">
+                                <thead>
+                                    <tr className="text-[10px] text-slate-400 font-bold uppercase tracking-wider border-b border-slate-100">
+                                        <th className="pb-2">Mascota</th>
+                                        <th className="pb-2">Plan</th>
+                                        <th className="pb-2">Vence</th>
+                                        <th className="pb-2 text-right">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                    <tr>
+                                        <td className="py-2.5 font-bold text-slate-800 flex items-center gap-2">
+                                            <span className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs">🐱</span>
+                                            Luna
+                                        </td>
+                                        <td className="py-2.5 text-slate-500">Plan Premium</td>
+                                        <td className="py-2.5 text-slate-500">4 oct 2026</td>
+                                        <td className="py-2.5 text-right">
+                                            <button className="px-2.5 py-1 rounded-full border border-blue-200 text-blue-600 text-[10.5px] font-bold hover:bg-blue-50 transition">
+                                                Contactar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-2.5 font-bold text-slate-800 flex items-center gap-2">
+                                            <span className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs">🐕</span>
+                                            Max
+                                        </td>
+                                        <td className="py-2.5 text-slate-500">Plan Básico</td>
+                                        <td className="py-2.5 text-slate-500">8 oct 2026</td>
+                                        <td className="py-2.5 text-right">
+                                            <button className="px-2.5 py-1 rounded-full border border-blue-200 text-blue-600 text-[10.5px] font-bold hover:bg-blue-50 transition">
+                                                Contactar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-2.5 font-bold text-slate-800 flex items-center gap-2">
+                                            <span className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-xs">🐕</span>
+                                            Toby
+                                        </td>
+                                        <td className="py-2.5 text-slate-500">Plan Premium</td>
+                                        <td className="py-2.5 text-slate-500">9 oct 2026</td>
+                                        <td className="py-2.5 text-right">
+                                            <button className="px-2.5 py-1 rounded-full border border-blue-200 text-blue-600 text-[10.5px] font-bold hover:bg-blue-50 transition">
+                                                Contactar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Tabla: Canjes recientes en mostrador */}
+                        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-3">
+                            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                                <h3 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                                    <CreditCard className="w-4 h-4 text-blue-600" />
+                                    Canjes recientes en mostrador
+                                </h3>
+                                <Link href={formatLink(`/admin/${tenantSlug}/counter-redeem`)} className="text-[11px] font-bold text-blue-600 hover:underline">
+                                    Ver todos →
+                                </Link>
+                            </div>
+
+                            <table className="w-full text-left text-xs">
+                                <thead>
+                                    <tr className="text-[10px] text-slate-400 font-bold uppercase tracking-wider border-b border-slate-100">
+                                        <th className="pb-2">Hora</th>
+                                        <th className="pb-2">Mascota</th>
+                                        <th className="pb-2">Servicio</th>
+                                        <th className="pb-2">Usuario</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                    <tr>
+                                        <td className="py-2.5 font-mono text-slate-400 text-[11px]">09:32</td>
+                                        <td className="py-2.5 font-bold text-slate-800 flex items-center gap-1.5">
+                                            <span>🐱</span> Luna
+                                        </td>
+                                        <td className="py-2.5 text-slate-600">Consulta preventiva</td>
+                                        <td className="py-2.5 text-slate-400">Recepción</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-2.5 font-mono text-slate-400 text-[11px]">09:18</td>
+                                        <td className="py-2.5 font-bold text-slate-800 flex items-center gap-1.5">
+                                            <span>🐕</span> Max
+                                        </td>
+                                        <td className="py-2.5 text-slate-600">Vacuna</td>
+                                        <td className="py-2.5 text-slate-400">Recepción</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-2.5 font-mono text-slate-400 text-[11px]">08:45</td>
+                                        <td className="py-2.5 font-bold text-slate-800 flex items-center gap-1.5">
+                                            <span>🐕</span> Toby
+                                        </td>
+                                        <td className="py-2.5 text-slate-600">Desparasitación</td>
+                                        <td className="py-2.5 text-slate-400">Recepción</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-2.5 font-mono text-slate-400 text-[11px]">08:12</td>
+                                        <td className="py-2.5 font-bold text-slate-800 flex items-center gap-1.5">
+                                            <span>🐕</span> Nala
+                                        </td>
+                                        <td className="py-2.5 text-slate-600">Baño</td>
+                                        <td className="py-2.5 text-slate-400">Recepción</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
 
                 </div>
 
                 {/* =========================================================
-                     BARRA LATERAL DERECHA: ASISTENTE IA (DEDICADO)
+                     COLUMNA DERECHA: COPILOT IA & PROMO PORTAL PACIENTES
                      ========================================================= */}
-                <aside className="w-full 2xl:w-80 shrink-0 sticky top-20">
-                    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs flex flex-col justify-between min-h-[580px]">
-
-                        <div>
-                            {/* Cabecera IA */}
-                            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                                <div className="flex items-center gap-2">
-                                    <div className="rounded-lg bg-blue-600 p-2 text-white">
-                                        <BrainCircuit size={19}/>
-                                    </div>
-                                    <h2 className="font-bold text-sm text-slate-900">Asistente IA</h2>
-                                </div>
-                                <span className="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-bold text-violet-700">
-                                    BETA
+                <div className="w-full xl:w-72 2xl:w-80 shrink-0 space-y-4">
+                    
+                    {/* Card 1: AVI Intelligence IA */}
+                    <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs space-y-3">
+                        <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                            <div className="flex items-center gap-2">
+                                <Sparkles className="w-4 h-4 text-blue-600" />
+                                <h3 className="text-xs font-black text-slate-900">AVI Intelligence</h3>
+                                <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded bg-purple-100 text-purple-700">
+                                    IA
                                 </span>
                             </div>
-
-                            {/* Hero Card Asistente */}
-                            <div className="my-6 text-center">
-                                <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-cyan-100 to-blue-100 shadow-2xs">
-                                    <BrainCircuit size={40} className="text-blue-600"/>
-                                </div>
-                                <h3 className="font-bold text-sm text-slate-900">Hola, soy tu asistente</h3>
-                                <p className="mt-1 text-xs leading-5 text-slate-500 max-w-[240px] mx-auto">
-                                    Puedo ayudarte a consultar información y gestionar tus tareas.
-                                </p>
-                            </div>
-
-                            {/* Sugerencias Rápidas */}
-                            <div className="space-y-2">
-                                {[
-                                    "Consultar planes y coberturas",
-                                    "Resolver dudas de afiliación",
-                                    "Analizar oportunidades comerciales",
-                                    "Preparar mensajes para clientes",
-                                ].map((suggestion) => (
-                                    <button 
-                                        key={suggestion}
-                                        type="button"
-                                        onClick={() => handlePromptClick(suggestion)}
-                                        className="flex w-full items-center gap-2.5 rounded-xl border border-slate-200/80 p-2.5 text-left text-xs transition hover:border-blue-300 hover:bg-blue-50/50 shadow-2xs group"
-                                    >
-                                        <MessageCircle size={16} className="shrink-0 text-blue-600"/>
-                                        <span className="flex-1 font-medium text-slate-700 leading-tight">{suggestion}</span>
-                                        <ChevronRight size={15} className="text-slate-400 group-hover:translate-x-0.5 transition"/>
-                                    </button>
-                                ))}
-                            </div>
-
-                            {/* Historial de Respuestas del Chat */}
-                            {chatMessages.length > 0 && (
-                                <div className="space-y-2 max-h-36 overflow-y-auto mt-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
-                                    {chatMessages.map((msg, i) => (
-                                        <div 
-                                            key={i} 
-                                            className={`p-2 rounded-lg leading-relaxed ${
-                                                msg.role === 'user' 
-                                                    ? 'bg-blue-600 text-white font-medium ml-auto max-w-[85%]' 
-                                                    : 'bg-white text-slate-700 border border-slate-200 mr-auto max-w-[95%] shadow-2xs'
-                                            }`}
-                                        >
-                                            {msg.text}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                            <span className="text-slate-400 text-xs cursor-pointer hover:text-slate-600">^</span>
                         </div>
 
-                        {/* Input de Consulta */}
-                        <div className="pt-3 border-t border-slate-100 mt-4">
-                            <form onSubmit={handleSendChat} className="flex gap-2">
-                                <input
-                                    type="text"
-                                    value={chatInput}
-                                    onChange={(e) => setChatInput(e.target.value)}
-                                    placeholder="Escribe tu consulta..."
-                                    className="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2 text-xs outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition shadow-2xs"
-                                />
-                                <button 
-                                    type="submit"
-                                    aria-label="Enviar consulta"
-                                    className="rounded-xl bg-blue-600 px-3 text-white hover:bg-blue-700 flex items-center justify-center shadow-xs transition"
-                                >
-                                    <Send size={15}/>
-                                </button>
-                            </form>
+                        <p className="text-[11px] text-slate-400">
+                            Tu asistente para tomar mejores decisiones
+                        </p>
 
-                            <p className="mt-2.5 text-[10.5px] text-slate-400 flex items-center gap-1.5">
-                                <span className="text-emerald-500">●</span>
-                                Asistente de demostración
+                        {/* Chips de consulta rápida */}
+                        <div className="space-y-1.5">
+                            {[
+                                "¿Qué mascotas tienen vacunas pendientes?",
+                                "Muéstrame clientes inactivos por más de 60 días",
+                                "¿Cuál es el plan más vendido?",
+                                "Crea una campaña de renovación por WhatsApp",
+                            ].map((promptText, i) => (
+                                <button
+                                    key={i}
+                                    type="button"
+                                    onClick={() => handlePromptClick(promptText)}
+                                    className="w-full text-left p-2 rounded-xl border border-slate-100 bg-slate-50/80 hover:bg-blue-50/50 hover:border-blue-200 text-[11px] font-medium text-slate-600 transition flex items-center justify-between gap-1.5 group"
+                                >
+                                    <span className="leading-tight">{promptText}</span>
+                                    <ChevronRight className="w-3 h-3 text-slate-300 group-hover:text-blue-500 shrink-0" />
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Historial de Respuestas del Chat */}
+                        {chatMessages.length > 0 && (
+                            <div className="space-y-2 max-h-36 overflow-y-auto mt-2 p-2 rounded-xl bg-slate-50 border border-slate-200 text-[11px]">
+                                {chatMessages.map((msg, i) => (
+                                    <div 
+                                        key={i} 
+                                        className={`p-2 rounded-lg leading-relaxed ${
+                                            msg.role === 'user' 
+                                                ? 'bg-blue-600 text-white font-medium ml-auto max-w-[85%]' 
+                                                : 'bg-white text-slate-700 border border-slate-200 mr-auto max-w-[95%] shadow-2xs'
+                                        }`}
+                                    >
+                                        {msg.text}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Input de Pregunta */}
+                        <form onSubmit={handleSendChat} className="pt-2 flex items-center gap-1.5">
+                            <input
+                                type="text"
+                                value={chatInput}
+                                onChange={(e) => setChatInput(e.target.value)}
+                                placeholder="Escribe tu pregunta..."
+                                className="flex-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:ring-1 focus:ring-blue-500"
+                            />
+                            <button
+                                type="submit"
+                                aria-label="Enviar"
+                                className="w-8 h-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shrink-0 shadow-xs transition"
+                            >
+                                <Send className="w-3.5 h-3.5" />
+                            </button>
+                        </form>
+                    </div>
+
+                    {/* Card 2: Promo Portal de Pacientes en el Bolsillo */}
+                    <div className="bg-gradient-to-b from-blue-50/50 to-white border border-blue-200/70 rounded-2xl p-5 shadow-2xs text-center space-y-3 relative overflow-hidden">
+                        
+                        <div className="w-20 h-28 mx-auto rounded-xl bg-slate-900 border-2 border-slate-800 p-1 shadow-lg relative flex flex-col items-center justify-between">
+                            <div className="w-6 h-1 bg-slate-700 rounded-full mt-0.5"></div>
+                            <div className="w-full flex-1 bg-white rounded-lg p-1 text-[7px] text-left flex flex-col justify-between overflow-hidden">
+                                <div className="font-bold text-blue-600">VetPass™</div>
+                                <div className="p-0.5 bg-blue-50 rounded text-slate-800 font-bold">MAX · Golden</div>
+                                <div className="text-emerald-600 font-bold">Al día ✓</div>
+                            </div>
+                            <div className="w-2 h-2 rounded-full border border-slate-700 mb-0.5"></div>
+                        </div>
+
+                        <div>
+                            <h4 className="text-xs font-black text-slate-900 leading-tight">
+                                Lleva el cuidado de tu mascota en el bolsillo
+                            </h4>
+                            <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                                Tu cliente también tiene su portal con su carnet digital, beneficios y recordatorios.
                             </p>
                         </div>
 
+                        <a
+                            href={portalUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="block w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-xs"
+                        >
+                            Ver demo del portal →
+                        </a>
+
+                        <div className="flex items-center justify-center gap-1 pt-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                        </div>
                     </div>
-                </aside>
+
+                </div>
 
             </div>
         </VetAdminLayout>
