@@ -94,6 +94,12 @@ Route::get('/admin/{slug}/counter-redeem', function (string $slug) use ($checkAd
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->counterRedeem(request(), $slug);
 });
 
+Route::get('/admin/{slug}/historial-canjes', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    request()->merge(['tab' => 'history']);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->counterRedeem(request(), $slug);
+});
+
 Route::get('/admin/{slug}/benefit-definitions', function (string $slug) use ($checkAdminAccess) {
     if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->services(request(), $slug);
@@ -125,6 +131,24 @@ Route::get('/admin/{slug}/logistica', function (string $slug) use ($checkAdminAc
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->logistics(request(), $slug);
 });
 
+// 2.3 Módulo de Citas Médicas & Sincronización con Google Calendar
+Route::get('/admin/{slug}/citas', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\AppointmentController::class)->index(request(), $slug);
+});
+Route::post('/admin/{slug}/citas', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\AppointmentController::class)->store(request(), $slug);
+});
+Route::put('/admin/{slug}/citas/{id}/status', function (string $slug, string $id) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\AppointmentController::class)->updateStatus(request(), $slug, $id);
+});
+Route::get('/admin/{slug}/citas/disponibilidad', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return response()->json(['error' => 'Unauthorized'], 401);
+    return app(App\Http\Controllers\VetAdmin\AppointmentController::class)->availableSlots(request(), $slug);
+});
+
 // Aliases amigables hacia los módulos conectados a la base de datos
 Route::get('/admin/{slug}/canje-mostrador', fn(string $slug) => redirect("/admin/{$slug}/counter-redeem" . (request('preview') === '1' ? '?preview=1' : '')));
 Route::get('/admin/{slug}/configuracion-clinica', fn(string $slug) => redirect("/admin/{$slug}/clinic-settings" . (request('preview') === '1' ? '?preview=1' : '')));
@@ -134,6 +158,8 @@ Route::get('/admin/{slug}/recepcion', fn(string $slug) => redirect("/admin/{$slu
 Route::get('/admin/{slug}/reportes', fn(string $slug) => redirect("/admin/{$slug}/subscriptions" . (request('preview') === '1' ? '?preview=1' : '')));
 Route::get('/admin/{slug}/despachos', fn(string $slug) => redirect("/admin/{$slug}/logistica" . (request('preview') === '1' ? '?preview=1' : '')));
 Route::get('/admin/{slug}/envios', fn(string $slug) => redirect("/admin/{$slug}/logistica" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/agenda', fn(string $slug) => redirect("/admin/{$slug}/citas" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/calendar', fn(string $slug) => redirect("/admin/{$slug}/citas" . (request('preview') === '1' ? '?preview=1' : '')));
 
 // 3. Acceso amigable por Slug al Admin de la clínica (ej. /v/vet-pet-patitas/admin -> /admin/vet-pet-patitas)
 Route::get('/v/{slug}/admin/{section?}', function (string $slug, ?string $section = null) {

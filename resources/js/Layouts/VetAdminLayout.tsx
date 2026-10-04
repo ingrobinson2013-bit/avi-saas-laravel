@@ -267,6 +267,19 @@ export default function VetAdminLayout({
                         {openGroups.recepcion && (
                             <div className="pl-6 pr-1 py-1 space-y-0.5">
                                 <Link
+                                    href={getHref(`/admin/${tenantSlug}/citas`)}
+                                    preserveScroll
+                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
+                                        activeItem === 'Citas & Agenda' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                                    }`}
+                                >
+                                    <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                                    <span>Citas & Agenda</span>
+                                    <span className="ml-auto text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300">
+                                        Google
+                                    </span>
+                                </Link>
+                                <Link
                                     href={getHref(`/admin/${tenantSlug}/counter-redeem`)}
                                     preserveScroll
                                     className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
@@ -277,9 +290,11 @@ export default function VetAdminLayout({
                                     <span>Canje en Recepción</span>
                                 </Link>
                                 <Link
-                                    href={getHref(`/admin/${tenantSlug}/counter-redeem`)}
+                                    href={getHref(`/admin/${tenantSlug}/historial-canjes`)}
                                     preserveScroll
-                                    className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
+                                        activeItem === 'Historial de Canjes' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                                    }`}
                                 >
                                     <History className="w-3.5 h-3.5 text-slate-500" />
                                     <span>Historial de Canjes</span>

@@ -177,9 +177,9 @@ export default function CounterRedeem({
             logoutUrl={logoutUrl}
             userName={userName}
             userRole={userRole}
-            activeItem="Canje en Recepción"
+            activeItem={currentTab === 'history' ? 'Historial de Canjes' : 'Canje en Recepción'}
         >
-            <Head title={`Canje en Mostrador · ${brandName}`} />
+            <Head title={`${currentTab === 'history' ? 'Historial de Canjes' : 'Canje en Mostrador'} · ${brandName}`} />
 
             <div className="w-full space-y-5 pb-16">
                 {/* Header Banner */}
