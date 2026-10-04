@@ -90,7 +90,6 @@ export default function Settings({
 }: SettingsProps) {
     const [saved, setSaved] = useState(false);
     const [saving, setSaving] = useState(false);
-    const [showAdvancedUrls, setShowAdvancedUrls] = useState(false);
 
     // Refs para selector de archivos
     const logoFileRef = useRef<HTMLInputElement>(null);
@@ -239,14 +238,6 @@ export default function Settings({
                             <QrCode className="w-4 h-4 text-slate-500" />
                             <span>Afiche QR</span>
                         </a>
-                        <button
-                            type="button"
-                            onClick={() => setShowAdvancedUrls(!showAdvancedUrls)}
-                            className="px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition flex items-center gap-1.5"
-                        >
-                            <Sliders className="w-3.5 h-3.5 text-slate-500" />
-                            <span>{showAdvancedUrls ? 'Ocultar URLs' : 'URLs Cloud'}</span>
-                        </button>
                     </div>
                 </div>
 
@@ -307,7 +298,7 @@ export default function Settings({
                                                     <span>Nuevo archivo: {form.logoFileName}</span>
                                                 </span>
                                             ) : (
-                                                <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">Oficial Cloudflare R2</span>
+                                                <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">Logotipo Activo</span>
                                             )}
                                         </div>
                                         <p className="text-[11px] text-slate-500">
@@ -321,24 +312,25 @@ export default function Settings({
                                                 className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
                                             >
                                                 <UploadCloud className="w-4 h-4" />
-                                                <span>Subir / Cambiar Logo desde mi PC o Celular</span>
+                                                <span>Subir / Cambiar Logotipo</span>
                                             </button>
 
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setForm(prev => ({
-                                                        ...prev,
-                                                        logo_url: DEFAULT_OFFICIAL_LOGO,
-                                                        logo_base64: undefined,
-                                                        logoFileName: undefined
-                                                    }));
-                                                }}
-                                                className="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold transition flex items-center gap-1"
-                                            >
-                                                <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
-                                                <span>Restaurar Logo Oficial R2</span>
-                                            </button>
+                                            {form.logoFileName && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setForm(prev => ({
+                                                            ...prev,
+                                                            logo_base64: undefined,
+                                                            logoFileName: undefined,
+                                                            logo_url: settings.logo_url || DEFAULT_OFFICIAL_LOGO
+                                                        }));
+                                                    }}
+                                                    className="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 text-xs font-semibold transition"
+                                                >
+                                                    Cancelar selección
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -520,21 +512,6 @@ export default function Settings({
                                             </div>
                                         </div>
                                     </div>
-
-                                    {showAdvancedUrls && (
-                                        <div className="sm:col-span-2 pt-2 border-t border-slate-100">
-                                            <label className="block text-[11px] font-bold text-slate-600 mb-1">
-                                                URL Manual del Logotipo (Cloudflare / S3)
-                                            </label>
-                                            <input
-                                                type="url"
-                                                value={form.logo_url}
-                                                onChange={(e) => setForm({ ...form, logo_url: e.target.value })}
-                                                placeholder="https://pub-...r2.dev/tenants/logos/...webp"
-                                                className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white text-slate-700 font-mono"
-                                            />
-                                        </div>
-                                    )}
                                 </div>
                             </div>
 
@@ -593,31 +570,21 @@ export default function Settings({
                                                 <span>Cambiar Foto Portada</span>
                                             </button>
 
-                                            <button
-                                                type="button"
-                                                onClick={() => setForm(prev => ({ 
-                                                    ...prev, 
-                                                    hero_image_url: DEFAULT_HERO_IMAGE, 
-                                                    hero_base64: undefined,
-                                                    heroFileName: undefined 
-                                                }))}
-                                                className="w-full py-1 text-[11px] text-slate-500 hover:text-slate-800 font-medium text-center"
-                                            >
-                                                Restaurar foto R2
-                                            </button>
+                                            {form.heroFileName && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setForm(prev => ({ 
+                                                        ...prev, 
+                                                        hero_base64: undefined,
+                                                        heroFileName: undefined,
+                                                        hero_image_url: settings.hero_image_url || DEFAULT_HERO_IMAGE
+                                                    }))}
+                                                    className="w-full py-1 text-[11px] text-slate-500 hover:text-slate-700 font-medium text-center"
+                                                >
+                                                    Cancelar selección
+                                                </button>
+                                            )}
                                         </div>
-
-                                        {showAdvancedUrls && (
-                                            <div className="pt-2 border-t border-slate-200/80">
-                                                <label className="block text-[10px] font-bold text-slate-600 mb-0.5">URL Foto Portada</label>
-                                                <input
-                                                    type="url"
-                                                    value={form.hero_image_url}
-                                                    onChange={(e) => setForm({ ...form, hero_image_url: e.target.value })}
-                                                    className="w-full px-2 py-1 text-[11px] rounded border border-slate-200 bg-white font-mono"
-                                                />
-                                            </div>
-                                        )}
                                     </div>
 
                                     {/* 2. Foto Instalaciones / Fachada */}
@@ -656,31 +623,21 @@ export default function Settings({
                                                 <span>Cambiar Foto Fachada</span>
                                             </button>
 
-                                            <button
-                                                type="button"
-                                                onClick={() => setForm(prev => ({ 
-                                                    ...prev, 
-                                                    banner_image_url: DEFAULT_BANNER_IMAGE, 
-                                                    banner_base64: undefined,
-                                                    bannerFileName: undefined 
-                                                }))}
-                                                className="w-full py-1 text-[11px] text-slate-500 hover:text-slate-800 font-medium text-center"
-                                            >
-                                                Restaurar foto R2
-                                            </button>
+                                            {form.bannerFileName && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setForm(prev => ({ 
+                                                        ...prev, 
+                                                        banner_base64: undefined,
+                                                        bannerFileName: undefined,
+                                                        banner_image_url: settings.banner_image_url || DEFAULT_BANNER_IMAGE
+                                                    }))}
+                                                    className="w-full py-1 text-[11px] text-slate-500 hover:text-slate-700 font-medium text-center"
+                                                >
+                                                    Cancelar selección
+                                                </button>
+                                            )}
                                         </div>
-
-                                        {showAdvancedUrls && (
-                                            <div className="pt-2 border-t border-slate-200/80">
-                                                <label className="block text-[10px] font-bold text-slate-600 mb-0.5">URL Foto Fachada</label>
-                                                <input
-                                                    type="url"
-                                                    value={form.banner_image_url}
-                                                    onChange={(e) => setForm({ ...form, banner_image_url: e.target.value })}
-                                                    className="w-full px-2 py-1 text-[11px] rounded border border-slate-200 bg-white font-mono"
-                                                />
-                                            </div>
-                                        )}
                                     </div>
 
                                     {/* 3. Video Institucional 9:16 */}
@@ -725,31 +682,21 @@ export default function Settings({
                                                 <span>Subir / Cambiar Video MP4</span>
                                             </button>
 
-                                            <button
-                                                type="button"
-                                                onClick={() => setForm(prev => ({ 
-                                                    ...prev, 
-                                                    banner_video_url: DEFAULT_BANNER_VIDEO, 
-                                                    video_base64: undefined,
-                                                    videoFileName: undefined 
-                                                }))}
-                                                className="w-full py-1 text-[11px] text-slate-500 hover:text-slate-800 font-medium text-center"
-                                            >
-                                                Restaurar video R2
-                                            </button>
+                                            {form.videoFileName && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setForm(prev => ({ 
+                                                        ...prev, 
+                                                        video_base64: undefined,
+                                                        videoFileName: undefined,
+                                                        banner_video_url: settings.banner_video_url || DEFAULT_BANNER_VIDEO
+                                                    }))}
+                                                    className="w-full py-1 text-[11px] text-slate-500 hover:text-slate-700 font-medium text-center"
+                                                >
+                                                    Cancelar selección
+                                                </button>
+                                            )}
                                         </div>
-
-                                        {showAdvancedUrls && (
-                                            <div className="pt-2 border-t border-slate-200/80">
-                                                <label className="block text-[10px] font-bold text-slate-600 mb-0.5">URL Video MP4</label>
-                                                <input
-                                                    type="url"
-                                                    value={form.banner_video_url}
-                                                    onChange={(e) => setForm({ ...form, banner_video_url: e.target.value })}
-                                                    className="w-full px-2 py-1 text-[11px] rounded border border-slate-200 bg-white font-mono"
-                                                />
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
 
