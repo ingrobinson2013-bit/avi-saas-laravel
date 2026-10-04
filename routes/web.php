@@ -114,6 +114,12 @@ Route::get('/admin/{slug}/inteligencia', function (string $slug) use ($checkAdmi
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->intelligence(request(), $slug);
 });
 
+Route::post('/admin/{slug}/ai/triage', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return response()->json(['error' => 'Unauthorized'], 401);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->runTriage(request(), $slug);
+});
+
+
 Route::get('/admin/{slug}/logistica', function (string $slug) use ($checkAdminAccess) {
     if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->logistics(request(), $slug);
