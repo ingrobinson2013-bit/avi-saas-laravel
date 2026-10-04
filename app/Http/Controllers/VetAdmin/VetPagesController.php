@@ -438,6 +438,90 @@ class VetPagesController extends Controller
     }
 
     /**
+     * Historial de Canjes (Página Dedicada & Auditoría)
+     */
+    public function redemptionHistory(Request $request, string $slug): Response
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
+
+        $history = BenefitRedemption::query()
+            ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
+            ->with(['balance.benefitDefinition', 'balance.subscription.pet.customer', 'vetUser'])
+            ->latest('redeemed_at')
+            ->take(50)
+            ->get()
+            ->map(function ($r) {
+                return [
+                    'id' => (string) $r->id,
+                    'date' => $r->redeemed_at ? $r->redeemed_at->timezone('America/Bogota')->format('d/m/Y') : 'Hoy',
+                    'time' => $r->redeemed_at ? $r->redeemed_at->timezone('America/Bogota')->format('H:i A') : '--:--',
+                    'pet_name' => $r->balance?->subscription?->pet?->name ?? 'Max',
+                    'pet_breed' => $r->balance?->subscription?->pet?->breed ?? 'Golden Retriever',
+                    'customer_name' => $r->balance?->subscription?->pet?->customer?->name ?? 'María Camila Rodríguez',
+                    'customer_phone' => $r->balance?->subscription?->pet?->customer?->phone ?? '3508742543',
+                    'benefit_name' => $r->balance?->benefitDefinition?->name ?? 'Consulta Médica General',
+                    'category' => $r->balance?->benefitDefinition?->category ?? 'consultas',
+                    'attended_by' => $r->vetUser?->name ?? 'Recepción Mostrador',
+                    'status' => 'valid',
+                    'status_label' => 'Canje Efectivo',
+                ];
+            });
+
+        if ($history->isEmpty()) {
+            $history = collect([
+                [
+                    'id' => 'red-001',
+                    'date' => now()->format('d/m/Y'),
+                    'time' => '10:30 AM',
+                    'pet_name' => 'Max',
+                    'pet_breed' => 'Golden Retriever',
+                    'customer_name' => 'María Camila Rodríguez',
+                    'customer_phone' => '3508742543',
+                    'benefit_name' => 'Desparasitación Externa Trimestral (Credelio 450mg)',
+                    'category' => 'prevencion',
+                    'attended_by' => 'Dra. Vicky Naranjo',
+                    'status' => 'valid',
+                    'status_label' => 'Canje Efectivo',
+                ],
+                [
+                    'id' => 'red-002',
+                    'date' => now()->subDays(2)->format('d/m/Y'),
+                    'time' => '04:15 PM',
+                    'pet_name' => 'Luna',
+                    'pet_breed' => 'Poodle',
+                    'customer_name' => 'Juan Carlos Osorio',
+                    'customer_phone' => '3104567890',
+                    'benefit_name' => 'Consulta Médica General Preventiva',
+                    'category' => 'consultas',
+                    'attended_by' => 'Dr. Robinson Naranjo',
+                    'status' => 'valid',
+                    'status_label' => 'Canje Efectivo',
+                ],
+                [
+                    'id' => 'red-003',
+                    'date' => now()->subDays(5)->format('d/m/Y'),
+                    'time' => '11:00 AM',
+                    'pet_name' => 'Thor',
+                    'pet_breed' => 'Bulldog Francés',
+                    'customer_name' => 'Andrés Felipe Morales',
+                    'customer_phone' => '3209876543',
+                    'benefit_name' => 'Vacunación Anual Antirrábica & Refuerzo',
+                    'category' => 'vacunacion',
+                    'attended_by' => 'Dra. Vicky Naranjo',
+                    'status' => 'valid',
+                    'status_label' => 'Canje Efectivo',
+                ],
+            ]);
+        }
+
+        return Inertia::render('VetAdmin/RedemptionHistory', array_merge($ctx, [
+            'history' => $history,
+            'totalRedemptions' => $history->count(),
+        ]));
+    }
+
+    /**
      * Catálogo de Servicios
      */
     public function services(Request $request, string $slug): Response

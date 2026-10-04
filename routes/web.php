@@ -96,8 +96,7 @@ Route::get('/admin/{slug}/counter-redeem', function (string $slug) use ($checkAd
 
 Route::get('/admin/{slug}/historial-canjes', function (string $slug) use ($checkAdminAccess) {
     if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
-    request()->merge(['tab' => 'history']);
-    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->counterRedeem(request(), $slug);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->redemptionHistory(request(), $slug);
 });
 
 Route::get('/admin/{slug}/benefit-definitions', function (string $slug) use ($checkAdminAccess) {
