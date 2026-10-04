@@ -419,6 +419,47 @@ class VetPagesController extends Controller
         ]));
     }
 
+    private function storeBase64OrFile(Request $request, string $fileKey, string $base64Key, string $folder, string $defaultExt = 'webp'): ?string
+    {
+        // 1. Archivo Multipart
+        if ($request->hasFile($fileKey)) {
+            $file = $request->file($fileKey);
+            $ext = $file->getClientOriginalExtension() ?: $defaultExt;
+            $filename = "tenants/{$folder}/" . \Illuminate\Support\Str::uuid() . '.' . $ext;
+            try {
+                \Illuminate\Support\Facades\Storage::disk('r2')->put($filename, file_get_contents($file->getRealPath()), 'public');
+                return \Illuminate\Support\Facades\Storage::disk('r2')->url($filename);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Storage::disk('public')->put($filename, file_get_contents($file->getRealPath()));
+                return \Illuminate\Support\Facades\Storage::disk('public')->url($filename);
+            }
+        }
+
+        // 2. Base64 Data URL
+        if ($request->filled($base64Key)) {
+            $base64 = $request->input($base64Key);
+            if (preg_match('/^data:(image|video)\/(\w+);base64,/', $base64, $matches)) {
+                $ext = strtolower($matches[2]);
+                if ($ext === 'jpeg') $ext = 'jpg';
+                if ($ext === 'quicktime') $ext = 'mov';
+                $data = substr($base64, strpos($base64, ',') + 1);
+                $decoded = base64_decode($data);
+                if ($decoded !== false) {
+                    $filename = "tenants/{$folder}/" . \Illuminate\Support\Str::uuid() . '.' . $ext;
+                    try {
+                        \Illuminate\Support\Facades\Storage::disk('r2')->put($filename, $decoded, 'public');
+                        return \Illuminate\Support\Facades\Storage::disk('r2')->url($filename);
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Storage::disk('public')->put($filename, $decoded);
+                        return \Illuminate\Support\Facades\Storage::disk('public')->url($filename);
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Guardar Configuración de Sede, Marca Blanca & Canales de Recaudo
      */
@@ -449,6 +490,10 @@ class VetPagesController extends Controller
             'payment_nequi' => 'nullable|string|max:50',
             'payment_bank_info' => 'nullable|string|max:255',
             'payment_bold_link' => 'nullable|string|max:500',
+            'logo_base64' => 'nullable|string',
+            'hero_base64' => 'nullable|string',
+            'banner_base64' => 'nullable|string',
+            'video_base64' => 'nullable|string',
         ]);
 
         $branding = $tenant->branding ?? [];
@@ -456,19 +501,41 @@ class VetPagesController extends Controller
         $branding['address'] = $validated['address'] ?? $branding['address'] ?? 'Calle 7 # 4-73 Este';
         $branding['phone'] = $validated['phone'] ?? $branding['phone'] ?? '3508742543';
         $branding['email'] = $validated['email'] ?? $branding['email'] ?? 'petmovilveterinario@gmail.com';
-        if (!empty($validated['logo_url'])) {
+
+        // Procesar subidas de Logo
+        $uploadedLogo = $this->storeBase64OrFile($request, 'logo_file', 'logo_base64', 'logos');
+        if ($uploadedLogo) {
+            $branding['logo_url'] = $uploadedLogo;
+        } elseif (!empty($validated['logo_url'])) {
             $branding['logo_url'] = trim($validated['logo_url']);
         }
+
         $branding['tagline'] = $validated['tagline'] ?? $branding['tagline'] ?? 'Planes de salud para su mascota';
-        if (!empty($validated['hero_image_url'])) {
+
+        // Procesar subidas de Foto Portada (Hero)
+        $uploadedHero = $this->storeBase64OrFile($request, 'hero_file', 'hero_base64', 'heroes');
+        if ($uploadedHero) {
+            $branding['hero_image_url'] = $uploadedHero;
+        } elseif (!empty($validated['hero_image_url'])) {
             $branding['hero_image_url'] = trim($validated['hero_image_url']);
         }
-        if (!empty($validated['banner_image_url'])) {
+
+        // Procesar subidas de Foto Instalaciones (Banner)
+        $uploadedBanner = $this->storeBase64OrFile($request, 'banner_file', 'banner_base64', 'banners');
+        if ($uploadedBanner) {
+            $branding['banner_image_url'] = $uploadedBanner;
+        } elseif (!empty($validated['banner_image_url'])) {
             $branding['banner_image_url'] = trim($validated['banner_image_url']);
         }
-        if (!empty($validated['banner_video_url'])) {
+
+        // Procesar subidas de Video Institucional
+        $uploadedVideo = $this->storeBase64OrFile($request, 'video_file', 'video_base64', 'videos', 'mp4');
+        if ($uploadedVideo) {
+            $branding['banner_video_url'] = $uploadedVideo;
+        } elseif (!empty($validated['banner_video_url'])) {
             $branding['banner_video_url'] = trim($validated['banner_video_url']);
         }
+
         if (!empty($validated['hero_title'])) {
             $branding['hero_title'] = trim($validated['hero_title']);
         }

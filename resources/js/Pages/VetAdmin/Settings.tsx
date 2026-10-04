@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Head, router } from '@inertiajs/react';
 import VetAdminLayout from '@/Layouts/VetAdminLayout';
 import { 
@@ -8,12 +8,16 @@ import {
     Save, 
     Image as ImageIcon, 
     Video as VideoIcon,
+    UploadCloud,
+    Camera,
     Palette, 
     RotateCcw, 
     ExternalLink,
     ShieldCheck,
     PlayCircle,
-    Eye
+    Eye,
+    FileCheck,
+    Sliders
 } from 'lucide-react';
 
 interface SettingsData {
@@ -84,7 +88,25 @@ export default function Settings({
 }: SettingsProps) {
     const [saved, setSaved] = useState(false);
     const [saving, setSaving] = useState(false);
-    const [form, setForm] = useState<SettingsData>({
+    const [showAdvancedUrls, setShowAdvancedUrls] = useState(false);
+
+    // Refs para activar selector de archivos del sistema
+    const logoFileRef = useRef<HTMLInputElement>(null);
+    const heroFileRef = useRef<HTMLInputElement>(null);
+    const bannerFileRef = useRef<HTMLInputElement>(null);
+    const videoFileRef = useRef<HTMLInputElement>(null);
+
+    // Estado del formulario con previsualizaciones
+    const [form, setForm] = useState<SettingsData & {
+        logo_base64?: string;
+        hero_base64?: string;
+        banner_base64?: string;
+        video_base64?: string;
+        logoFileName?: string;
+        heroFileName?: string;
+        bannerFileName?: string;
+        videoFileName?: string;
+    }>({
         ...settings,
         logo_url: settings.logo_url || logoUrl || DEFAULT_OFFICIAL_LOGO,
         tagline: settings.tagline || clinicSubtitle || 'Planes de salud para su mascota',
@@ -98,15 +120,34 @@ export default function Settings({
         secondary_color: settings.secondary_color || '#d437b5',
     });
 
+    // Manejador genérico para leer archivos y convertirlos a Base64 con previsualización inmediata
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldBase64: string, fieldPreviewUrl: string, nameKey: string) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const result = reader.result as string;
+            setForm(prev => ({
+                ...prev,
+                [fieldBase64]: result,
+                [fieldPreviewUrl]: result,
+                [nameKey]: file.name
+            }));
+        };
+        reader.readAsDataURL(file);
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
+
         router.post(`/admin/${tenantSlug}/clinic-settings`, form, {
             preserveScroll: true,
             onSuccess: () => {
                 setSaving(false);
                 setSaved(true);
-                setTimeout(() => setSaved(false), 4000);
+                setTimeout(() => setSaved(false), 4500);
             },
             onError: () => {
                 setSaving(false);
@@ -128,20 +169,50 @@ export default function Settings({
         >
             <Head title={`Configuración, Fotos & Video · ${brandName}`} />
 
+            {/* Inputs de archivo ocultos que se activan con los botones */}
+            <input 
+                type="file" 
+                ref={logoFileRef} 
+                accept="image/png,image/jpeg,image/webp,image/svg+xml" 
+                className="hidden" 
+                onChange={(e) => handleFileChange(e, 'logo_base64', 'logo_url', 'logoFileName')}
+            />
+            <input 
+                type="file" 
+                ref={heroFileRef} 
+                accept="image/png,image/jpeg,image/webp" 
+                className="hidden" 
+                onChange={(e) => handleFileChange(e, 'hero_base64', 'hero_image_url', 'heroFileName')}
+            />
+            <input 
+                type="file" 
+                ref={bannerFileRef} 
+                accept="image/png,image/jpeg,image/webp" 
+                className="hidden" 
+                onChange={(e) => handleFileChange(e, 'banner_base64', 'banner_image_url', 'bannerFileName')}
+            />
+            <input 
+                type="file" 
+                ref={videoFileRef} 
+                accept="video/mp4,video/quicktime,video/webm" 
+                className="hidden" 
+                onChange={(e) => handleFileChange(e, 'video_base64', 'banner_video_url', 'videoFileName')}
+            />
+
             <div className="space-y-4 max-w-4xl pb-16">
                 {/* Header Banner */}
                 <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-2">
                             <h1 className="text-xl font-black text-slate-900 tracking-tight">
-                                Configuración de Sede, Multimedia & Marca Blanca
+                                Configuración de Marca, Fotos & Videos
                             </h1>
                             <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                                 Sede Activa
                             </span>
                         </div>
                         <p className="text-xs text-slate-500 mt-1">
-                            Ajusta el logotipo, fotos de portada, video institucional en 9:16, canales de recaudo y presencia de marca blanca.
+                            Sube el logo de la clínica, fotos de portada, fachada y video institucional desde tu dispositivo o cámbialos por URL.
                         </p>
                     </div>
 
@@ -156,24 +227,26 @@ export default function Settings({
                             <span>Ver Portal B2C</span>
                             <ExternalLink className="w-3 h-3 text-slate-400" />
                         </a>
-                        <a
-                            href={`/admin/${tenantSlug}/renovar-saas`}
-                            className="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition flex items-center gap-1.5"
+                        <button
+                            type="button"
+                            onClick={() => setShowAdvancedUrls(!showAdvancedUrls)}
+                            className="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition flex items-center gap-1.5"
                         >
-                            <span>⭐ Licencia SaaS</span>
-                        </a>
+                            <Sliders className="w-3.5 h-3.5 text-slate-500" />
+                            <span>{showAdvancedUrls ? 'Ocultar URLs' : 'Ver URLs Avanzadas'}</span>
+                        </button>
                     </div>
                 </div>
 
                 {saved && (
                     <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2.5 shadow-2xs animate-fadeIn">
                         <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                        <span>¡Configuración, fotos, videos y medios de pago actualizados exitosamente en la base de datos!</span>
+                        <span>¡Fotos, videos, logotipo y canales de pago guardados exitosamente en la base de datos!</span>
                     </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Tarjeta 1: Marca Blanca & Logotipo Oficial */}
+                    {/* Tarjeta 1: Logotipo Oficial & Marca Blanca */}
                     <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-4">
                         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                             <div className="flex items-center gap-2">
@@ -181,8 +254,8 @@ export default function Settings({
                                     <ImageIcon className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-bold text-slate-900">Marca Blanca & Logotipo de la Clínica</h3>
-                                    <p className="text-[11px] text-slate-500">Visible en barra lateral, recetas, carnets digitales y afiches QR</p>
+                                    <h3 className="text-sm font-bold text-slate-900">1. Logotipo Oficial de la Clínica (Marca Blanca)</h3>
+                                    <p className="text-[11px] text-slate-500">Se muestra en la barra lateral del sistema, carnet digital, afiche QR y tienda web</p>
                                 </div>
                             </div>
                             <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-100">
@@ -190,67 +263,71 @@ export default function Settings({
                             </span>
                         </div>
 
-                        {/* Vista previa en vivo del Logotipo */}
+                        {/* Caja de Logotipo con botones de acción directa */}
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200/80">
-                            <div className="flex items-center gap-3">
-                                <div className="w-20 h-20 rounded-2xl bg-white border-2 border-slate-200 shadow-xs p-1.5 flex items-center justify-center shrink-0 overflow-hidden">
-                                    {form.logo_url ? (
-                                        <img 
-                                            src={form.logo_url} 
-                                            alt={form.name} 
-                                            className="w-full h-full object-contain"
-                                            onError={(e) => {
-                                                (e.target as HTMLImageElement).src = DEFAULT_OFFICIAL_LOGO;
-                                            }}
-                                        />
+                            <div className="w-24 h-24 rounded-2xl bg-white border-2 border-slate-200 shadow-xs p-2 flex items-center justify-center shrink-0 overflow-hidden relative group">
+                                {form.logo_url ? (
+                                    <img 
+                                        src={form.logo_url} 
+                                        alt={form.name} 
+                                        className="w-full h-full object-contain"
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).src = DEFAULT_OFFICIAL_LOGO;
+                                        }}
+                                    />
+                                ) : (
+                                    <span className="text-3xl">🐾</span>
+                                )}
+                            </div>
+
+                            <div className="flex-1 space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs font-bold text-slate-900">Logo Actual</span>
+                                    {form.logoFileName ? (
+                                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 flex items-center gap-1">
+                                            <FileCheck className="w-3 h-3" />
+                                            <span>Nuevo archivo: {form.logoFileName}</span>
+                                        </span>
                                     ) : (
-                                        <span className="text-2xl">🐾</span>
+                                        <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">Oficial R2</span>
                                     )}
                                 </div>
-                                <div>
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="text-xs font-bold text-slate-900">Logotipo Oficial Activo</span>
-                                        <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">Oficial</span>
-                                    </div>
-                                    <p className="text-[11px] text-slate-500 mt-0.5 max-w-sm">
-                                        Alojado en Cloudflare R2 Edge Storage de alta disponibilidad.
-                                    </p>
+                                <p className="text-[11px] text-slate-500">
+                                    Formatos recomendados: PNG o WEBP con fondo transparente (mínimo 300x300 px).
+                                </p>
+
+                                {/* BOTONES DE ACCIÓN PARA EL LOGO */}
+                                <div className="flex flex-wrap items-center gap-2 pt-1">
                                     <button
                                         type="button"
-                                        onClick={() => setForm(prev => ({ ...prev, logo_url: DEFAULT_OFFICIAL_LOGO }))}
-                                        className="mt-2 text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition"
+                                        onClick={() => logoFileRef.current?.click()}
+                                        className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
                                     >
-                                        <RotateCcw className="w-3 h-3" />
+                                        <UploadCloud className="w-4 h-4" />
+                                        <span>Subir / Cambiar Logo desde mi PC o Celular</span>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setForm(prev => ({
+                                                ...prev,
+                                                logo_url: DEFAULT_OFFICIAL_LOGO,
+                                                logo_base64: undefined,
+                                                logoFileName: undefined
+                                            }));
+                                        }}
+                                        className="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold transition flex items-center gap-1"
+                                    >
+                                        <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
                                         <span>Restaurar Logo Oficial R2</span>
                                     </button>
                                 </div>
                             </div>
-
-                            <div className="sm:ml-auto w-full sm:w-auto flex flex-col gap-1 text-[11px] text-slate-600 bg-white p-3 rounded-xl border border-slate-200/60 shadow-2xs">
-                                <span className="font-bold text-slate-800 flex items-center gap-1">
-                                    <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-                                    <span>Presencia White-Label</span>
-                                </span>
-                                <span>• Encabezado de Navegación</span>
-                                <span>• Carnet Digital & Certificado PDF</span>
-                                <span>• Tienda Web de Afiliación de Tutores</span>
-                            </div>
                         </div>
 
+                        {/* Campos de texto y colores de marca */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                            <div className="sm:col-span-2">
-                                <label className="block text-xs font-bold text-slate-700 mb-1">
-                                    URL del Logotipo (Cloudflare R2 / AWS S3 / URL pública)
-                                </label>
-                                <input
-                                    type="url"
-                                    value={form.logo_url}
-                                    onChange={(e) => setForm({ ...form, logo_url: e.target.value })}
-                                    placeholder="https://pub-...r2.dev/tenants/logos/...webp"
-                                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-hidden font-mono"
-                                />
-                            </div>
-
                             <div>
                                 <label className="block text-xs font-bold text-slate-700 mb-1">
                                     Lema o Slogan de Atención Clínica
@@ -298,10 +375,25 @@ export default function Settings({
                                     </div>
                                 </div>
                             </div>
+
+                            {showAdvancedUrls && (
+                                <div className="sm:col-span-2 pt-2 border-t border-slate-100">
+                                    <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                                        URL Manual del Logotipo
+                                    </label>
+                                    <input
+                                        type="url"
+                                        value={form.logo_url}
+                                        onChange={(e) => setForm({ ...form, logo_url: e.target.value })}
+                                        placeholder="https://pub-...r2.dev/tenants/logos/...webp"
+                                        className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white text-slate-700 font-mono"
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
 
-                    {/* Tarjeta 2: Multimedia del Portal & Afiliaciones (Fotos y Video) */}
+                    {/* Tarjeta 2: Fotos de Sede y Video Institucional */}
                     <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-5">
                         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                             <div className="flex items-center gap-2">
@@ -309,29 +401,29 @@ export default function Settings({
                                     <VideoIcon className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-bold text-slate-900">Multimedia del Portal B2C (Fotos de Sede & Video)</h3>
-                                    <p className="text-[11px] text-slate-500">Imágenes de portada, fachada de instalaciones y video institucional en vivo</p>
+                                    <h3 className="text-sm font-bold text-slate-900">2. Fotos de la Clínica y Video Institucional (9:16)</h3>
+                                    <p className="text-[11px] text-slate-500">Haz clic en cada botón para subir archivos desde tu ordenador o teléfono móvil</p>
                                 </div>
                             </div>
                             <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-100">
-                                Storefront B2C
+                                Tienda B2C
                             </span>
                         </div>
 
-                        {/* Grid de Fotos y Video */}
+                        {/* Grid de 3 Columnas: Foto Portada, Foto Fachada, Video Reel */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {/* 1. Foto de Portada / Pacientes */}
-                            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5 flex flex-col">
+                            {/* ITEM 1: Foto Portada (Hero) */}
+                            <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 flex flex-col space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-xs font-bold text-slate-800">Foto Portada (Hero)</span>
-                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">16:9</span>
+                                    <span className="text-xs font-bold text-slate-900">Foto de Portada</span>
+                                    <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">Hero 16:9</span>
                                 </div>
 
-                                <div className="w-full aspect-video rounded-lg overflow-hidden bg-slate-200 border border-slate-300/80 relative">
+                                <div className="w-full aspect-video rounded-xl overflow-hidden bg-slate-200 border border-slate-300 relative group">
                                     {form.hero_image_url ? (
                                         <img 
                                             src={form.hero_image_url} 
-                                            alt="Hero Portada" 
+                                            alt="Hero" 
                                             className="w-full h-full object-cover"
                                             onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_HERO_IMAGE; }}
                                         />
@@ -340,38 +432,62 @@ export default function Settings({
                                     )}
                                 </div>
 
-                                <div className="space-y-1 mt-auto">
-                                    <label className="block text-[10.5px] font-bold text-slate-600">URL Foto Portada</label>
-                                    <input 
-                                        type="url"
-                                        value={form.hero_image_url}
-                                        onChange={(e) => setForm({ ...form, hero_image_url: e.target.value })}
-                                        placeholder="https://..."
-                                        className="w-full px-2.5 py-1.5 text-[11px] rounded-lg border border-slate-200 bg-white font-mono"
-                                    />
+                                {form.heroFileName && (
+                                    <p className="text-[10.5px] font-bold text-amber-700 truncate">
+                                        📁 Listo: {form.heroFileName}
+                                    </p>
+                                )}
+
+                                {/* BOTÓN DE SUBIDA DIRECTA FOTO PORTADA */}
+                                <div className="space-y-1.5 mt-auto pt-1">
                                     <button
                                         type="button"
-                                        onClick={() => setForm(prev => ({ ...prev, hero_image_url: DEFAULT_HERO_IMAGE }))}
-                                        className="text-[10px] text-blue-600 font-bold hover:underline flex items-center gap-1 pt-0.5"
+                                        onClick={() => heroFileRef.current?.click()}
+                                        className="w-full py-2 px-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
                                     >
-                                        <RotateCcw className="w-2.5 h-2.5" />
-                                        <span>Restaurar foto R2</span>
+                                        <Camera className="w-3.5 h-3.5" />
+                                        <span>Cambiar Foto Portada</span>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setForm(prev => ({ 
+                                            ...prev, 
+                                            hero_image_url: DEFAULT_HERO_IMAGE, 
+                                            hero_base64: undefined,
+                                            heroFileName: undefined 
+                                        }))}
+                                        className="w-full py-1 text-[11px] text-slate-500 hover:text-slate-800 font-medium text-center"
+                                    >
+                                        Restaurar foto original R2
                                     </button>
                                 </div>
+
+                                {showAdvancedUrls && (
+                                    <div className="pt-2 border-t border-slate-200/80">
+                                        <label className="block text-[10px] font-bold text-slate-600 mb-0.5">URL Foto Portada</label>
+                                        <input
+                                            type="url"
+                                            value={form.hero_image_url}
+                                            onChange={(e) => setForm({ ...form, hero_image_url: e.target.value })}
+                                            className="w-full px-2 py-1 text-[11px] rounded border border-slate-200 bg-white font-mono"
+                                        />
+                                    </div>
+                                )}
                             </div>
 
-                            {/* 2. Foto de Instalaciones / Fachada */}
-                            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5 flex flex-col">
+                            {/* ITEM 2: Foto de Instalaciones / Fachada */}
+                            <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 flex flex-col space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-xs font-bold text-slate-800">Foto Instalaciones</span>
-                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">Fachada</span>
+                                    <span className="text-xs font-bold text-slate-900">Foto Instalaciones</span>
+                                    <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">Fachada</span>
                                 </div>
 
-                                <div className="w-full aspect-video rounded-lg overflow-hidden bg-slate-200 border border-slate-300/80 relative">
+                                <div className="w-full aspect-video rounded-xl overflow-hidden bg-slate-200 border border-slate-300 relative group">
                                     {form.banner_image_url ? (
                                         <img 
                                             src={form.banner_image_url} 
-                                            alt="Instalaciones" 
+                                            alt="Fachada" 
                                             className="w-full h-full object-cover"
                                             onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_BANNER_IMAGE; }}
                                         />
@@ -380,37 +496,61 @@ export default function Settings({
                                     )}
                                 </div>
 
-                                <div className="space-y-1 mt-auto">
-                                    <label className="block text-[10.5px] font-bold text-slate-600">URL Foto Instalaciones</label>
-                                    <input 
-                                        type="url"
-                                        value={form.banner_image_url}
-                                        onChange={(e) => setForm({ ...form, banner_image_url: e.target.value })}
-                                        placeholder="https://..."
-                                        className="w-full px-2.5 py-1.5 text-[11px] rounded-lg border border-slate-200 bg-white font-mono"
-                                    />
+                                {form.bannerFileName && (
+                                    <p className="text-[10.5px] font-bold text-amber-700 truncate">
+                                        📁 Listo: {form.bannerFileName}
+                                    </p>
+                                )}
+
+                                {/* BOTÓN DE SUBIDA DIRECTA FOTO INSTALACIONES */}
+                                <div className="space-y-1.5 mt-auto pt-1">
                                     <button
                                         type="button"
-                                        onClick={() => setForm(prev => ({ ...prev, banner_image_url: DEFAULT_BANNER_IMAGE }))}
-                                        className="text-[10px] text-blue-600 font-bold hover:underline flex items-center gap-1 pt-0.5"
+                                        onClick={() => bannerFileRef.current?.click()}
+                                        className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
                                     >
-                                        <RotateCcw className="w-2.5 h-2.5" />
-                                        <span>Restaurar foto R2</span>
+                                        <UploadCloud className="w-3.5 h-3.5" />
+                                        <span>Cambiar Foto Fachada</span>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setForm(prev => ({ 
+                                            ...prev, 
+                                            banner_image_url: DEFAULT_BANNER_IMAGE, 
+                                            banner_base64: undefined,
+                                            bannerFileName: undefined 
+                                        }))}
+                                        className="w-full py-1 text-[11px] text-slate-500 hover:text-slate-800 font-medium text-center"
+                                    >
+                                        Restaurar foto original R2
                                     </button>
                                 </div>
+
+                                {showAdvancedUrls && (
+                                    <div className="pt-2 border-t border-slate-200/80">
+                                        <label className="block text-[10px] font-bold text-slate-600 mb-0.5">URL Foto Fachada</label>
+                                        <input
+                                            type="url"
+                                            value={form.banner_image_url}
+                                            onChange={(e) => setForm({ ...form, banner_image_url: e.target.value })}
+                                            className="w-full px-2 py-1 text-[11px] rounded border border-slate-200 bg-white font-mono"
+                                        />
+                                    </div>
+                                )}
                             </div>
 
-                            {/* 3. Video Institucional Vertical 9:16 (Reel / TikTok) */}
-                            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5 flex flex-col">
+                            {/* ITEM 3: Video Institucional 9:16 */}
+                            <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 flex flex-col space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-xs font-bold text-slate-800 flex items-center gap-1">
+                                    <span className="text-xs font-bold text-slate-900 flex items-center gap-1">
                                         <PlayCircle className="w-3.5 h-3.5 text-purple-600" />
                                         <span>Video Reel (9:16)</span>
                                     </span>
-                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700">MP4</span>
+                                    <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700">Vertical MP4</span>
                                 </div>
 
-                                <div className="w-full aspect-video rounded-lg overflow-hidden bg-slate-900 border border-slate-300/80 relative flex items-center justify-center">
+                                <div className="w-full aspect-video rounded-xl overflow-hidden bg-slate-900 border border-slate-300 relative flex items-center justify-center">
                                     {form.banner_video_url ? (
                                         <video 
                                             src={form.banner_video_url} 
@@ -426,29 +566,53 @@ export default function Settings({
                                     )}
                                 </div>
 
-                                <div className="space-y-1 mt-auto">
-                                    <label className="block text-[10.5px] font-bold text-slate-600">URL Video MP4 (Reel Vertical)</label>
-                                    <input 
-                                        type="url"
-                                        value={form.banner_video_url}
-                                        onChange={(e) => setForm({ ...form, banner_video_url: e.target.value })}
-                                        placeholder="https://...mp4"
-                                        className="w-full px-2.5 py-1.5 text-[11px] rounded-lg border border-slate-200 bg-white font-mono"
-                                    />
+                                {form.videoFileName && (
+                                    <p className="text-[10.5px] font-bold text-amber-700 truncate">
+                                        🎥 Listo: {form.videoFileName}
+                                    </p>
+                                )}
+
+                                {/* BOTÓN DE SUBIDA DIRECTA VIDEO */}
+                                <div className="space-y-1.5 mt-auto pt-1">
                                     <button
                                         type="button"
-                                        onClick={() => setForm(prev => ({ ...prev, banner_video_url: DEFAULT_BANNER_VIDEO }))}
-                                        className="text-[10px] text-blue-600 font-bold hover:underline flex items-center gap-1 pt-0.5"
+                                        onClick={() => videoFileRef.current?.click()}
+                                        className="w-full py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
                                     >
-                                        <RotateCcw className="w-2.5 h-2.5" />
-                                        <span>Restaurar video R2</span>
+                                        <PlayCircle className="w-3.5 h-3.5" />
+                                        <span>Subir / Cambiar Video MP4</span>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setForm(prev => ({ 
+                                            ...prev, 
+                                            banner_video_url: DEFAULT_BANNER_VIDEO, 
+                                            video_base64: undefined,
+                                            videoFileName: undefined 
+                                        }))}
+                                        className="w-full py-1 text-[11px] text-slate-500 hover:text-slate-800 font-medium text-center"
+                                    >
+                                        Restaurar video original R2
                                     </button>
                                 </div>
+
+                                {showAdvancedUrls && (
+                                    <div className="pt-2 border-t border-slate-200/80">
+                                        <label className="block text-[10px] font-bold text-slate-600 mb-0.5">URL Video MP4</label>
+                                        <input
+                                            type="url"
+                                            value={form.banner_video_url}
+                                            onChange={(e) => setForm({ ...form, banner_video_url: e.target.value })}
+                                            className="w-full px-2 py-1 text-[11px] rounded border border-slate-200 bg-white font-mono"
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </div>
 
                         {/* Textos y Acento del Portal */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100">
                             <div>
                                 <label className="block text-xs font-bold text-slate-700 mb-1">Título de Portada B2C</label>
                                 <input
@@ -470,7 +634,7 @@ export default function Settings({
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-slate-700 mb-1">Color Secundario / Acento</label>
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Color de Acento B2C</label>
                                 <div className="flex items-center gap-2">
                                     <input
                                         type="color"
@@ -518,7 +682,7 @@ export default function Settings({
                     <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-4">
                         <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
                             <Building2 className="w-4 h-4 text-blue-600" />
-                            <h3 className="text-sm font-bold text-slate-900">Identidad de la Sede Veterinaria</h3>
+                            <h3 className="text-sm font-bold text-slate-900">3. Identidad de la Sede Veterinaria</h3>
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -578,7 +742,7 @@ export default function Settings({
                     <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-4">
                         <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
                             <CreditCard className="w-4 h-4 text-emerald-600" />
-                            <h3 className="text-sm font-bold text-slate-900">Canales de Recaudo para Afiliaciones de Tutores</h3>
+                            <h3 className="text-sm font-bold text-slate-900">4. Canales de Recaudo para Afiliaciones de Tutores</h3>
                         </div>
 
                         <div className="space-y-3">
@@ -621,10 +785,10 @@ export default function Settings({
                         <button
                             type="submit"
                             disabled={saving}
-                            className="px-6 py-2.5 rounded-xl bg-[#0080ff] hover:bg-blue-600 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 disabled:opacity-50"
+                            className="px-8 py-3 rounded-xl bg-[#0080ff] hover:bg-blue-600 text-white text-sm font-bold transition shadow-md flex items-center gap-2 disabled:opacity-50 cursor-pointer"
                         >
                             <Save className="w-4 h-4" />
-                            <span>{saving ? 'Guardando en Base de Datos...' : 'Guardar Cambios'}</span>
+                            <span>{saving ? 'Guardando en Base de Datos...' : 'Guardar Todos los Cambios'}</span>
                         </button>
                     </div>
                 </form>
