@@ -52,7 +52,7 @@ export default function VetAdminLayout({
     tenantSlug = 'vet-pet-patitas',
     brandName = 'Vet-Pet Patitas',
     clinicSubtitle = 'Planes de salud para su mascota',
-    logoUrl = null,
+    logoUrl = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp',
     saasPlan = {
         name: 'Plan Profesional',
         statusLabel: 'Activo',
@@ -88,17 +88,27 @@ export default function VetAdminLayout({
                  ========================================================= */}
             <aside className="w-[235px] 2xl:w-[250px] bg-[#0c1527] text-slate-300 flex flex-col shrink-0 min-h-screen sticky top-0 h-screen select-none z-40 border-r border-slate-800/80">
                 
-                {/* Brand Header */}
-                <div className="h-16 flex items-center gap-3 px-4 border-b border-slate-800/80 shrink-0">
-                    <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white text-base shadow-sm shrink-0 font-bold">
-                        <PawPrint className="w-5 h-5 text-white" />
-                    </div>
+                {/* Brand Header (Marca Blanca Dinámica 100% de la Clínica) */}
+                <div className="h-16 flex items-center gap-2.5 px-3.5 border-b border-slate-800/80 shrink-0">
+                    {logoUrl ? (
+                        <div className="w-10 h-10 rounded-xl bg-white border border-slate-700/80 shadow-xs p-1 flex items-center justify-center shrink-0 overflow-hidden">
+                            <img 
+                                src={logoUrl} 
+                                alt={brandName} 
+                                className="w-full h-full object-contain"
+                            />
+                        </div>
+                    ) : (
+                        <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-base shadow-sm shrink-0 font-bold">
+                            🐾
+                        </div>
+                    )}
                     <div className="flex flex-col min-w-0 flex-1">
-                        <span className="text-[16px] font-black text-white leading-tight tracking-tight">
-                            AVIPlan
+                        <span className="text-[13.5px] font-black text-white leading-tight tracking-tight truncate" title={brandName}>
+                            {brandName}
                         </span>
-                        <span className="text-[9.5px] font-medium text-slate-400 truncate">
-                            Planes de Bienestar Veterinario
+                        <span className="text-[9.5px] font-medium text-slate-400 truncate" title={clinicSubtitle}>
+                            {clinicSubtitle}
                         </span>
                     </div>
                 </div>

@@ -82,7 +82,7 @@ export default function Dashboard({
     userRole = 'Administradora',
     brandName = 'Vet-Pet Patitas',
     clinicSubtitle = 'Planes de salud para su mascota',
-    logoUrl = null,
+    logoUrl = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp',
     saasPlan = {
         name: 'Plan Profesional',
         statusLabel: 'Activo',
