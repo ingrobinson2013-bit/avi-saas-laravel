@@ -343,7 +343,7 @@ export default function Settings({
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                                <div className="space-y-4 pt-1">
                                     <div>
                                         <label className="block text-xs font-bold text-slate-700 mb-1">
                                             Lema o Slogan de Atención Clínica
@@ -357,37 +357,166 @@ export default function Settings({
                                         />
                                     </div>
 
-                                    <div>
-                                        <label className="block text-xs font-bold text-slate-700 mb-1">
-                                            Color Primario de la Marca
-                                        </label>
-                                        <div className="flex items-center gap-2">
-                                            <input
-                                                type="color"
-                                                value={form.primary_color || '#0080ff'}
-                                                onChange={(e) => setForm({ ...form, primary_color: e.target.value })}
-                                                className="w-10 h-9 p-1 rounded-xl border border-slate-200 cursor-pointer bg-white"
-                                            />
-                                            <input
-                                                type="text"
-                                                value={form.primary_color || '#0080ff'}
-                                                onChange={(e) => setForm({ ...form, primary_color: e.target.value })}
-                                                className="w-24 px-2.5 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 font-mono text-center font-bold"
-                                            />
-                                            <div className="flex items-center gap-1 ml-auto">
-                                                {BRAND_COLOR_PRESETS.map((color) => (
-                                                    <button
-                                                        key={color.hex}
-                                                        type="button"
-                                                        title={color.label}
-                                                        onClick={() => setForm({ ...form, primary_color: color.hex })}
-                                                        className="w-6 h-6 rounded-full border-2 transition hover:scale-110"
-                                                        style={{ 
-                                                            backgroundColor: color.hex,
-                                                            borderColor: form.primary_color?.toLowerCase() === color.hex.toLowerCase() ? '#0f172a' : 'transparent' 
-                                                        }}
+                                    {/* Combinación de 2 Colores de la Marca */}
+                                    <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/90 space-y-4">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-200/80">
+                                            <div>
+                                                <h4 className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                                                    <span>🎨</span>
+                                                    <span>Paleta de la Plantilla: Combinación de 2 Colores de Marca</span>
+                                                </h4>
+                                                <p className="text-[11px] text-slate-500 mt-0.5">
+                                                    Personaliza los 2 tonos clave con los que se diseñan tu portal web, botones y el carnet digital de tus pacientes.
+                                                </p>
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const temp = form.primary_color;
+                                                    setForm({
+                                                        ...form,
+                                                        primary_color: form.secondary_color || '#d437b5',
+                                                        secondary_color: temp || '#0080ff'
+                                                    });
+                                                }}
+                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition shadow-2xs self-start sm:self-auto cursor-pointer"
+                                                title="Invertir color primario y secundario"
+                                            >
+                                                <span>🔄</span>
+                                                <span>Invertir Colores</span>
+                                            </button>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {/* Color Primario */}
+                                            <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-2">
+                                                <div className="flex items-center justify-between">
+                                                    <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                                                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: form.primary_color || '#0080ff' }} />
+                                                        <span>Color 1: Primario de la Marca</span>
+                                                    </label>
+                                                    <span className="text-[10px] font-bold text-slate-400">Botones, Headers & Links</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <input
+                                                        type="color"
+                                                        value={form.primary_color || '#0080ff'}
+                                                        onChange={(e) => setForm({ ...form, primary_color: e.target.value })}
+                                                        className="w-10 h-9 p-1 rounded-xl border border-slate-200 cursor-pointer bg-white"
                                                     />
-                                                ))}
+                                                    <input
+                                                        type="text"
+                                                        value={form.primary_color || '#0080ff'}
+                                                        onChange={(e) => setForm({ ...form, primary_color: e.target.value })}
+                                                        className="w-24 px-2.5 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 font-mono text-center font-bold"
+                                                    />
+                                                    <div className="flex items-center gap-1 ml-auto">
+                                                        {BRAND_COLOR_PRESETS.map((color) => (
+                                                            <button
+                                                                key={color.hex}
+                                                                type="button"
+                                                                title={color.label}
+                                                                onClick={() => setForm({ ...form, primary_color: color.hex })}
+                                                                className="w-6 h-6 rounded-full border-2 transition hover:scale-110"
+                                                                style={{ 
+                                                                    backgroundColor: color.hex,
+                                                                    borderColor: form.primary_color?.toLowerCase() === color.hex.toLowerCase() ? '#0f172a' : 'transparent' 
+                                                                }}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Color Secundario / Acento */}
+                                            <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-2">
+                                                <div className="flex items-center justify-between">
+                                                    <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                                                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: form.secondary_color || '#d437b5' }} />
+                                                        <span>Color 2: Secundario / Acento</span>
+                                                    </label>
+                                                    <span className="text-[10px] font-bold text-slate-400">Degradados, Carnet & Badges</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <input
+                                                        type="color"
+                                                        value={form.secondary_color || '#d437b5'}
+                                                        onChange={(e) => setForm({ ...form, secondary_color: e.target.value })}
+                                                        className="w-10 h-9 p-1 rounded-xl border border-slate-200 cursor-pointer bg-white"
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        value={form.secondary_color || '#d437b5'}
+                                                        onChange={(e) => setForm({ ...form, secondary_color: e.target.value })}
+                                                        className="w-24 px-2.5 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 font-mono text-center font-bold"
+                                                    />
+                                                    <div className="flex items-center gap-1 ml-auto">
+                                                        {ACCENT_COLOR_PRESETS.map((color) => (
+                                                            <button
+                                                                key={color.hex}
+                                                                type="button"
+                                                                title={color.label}
+                                                                onClick={() => setForm({ ...form, secondary_color: color.hex })}
+                                                                className="w-6 h-6 rounded-full border-2 transition hover:scale-110"
+                                                                style={{ 
+                                                                    backgroundColor: color.hex,
+                                                                    borderColor: form.secondary_color?.toLowerCase() === color.hex.toLowerCase() ? '#0f172a' : 'transparent' 
+                                                                }}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Previsualizador en Vivo de la Combinación */}
+                                        <div className="p-3.5 rounded-xl bg-white border border-slate-200/90 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+                                            <div className="flex items-center gap-3">
+                                                {/* Mini Carnet Muestra */}
+                                                <div 
+                                                    className="w-28 h-16 rounded-xl p-2 text-white shadow-xs flex flex-col justify-between relative overflow-hidden shrink-0 border border-white/20 select-none transition-all duration-300"
+                                                    style={{ background: `linear-gradient(135deg, ${form.primary_color || '#0080ff'} 0%, ${form.secondary_color || '#d437b5'} 100%)` }}
+                                                >
+                                                    <div className="flex items-center justify-between text-[8px] font-black tracking-wider opacity-90">
+                                                        <span>CARNET 🐾</span>
+                                                        <span>ACTIVO</span>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-[10px] font-black leading-none truncate">Max Pelusa</div>
+                                                        <div className="text-[7.5px] opacity-80 mt-0.5">Plan Patitas VIP</div>
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <span className="text-xs font-black text-slate-900 block">
+                                                        Previsualización en Vivo de la Combinación
+                                                    </span>
+                                                    <span className="text-[11px] text-slate-500 block">
+                                                        Así se fusionan el Color 1 y Color 2 en el Carnet Digital y cabecera de la plantilla.
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Muestra de Botón con la combinación */}
+                                            <div className="flex items-center gap-2 shrink-0">
+                                                <button
+                                                    type="button"
+                                                    className="px-4 py-2 rounded-xl text-white text-xs font-bold shadow-xs transition hover:brightness-110"
+                                                    style={{ backgroundColor: form.primary_color || '#0080ff' }}
+                                                >
+                                                    Botón Principal
+                                                </button>
+                                                <span 
+                                                    className="px-2.5 py-1 rounded-lg text-[10.5px] font-bold border"
+                                                    style={{ 
+                                                        color: form.secondary_color || '#d437b5', 
+                                                        borderColor: `${form.secondary_color || '#d437b5'}40`,
+                                                        backgroundColor: `${form.secondary_color || '#d437b5'}12` 
+                                                    }}
+                                                >
+                                                    Badge Acento
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -647,35 +776,13 @@ export default function Settings({
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-bold text-slate-700 mb-1">Color de Acento B2C</label>
-                                        <div className="flex items-center gap-2">
-                                            <input
-                                                type="color"
-                                                value={form.secondary_color || '#d437b5'}
-                                                onChange={(e) => setForm({ ...form, secondary_color: e.target.value })}
-                                                className="w-9 h-8 p-0.5 rounded-lg border border-slate-200 cursor-pointer bg-white"
-                                            />
-                                            <input
-                                                type="text"
-                                                value={form.secondary_color || '#d437b5'}
-                                                onChange={(e) => setForm({ ...form, secondary_color: e.target.value })}
-                                                className="w-24 px-2 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 font-mono font-bold text-center"
-                                            />
-                                            <div className="flex items-center gap-1 ml-auto">
-                                                {ACCENT_COLOR_PRESETS.map((color) => (
-                                                    <button
-                                                        key={color.hex}
-                                                        type="button"
-                                                        title={color.label}
-                                                        onClick={() => setForm({ ...form, secondary_color: color.hex })}
-                                                        className="w-5 h-5 rounded-full border-2 transition hover:scale-110"
-                                                        style={{ 
-                                                            backgroundColor: color.hex,
-                                                            borderColor: form.secondary_color?.toLowerCase() === color.hex.toLowerCase() ? '#0f172a' : 'transparent' 
-                                                        }}
-                                                    />
-                                                ))}
-                                            </div>
+                                        <label className="block text-xs font-bold text-slate-700 mb-1">Paleta Sincronizada B2C</label>
+                                        <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-200 h-[38px]">
+                                            <span className="w-5 h-5 rounded-full shrink-0 border border-slate-300 shadow-2xs" style={{ backgroundColor: form.primary_color || '#0080ff' }} title="Color Primario" />
+                                            <span className="w-5 h-5 rounded-full shrink-0 border border-slate-300 shadow-2xs" style={{ backgroundColor: form.secondary_color || '#d437b5' }} title="Color Secundario / Acento" />
+                                            <span className="text-[11px] font-bold text-slate-600 truncate">
+                                                2 Colores activos (Bloque 1)
+                                            </span>
                                         </div>
                                     </div>
 

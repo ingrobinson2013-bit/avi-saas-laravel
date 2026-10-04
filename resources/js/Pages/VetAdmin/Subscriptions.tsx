@@ -72,7 +72,7 @@ export default function Subscriptions({
         >
             <Head title={`Membresías & Recurrencia · ${brandName}`} />
 
-            <div className="space-y-4">
+            <div className="w-full space-y-5 pb-16">
                 {/* Header Banner */}
                 <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>

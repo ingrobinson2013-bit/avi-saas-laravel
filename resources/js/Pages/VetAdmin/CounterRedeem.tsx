@@ -114,7 +114,7 @@ export default function CounterRedeem({
         >
             <Head title={`Canje en Mostrador · ${brandName}`} />
 
-            <div className="space-y-4">
+            <div className="w-full space-y-5 pb-16">
                 {/* Header Banner */}
                 <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
@@ -231,7 +231,7 @@ export default function CounterRedeem({
                 </div>
 
                 {/* Benefit Balances Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
                     {filtered.map((item) => {
                         const hasAvailable = item.available > 0;
                         return (

@@ -209,7 +209,7 @@ export default function PlanCreate({
         >
             <Head title={`Constructor de Planes Actuariales · ${brandName}`} />
 
-            <div className="space-y-4">
+            <div className="w-full space-y-5 pb-16">
                 {/* Header Banner */}
                 <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
@@ -372,9 +372,9 @@ export default function PlanCreate({
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
                     {/* Formulario */}
-                    <div className="lg:col-span-2 bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-4">
+                    <div className="lg:col-span-7 xl:col-span-8 bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-4">
                         <form onSubmit={handleSave} className="space-y-4">
                             <div>
                                 <label className="block text-xs font-bold text-slate-700 mb-1">
@@ -470,7 +470,7 @@ export default function PlanCreate({
                     </div>
 
                     {/* Previsualización en Vivo */}
-                    <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs flex flex-col justify-between">
+                    <div className="lg:col-span-5 xl:col-span-4 bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs flex flex-col justify-between">
                         <div>
                             <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-2">
                                 Vista Previa para el Tutor

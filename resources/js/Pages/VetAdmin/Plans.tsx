@@ -60,7 +60,7 @@ export default function Plans({
         >
             <Head title={`Planes de Salud · ${brandName}`} />
 
-            <div className="space-y-4">
+            <div className="w-full space-y-5 pb-16">
                 {/* Header Banner */}
                 <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
@@ -98,7 +98,7 @@ export default function Plans({
                 </div>
 
                 {/* Plans Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5">
                     {plans.map((plan, idx) => {
                         const isFeatured = idx === 0;
                         return (
