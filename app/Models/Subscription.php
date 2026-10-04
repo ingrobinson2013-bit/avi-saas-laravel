@@ -57,6 +57,11 @@ class Subscription extends Model
         return $this->hasOne(SubscriptionWallet::class);
     }
 
+    public function customer(): \Illuminate\Database\Eloquent\Relations\HasOneThrough
+    {
+        return $this->hasOneThrough(Customer::class, Pet::class, 'id', 'id', 'pet_id', 'customer_id');
+    }
+
     public function isExpiringSoon(): bool
     {
         if ($this->status !== 'active' || !$this->current_period_end) {

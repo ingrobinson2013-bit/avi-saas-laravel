@@ -34,7 +34,7 @@ class BenefitLedgerService
             $balance->decrement('remaining_count', $quantity);
             $balance->increment('used_count', $quantity);
 
-            return BenefitRedemption::create([
+            $redemption = BenefitRedemption::create([
                 'tenant_id' => $subscription->tenant_id,
                 'balance_id' => $balance->id,
                 'redeemed_at' => now(),
@@ -42,6 +42,11 @@ class BenefitLedgerService
                 'quantity' => $quantity,
                 'notes' => $notes,
             ]);
+
+            // Disparar Evento Asíncrono de Canje (Auditoría Forense + Notificación)
+            \App\Events\BenefitRedeemedEvent::dispatch($redemption);
+
+            return $redemption;
         });
     }
 

@@ -275,6 +275,9 @@ class AppointmentController extends Controller
             'google_calendar_url' => $googleCalendarUrl,
         ]);
 
+        // Disparar Evento Asíncrono de Cita Agendada
+        \App\Events\AppointmentScheduledEvent::dispatch($appointment);
+
         return redirect("/admin/{$slug}/citas?date={$validated['date']}")
             ->with('success', "¡Cita agendada con éxito para {$pet->name}! Sincronizada con Google Calendar.");
     }

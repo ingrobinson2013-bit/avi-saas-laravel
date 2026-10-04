@@ -146,6 +146,14 @@ class StorefrontEnrollmentController extends Controller
             return $sub;
         });
 
+        // 5. Disparar Evento de Dominio Asíncrono (Bienvenida, Alerta a Clínica y n8n)
+        \App\Events\PatientEnrolledEvent::dispatch(
+            $subscription,
+            $subscription->pet->customer,
+            $subscription->pet,
+            $paymentMethod
+        );
+
         $contractId = $subscription->gateway_subscription_id;
         $clinicPhone = preg_replace('/[^0-9]/', '', $tenant->branding['phone'] ?? '3508742543');
         $planPrice = ($billingCycle === 'annual') ? '$' . number_format($plan->price_annual ?? ($plan->price_cop * 12 * 0.9), 0, ',', '.') . ' COP/año' : '$' . number_format($plan->price_cop ?? 50000, 0, ',', '.') . ' COP/mes';
