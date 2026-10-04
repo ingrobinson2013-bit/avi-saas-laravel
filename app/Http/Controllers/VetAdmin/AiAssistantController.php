@@ -24,7 +24,8 @@ class AiAssistantController extends Controller
             ], 404);
         }
 
-        $prompt = trim($request->input('message') ?? $request->json('message') ?? $request->get('message') ?? '');
+        $raw = json_decode($request->getContent(), true);
+        $prompt = trim($request->input('message') ?? ($raw['message'] ?? '') ?? $request->get('message') ?? '');
         if (empty($prompt)) {
             return response()->json([
                 'success' => false,

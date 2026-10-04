@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import VetAdminLayout from '@/Layouts/VetAdminLayout';
 import { 
@@ -162,10 +162,15 @@ export default function Dashboard({
     const isPreview = typeof window !== 'undefined' && (window.location.search.includes('preview=1') || window.location.href.includes('preview=1'));
     const formatLink = (url: string) => isPreview && !url.includes('preview=1') ? `${url}${url.includes('?') ? '&' : '?'}preview=1` : url;
 
-    // Chat interactivo del Asistente IA (Gemini 2.5 Flash)
+    // Chat interactivo del Asistente IA (Gemini)
     const [chatInput, setChatInput] = useState('');
     const [chatMessages, setChatMessages] = useState<Array<{ role: 'user' | 'assistant'; text: string }>>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const chatEndRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [chatMessages, isLoading]);
 
     const handlePromptClick = async (text: string) => {
         if (isLoading || !text.trim()) return;
@@ -879,7 +884,7 @@ export default function Dashboard({
 
                         {/* Historial de Respuestas del Chat */}
                         {(chatMessages.length > 0 || isLoading) && (
-                            <div className="space-y-2 max-h-56 overflow-y-auto mt-2 p-2 rounded-xl bg-slate-50 border border-slate-200 text-[11px]">
+                            <div className="space-y-2 max-h-96 overflow-y-auto mt-2 p-2 rounded-xl bg-slate-50 border border-slate-200 text-[11px]">
                                 {chatMessages.map((msg, i) => (
                                     <div 
                                         key={i} 
@@ -904,6 +909,7 @@ export default function Dashboard({
                                         </span>
                                     </div>
                                 )}
+                                <div ref={chatEndRef} />
                             </div>
                         )}
 
