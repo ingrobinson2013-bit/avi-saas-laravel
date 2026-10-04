@@ -57,7 +57,7 @@ Route::get('/admin/{slug}', function (string $slug) use ($checkAdminAccess) {
     return app(App\Http\Controllers\VetAdmin\DashboardController::class)->index(request(), $slug);
 });
 
-Route::post('/admin/{slug}/ai/chat', [App\Http\Controllers\VetAdmin\AiAssistantController::class, 'chat']);
+Route::post('/admin/{slug}/ai/chat', [App\Http\Controllers\VetAdmin\AiAssistantController::class, 'chat'])->middleware('throttle:ai-chat');
 
 // 2.2 Módulos Completos de Gestión Clínica conectados a la Base de Datos (Inertia + React)
 Route::get('/admin/{slug}/pets', function (string $slug) use ($checkAdminAccess) {
@@ -181,7 +181,7 @@ Route::get('/v/{slug}', function (string $slug) {
 });
 
 // 5. Endpoint de Auto-Afiliación Digital de Pacientes B2C
-Route::post('/v/{slug}/afiliar', [App\Http\Controllers\StorefrontEnrollmentController::class, 'store']);
+Route::post('/v/{slug}/afiliar', [App\Http\Controllers\StorefrontEnrollmentController::class, 'store'])->middleware('throttle:storefront-enrollment');
 
 // 6. Carnet Digital y Certificado de Afiliación Imprimible / PDF
 Route::get('/v/{slug}/carnet/{subscription_id}', [App\Http\Controllers\SubscriptionCarnetController::class, 'show'])->name('carnet.show');

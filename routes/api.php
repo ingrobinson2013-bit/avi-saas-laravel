@@ -27,5 +27,5 @@ Route::post('/webhooks/payment/{gateway}', function (Request $request, string $g
 Route::post('/webhooks/bold', [App\Http\Controllers\BoldWebhookController::class, 'handle']);
 
 // Copilot IA Clínico (Gemini 2.5 Flash)
-Route::post('/admin/{slug}/ai/chat', [App\Http\Controllers\VetAdmin\AiAssistantController::class, 'chat']);
+Route::post('/admin/{slug}/ai/chat', [App\Http\Controllers\VetAdmin\AiAssistantController::class, 'chat'])->middleware('throttle:ai-chat');
 

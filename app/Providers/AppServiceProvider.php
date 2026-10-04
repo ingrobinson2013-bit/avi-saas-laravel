@@ -57,5 +57,16 @@ class AppServiceProvider extends ServiceProvider
             AppointmentScheduledEvent::class,
             SyncGoogleCalendarListener::class
         );
+
+        // ==========================================
+        // RATE LIMITING & SEGURIDAD SAAS
+        // ==========================================
+        \Illuminate\Support\Facades\RateLimiter::for('ai-chat', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(20)->by($request->user()?->id ?: $request->ip());
+        });
+
+        \Illuminate\Support\Facades\RateLimiter::for('storefront-enrollment', function (\Illuminate\Http\Request $request) {
+            return \Illuminate\Cache\RateLimiting\Limit::perMinute(10)->by($request->ip());
+        });
     }
 }
