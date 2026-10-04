@@ -400,10 +400,17 @@ class VetPagesController extends Controller
             'email' => $branding['email'] ?? 'petmovilveterinario@gmail.com',
             'logo_url' => $branding['logo_url'] ?? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp',
             'tagline' => $branding['tagline'] ?? $branding['subtitle'] ?? 'Planes de salud para su mascota',
+            'hero_image_url' => $branding['hero_image_url'] ?? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/heroes/01M1FEY7TJ5HDAE20YXX3X46G4.webp',
+            'banner_image_url' => $branding['banner_image_url'] ?? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/banners/01M1WMMT19GBVFKCHN2BWNNMF4.webp',
+            'banner_video_url' => $branding['banner_video_url'] ?? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/videos/01M1WMMTC4TCADMGJPNSESE0GR.mp4',
+            'hero_title' => $branding['hero_title'] ?? 'El cuidado de tu mascota, todo el año.',
+            'hero_subtitle' => $branding['hero_subtitle'] ?? 'Accede a servicios veterinarios y beneficios exclusivos con una membresía diseñada por Vet-Pet Patitas Consultorio Veterinario.',
+            'hero_price_badge' => $branding['hero_price_badge'] ?? 'Desde $50.000/mes',
+            'primary_color' => $branding['primary_color'] ?? '#0080ff',
+            'secondary_color' => $branding['secondary_color'] ?? '#d437b5',
             'payment_nequi' => $branding['payment_nequi'] ?? '3508742543',
             'payment_bank_info' => $branding['payment_bank_info'] ?? 'Bancolombia Ahorros # 123-456789-01 (Titular: Vet-Pet Patitas)',
             'payment_bold_link' => $branding['payment_bold_link'] ?? 'https://checkout.bold.co/payment/LNK_VET_PATITAS',
-            'primary_color' => $branding['primary_color'] ?? '#0080ff',
             'auto_enrollment' => true,
         ];
 
@@ -431,7 +438,14 @@ class VetPagesController extends Controller
             'email' => 'nullable|email|max:255',
             'logo_url' => 'nullable|string|max:1000',
             'tagline' => 'nullable|string|max:255',
+            'hero_image_url' => 'nullable|string|max:1000',
+            'banner_image_url' => 'nullable|string|max:1000',
+            'banner_video_url' => 'nullable|string|max:1000',
+            'hero_title' => 'nullable|string|max:255',
+            'hero_subtitle' => 'nullable|string|max:500',
+            'hero_price_badge' => 'nullable|string|max:100',
             'primary_color' => 'nullable|string|max:25',
+            'secondary_color' => 'nullable|string|max:25',
             'payment_nequi' => 'nullable|string|max:50',
             'payment_bank_info' => 'nullable|string|max:255',
             'payment_bold_link' => 'nullable|string|max:500',
@@ -446,7 +460,26 @@ class VetPagesController extends Controller
             $branding['logo_url'] = trim($validated['logo_url']);
         }
         $branding['tagline'] = $validated['tagline'] ?? $branding['tagline'] ?? 'Planes de salud para su mascota';
+        if (!empty($validated['hero_image_url'])) {
+            $branding['hero_image_url'] = trim($validated['hero_image_url']);
+        }
+        if (!empty($validated['banner_image_url'])) {
+            $branding['banner_image_url'] = trim($validated['banner_image_url']);
+        }
+        if (!empty($validated['banner_video_url'])) {
+            $branding['banner_video_url'] = trim($validated['banner_video_url']);
+        }
+        if (!empty($validated['hero_title'])) {
+            $branding['hero_title'] = trim($validated['hero_title']);
+        }
+        if (!empty($validated['hero_subtitle'])) {
+            $branding['hero_subtitle'] = trim($validated['hero_subtitle']);
+        }
+        if (!empty($validated['hero_price_badge'])) {
+            $branding['hero_price_badge'] = trim($validated['hero_price_badge']);
+        }
         $branding['primary_color'] = $validated['primary_color'] ?? $branding['primary_color'] ?? '#0080ff';
+        $branding['secondary_color'] = $validated['secondary_color'] ?? $branding['secondary_color'] ?? '#d437b5';
         $branding['payment_nequi'] = $validated['payment_nequi'] ?? null;
         $branding['payment_bank_info'] = $validated['payment_bank_info'] ?? null;
         $branding['payment_bold_link'] = $validated['payment_bold_link'] ?? null;
@@ -456,7 +489,7 @@ class VetPagesController extends Controller
             'branding' => $branding,
         ]);
 
-        return back()->with('success', '¡Configuración e identidad de marca actualizadas correctamente!');
+        return back()->with('success', '¡Configuración, fotos, videos y canales de pago actualizados correctamente!');
     }
 
     /**

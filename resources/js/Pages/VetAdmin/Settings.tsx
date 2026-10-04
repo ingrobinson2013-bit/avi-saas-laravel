@@ -7,11 +7,13 @@ import {
     Check, 
     Save, 
     Image as ImageIcon, 
-    Sparkles, 
+    Video as VideoIcon,
     Palette, 
     RotateCcw, 
     ExternalLink,
-    ShieldCheck
+    ShieldCheck,
+    PlayCircle,
+    Eye
 } from 'lucide-react';
 
 interface SettingsData {
@@ -22,7 +24,14 @@ interface SettingsData {
     email: string;
     logo_url?: string;
     tagline?: string;
+    hero_image_url?: string;
+    banner_image_url?: string;
+    banner_video_url?: string;
+    hero_title?: string;
+    hero_subtitle?: string;
+    hero_price_badge?: string;
     primary_color?: string;
+    secondary_color?: string;
     payment_nequi: string;
     payment_bank_info: string;
     payment_bold_link: string;
@@ -42,6 +51,9 @@ interface SettingsProps {
 }
 
 const DEFAULT_OFFICIAL_LOGO = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp';
+const DEFAULT_HERO_IMAGE = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/heroes/01M1FEY7TJ5HDAE20YXX3X46G4.webp';
+const DEFAULT_BANNER_IMAGE = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/banners/01M1WMMT19GBVFKCHN2BWNNMF4.webp';
+const DEFAULT_BANNER_VIDEO = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/videos/01M1WMMTC4TCADMGJPNSESE0GR.mp4';
 
 const BRAND_COLOR_PRESETS = [
     { label: 'Azul Veterinario', hex: '#0080ff' },
@@ -49,6 +61,14 @@ const BRAND_COLOR_PRESETS = [
     { label: 'Índigo Moderno', hex: '#4F46E5' },
     { label: 'Violeta Premium', hex: '#7C3AED' },
     { label: 'Verde Salud', hex: '#059669' },
+];
+
+const ACCENT_COLOR_PRESETS = [
+    { label: 'Magenta Acento', hex: '#D437B5' },
+    { label: 'Ámbar Cálido', hex: '#F59E0B' },
+    { label: 'Rosa Coral', hex: '#F43F5E' },
+    { label: 'Cian Fresco', hex: '#06B6D4' },
+    { label: 'Verde Neón', hex: '#10B981' },
 ];
 
 export default function Settings({
@@ -68,7 +88,14 @@ export default function Settings({
         ...settings,
         logo_url: settings.logo_url || logoUrl || DEFAULT_OFFICIAL_LOGO,
         tagline: settings.tagline || clinicSubtitle || 'Planes de salud para su mascota',
+        hero_image_url: settings.hero_image_url || DEFAULT_HERO_IMAGE,
+        banner_image_url: settings.banner_image_url || DEFAULT_BANNER_IMAGE,
+        banner_video_url: settings.banner_video_url || DEFAULT_BANNER_VIDEO,
+        hero_title: settings.hero_title || 'El cuidado de tu mascota, todo el año.',
+        hero_subtitle: settings.hero_subtitle || 'Accede a servicios veterinarios y beneficios exclusivos con una membresía diseñada por Vet-Pet Patitas Consultorio Veterinario.',
+        hero_price_badge: settings.hero_price_badge || 'Desde $50.000/mes',
         primary_color: settings.primary_color || '#0080ff',
+        secondary_color: settings.secondary_color || '#d437b5',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -87,13 +114,6 @@ export default function Settings({
         });
     };
 
-    const handleRestoreOfficialLogo = () => {
-        setForm(prev => ({
-            ...prev,
-            logo_url: DEFAULT_OFFICIAL_LOGO
-        }));
-    };
-
     return (
         <VetAdminLayout
             tenantSlug={tenantSlug}
@@ -106,31 +126,41 @@ export default function Settings({
             userRole={userRole}
             activeItem="Configuración"
         >
-            <Head title={`Configuración & Marca Blanca · ${brandName}`} />
+            <Head title={`Configuración, Fotos & Video · ${brandName}`} />
 
-            <div className="space-y-4 max-w-4xl pb-12">
+            <div className="space-y-4 max-w-4xl pb-16">
                 {/* Header Banner */}
                 <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <div className="flex items-center gap-2">
                             <h1 className="text-xl font-black text-slate-900 tracking-tight">
-                                Configuración de Sede y Marca Blanca
+                                Configuración de Sede, Multimedia & Marca Blanca
                             </h1>
                             <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                                 Sede Activa
                             </span>
                         </div>
                         <p className="text-xs text-slate-500 mt-1">
-                            Personaliza el logotipo de la clínica, colores corporativos, datos de contacto y canales de recaudo para auto-afiliaciones.
+                            Ajusta el logotipo, fotos de portada, video institucional en 9:16, canales de recaudo y presencia de marca blanca.
                         </p>
                     </div>
 
                     <div className="flex items-center gap-2">
                         <a
+                            href={`/v/${tenantSlug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5"
+                        >
+                            <Eye className="w-3.5 h-3.5 text-slate-500" />
+                            <span>Ver Portal B2C</span>
+                            <ExternalLink className="w-3 h-3 text-slate-400" />
+                        </a>
+                        <a
                             href={`/admin/${tenantSlug}/renovar-saas`}
                             className="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition flex items-center gap-1.5"
                         >
-                            <span>⭐ Gestionar Licencia SaaS</span>
+                            <span>⭐ Licencia SaaS</span>
                         </a>
                     </div>
                 </div>
@@ -138,7 +168,7 @@ export default function Settings({
                 {saved && (
                     <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2.5 shadow-2xs animate-fadeIn">
                         <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                        <span>¡Configuración, logotipo y canales de pago actualizados exitosamente en la base de datos!</span>
+                        <span>¡Configuración, fotos, videos y medios de pago actualizados exitosamente en la base de datos!</span>
                     </div>
                 )}
 
@@ -152,7 +182,7 @@ export default function Settings({
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-bold text-slate-900">Marca Blanca & Logotipo de la Clínica</h3>
-                                    <p className="text-[11px] text-slate-500">Visible en la barra lateral, portal de pacientes, carnets digitales y afiches QR</p>
+                                    <p className="text-[11px] text-slate-500">Visible en barra lateral, recetas, carnets digitales y afiches QR</p>
                                 </div>
                             </div>
                             <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-100">
@@ -179,30 +209,30 @@ export default function Settings({
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-1.5">
-                                        <span className="text-xs font-bold text-slate-900">Vista Previa del Logotipo</span>
+                                        <span className="text-xs font-bold text-slate-900">Logotipo Oficial Activo</span>
                                         <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">Oficial</span>
                                     </div>
                                     <p className="text-[11px] text-slate-500 mt-0.5 max-w-sm">
-                                        Renderizado en alta resolución sobre Cloudflare R2 Edge Storage.
+                                        Alojado en Cloudflare R2 Edge Storage de alta disponibilidad.
                                     </p>
                                     <button
                                         type="button"
-                                        onClick={handleRestoreOfficialLogo}
+                                        onClick={() => setForm(prev => ({ ...prev, logo_url: DEFAULT_OFFICIAL_LOGO }))}
                                         className="mt-2 text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition"
                                     >
                                         <RotateCcw className="w-3 h-3" />
-                                        <span>Restaurar Logotipo Oficial de Vet-Pet Patitas</span>
+                                        <span>Restaurar Logo Oficial R2</span>
                                     </button>
                                 </div>
                             </div>
 
-                            <div className="sm:ml-auto w-full sm:w-auto flex flex-col gap-1.5 text-[11px] text-slate-600 bg-white p-3 rounded-xl border border-slate-200/60 shadow-2xs">
+                            <div className="sm:ml-auto w-full sm:w-auto flex flex-col gap-1 text-[11px] text-slate-600 bg-white p-3 rounded-xl border border-slate-200/60 shadow-2xs">
                                 <span className="font-bold text-slate-800 flex items-center gap-1">
                                     <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-                                    <span>Presencia de Marca Blanca</span>
+                                    <span>Presencia White-Label</span>
                                 </span>
                                 <span>• Encabezado de Navegación</span>
-                                <span>• Carnet Digital & Cédula de Mascota</span>
+                                <span>• Carnet Digital & Certificado PDF</span>
                                 <span>• Tienda Web de Afiliación de Tutores</span>
                             </div>
                         </div>
@@ -271,7 +301,220 @@ export default function Settings({
                         </div>
                     </div>
 
-                    {/* Tarjeta 2: Identidad de la Sede Veterinaria */}
+                    {/* Tarjeta 2: Multimedia del Portal & Afiliaciones (Fotos y Video) */}
+                    <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-5">
+                        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                            <div className="flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+                                    <VideoIcon className="w-4 h-4" />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-bold text-slate-900">Multimedia del Portal B2C (Fotos de Sede & Video)</h3>
+                                    <p className="text-[11px] text-slate-500">Imágenes de portada, fachada de instalaciones y video institucional en vivo</p>
+                                </div>
+                            </div>
+                            <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-100">
+                                Storefront B2C
+                            </span>
+                        </div>
+
+                        {/* Grid de Fotos y Video */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {/* 1. Foto de Portada / Pacientes */}
+                            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5 flex flex-col">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-slate-800">Foto Portada (Hero)</span>
+                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">16:9</span>
+                                </div>
+
+                                <div className="w-full aspect-video rounded-lg overflow-hidden bg-slate-200 border border-slate-300/80 relative">
+                                    {form.hero_image_url ? (
+                                        <img 
+                                            src={form.hero_image_url} 
+                                            alt="Hero Portada" 
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_HERO_IMAGE; }}
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-xs text-slate-400">Sin foto</div>
+                                    )}
+                                </div>
+
+                                <div className="space-y-1 mt-auto">
+                                    <label className="block text-[10.5px] font-bold text-slate-600">URL Foto Portada</label>
+                                    <input 
+                                        type="url"
+                                        value={form.hero_image_url}
+                                        onChange={(e) => setForm({ ...form, hero_image_url: e.target.value })}
+                                        placeholder="https://..."
+                                        className="w-full px-2.5 py-1.5 text-[11px] rounded-lg border border-slate-200 bg-white font-mono"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setForm(prev => ({ ...prev, hero_image_url: DEFAULT_HERO_IMAGE }))}
+                                        className="text-[10px] text-blue-600 font-bold hover:underline flex items-center gap-1 pt-0.5"
+                                    >
+                                        <RotateCcw className="w-2.5 h-2.5" />
+                                        <span>Restaurar foto R2</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* 2. Foto de Instalaciones / Fachada */}
+                            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5 flex flex-col">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-slate-800">Foto Instalaciones</span>
+                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">Fachada</span>
+                                </div>
+
+                                <div className="w-full aspect-video rounded-lg overflow-hidden bg-slate-200 border border-slate-300/80 relative">
+                                    {form.banner_image_url ? (
+                                        <img 
+                                            src={form.banner_image_url} 
+                                            alt="Instalaciones" 
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_BANNER_IMAGE; }}
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-xs text-slate-400">Sin foto</div>
+                                    )}
+                                </div>
+
+                                <div className="space-y-1 mt-auto">
+                                    <label className="block text-[10.5px] font-bold text-slate-600">URL Foto Instalaciones</label>
+                                    <input 
+                                        type="url"
+                                        value={form.banner_image_url}
+                                        onChange={(e) => setForm({ ...form, banner_image_url: e.target.value })}
+                                        placeholder="https://..."
+                                        className="w-full px-2.5 py-1.5 text-[11px] rounded-lg border border-slate-200 bg-white font-mono"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setForm(prev => ({ ...prev, banner_image_url: DEFAULT_BANNER_IMAGE }))}
+                                        className="text-[10px] text-blue-600 font-bold hover:underline flex items-center gap-1 pt-0.5"
+                                    >
+                                        <RotateCcw className="w-2.5 h-2.5" />
+                                        <span>Restaurar foto R2</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* 3. Video Institucional Vertical 9:16 (Reel / TikTok) */}
+                            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5 flex flex-col">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-slate-800 flex items-center gap-1">
+                                        <PlayCircle className="w-3.5 h-3.5 text-purple-600" />
+                                        <span>Video Reel (9:16)</span>
+                                    </span>
+                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700">MP4</span>
+                                </div>
+
+                                <div className="w-full aspect-video rounded-lg overflow-hidden bg-slate-900 border border-slate-300/80 relative flex items-center justify-center">
+                                    {form.banner_video_url ? (
+                                        <video 
+                                            src={form.banner_video_url} 
+                                            controls 
+                                            playsInline 
+                                            className="w-full h-full object-cover"
+                                            poster={form.banner_image_url}
+                                        >
+                                            Tu navegador no soporta video.
+                                        </video>
+                                    ) : (
+                                        <div className="text-xs text-slate-400">Sin video</div>
+                                    )}
+                                </div>
+
+                                <div className="space-y-1 mt-auto">
+                                    <label className="block text-[10.5px] font-bold text-slate-600">URL Video MP4 (Reel Vertical)</label>
+                                    <input 
+                                        type="url"
+                                        value={form.banner_video_url}
+                                        onChange={(e) => setForm({ ...form, banner_video_url: e.target.value })}
+                                        placeholder="https://...mp4"
+                                        className="w-full px-2.5 py-1.5 text-[11px] rounded-lg border border-slate-200 bg-white font-mono"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setForm(prev => ({ ...prev, banner_video_url: DEFAULT_BANNER_VIDEO }))}
+                                        className="text-[10px] text-blue-600 font-bold hover:underline flex items-center gap-1 pt-0.5"
+                                    >
+                                        <RotateCcw className="w-2.5 h-2.5" />
+                                        <span>Restaurar video R2</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Textos y Acento del Portal */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Título de Portada B2C</label>
+                                <input
+                                    type="text"
+                                    value={form.hero_title}
+                                    onChange={(e) => setForm({ ...form, hero_title: e.target.value })}
+                                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Badge de Precio Destacado</label>
+                                <input
+                                    type="text"
+                                    value={form.hero_price_badge}
+                                    onChange={(e) => setForm({ ...form, hero_price_badge: e.target.value })}
+                                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Color Secundario / Acento</label>
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="color"
+                                        value={form.secondary_color || '#d437b5'}
+                                        onChange={(e) => setForm({ ...form, secondary_color: e.target.value })}
+                                        className="w-9 h-8 p-0.5 rounded-lg border border-slate-200 cursor-pointer bg-white"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={form.secondary_color || '#d437b5'}
+                                        onChange={(e) => setForm({ ...form, secondary_color: e.target.value })}
+                                        className="w-24 px-2 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 font-mono font-bold text-center"
+                                    />
+                                    <div className="flex items-center gap-1 ml-auto">
+                                        {ACCENT_COLOR_PRESETS.map((color) => (
+                                            <button
+                                                key={color.hex}
+                                                type="button"
+                                                title={color.label}
+                                                onClick={() => setForm({ ...form, secondary_color: color.hex })}
+                                                className="w-5 h-5 rounded-full border-2 transition hover:scale-110"
+                                                style={{ 
+                                                    backgroundColor: color.hex,
+                                                    borderColor: form.secondary_color?.toLowerCase() === color.hex.toLowerCase() ? '#0f172a' : 'transparent' 
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="sm:col-span-3">
+                                <label className="block text-xs font-bold text-slate-700 mb-1">Subtítulo Descriptivo de la Membresía</label>
+                                <textarea
+                                    rows={2}
+                                    value={form.hero_subtitle}
+                                    onChange={(e) => setForm({ ...form, hero_subtitle: e.target.value })}
+                                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 resize-none"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Tarjeta 3: Identidad de la Sede Veterinaria */}
                     <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-4">
                         <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
                             <Building2 className="w-4 h-4 text-blue-600" />
@@ -331,7 +574,7 @@ export default function Settings({
                         </div>
                     </div>
 
-                    {/* Tarjeta 3: Canales de Recaudo */}
+                    {/* Tarjeta 4: Canales de Recaudo */}
                     <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-4">
                         <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
                             <CreditCard className="w-4 h-4 text-emerald-600" />
