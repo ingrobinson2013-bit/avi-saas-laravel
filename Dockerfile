@@ -1,3 +1,12 @@
+# 0. Compilación de Assets Frontend (Vite + Inertia + Tailwind)
+FROM node:20-alpine AS frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# 1. Imagen base PHP-FPM
 FROM php:8.3-fpm-alpine
 
 # Instalador oficial de extensiones binarias precompiladas
@@ -14,14 +23,15 @@ WORKDIR /var/www/html
 COPY nginx.conf /etc/nginx/http.d/default.conf
 COPY uploads.ini $PHP_INI_DIR/conf.d/uploads.ini
 
-# 1. Copiar manifiestos de dependencias primero para aprovechar la caché de Docker
+# Copiar manifiestos de dependencias primero para aprovechar la caché de Docker
 COPY composer.json composer.lock* ./
 
-# 2. Descargar e instalar librerías de PHP/Filament (Caché permanente en capas)
+# Descargar e instalar librerías de PHP/Filament (Caché permanente en capas)
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs
 
-# 3. Copiar el código fuente de la aplicación
+# Copiar el código fuente de la aplicación y los assets compilados de frontend
 COPY . /var/www/html
+COPY --from=frontend /app/public/build /var/www/html/public/build
 
 # 4. Crear estructura de storage y generar autoloader optimizado
 RUN cp .env.example .env 2>/dev/null || true && \
