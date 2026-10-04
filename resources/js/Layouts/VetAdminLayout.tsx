@@ -63,19 +63,15 @@ export default function VetAdminLayout({
     const navItems = [
         { label: 'Inicio', icon: Home, href: `/admin/${tenantSlug}`, active: activeItem === 'Inicio' },
         { label: 'Inteligencia Artificial', icon: Bot, href: `/admin/${tenantSlug}/inteligencia`, badge: 'Beta', active: activeItem === 'Inteligencia Artificial' },
-        { label: 'Planes de Salud', icon: Heart, href: `/admin/${tenantSlug}/plans`, active: activeItem === 'Planes de Salud' },
-        { label: 'Clientes y Mascotas', icon: Users, href: `/admin/${tenantSlug}/pets`, hasChevron: true, active: activeItem === 'Clientes y Mascotas' },
-        { label: 'Configuración', icon: Settings, href: `/admin/${tenantSlug}/clinic-settings`, hasDownChevron: true, active: activeItem === 'Configuración' },
-        { label: 'Marca y Medios de Pago', icon: CreditCard, href: `/admin/${tenantSlug}/clinic-settings`, hasChevron: true, active: activeItem === 'Marca y Medios de Pago' },
-        { label: 'Recepción', icon: Bell, href: `/admin/${tenantSlug}/counter-redeem`, hasChevron: true, active: activeItem === 'Recepción' },
         { label: 'Canje en Recepción', icon: Tag, href: `/admin/${tenantSlug}/counter-redeem`, active: activeItem === 'Canje en Recepción' },
-        { label: 'Reportes y Estadísticas', icon: BarChart3, href: `/admin/${tenantSlug}/subscriptions`, hasChevron: true, active: activeItem === 'Reportes y Estadísticas' },
-        { label: 'Membresías & Afiliaciones', icon: Shield, href: `/admin/${tenantSlug}/subscriptions`, hasChevron: true, active: activeItem === 'Membresías & Afiliaciones' },
+        { label: 'Clientes y Mascotas', icon: Users, href: `/admin/${tenantSlug}/pets`, active: activeItem === 'Clientes y Mascotas' },
         { label: 'Tutores', icon: User, href: `/admin/${tenantSlug}/customers`, active: activeItem === 'Tutores' },
-        { label: 'Planes y Beneficios', icon: FileText, href: `/admin/${tenantSlug}/plans`, hasChevron: true, active: activeItem === 'Planes y Beneficios' },
+        { label: 'Membresías & Afiliaciones', icon: Shield, href: `/admin/${tenantSlug}/subscriptions`, active: activeItem === 'Membresías & Afiliaciones' },
+        { label: 'Planes de Salud', icon: Heart, href: `/admin/${tenantSlug}/plans`, active: activeItem === 'Planes de Salud' },
         { label: 'Constructor de Planes', icon: Layers, href: `/admin/${tenantSlug}/plans/create`, active: activeItem === 'Constructor de Planes' },
         { label: 'Catálogo de Servicios', icon: BookOpen, href: `/admin/${tenantSlug}/benefit-definitions`, active: activeItem === 'Catálogo de Servicios' },
         { label: 'Logística & Envíos', icon: Truck, href: `/admin/${tenantSlug}/logistica`, badge: 'Auto', active: activeItem === 'Logística & Envíos' },
+        { label: 'Configuración', icon: Settings, href: `/admin/${tenantSlug}/clinic-settings`, active: activeItem === 'Configuración' },
     ];
 
     const isPreview = typeof window !== 'undefined' && (window.location.search.includes('preview=1') || window.location.href.includes('preview=1'));
@@ -134,12 +130,6 @@ export default function VetAdminLayout({
                                     <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">
                                         {item.badge}
                                     </span>
-                                )}
-                                {item.hasChevron && !item.badge && (
-                                    <span className="text-slate-400 text-xs font-semibold">›</span>
-                                )}
-                                {item.hasDownChevron && !item.badge && (
-                                    <span className="text-slate-400 text-xs font-semibold">⌄</span>
                                 )}
                             </Link>
                         );
