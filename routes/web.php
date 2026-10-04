@@ -102,6 +102,11 @@ Route::get('/admin/{slug}/clinic-settings', function (string $slug) use ($checkA
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->settings(request(), $slug);
 });
 
+Route::post('/admin/{slug}/clinic-settings', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->updateSettings(request(), $slug);
+});
+
 Route::get('/admin/{slug}/inteligencia', function (string $slug) use ($checkAdminAccess) {
     if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->intelligence(request(), $slug);

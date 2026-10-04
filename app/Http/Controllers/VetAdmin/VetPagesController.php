@@ -393,11 +393,13 @@ class VetPagesController extends Controller
         $branding = $tenant?->branding ?? [];
 
         $settings = [
-            'name' => $tenant?->name ?? 'Vet-Pet Patitas',
+            'name' => $tenant?->name ?? 'Vet-Pet Patitas Consultorio Veterinario',
             'city' => $branding['city'] ?? 'Cajicá, Cundinamarca',
             'address' => $branding['address'] ?? 'Calle 7 # 4-73 Este',
             'phone' => $branding['phone'] ?? '3508742543',
             'email' => $branding['email'] ?? 'petmovilveterinario@gmail.com',
+            'logo_url' => $branding['logo_url'] ?? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp',
+            'tagline' => $branding['tagline'] ?? $branding['subtitle'] ?? 'Planes de salud para su mascota',
             'payment_nequi' => $branding['payment_nequi'] ?? '3508742543',
             'payment_bank_info' => $branding['payment_bank_info'] ?? 'Bancolombia Ahorros # 123-456789-01 (Titular: Vet-Pet Patitas)',
             'payment_bold_link' => $branding['payment_bold_link'] ?? 'https://checkout.bold.co/payment/LNK_VET_PATITAS',
@@ -408,6 +410,53 @@ class VetPagesController extends Controller
         return Inertia::render('VetAdmin/Settings', array_merge($ctx, [
             'settings' => $settings,
         ]));
+    }
+
+    /**
+     * Guardar Configuración de Sede, Marca Blanca & Canales de Recaudo
+     */
+    public function updateSettings(Request $request, string $slug)
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenant = $ctx['tenant'];
+        if (!$tenant) {
+            return back()->with('error', 'Sede no encontrada.');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'logo_url' => 'nullable|string|max:1000',
+            'tagline' => 'nullable|string|max:255',
+            'primary_color' => 'nullable|string|max:25',
+            'payment_nequi' => 'nullable|string|max:50',
+            'payment_bank_info' => 'nullable|string|max:255',
+            'payment_bold_link' => 'nullable|string|max:500',
+        ]);
+
+        $branding = $tenant->branding ?? [];
+        $branding['city'] = $validated['city'] ?? $branding['city'] ?? 'Cajicá, Cundinamarca';
+        $branding['address'] = $validated['address'] ?? $branding['address'] ?? 'Calle 7 # 4-73 Este';
+        $branding['phone'] = $validated['phone'] ?? $branding['phone'] ?? '3508742543';
+        $branding['email'] = $validated['email'] ?? $branding['email'] ?? 'petmovilveterinario@gmail.com';
+        if (!empty($validated['logo_url'])) {
+            $branding['logo_url'] = trim($validated['logo_url']);
+        }
+        $branding['tagline'] = $validated['tagline'] ?? $branding['tagline'] ?? 'Planes de salud para su mascota';
+        $branding['primary_color'] = $validated['primary_color'] ?? $branding['primary_color'] ?? '#0080ff';
+        $branding['payment_nequi'] = $validated['payment_nequi'] ?? null;
+        $branding['payment_bank_info'] = $validated['payment_bank_info'] ?? null;
+        $branding['payment_bold_link'] = $validated['payment_bold_link'] ?? null;
+
+        $tenant->update([
+            'name' => $validated['name'],
+            'branding' => $branding,
+        ]);
+
+        return back()->with('success', '¡Configuración e identidad de marca actualizadas correctamente!');
     }
 
     /**
