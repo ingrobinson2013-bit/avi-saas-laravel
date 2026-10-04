@@ -109,30 +109,27 @@ DIRECTRICES DE TUS RESPUESTAS:
 5. Sé conciso y directo, estructurando las respuestas con viñetas o negritas para facilitar la lectura rápida en el mostrador veterinario.
 PROMPT;
 
-        // 3. Si hay API Key configurada, llamar a la API de Gemini
+        // 3. Si hay API Key configurada, llamar a la API de Gemini con Failover Automático
         if (!empty($this->apiKey) && $this->apiKey !== 'demo_key') {
-            try {
-                $reply = $this->callGeminiApi($this->primaryModel, $systemPrompt, $prompt);
-                if (!empty($reply)) {
-                    return [
-                        'success' => true,
-                        'source' => 'gemini-2.5-flash-live',
-                        'reply' => $reply,
-                    ];
-                }
-            } catch (\Throwable $e) {
-                Log::warning("Gemini 2.5 Flash API error: " . $e->getMessage() . ". Trying fallback model...");
+            $modelsToTry = [
+                'gemini-3.5-flash',
+                'gemini-3.1-flash-lite',
+                'gemini-3.8-flash',
+                'gemini-flash-latest',
+            ];
+
+            foreach ($modelsToTry as $model) {
                 try {
-                    $reply = $this->callGeminiApi($this->fallbackModel, $systemPrompt, $prompt);
+                    $reply = $this->callGeminiApi($model, $systemPrompt, $prompt);
                     if (!empty($reply)) {
                         return [
                             'success' => true,
-                            'source' => 'gemini-1.5-flash-live',
+                            'source' => "{$model}-live",
                             'reply' => $reply,
                         ];
                     }
-                } catch (\Throwable $e2) {
-                    Log::error("Gemini Fallback API error: " . $e2->getMessage());
+                } catch (\Throwable $e) {
+                    Log::warning("Model {$model} exception: " . $e->getMessage());
                 }
             }
         }
