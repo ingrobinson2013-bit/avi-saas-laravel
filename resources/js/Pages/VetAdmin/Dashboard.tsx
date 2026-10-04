@@ -162,14 +162,40 @@ export default function Dashboard({
     const isPreview = typeof window !== 'undefined' && (window.location.search.includes('preview=1') || window.location.href.includes('preview=1'));
     const formatLink = (url: string) => isPreview && !url.includes('preview=1') ? `${url}${url.includes('?') ? '&' : '?'}preview=1` : url;
 
-    // Chat interactivo del Asistente IA
+    // Chat interactivo del Asistente IA (Gemini 2.5 Flash)
     const [chatInput, setChatInput] = useState('');
     const [chatMessages, setChatMessages] = useState<Array<{ role: 'user' | 'assistant'; text: string }>>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handlePromptClick = (text: string) => {
-        const userMsg = { role: 'user' as const, text };
-        let reply = '';
+    const handlePromptClick = async (text: string) => {
+        if (isLoading || !text.trim()) return;
+        const userMsg = { role: 'user' as const, text: text.trim() };
+        setChatMessages(prev => [...prev, userMsg]);
+        setIsLoading(true);
 
+        try {
+            const response = await fetch(`/api/admin/${tenantSlug}/ai/chat`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ message: text.trim() }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.reply) {
+                    setChatMessages(prev => [...prev, { role: 'assistant', text: data.reply }]);
+                    setIsLoading(false);
+                    return;
+                }
+            }
+        } catch (err) {
+            console.error('Error al conectar con Gemini:', err);
+        }
+
+        // Fallback heurístico en caso de indisponibilidad de API
         const ctx = aiContext || {
             brandName: brandName,
             cleanCity: cleanCity,
@@ -188,6 +214,7 @@ export default function Dashboard({
             inactiveDays: 60,
         };
 
+        let reply = '';
         if (text.includes('vacunas')) {
             reply = `🐾 **Vacunas pendientes:** ${ctx.samplePetName} (${ctx.samplePetBreed}) tiene programado su refuerzo anual preventivo. Tienes dosis de biológicos disponibles en sede para aplicar.`;
         } else if (text.includes('inactivos') || text.includes('60 días')) {
@@ -201,7 +228,8 @@ export default function Dashboard({
             reply = `💡 **Diagnóstico Automático:** Tu clínica en ${ctx.cleanCity} tiene ${ctx.activeSubsCount} membresías activas generando $${Number(ctx.mrr).toLocaleString('es-CO')} COP mensuales en ingresos recurrentes con ${ctx.petsCount} pacientes registrados.`;
         }
 
-        setChatMessages(prev => [...prev, userMsg, { role: 'assistant', text: reply }]);
+        setChatMessages(prev => [...prev, { role: 'assistant', text: reply }]);
+        setIsLoading(false);
     };
 
     const handleSendChat = (e: React.FormEvent) => {
@@ -817,8 +845,9 @@ export default function Dashboard({
                             <div className="flex items-center gap-2">
                                 <Sparkles className="w-4 h-4 text-blue-600" />
                                 <h3 className="text-xs font-black text-slate-900">AVI Intelligence</h3>
-                                <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded bg-purple-100 text-purple-700">
-                                    IA
+                                <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+                                    Gemini 3.8
                                 </span>
                             </div>
                         </div>
@@ -838,8 +867,9 @@ export default function Dashboard({
                                 <button
                                     key={i}
                                     type="button"
+                                    disabled={isLoading}
                                     onClick={() => handlePromptClick(promptText)}
-                                    className="w-full text-left p-2 rounded-xl border border-slate-100 bg-slate-50/80 hover:bg-blue-50/50 hover:border-blue-200 text-[11px] font-medium text-slate-600 transition flex items-center justify-between gap-1.5 group"
+                                    className="w-full text-left p-2 rounded-xl border border-slate-100 bg-slate-50/80 hover:bg-blue-50/50 hover:border-blue-200 text-[11px] font-medium text-slate-600 transition flex items-center justify-between gap-1.5 group disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
                                     <span className="leading-tight">{promptText}</span>
                                     <ChevronRight className="w-3 h-3 text-slate-300 group-hover:text-blue-500 shrink-0" />
@@ -848,20 +878,32 @@ export default function Dashboard({
                         </div>
 
                         {/* Historial de Respuestas del Chat */}
-                        {chatMessages.length > 0 && (
-                            <div className="space-y-2 max-h-48 overflow-y-auto mt-2 p-2 rounded-xl bg-slate-50 border border-slate-200 text-[11px]">
+                        {(chatMessages.length > 0 || isLoading) && (
+                            <div className="space-y-2 max-h-56 overflow-y-auto mt-2 p-2 rounded-xl bg-slate-50 border border-slate-200 text-[11px]">
                                 {chatMessages.map((msg, i) => (
                                     <div 
                                         key={i} 
-                                        className={`p-2 rounded-lg leading-relaxed ${
+                                        className={`p-2.5 rounded-xl leading-relaxed whitespace-pre-line ${
                                             msg.role === 'user' 
-                                                ? 'bg-blue-600 text-white font-medium ml-auto max-w-[85%]' 
-                                                : 'bg-white text-slate-700 border border-slate-200 mr-auto max-w-[95%] shadow-2xs'
+                                                ? 'bg-blue-600 text-white font-medium ml-auto max-w-[88%]' 
+                                                : 'bg-white text-slate-700 border border-slate-200 mr-auto max-w-[96%] shadow-2xs'
                                         }`}
                                     >
                                         {msg.text}
                                     </div>
                                 ))}
+
+                                {isLoading && (
+                                    <div className="p-2.5 rounded-xl bg-blue-50/80 border border-blue-100 text-blue-700 text-[11px] flex items-center gap-2 mr-auto shadow-2xs">
+                                        <Sparkles className="w-3.5 h-3.5 animate-spin text-blue-600 shrink-0" />
+                                        <span className="font-semibold">AVI analizando tu clínica...</span>
+                                        <span className="flex gap-1 ml-1">
+                                            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                                            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                                            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"></span>
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -870,16 +912,22 @@ export default function Dashboard({
                             <input
                                 type="text"
                                 value={chatInput}
+                                disabled={isLoading}
                                 onChange={(e) => setChatInput(e.target.value)}
                                 placeholder="Escribe tu consulta clínica..."
-                                className="flex-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:ring-1 focus:ring-blue-500"
+                                className="flex-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-60"
                             />
                             <button
                                 type="submit"
                                 aria-label="Enviar"
-                                className="w-8 h-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shrink-0 shadow-xs transition"
+                                disabled={isLoading || !chatInput.trim()}
+                                className="w-8 h-8 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white flex items-center justify-center shrink-0 shadow-xs transition"
                             >
-                                <Send className="w-3.5 h-3.5" />
+                                {isLoading ? (
+                                    <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                                ) : (
+                                    <Send className="w-3.5 h-3.5" />
+                                )}
                             </button>
                         </form>
                     </div>

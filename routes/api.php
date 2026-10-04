@@ -26,3 +26,6 @@ Route::post('/webhooks/payment/{gateway}', function (Request $request, string $g
 // Webhook Oficial de Bold (Automático con validación de firmas)
 Route::post('/webhooks/bold', [App\Http\Controllers\BoldWebhookController::class, 'handle']);
 
+// Copilot IA Clínico (Gemini 2.5 Flash)
+Route::post('/admin/{slug}/ai/chat', [App\Http\Controllers\VetAdmin\AiAssistantController::class, 'chat']);
+

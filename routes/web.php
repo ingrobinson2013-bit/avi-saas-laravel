@@ -57,6 +57,8 @@ Route::get('/admin/{slug}', function (string $slug) use ($checkAdminAccess) {
     return app(App\Http\Controllers\VetAdmin\DashboardController::class)->index(request(), $slug);
 });
 
+Route::post('/admin/{slug}/ai/chat', [App\Http\Controllers\VetAdmin\AiAssistantController::class, 'chat']);
+
 // 2.2 Módulos Completos de Gestión Clínica conectados a la Base de Datos (Inertia + React)
 Route::get('/admin/{slug}/pets', function (string $slug) use ($checkAdminAccess) {
     if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');

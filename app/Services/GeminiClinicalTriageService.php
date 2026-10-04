@@ -14,8 +14,9 @@ class GeminiClinicalTriageService
 
     public function __construct()
     {
-        $this->apiKey = env('GEMINI_API_KEY', env('GOOGLE_API_KEY', 'demo_key'));
-        $this->endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+        $rawKey = env('GEMINI_API_KEY') ?: env('GOOGLE_API_KEY');
+        $this->apiKey = !empty($rawKey) ? $rawKey : '';
+        $this->endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent';
     }
 
     /**
