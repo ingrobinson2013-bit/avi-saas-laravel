@@ -87,6 +87,8 @@ class VetPagesController extends Controller
             'userName' => $userName,
             'userRole' => $userRole,
             'greetingName' => $greetingName,
+            'primaryColor' => $tenant?->branding['primary_color'] ?? '#0080ff',
+            'secondaryColor' => $tenant?->branding['secondary_color'] ?? '#d437b5',
             'saasPlan' => [
                 'tier' => $saasPlanTier,
                 'name' => $saasPlanName,

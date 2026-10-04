@@ -33,6 +33,8 @@ interface VetAdminLayoutProps {
     brandName?: string;
     clinicSubtitle?: string;
     logoUrl?: string | null;
+    primaryColor?: string;
+    secondaryColor?: string;
     saasPlan?: {
         tier?: string;
         name?: string;
@@ -53,6 +55,8 @@ export default function VetAdminLayout({
     brandName = 'Vet-Pet Patitas',
     clinicSubtitle = 'Planes de salud para su mascota',
     logoUrl = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp',
+    primaryColor = '#0080ff',
+    secondaryColor = '#d437b5',
     saasPlan = {
         name: 'Plan Profesional',
         statusLabel: 'Activo',
@@ -120,9 +124,10 @@ export default function VetAdminLayout({
                     <Link
                         href={getHref(`/admin/${tenantSlug}`)}
                         preserveScroll
+                        style={activeItem === 'Inicio' ? { backgroundColor: primaryColor } : undefined}
                         className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 ${
                             activeItem === 'Inicio'
-                                ? 'bg-[#0080ff] text-white shadow-sm'
+                                ? 'text-white shadow-sm'
                                 : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                         }`}
                     >
@@ -134,9 +139,10 @@ export default function VetAdminLayout({
                     <Link
                         href={getHref(`/admin/${tenantSlug}/inteligencia`)}
                         preserveScroll
+                        style={activeItem === 'Inteligencia Artificial' ? { backgroundColor: primaryColor } : undefined}
                         className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 ${
                             activeItem === 'Inteligencia Artificial'
-                                ? 'bg-[#0080ff] text-white shadow-sm'
+                                ? 'text-white shadow-sm'
                                 : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                         }`}
                     >
@@ -367,9 +373,10 @@ export default function VetAdminLayout({
                         <Link
                             href={getHref(`/admin/${tenantSlug}/logistica`)}
                             preserveScroll
+                            style={activeItem === 'Logística & Envíos' ? { backgroundColor: primaryColor } : undefined}
                             className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 ${
                                 activeItem === 'Logística & Envíos'
-                                    ? 'bg-[#0080ff] text-white shadow-sm'
+                                    ? 'text-white shadow-sm'
                                     : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                             }`}
                         >

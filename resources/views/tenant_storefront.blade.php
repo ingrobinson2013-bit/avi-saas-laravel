@@ -47,15 +47,47 @@
         :root {
             --brand-primary: {{ $primaryColor }};
             --brand-secondary: {{ $secondaryColor }};
+            --brand-primary-rgb: {{ implode(', ', sscanf(ltrim($primaryColor, '#'), "%02x%02x%02x") ?: [13, 148, 136]) }};
+            --brand-secondary-rgb: {{ implode(', ', sscanf(ltrim($secondaryColor, '#'), "%02x%02x%02x") ?: [11, 17, 32]) }};
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        /* 🎨 THEME DINÁMICO: 100% PERSONALIZABLE POR EL DUEÑO DE LA CLÍNICA */
         .hero-gradient { 
-            background: radial-gradient(circle at 80% 20%, {{ $primaryColor }}18 0%, #f0fdfa30 40%, rgba(255, 255, 255, 0) 75%); 
+            background: radial-gradient(circle at 80% 20%, rgba(var(--brand-primary-rgb), 0.18) 0%, rgba(var(--brand-secondary-rgb), 0.08) 40%, rgba(255, 255, 255, 0) 75%) !important; 
         }
-        .bg-brand-primary { background-color: var(--brand-primary); }
-        .bg-brand-secondary { background-color: var(--brand-secondary); }
-        .text-brand-primary { color: var(--brand-primary); }
-        .border-brand-primary { border-color: var(--brand-primary); }
+        .bg-brand-primary { background-color: var(--brand-primary) !important; }
+        .bg-brand-secondary { background-color: var(--brand-secondary) !important; }
+        .text-brand-primary { color: var(--brand-primary) !important; }
+        .text-brand-secondary { color: var(--brand-secondary) !important; }
+        .border-brand-primary { border-color: var(--brand-primary) !important; }
+        .border-brand-secondary { border-color: var(--brand-secondary) !important; }
+
+        /* Botones principales y llamadas a la acción con el Color 1 */
+        .bg-teal-600, .bg-teal-700, .bg-teal-500 { background-color: var(--brand-primary) !important; }
+        .hover\:bg-teal-700:hover, .hover\:bg-teal-600:hover, .hover\:bg-teal-800:hover { 
+            filter: brightness(0.92); 
+            transition: filter 0.15s ease;
+        }
+        
+        /* Textos, títulos e íconos con el Color 1 */
+        .text-teal-600, .text-teal-700, .text-teal-800 { color: var(--brand-primary) !important; }
+        .text-teal-500 { color: var(--brand-primary) !important; opacity: 0.9; }
+        .text-teal-400, .text-teal-300 { color: var(--brand-primary) !important; filter: brightness(1.2); }
+        
+        /* Bordes y destacados */
+        .border-teal-500, .border-teal-600, .border-teal-400 { border-color: var(--brand-primary) !important; }
+        .border-teal-200, .border-teal-100 { border-color: rgba(var(--brand-primary-rgb), 0.25) !important; }
+        
+        /* Fondos suaves / badges */
+        .bg-teal-50, .bg-teal-100\/50, .bg-teal-50\/80 { background-color: rgba(var(--brand-primary-rgb), 0.08) !important; }
+        .bg-teal-100 { background-color: rgba(var(--brand-primary-rgb), 0.16) !important; }
+
+        /* Fusion de Color 1 y Color 2 en gradientes */
+        .brand-gradient {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
+        }
+
         .carnet-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             transform-style: preserve-3d;
@@ -64,7 +96,7 @@
             transform: translateY(-4px) rotateX(2deg) rotateY(-2deg);
         }
         .modal-backdrop {
-            background-color: rgba(11, 17, 32, 0.75);
+            background-color: rgba(var(--brand-secondary-rgb), 0.75);
             backdrop-filter: blur(6px);
         }
     </style>

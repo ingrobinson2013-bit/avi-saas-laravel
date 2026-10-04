@@ -45,14 +45,21 @@
         :root {
             --brand-primary: {{ $primaryColor }};
             --brand-secondary: {{ $secondaryColor }};
+            --brand-primary-rgb: {{ implode(', ', sscanf(ltrim($primaryColor, '#'), "%02x%02x%02x") ?: [13, 148, 136]) }};
+            --brand-secondary-rgb: {{ implode(', ', sscanf(ltrim($secondaryColor, '#'), "%02x%02x%02x") ?: [11, 17, 32]) }};
         }
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        .bg-brand-primary { background-color: var(--brand-primary); }
-        .bg-brand-secondary { background-color: var(--brand-secondary); }
-        .text-brand-primary { color: var(--brand-primary); }
-        .border-brand-primary { border-color: var(--brand-primary); }
+        .bg-brand-primary { background-color: var(--brand-primary) !important; }
+        .bg-brand-secondary { background-color: var(--brand-secondary) !important; }
+        .text-brand-primary { color: var(--brand-primary) !important; }
+        .border-brand-primary { border-color: var(--brand-primary) !important; }
+
+        .bg-teal-600, .bg-teal-700, .bg-teal-500 { background-color: var(--brand-primary) !important; }
+        .text-teal-600, .text-teal-700, .text-teal-800 { color: var(--brand-primary) !important; }
+        .border-teal-500, .border-teal-600 { border-color: var(--brand-primary) !important; }
+        .bg-teal-50 { background-color: rgba(var(--brand-primary-rgb), 0.08) !important; }
 
         /* Estilo Tarjeta Digital Apple Wallet / Luxury Card */
         .wallet-card {
