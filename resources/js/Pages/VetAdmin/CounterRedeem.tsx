@@ -107,7 +107,24 @@ export default function CounterRedeem({
     history = [],
     initialTab = 'redeem',
 }: CounterRedeemProps) {
-    const [currentTab, setCurrentTab] = useState<'redeem' | 'history'>(initialTab === 'history' ? 'history' : 'redeem');
+    const [currentTab, setCurrentTab] = useState<'redeem' | 'history'>(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('tab') === 'history') return 'history';
+        }
+        return initialTab === 'history' ? 'history' : 'redeem';
+    });
+
+    React.useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('tab') === 'history' || initialTab === 'history') {
+                setCurrentTab('history');
+            } else if (params.get('tab') === 'redeem') {
+                setCurrentTab('redeem');
+            }
+        }
+    }, [initialTab]);
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [localBalances, setLocalBalances] = useState<BalanceItem[]>(balances);
     const [currentWalletBalance, setCurrentWalletBalance] = useState<number>(wallet.balance_cop);
