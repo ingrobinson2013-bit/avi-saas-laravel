@@ -86,6 +86,11 @@ Route::get('/admin/{slug}/pets', function (string $slug) use ($checkAdminAccess)
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->pets(request(), $slug);
 });
 
+Route::post('/admin/{slug}/pets/{id}/photo', function (string $slug, string $id) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return response()->json(['error' => 'Unauthorized'], 401);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->updatePetPhoto(request(), $slug, $id);
+});
+
 Route::get('/admin/{slug}/customers', function (string $slug) use ($checkAdminAccess) {
     if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->customers(request(), $slug);

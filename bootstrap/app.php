@@ -17,6 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin/*/ai/chat',
             'admin/*/ai/triage',
             'admin/*/ai/*',
+            'admin/*/pets/*/photo',
+            'admin/*/pets/*',
             'api/*',
         ]);
         $middleware->web(append: [

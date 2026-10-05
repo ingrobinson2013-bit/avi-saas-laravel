@@ -125,7 +125,7 @@ class VetPagesController extends Controller
                     'customer_phone' => $pet->customer?->phone ?? '3508742543',
                     'plan_name' => $pet->activeSubscription?->plan?->name ?? 'Plan Patitas Básico',
                     'plan_status' => $pet->activeSubscription?->status ?? 'active',
-                    'photo_url' => $pet->photo_url ?: '/images/dashboard/hero_pets_hd.png',
+                    'photo_url' => $pet->photo_url,
                     'medical_notes' => $pet->medical_notes ?: 'Vacunación al día. Propenso a alergias de piel estacionales.',
                 ];
             });
@@ -135,6 +135,58 @@ class VetPagesController extends Controller
             'totalCount' => $pets->count(),
             'activePlansCount' => $pets->where('plan_status', 'active')->count(),
         ]));
+    }
+
+    /**
+     * Actualizar Foto de Mascota (Upload o URL)
+     */
+    public function updatePetPhoto(Request $request, string $slug, string $id)
+    {
+        $request->validate([
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'photo_url' => 'nullable|string|max:1000',
+        ]);
+
+        $pet = Pet::findOrFail($id);
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $filename = 'pet_' . $pet->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('pets', $filename, 'public');
+            $url = '/storage/' . $path;
+
+            $pet->update([
+                'photo_url' => $url,
+            ]);
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Foto de {$pet->name} actualizada exitosamente.",
+                    'photo_url' => $pet->fresh()->photo_url,
+                ]);
+            }
+
+            return back()->with('success', "Foto de {$pet->name} actualizada exitosamente.");
+        }
+
+        if ($request->filled('photo_url')) {
+            $pet->update([
+                'photo_url' => $request->input('photo_url'),
+            ]);
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Foto de {$pet->name} actualizada exitosamente.",
+                    'photo_url' => $pet->fresh()->photo_url,
+                ]);
+            }
+
+            return back()->with('success', "Foto de {$pet->name} actualizada exitosamente.");
+        }
+
+        return response()->json(['error' => 'No se proporcionó archivo ni URL de imagen.'], 422);
     }
 
     /**
