@@ -151,9 +151,23 @@ class VetPagesController extends Controller
 
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
-            $filename = 'pet_' . $pet->id . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('pets', $filename, 'public');
-            $url = '/storage/' . $path;
+            $extension = $file->getClientOriginalExtension() ?: 'jpg';
+            $filename = 'pets/' . $pet->id . '_' . time() . '.' . $extension;
+
+            try {
+                // 1. Almacenamiento en Cloudflare R2 (Global CDN, 0 egress cost, Cloud-Native)
+                \Illuminate\Support\Facades\Storage::disk('r2')->put(
+                    $filename,
+                    file_get_contents($file->getRealPath()),
+                    'public'
+                );
+                $url = \Illuminate\Support\Facades\Storage::disk('r2')->url($filename);
+            } catch (\Throwable $e) {
+                // 2. Fallback de resiliencia en almacenamiento local si R2 tuviese microcorte
+                \Illuminate\Support\Facades\Log::warning("Fallo temporal R2, usando almacenamiento local: " . $e->getMessage());
+                $path = $file->storeAs('pets', basename($filename), 'public');
+                $url = '/storage/' . $path;
+            }
 
             $pet->update([
                 'photo_url' => $url,
