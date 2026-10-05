@@ -7,6 +7,8 @@ interface SubItem {
     id: string;
     pet_name: string;
     pet_breed: string;
+    pet_species?: string;
+    pet_photo_url?: string | null;
     customer_name: string;
     customer_phone: string;
     plan_name: string;
@@ -33,6 +35,9 @@ interface SubscriptionsProps {
     totalCount: number;
     mrr: number;
     formattedMrr: string;
+    totalWallet?: number;
+    formattedWallet?: string;
+    expiringSoonCount?: number;
 }
 
 export default function Subscriptions({
@@ -48,6 +53,9 @@ export default function Subscriptions({
     totalCount = 1,
     mrr = 50000,
     formattedMrr = '$50.000 COP',
+    totalWallet = 0,
+    formattedWallet = '$0 COP',
+    expiringSoonCount = 0,
 }: SubscriptionsProps) {
     const [search, setSearch] = useState('');
 
@@ -112,20 +120,20 @@ export default function Subscriptions({
                     <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs">
                         <span className="text-xs font-bold text-slate-400 block mb-1">Suscripciones Activas</span>
                         <div className="text-2xl font-black text-slate-900">{totalCount}</div>
-                        <span className="text-[10.5px] font-medium text-blue-600 mt-1 block">1 Paciente afiliado</span>
+                        <span className="text-[10.5px] font-medium text-blue-600 mt-1 block">{totalCount} Pacientes afiliados</span>
                     </div>
 
                     <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs">
                         <span className="text-xs font-bold text-slate-400 block mb-1">Renovaciones Próximos 15 Días</span>
-                        <div className="text-2xl font-black text-slate-900">0</div>
-                        <span className="text-[10.5px] font-medium text-slate-500 mt-1 block">Sin riesgo de vencimiento</span>
+                        <div className="text-2xl font-black text-amber-600">{expiringSoonCount}</div>
+                        <span className="text-[10.5px] font-medium text-amber-600 mt-1 block">Requieren gestión WhatsApp</span>
                     </div>
 
                     <div className="bg-gradient-to-br from-amber-50 to-white border-2 border-amber-200 rounded-2xl p-4 shadow-2xs">
                         <span className="text-xs font-bold text-amber-800 block mb-1 flex items-center gap-1">
                             <span>🛡️</span> Fondo Reserva en Custodia
                         </span>
-                        <div className="text-2xl font-black text-amber-950">$20.000 COP</div>
+                        <div className="text-2xl font-black text-amber-950">{formattedWallet}</div>
                         <span className="text-[10.5px] font-bold text-amber-700 mt-1 block">10% Cuotas Acumuladas</span>
                     </div>
                 </div>
@@ -166,8 +174,28 @@ export default function Subscriptions({
                                             #{s.id.substring(0, 8)}
                                         </td>
                                         <td className="py-3.5 px-4">
-                                            <div className="font-bold text-slate-900">{s.pet_name}</div>
-                                            <span className="text-[10px] text-slate-400">{s.pet_breed}</span>
+                                            <div className="flex items-center gap-2.5">
+                                                <div className="w-9 h-9 rounded-full ring-2 ring-slate-100 overflow-hidden bg-slate-100 shrink-0 flex items-center justify-center">
+                                                    {s.pet_photo_url ? (
+                                                        <img
+                                                            src={s.pet_photo_url}
+                                                            alt={s.pet_name}
+                                                            className="w-full h-full object-cover"
+                                                            onError={(e) => {
+                                                                (e.target as HTMLElement).style.display = 'none';
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <span className="text-sm">
+                                                            {s.pet_species === 'cat' ? '🐱' : '🐶'}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <div className="font-bold text-slate-900">{s.pet_name}</div>
+                                                    <span className="text-[10px] text-slate-400">{s.pet_breed}</span>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td className="py-3.5 px-4">
                                             <div className="font-semibold text-slate-900">{s.customer_name}</div>

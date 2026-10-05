@@ -328,11 +328,13 @@ class VetPagesController extends Controller
             ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
             ->get()
             ->map(function ($s) {
-                $walletBalance = (float) ($s->wallet?->balance_cop ?? 20000);
+                $walletBalance = (float) ($s->wallet?->balance_cop ?? 0);
                 return [
                     'id' => $s->id,
                     'pet_name' => $s->pet?->name ?? 'Max',
                     'pet_breed' => $s->pet?->breed ?? 'Golden Retriever',
+                    'pet_species' => $s->pet?->species ?? 'dog',
+                    'pet_photo_url' => $s->pet?->photo_url,
                     'customer_name' => $s->pet?->customer?->name ?? 'María Camila Rodríguez',
                     'customer_phone' => $s->pet?->customer?->phone ?? '3508742543',
                     'plan_name' => $s->plan?->name ?? 'Plan Patitas Básico',
@@ -348,13 +350,21 @@ class VetPagesController extends Controller
             });
 
         $mrr = $subs->where('status', 'active')->sum('price_cop');
-        if ($mrr <= 0) $mrr = 50000;
+        $totalWallet = $subs->sum('wallet_balance');
+        $expiringSoonCount = Subscription::query()
+            ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
+            ->where('status', 'active')
+            ->whereBetween('current_period_end', [now(), now()->addDays(15)])
+            ->count();
 
         return Inertia::render('VetAdmin/Subscriptions', array_merge($ctx, [
             'subscriptions' => $subs,
             'totalCount' => $subs->count(),
             'mrr' => $mrr,
             'formattedMrr' => '$' . number_format($mrr, 0, ',', '.') . ' COP',
+            'totalWallet' => $totalWallet,
+            'formattedWallet' => '$' . number_format($totalWallet, 0, ',', '.') . ' COP',
+            'expiringSoonCount' => $expiringSoonCount,
         ]));
     }
 
