@@ -143,16 +143,16 @@ class ClinicaDemoSeeder extends Seeder
             ]
         );
 
-        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bKit->id], ['quantity_granted' => 1]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bConsultaVirtual->id], ['quantity_granted' => 999]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bConsultaPresencial->id], ['quantity_granted' => 3]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bChequeoPreventivo->id], ['quantity_granted' => 4]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bVacunaAnual->id], ['quantity_granted' => 1]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bDesparasitacion->id], ['quantity_granted' => 3]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bAntipulgas->id], ['quantity_granted' => 2]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bLaboratorio->id], ['quantity_granted' => 1]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bCitologia->id], ['quantity_granted' => 2]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bBano->id], ['quantity_granted' => 2]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bKit->id], ['quantity' => 1]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bConsultaVirtual->id], ['quantity' => 999]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bConsultaPresencial->id], ['quantity' => 3]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bChequeoPreventivo->id], ['quantity' => 4]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bVacunaAnual->id], ['quantity' => 1]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bDesparasitacion->id], ['quantity' => 3]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bAntipulgas->id], ['quantity' => 2]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bLaboratorio->id], ['quantity' => 1]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bCitologia->id], ['quantity' => 2]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planBasico->id, 'benefit_definition_id' => $bBano->id], ['quantity' => 2]);
 
         $planPremium = Plan::firstOrCreate(
             ['tenant_id' => $tenant->id, 'name' => 'Plan Patitas Premium'],
@@ -164,16 +164,16 @@ class ClinicaDemoSeeder extends Seeder
             ]
         );
 
-        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bKit->id], ['quantity_granted' => 1]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bConsultaVirtual->id], ['quantity_granted' => 999]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bConsultaPresencial->id], ['quantity_granted' => 4]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bChequeoPreventivo->id], ['quantity_granted' => 4]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bVacunaAnual->id], ['quantity_granted' => 1]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bDesparasitacion->id], ['quantity_granted' => 4]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bAntipulgas->id], ['quantity_granted' => 2]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bLaboratorio->id], ['quantity_granted' => 2]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bBano->id], ['quantity_granted' => 4]);
-        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bFunerario->id], ['quantity_granted' => 1]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bKit->id], ['quantity' => 1]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bConsultaVirtual->id], ['quantity' => 999]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bConsultaPresencial->id], ['quantity' => 4]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bChequeoPreventivo->id], ['quantity' => 4]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bVacunaAnual->id], ['quantity' => 1]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bDesparasitacion->id], ['quantity' => 4]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bAntipulgas->id], ['quantity' => 2]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bLaboratorio->id], ['quantity' => 2]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bBano->id], ['quantity' => 4]);
+        PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bFunerario->id], ['quantity' => 1]);
 
         // 5. Lista de Pacientes Reales de Cajicá / Chía / Cundinamarca
         $patientsData = [
@@ -402,9 +402,9 @@ class ClinicaDemoSeeder extends Seeder
                         'benefit_definition_id' => $pb->benefit_definition_id,
                     ],
                     [
-                        'total_granted' => $pb->quantity_granted,
+                        'total_granted' => $pb->quantity,
                         'used_count' => 0,
-                        'remaining_count' => $pb->quantity_granted,
+                        'remaining_count' => $pb->quantity,
                     ]
                 );
                 $balanceMap[$pb->benefit_definition_id] = $bal;
