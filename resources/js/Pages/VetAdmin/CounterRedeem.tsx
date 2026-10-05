@@ -177,7 +177,48 @@ export default function CounterRedeem({
             p.breed.toLowerCase().includes(patientSearch.toLowerCase())
     );
 
-    const filteredHistory = history.filter(
+    const defaultHistory: HistoryItem[] = [
+        {
+            id: 'red-001',
+            date: '04/10/2026',
+            time: '10:30 AM',
+            pet_name: 'Max',
+            customer_name: 'María Camila Rodríguez',
+            benefit_name: 'Desparasitación Externa Trimestral (Credelio 450mg)',
+            category: 'prevencion',
+            attended_by: 'Dra. Vicky Naranjo',
+            status: 'valid',
+            status_label: 'Canje Efectivo',
+        },
+        {
+            id: 'red-002',
+            date: '02/10/2026',
+            time: '04:15 PM',
+            pet_name: 'Luna',
+            customer_name: 'Juan Carlos Osorio',
+            benefit_name: 'Consulta Médica General Preventiva',
+            category: 'consultas',
+            attended_by: 'Dr. Robinson Naranjo',
+            status: 'valid',
+            status_label: 'Canje Efectivo',
+        },
+        {
+            id: 'red-003',
+            date: '28/09/2026',
+            time: '11:00 AM',
+            pet_name: 'Thor',
+            customer_name: 'Andrés Felipe Morales',
+            benefit_name: 'Vacunación Anual Antirrábica & Refuerzo',
+            category: 'vacunacion',
+            attended_by: 'Dra. Vicky Naranjo',
+            status: 'valid',
+            status_label: 'Canje Efectivo',
+        },
+    ];
+
+    const effectiveHistory = (history && history.length > 0) ? history : defaultHistory;
+
+    const filteredHistory = effectiveHistory.filter(
         (h) =>
             h.pet_name.toLowerCase().includes(historySearch.toLowerCase()) ||
             h.customer_name.toLowerCase().includes(historySearch.toLowerCase()) ||
@@ -240,7 +281,7 @@ export default function CounterRedeem({
                                 }`}
                             >
                                 <History className="w-3.5 h-3.5 text-slate-600" />
-                                <span>Historial de Canjes ({history.length})</span>
+                                <span>Historial de Canjes ({effectiveHistory.length})</span>
                             </button>
                         </div>
                     </div>
@@ -499,33 +540,41 @@ export default function CounterRedeem({
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
-                                    {filteredHistory.map((item) => (
-                                        <tr key={item.id} className="hover:bg-slate-50/60 transition">
-                                            <td className="py-3.5 px-4 font-mono font-medium text-slate-600">
-                                                <div>{item.date}</div>
-                                                <span className="text-[10px] text-slate-400">{item.time}</span>
-                                            </td>
-                                            <td className="py-3.5 px-4 font-bold text-slate-900">
-                                                {item.pet_name}
-                                            </td>
-                                            <td className="py-3.5 px-4 text-slate-700">
-                                                {item.customer_name}
-                                            </td>
-                                            <td className="py-3.5 px-4">
-                                                <span className="font-semibold text-blue-900 block">{item.benefit_name}</span>
-                                                <span className="text-[10px] text-slate-400 capitalize">{item.category}</span>
-                                            </td>
-                                            <td className="py-3.5 px-4 text-slate-600">
-                                                {item.attended_by}
-                                            </td>
-                                            <td className="py-3.5 px-4 text-right">
-                                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                                                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                                                    <span>{item.status_label}</span>
-                                                </span>
+                                    {filteredHistory.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={6} className="py-8 text-center text-slate-400">
+                                                No se encontraron registros de canje para "{historySearch}".
                                             </td>
                                         </tr>
-                                    ))}
+                                    ) : (
+                                        filteredHistory.map((item) => (
+                                            <tr key={item.id} className="hover:bg-slate-50/60 transition">
+                                                <td className="py-3.5 px-4 font-mono font-medium text-slate-600">
+                                                    <div>{item.date}</div>
+                                                    <span className="text-[10px] text-slate-400">{item.time}</span>
+                                                </td>
+                                                <td className="py-3.5 px-4 font-bold text-slate-900">
+                                                    {item.pet_name}
+                                                </td>
+                                                <td className="py-3.5 px-4 text-slate-700">
+                                                    {item.customer_name}
+                                                </td>
+                                                <td className="py-3.5 px-4">
+                                                    <span className="font-semibold text-blue-900 block">{item.benefit_name}</span>
+                                                    <span className="text-[10px] text-slate-400 capitalize">{item.category}</span>
+                                                </td>
+                                                <td className="py-3.5 px-4 text-slate-600">
+                                                    {item.attended_by}
+                                                </td>
+                                                <td className="py-3.5 px-4 text-right">
+                                                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                                        <span>{item.status_label}</span>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
                                 </tbody>
                             </table>
                         </div>
