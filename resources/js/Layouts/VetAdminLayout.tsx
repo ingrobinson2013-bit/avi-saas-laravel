@@ -102,9 +102,7 @@ export default function VetAdminLayout({
         { title: 'Membresías & Coberturas Activas', category: 'Clientes', href: `/admin/${tenantSlug}/subscriptions`, icon: Shield, badge: 'Contratos' },
         { title: 'Planes de Salud Preventiva', category: 'Planes', href: `/admin/${tenantSlug}/plans`, icon: Heart, badge: 'Tarifas' },
         { title: 'Constructor de Planes (Simulador Monte Carlo)', category: 'Planes', href: `/admin/${tenantSlug}/plans/create`, icon: Layers, badge: 'Actuarial' },
-        { title: 'Catálogo de Servicios y Procedimientos', category: 'Planes', href: `/admin/${tenantSlug}/benefit-definitions`, icon: BookOpen, badge: '32+ Servicios' },
-        { title: 'Inteligencia Artificial Gemini (Triage & Asistente)', category: 'IA', href: `/admin/${tenantSlug}/inteligencia`, icon: Bot, badge: 'Gemini 3.8' },
-        { title: 'Logística, Envíos y Kits de Bienvenida', category: 'Operaciones', href: `/admin/${tenantSlug}/logistica`, icon: Truck, badge: 'Despachos' },
+        { title: 'Fidelización de Clientes, WhatsApp & Anti-Churn', category: 'Clientes', href: `/admin/${tenantSlug}/inteligencia`, icon: MessageSquare, badge: 'Copilot' },
         { title: 'Configuración de Marca, Logo y Medios de Pago', category: 'Configuración', href: `/admin/${tenantSlug}/clinic-settings`, icon: Settings, badge: 'Marca Blanca' },
         { title: 'Portal Público de Afiliación B2C', category: 'Enlaces Web', href: `/v/${tenantSlug}`, icon: QrCode, badge: 'Web Pacientes' },
         { title: 'Afiche Imprimible Mostrador con Código QR', category: 'Enlaces Web', href: `/v/${tenantSlug}/afiche`, icon: FileText, badge: 'QR Afiche' },
@@ -231,21 +229,21 @@ export default function VetAdminLayout({
                         <span className="flex-1 truncate">Inicio</span>
                     </Link>
 
-                    {/* Inteligencia */}
+                    {/* Fidelización & WhatsApp */}
                     <Link
                         href={getHref(`/admin/${tenantSlug}/inteligencia`)}
                         preserveScroll
-                        style={activeItem === 'Inteligencia Artificial' ? { backgroundColor: primaryColor } : undefined}
+                        style={(activeItem === 'Fidelización & WhatsApp' || activeItem === 'Inteligencia Artificial') ? { backgroundColor: primaryColor } : undefined}
                         className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 ${
-                            activeItem === 'Inteligencia Artificial'
+                            (activeItem === 'Fidelización & WhatsApp' || activeItem === 'Inteligencia Artificial')
                                 ? 'text-white shadow-sm'
                                 : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                         }`}
                     >
-                        <Bot className={`w-4 h-4 shrink-0 ${activeItem === 'Inteligencia Artificial' ? 'text-white' : 'text-slate-400'}`} />
-                        <span className="flex-1 truncate">Inteligencia</span>
-                        <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-500/25 text-purple-300 border border-purple-500/30">
-                            IA
+                        <MessageSquare className={`w-4 h-4 shrink-0 ${(activeItem === 'Fidelización & WhatsApp' || activeItem === 'Inteligencia Artificial') ? 'text-white' : 'text-slate-400'}`} />
+                        <span className="flex-1 truncate">Fidelización & WhatsApp</span>
+                        <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/25 text-emerald-300 border border-emerald-500/30">
+                            Copilot
                         </span>
                     </Link>
 
