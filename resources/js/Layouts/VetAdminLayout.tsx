@@ -1,5 +1,5 @@
-import React, { ReactNode, useState } from 'react';
-import { Link } from '@inertiajs/react';
+import React, { ReactNode, useState, useEffect } from 'react';
+import { Link, router } from '@inertiajs/react';
 import { 
     Home, 
     Bot, 
@@ -24,7 +24,11 @@ import {
     Calendar,
     Stethoscope,
     TrendingUp,
-    History
+    History,
+    X,
+    ArrowRight,
+    Sparkles,
+    Zap
 } from 'lucide-react';
 
 interface VetAdminLayoutProps {
@@ -70,6 +74,53 @@ export default function VetAdminLayout({
 }: VetAdminLayoutProps) {
     const isPreview = typeof window !== 'undefined' && (window.location.search.includes('preview=1') || window.location.href.includes('preview=1'));
     const getHref = (href: string) => (isPreview && !href.includes('preview=1')) ? `${href}${href.includes('?') ? '&' : '?'}preview=1` : href;
+
+    // Estado del buscador interactivo (Command Palette / ⌘K)
+    const [isCommandOpen, setIsCommandOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                setIsCommandOpen(prev => !prev);
+            } else if (e.key === 'Escape') {
+                setIsCommandOpen(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
+    const quickActions = [
+        { title: 'Inicio / Resumen Clínico', category: 'Navegación', href: `/admin/${tenantSlug}`, icon: Home, badge: 'Dashboard' },
+        { title: 'Terminal Mostrador & Canje Clínico', category: 'Recepción', href: `/admin/${tenantSlug}/counter-redeem`, icon: Tag, badge: 'Mostrador' },
+        { title: 'Historial de Canjes & Auditoría', category: 'Recepción', href: `/admin/${tenantSlug}/historial-canjes`, icon: History, badge: 'Auditoría' },
+        { title: 'Citas Médicas & Agenda Google', category: 'Recepción', href: `/admin/${tenantSlug}/citas`, icon: Calendar, badge: 'Google Sync' },
+        { title: 'Mascotas y Pacientes', category: 'Clientes', href: `/admin/${tenantSlug}/pets`, icon: PawPrint, badge: 'Directorio' },
+        { title: 'Tutores y Propietarios', category: 'Clientes', href: `/admin/${tenantSlug}/customers`, icon: User, badge: 'WhatsApp' },
+        { title: 'Membresías & Coberturas Activas', category: 'Clientes', href: `/admin/${tenantSlug}/subscriptions`, icon: Shield, badge: 'Contratos' },
+        { title: 'Planes de Salud Preventiva', category: 'Planes', href: `/admin/${tenantSlug}/plans`, icon: Heart, badge: 'Tarifas' },
+        { title: 'Constructor de Planes (Simulador Monte Carlo)', category: 'Planes', href: `/admin/${tenantSlug}/plans/create`, icon: Layers, badge: 'Actuarial' },
+        { title: 'Catálogo de Servicios y Procedimientos', category: 'Planes', href: `/admin/${tenantSlug}/benefit-definitions`, icon: BookOpen, badge: '32+ Servicios' },
+        { title: 'Inteligencia Artificial Gemini (Triage & Asistente)', category: 'IA', href: `/admin/${tenantSlug}/inteligencia`, icon: Bot, badge: 'Gemini 3.8' },
+        { title: 'Logística, Envíos y Kits de Bienvenida', category: 'Operaciones', href: `/admin/${tenantSlug}/logistica`, icon: Truck, badge: 'Despachos' },
+        { title: 'Configuración de Marca, Logo y Medios de Pago', category: 'Configuración', href: `/admin/${tenantSlug}/clinic-settings`, icon: Settings, badge: 'Marca Blanca' },
+        { title: 'Portal Público de Afiliación B2C', category: 'Enlaces Web', href: `/v/${tenantSlug}`, icon: QrCode, badge: 'Web Pacientes' },
+        { title: 'Afiche Imprimible Mostrador con Código QR', category: 'Enlaces Web', href: `/v/${tenantSlug}/afiche`, icon: FileText, badge: 'QR Afiche' },
+    ];
+
+    const filteredActions = quickActions.filter(action =>
+        action.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        action.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        action.badge.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const handleSelectAction = (href: string) => {
+        setIsCommandOpen(false);
+        setSearchQuery('');
+        router.visit(getHref(href));
+    };
 
     // Estado de acordeones de menú
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
@@ -457,17 +508,19 @@ export default function VetAdminLayout({
                     
                     {/* Centered Search Pill */}
                     <div className="flex-1 max-w-xl">
-                        <div className="w-full relative">
-                            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                            <input 
-                                type="text" 
-                                placeholder="Buscar mascota, cliente, plan o servicio..." 
-                                className="w-full pl-9 pr-14 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition"
-                            />
-                            <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
-                                <kbd className="text-[10px] font-bold text-slate-400 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">⌘ K</kbd>
+                        <button
+                            type="button"
+                            onClick={() => setIsCommandOpen(true)}
+                            className="w-full relative flex items-center text-left py-2 px-3.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-blue-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 transition shadow-2xs group cursor-pointer"
+                        >
+                            <Search className="w-4 h-4 text-slate-400 group-hover:text-blue-500 transition shrink-0 mr-2.5" />
+                            <span className="text-xs text-slate-400 flex-1 truncate">
+                                Buscar módulo, paciente, tutor, plan o servicio...
+                            </span>
+                            <div className="flex items-center gap-1 shrink-0 ml-2">
+                                <kbd className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">⌘ K</kbd>
                             </div>
-                        </div>
+                        </button>
                     </div>
 
                     {/* Right User Bar */}
@@ -516,6 +569,92 @@ export default function VetAdminLayout({
                     {children}
                 </main>
             </div>
+
+            {/* =========================================================
+                 COMMAND PALETTE MODAL (SPOTLIGHT / ⌘K)
+                 ========================================================= */}
+            {isCommandOpen && (
+                <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+                    <div 
+                        className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden flex flex-col max-h-[80vh] animate-scale-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Search Input Bar */}
+                        <div className="relative flex items-center px-4 py-3.5 border-b border-slate-100 bg-slate-50/50">
+                            <Search className="w-5 h-5 text-blue-600 shrink-0 mr-3" />
+                            <input
+                                autoFocus
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Escribe para buscar o navegar (ej. Canje, Mascotas, Citas, Planes)..."
+                                className="w-full bg-transparent border-0 text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:ring-0"
+                            />
+                            {searchQuery ? (
+                                <button 
+                                    type="button" 
+                                    onClick={() => setSearchQuery('')}
+                                    className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            ) : (
+                                <kbd className="text-[10px] font-bold text-slate-400 bg-white border border-slate-200 px-1.5 py-0.5 rounded shadow-2xs">ESC</kbd>
+                            )}
+                        </div>
+
+                        {/* Search Results List */}
+                        <div className="overflow-y-auto p-2 space-y-1 max-h-96">
+                            {filteredActions.length === 0 ? (
+                                <div className="py-10 text-center text-slate-400 text-xs">
+                                    No se encontraron acciones o módulos para "<span className="font-bold text-slate-600">{searchQuery}</span>".
+                                </div>
+                            ) : (
+                                filteredActions.map((action, idx) => {
+                                    const IconComp = action.icon;
+                                    return (
+                                        <button
+                                            key={idx}
+                                            type="button"
+                                            onClick={() => handleSelectAction(action.href)}
+                                            className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-blue-50 text-left transition group cursor-pointer"
+                                        >
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-600 flex items-center justify-center transition shrink-0">
+                                                    <IconComp className="w-4 h-4" />
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="text-xs font-bold text-slate-900 group-hover:text-blue-700 truncate">
+                                                        {action.title}
+                                                    </div>
+                                                    <div className="text-[10px] text-slate-400 font-medium truncate">
+                                                        {action.category}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-2 shrink-0">
+                                                <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 group-hover:bg-blue-100 group-hover:text-blue-800 transition">
+                                                    {action.badge}
+                                                </span>
+                                                <ArrowRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition" />
+                                            </div>
+                                        </button>
+                                    );
+                                })
+                            )}
+                        </div>
+
+                        {/* Command Palette Footer */}
+                        <div className="px-4 py-2.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[10.5px] text-slate-400">
+                            <span>Navegación Rápida con <b>Enter</b></span>
+                            <div className="flex items-center gap-2">
+                                <span>Cerrar con</span>
+                                <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-bold text-slate-500">Esc</kbd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
