@@ -166,17 +166,24 @@ export default function Intelligence({
 
     // Función para generar mensaje inicial de WhatsApp según la mascota
     const buildDefaultMessage = (pet: PetItem, type: string) => {
-        const firstName = pet.customer_name.split(' ')[0] || 'Tutor';
+        const custName = pet?.customer_name || 'Tutor';
+        const firstName = custName.split(' ')[0] || 'Tutor';
+        const petName = pet?.name || 'su mascota';
+        const planName = pet?.plan_name || 'Plan de Salud';
+        const benefitsCount = pet?.avail_benefits_count ?? 8;
+        const firstBenefit = pet?.first_benefit || 'Consulta médica preventiva';
+        const walletFormatted = pet?.formatted_wallet || '$20.000 COP';
+
         if (type === 'vaccine') {
-            return `🐾 Hola ${firstName}, te saludamos de ${brandName}. Te recordamos que ${pet.name} tiene pendiente su refuerzo preventivo anual. Recuerda que su consulta y chequeo están 100% cubiertos en su ${pet.plan_name}. ¿Deseas agendar su cita para esta semana?`;
+            return `🐾 Hola ${firstName}, te saludamos de ${brandName}. Te recordamos que ${petName} tiene pendiente su refuerzo preventivo anual. Recuerda que su consulta y chequeo están 100% cubiertos en su ${planName}. ¿Deseas agendar su cita para esta semana?`;
         }
         if (type === 'benefits') {
-            return `🎁 ¡Hola ${firstName}! En ${brandName} queremos consentir a ${pet.name}. Aún tienes ${pet.avail_benefits_count} beneficios disponibles este mes en tu ${pet.plan_name} (incluyendo ${pet.first_benefit}). ¡Aprovéchalos antes del cierre de mes agendando su visita!`;
+            return `🎁 ¡Hola ${firstName}! En ${brandName} queremos consentir a ${petName}. Aún tienes ${benefitsCount} beneficios disponibles este mes en tu ${planName} (incluyendo ${firstBenefit}). ¡Aprovéchalos antes del cierre de mes agendando su visita!`;
         }
         if (type === 'wallet') {
-            return `💰 Hola ${firstName}, te escribimos de ${brandName}. Queríamos contarte una excelente noticia: ${pet.name} ya tiene acumulados ${pet.formatted_wallet} en su Fondo Quirúrgico & Dental de Emergencia gracias a tu ${pet.plan_name}. ¿Te gustaría usarlo en su próxima profilaxis?`;
+            return `💰 Hola ${firstName}, te escribimos de ${brandName}. Queríamos contarte una excelente noticia: ${petName} ya tiene acumulados ${walletFormatted} en su Fondo Quirúrgico & Dental de Emergencia gracias a tu ${planName}. ¿Te gustaría usarlo en su próxima profilaxis?`;
         }
-        return `🩺 Hola ${firstName}, te saludamos con mucho cariño de ${brandName}. ¿Cómo ha seguido ${pet.name}? Nos gustaría invitarte a su control de rutina incluido sin costo en tu ${pet.plan_name}. ¿Qué día te queda mejor?`;
+        return `🩺 Hola ${firstName}, te saludamos con mucho cariño de ${brandName}. ¿Cómo ha seguido ${petName}? Nos gustaría invitarte a su control de rutina incluido sin costo en tu ${planName}. ¿Qué día te queda mejor?`;
     };
 
     // Actualizar mensaje por defecto al cambiar de paciente o de tipo
@@ -302,9 +309,9 @@ export default function Intelligence({
         setTimeout(() => setCopiedWa(false), 2000);
     };
 
-    const getWhatsAppUrl = (phone: string, text: string) => {
-        const clean = phone.replace(/\D/g, '');
-        return `https://wa.me/${clean}?text=${encodeURIComponent(text)}`;
+    const getWhatsAppUrl = (phone?: string, text?: string) => {
+        const clean = (phone || '3508742543').replace(/\D/g, '') || '3508742543';
+        return `https://wa.me/${clean}?text=${encodeURIComponent(text || '')}`;
     };
 
     // Filtrar mascotas para el buscador
@@ -477,7 +484,7 @@ export default function Intelligence({
                                                         </div>
                                                     </div>
                                                     <span className="text-[9px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 font-bold">
-                                                        {p.plan_name.split(' ')[1] || 'Activo'}
+                                                        {(p.plan_name || 'Plan Activo').split(' ')[1] || p.plan_name || 'Activo'}
                                                     </span>
                                                 </button>
                                             ))

@@ -3,6 +3,7 @@ import { Link, router } from '@inertiajs/react';
 import { 
     Home, 
     Bot, 
+    MessageSquare,
     Heart, 
     Users, 
     Settings, 
