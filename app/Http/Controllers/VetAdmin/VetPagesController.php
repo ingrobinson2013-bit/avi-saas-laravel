@@ -830,10 +830,6 @@ class VetPagesController extends Controller
             'photo_url' => $selectedPet['photo_url'] ?? null,
         ];
 
-        $triageService = new GeminiClinicalTriageService();
-        $visualTriage = $triageService->triageSkinLesion(null, $petContext, 'dapp');
-        $bioacousticTriage = $triageService->triageBioacoustic(null, $petContext, 'cough_kennel');
-
         return Inertia::render('VetAdmin/Intelligence', array_merge($ctx, [
             'pets' => $pets,
             'selectedPetId' => $selectedPet['id'] ?? null,
@@ -844,8 +840,6 @@ class VetPagesController extends Controller
             'totalTriagesCount' => max(18, $pets->count() * 3),
             'retentionRate' => '96.4%',
             'triagePatient' => $petContext,
-            'visualTriage' => $visualTriage,
-            'bioacousticTriage' => $bioacousticTriage,
         ]));
     }
 
@@ -867,10 +861,13 @@ class VetPagesController extends Controller
         ]);
 
         $pet = null;
-        if (!empty($validated['pet_id'])) {
+        if (!empty($validated['pet_id']) && \Illuminate\Support\Str::isUuid($validated['pet_id'])) {
             $pet = Pet::query()
                 ->with(['customer', 'activeSubscription.plan'])
                 ->find($validated['pet_id']);
+        }
+        if (!$pet) {
+            $pet = Pet::query()->with(['customer', 'activeSubscription.plan'])->first();
         }
 
         $petContext = [

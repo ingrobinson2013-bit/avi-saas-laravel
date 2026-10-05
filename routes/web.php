@@ -190,13 +190,10 @@ Route::get('/admin/{slug}/calendar', fn(string $slug) => redirect("/admin/{$slug
 Route::get('/v/{slug}/admin/{section?}', function (string $slug, ?string $section = null) {
     $tenant = Tenant::where('slug', $slug)->firstOrFail();
     $target = '/admin/' . $tenant->slug . ($section ? '/' . $section : '');
-
-    if (auth()->check()) {
-        return redirect($target);
-    }
-
-    session(['url.intended' => $target]);
-    return redirect('/admin/' . $tenant->slug . '/login');
+    $query = request()->getQueryString();
+    $hasPreview = request('preview') === '1' || !auth()->check();
+    $finalUrl = $target . ($hasPreview ? ($query ? '?' . $query : '?preview=1') : ($query ? '?' . $query : ''));
+    return redirect($finalUrl);
 })->where('section', '.*');
 
 // 4. Portal B2C de Pacientes de la Clínica (ej. /v/vet-pet-patitas)
