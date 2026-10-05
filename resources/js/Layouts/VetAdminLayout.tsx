@@ -122,6 +122,51 @@ export default function VetAdminLayout({
         router.visit(getHref(href));
     };
 
+    // Estado de Notificaciones
+    const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+    const [notifications, setNotifications] = useState([
+        {
+            id: 'notif-1',
+            title: 'Clínica Lista para Afiliar Pacientes',
+            description: 'El portal de auto-afiliación y el mostrador están activos para registrar tutores y emitir carnets digitales.',
+            time: 'Hace 5 min',
+            type: 'system',
+            unread: true,
+            actionUrl: `/admin/${tenantSlug}/plans`,
+            actionLabel: 'Ver Planes'
+        },
+        {
+            id: 'notif-2',
+            title: 'Google Calendar Sincronizado',
+            description: 'El motor de citas médicas está conectado con verificación de disponibilidad en tiempo real.',
+            time: 'Hace 1 hora',
+            type: 'calendar',
+            unread: true,
+            actionUrl: `/admin/${tenantSlug}/citas`,
+            actionLabel: 'Ver Agenda'
+        },
+        {
+            id: 'notif-3',
+            title: 'Asistente IA Gemini 3.8 Activo',
+            description: 'Inteligencia clínica lista para responder preguntas veterinarias y triaje.',
+            time: 'Hace 3 horas',
+            type: 'ai',
+            unread: true,
+            actionUrl: `/admin/${tenantSlug}/inteligencia`,
+            actionLabel: 'Probar IA'
+        },
+    ]);
+
+    const unreadCount = notifications.filter(n => n.unread).length;
+
+    const markAllNotificationsAsRead = () => {
+        setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+    };
+
+    const markNotificationAsRead = (id: string) => {
+        setNotifications(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n));
+    };
+
     // Estado de acordeones de menú
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
         clientes: true,
@@ -525,16 +570,103 @@ export default function VetAdminLayout({
 
                     {/* Right User Bar */}
                     <div className="flex items-center gap-3">
-                        <button
-                            type="button"
-                            aria-label="Notificaciones"
-                            className="relative w-9 h-9 rounded-xl border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition"
-                        >
-                            <Bell className="w-4 h-4" />
-                            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center">
-                                3
-                            </span>
-                        </button>
+                        {/* Notification Bell Dropdown */}
+                        <div className="relative">
+                            <button
+                                type="button"
+                                onClick={() => setIsNotificationsOpen(prev => !prev)}
+                                aria-label="Notificaciones"
+                                className={`relative w-9 h-9 rounded-xl border flex items-center justify-center transition cursor-pointer ${
+                                    isNotificationsOpen ? 'bg-blue-50 border-blue-300 text-blue-600' : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                                }`}
+                            >
+                                <Bell className="w-4 h-4" />
+                                {unreadCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center animate-pulse">
+                                        {unreadCount}
+                                    </span>
+                                )}
+                            </button>
+
+                            {/* Dropdown Panel */}
+                            {isNotificationsOpen && (
+                                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden animate-scale-in">
+                                    <div className="p-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs font-black text-slate-900">Notificaciones Clínicas</span>
+                                            {unreadCount > 0 && (
+                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700">
+                                                    {unreadCount} nuevas
+                                                </span>
+                                            )}
+                                        </div>
+                                        {unreadCount > 0 && (
+                                            <button
+                                                type="button"
+                                                onClick={markAllNotificationsAsRead}
+                                                className="text-[10.5px] font-bold text-blue-600 hover:text-blue-800 transition"
+                                            >
+                                                Marcar leídas
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+                                        {notifications.map((n) => (
+                                            <div 
+                                                key={n.id} 
+                                                className={`p-3.5 hover:bg-slate-50/80 transition flex gap-3 ${n.unread ? 'bg-blue-50/30' : ''}`}
+                                            >
+                                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+                                                    n.type === 'system' ? 'bg-emerald-100 text-emerald-700' :
+                                                    n.type === 'calendar' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
+                                                }`}>
+                                                    {n.type === 'system' ? <Shield className="w-4 h-4" /> :
+                                                     n.type === 'calendar' ? <Calendar className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center justify-between gap-1">
+                                                        <div className="text-xs font-bold text-slate-900 truncate">{n.title}</div>
+                                                        <span className="text-[9.5px] text-slate-400 shrink-0">{n.time}</span>
+                                                    </div>
+                                                    <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                                                        {n.description}
+                                                    </p>
+                                                    <div className="mt-2 flex items-center justify-between">
+                                                        <Link
+                                                            href={getHref(n.actionUrl)}
+                                                            onClick={() => {
+                                                                markNotificationAsRead(n.id);
+                                                                setIsNotificationsOpen(false);
+                                                            }}
+                                                            className="inline-flex items-center gap-1 text-[10.5px] font-bold text-blue-600 hover:text-blue-800"
+                                                        >
+                                                            <span>{n.actionLabel}</span>
+                                                            <ArrowRight className="w-3 h-3" />
+                                                        </Link>
+                                                        {n.unread && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => markNotificationAsRead(n.id)}
+                                                                className="text-[9.5px] text-slate-400 hover:text-slate-600"
+                                                            >
+                                                                Descartar
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="p-2.5 bg-slate-50 border-t border-slate-100 text-center">
+                                        <span className="text-[10px] text-slate-400 font-medium">
+                                            Centro de Alertas Clínicas · AVI-Plan Staging
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
 
                         <a
                             href={`/v/${tenantSlug}/afiche`}
