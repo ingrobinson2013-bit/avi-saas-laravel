@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin/*/ai/*',
             'admin/*/pets/*/photo',
             'admin/*/pets/*',
+            'admin/*/benefit-definitions*',
             'api/*',
         ]);
         $middleware->web(append: [

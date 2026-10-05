@@ -289,8 +289,12 @@ class VetPagesController extends Controller
     public function planCreate(Request $request, string $slug): Response
     {
         $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
 
         $services = BenefitDefinition::query()
+            ->when($tenantId, function ($q) use ($tenantId) {
+                $q->where('tenant_id', $tenantId)->orWhereNull('tenant_id');
+            })
             ->orderBy('category', 'asc')
             ->orderBy('name', 'asc')
             ->get()
@@ -603,16 +607,25 @@ class VetPagesController extends Controller
     public function services(Request $request, string $slug): Response
     {
         $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
 
         $services = BenefitDefinition::query()
+            ->when($tenantId, function ($q) use ($tenantId) {
+                $q->where('tenant_id', $tenantId)->orWhereNull('tenant_id');
+            })
+            ->withCount('planBenefits')
             ->orderBy('category', 'asc')
             ->orderBy('name', 'asc')
             ->get()
             ->map(fn ($s) => [
                 'id' => $s->id,
+                'tenant_id' => $s->tenant_id,
                 'name' => $s->name,
                 'category' => $s->category,
                 'description' => $s->description ?: 'Servicio clínico estándar para el plan de salud de la sede.',
+                'default_validity_days' => $s->default_validity_days ?? 365,
+                'plan_benefits_count' => $s->plan_benefits_count ?? 0,
+                'is_custom' => !empty($s->tenant_id),
                 'is_active' => true,
             ]);
 
@@ -620,6 +633,90 @@ class VetPagesController extends Controller
             'services' => $services,
             'totalCount' => $services->count(),
         ]));
+    }
+
+    /**
+     * Crear nuevo servicio / beneficio clínico
+     */
+    public function createService(Request $request, string $slug)
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'description' => 'nullable|string|max:1000',
+            'default_validity_days' => 'nullable|integer|min:1|max:3650',
+        ]);
+
+        $service = BenefitDefinition::create([
+            'tenant_id' => $tenantId,
+            'name' => trim($validated['name']),
+            'category' => strtolower(trim($validated['category'])),
+            'description' => $validated['description'] ?? 'Procedimiento clínico habilitado para planes de salud.',
+            'default_validity_days' => $validated['default_validity_days'] ?? 365,
+        ]);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Servicio '{$service->name}' creado exitosamente.",
+                'service' => [
+                    'id' => $service->id,
+                    'tenant_id' => $service->tenant_id,
+                    'name' => $service->name,
+                    'category' => $service->category,
+                    'description' => $service->description,
+                    'default_validity_days' => $service->default_validity_days,
+                    'plan_benefits_count' => 0,
+                    'is_custom' => true,
+                    'is_active' => true,
+                ],
+            ]);
+        }
+
+        return back()->with('success', "Servicio '{$service->name}' creado exitosamente.");
+    }
+
+    /**
+     * Eliminar servicio clínico creado por la sede
+     */
+    public function deleteService(Request $request, string $slug, string $id)
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
+
+        $service = BenefitDefinition::query()
+            ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
+            ->where('id', $id)
+            ->first();
+
+        if (!$service) {
+            return response()->json([
+                'success' => false,
+                'message' => 'El servicio no existe o no pertenece a esta sede veterinaria.',
+            ], 404);
+        }
+
+        if ($service->planBenefits()->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No es posible eliminar este servicio porque ya se encuentra vinculado a planes de salud vigentes.',
+            ], 422);
+        }
+
+        $serviceName = $service->name;
+        $service->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Servicio '{$serviceName}' eliminado correctamente.",
+            ]);
+        }
+
+        return back()->with('success', "Servicio '{$serviceName}' eliminado correctamente.");
     }
 
     /**
