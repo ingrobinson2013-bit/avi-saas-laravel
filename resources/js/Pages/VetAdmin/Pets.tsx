@@ -164,23 +164,32 @@ export default function Pets({
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 text-xs">
-                                {filteredPets.map((pet) => (
-                                    <tr key={pet.id} className="hover:bg-slate-50/60 transition group">
-                                        <td className="py-3.5 px-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 overflow-hidden flex items-center justify-center shrink-0">
-                                                    <span className="text-xl">🐶</span>
-                                                </div>
-                                                <div>
-                                                    <span className="font-bold text-slate-900 block text-sm">
-                                                        {pet.name}
-                                                    </span>
-                                                    <span className="text-[10px] text-slate-400">
-                                                        Expediente ID: #{pet.id.substring(0, 8)}
-                                                    </span>
-                                                </div>
-                                            </div>
+                                {filteredPets.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={6} className="py-12 text-center text-slate-400">
+                                            <div className="w-12 h-12 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-2xl mb-2">🐾</div>
+                                            <p className="font-semibold text-slate-700">No se encontraron pacientes</p>
+                                            <p className="text-xs text-slate-400 mt-0.5">Prueba ajustando los términos de búsqueda o filtros.</p>
                                         </td>
+                                    </tr>
+                                ) : (
+                                    filteredPets.map((pet) => (
+                                        <tr key={pet.id} className="hover:bg-slate-50/60 transition group">
+                                            <td className="py-3.5 px-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-full bg-blue-50 border border-blue-100 overflow-hidden flex items-center justify-center shrink-0">
+                                                        <span className="text-xl">{pet.species === 'Felino' ? '🐱' : '🐶'}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span className="font-bold text-slate-900 block text-sm">
+                                                            {pet.name}
+                                                        </span>
+                                                        <span className="text-[10px] text-slate-400">
+                                                            Expediente ID: #{pet.id.substring(0, 8)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
                                         <td className="py-3.5 px-4 font-medium text-slate-700">
                                             <div>{pet.breed}</div>
                                             <span className="text-[10.5px] text-slate-400 font-normal">{pet.species}</span>
@@ -222,7 +231,8 @@ export default function Pets({
                                             </div>
                                         </td>
                                     </tr>
-                                ))}
+                                ))
+                            )}
                             </tbody>
                         </table>
                     </div>
