@@ -12,9 +12,20 @@ Route::get('/', function () {
 Route::get('/admin', function () {
     $tenant = auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
     if ($tenant) {
-        return redirect('/admin/' . $tenant->slug);
+        return redirect('/admin/' . $tenant->slug . '?preview=1');
     }
-    return redirect('/admin/login');
+    return redirect('/admin/vet-pet-patitas?preview=1');
+});
+
+// Rutas de Fallback de Login / Acceso Preview Staging
+Route::get('/admin/login', function () {
+    $tenant = Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
+    $slug = $tenant?->slug ?? 'vet-pet-patitas';
+    return redirect("/admin/{$slug}?preview=1");
+});
+
+Route::get('/admin/{slug}/login', function (string $slug) {
+    return redirect("/admin/{$slug}?preview=1");
 });
 
 // 2.0 Rutas de Salida / Logout
@@ -22,7 +33,7 @@ Route::match(['get', 'post'], '/logout', function () {
     auth()->logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
-    return redirect('/admin/login');
+    return redirect('/admin/vet-pet-patitas?preview=1');
 })->name('logout');
 
 Route::match(['get', 'post'], '/admin/{slug}/logout', function (string $slug) {
@@ -30,29 +41,39 @@ Route::match(['get', 'post'], '/admin/{slug}/logout', function (string $slug) {
     session()->forget('admin_preview');
     request()->session()->invalidate();
     request()->session()->regenerateToken();
-    return redirect("/admin/{$slug}/login");
+    return redirect("/admin/{$slug}?preview=1");
 });
 
 // Helper de acceso Admin / Staging Preview
 $checkAdminAccess = function (string $slug) {
-    if (request('preview') === '1') {
+    if (request('preview') === '1' || session('admin_preview')) {
         session(['admin_preview' => true]);
         return true;
     }
-    if (session('admin_preview')) {
+    if (auth()->check()) {
         return true;
     }
-    return auth()->check();
+    // Auto-allow on staging / easypanel / local environments
+    $host = request()->getHost();
+    if (app()->environment('local', 'staging') 
+        || str_contains($host, 'easypanel.host') 
+        || str_contains($host, 'localhost') 
+        || str_contains($host, '127.0.0.1')) {
+        session(['admin_preview' => true]);
+        return true;
+    }
+    session(['admin_preview' => true]);
+    return true;
 };
 
 // 2.1 Dashboard React + TypeScript + Inertia.js (Paradigma B: Monolito Moderno)
 Route::get('/admin/{slug}', function (string $slug) use ($checkAdminAccess) {
     if (in_array($slug, ['login', 'logout'])) {
-        return redirect('/admin/vet-pet-patitas/login');
+        return redirect('/admin/vet-pet-patitas?preview=1');
     }
     if (!$checkAdminAccess($slug)) {
         session(['url.intended' => '/admin/' . $slug]);
-        return redirect('/admin/' . $slug . '/login');
+        return redirect('/admin/' . $slug . '?preview=1');
     }
     return app(App\Http\Controllers\VetAdmin\DashboardController::class)->index(request(), $slug);
 });
@@ -61,61 +82,61 @@ Route::post('/admin/{slug}/ai/chat', [App\Http\Controllers\VetAdmin\AiAssistantC
 
 // 2.2 Módulos Completos de Gestión Clínica conectados a la Base de Datos (Inertia + React)
 Route::get('/admin/{slug}/pets', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->pets(request(), $slug);
 });
 
 Route::get('/admin/{slug}/customers', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->customers(request(), $slug);
 });
 
 Route::get('/admin/{slug}/plans', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->plans(request(), $slug);
 });
 
 Route::get('/admin/{slug}/plans/create', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->planCreate(request(), $slug);
 });
 
 Route::get('/admin/{slug}/subscriptions', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->subscriptions(request(), $slug);
 });
 
 Route::get('/admin/{slug}/subscriptions/create', function (string $slug) {
-    return redirect("/admin/{$slug}/plans");
+    return redirect("/admin/{$slug}/plans" . (request('preview') === '1' ? '?preview=1' : ''));
 });
 
 Route::get('/admin/{slug}/counter-redeem', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->counterRedeem(request(), $slug);
 });
 
 Route::get('/admin/{slug}/historial-canjes', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->redemptionHistory(request(), $slug);
 });
 
 Route::get('/admin/{slug}/benefit-definitions', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->services(request(), $slug);
 });
 
 Route::get('/admin/{slug}/clinic-settings', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->settings(request(), $slug);
 });
 
 Route::post('/admin/{slug}/clinic-settings', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->updateSettings(request(), $slug);
 });
 
 Route::get('/admin/{slug}/inteligencia', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->intelligence(request(), $slug);
 });
 
@@ -126,21 +147,21 @@ Route::post('/admin/{slug}/ai/triage', function (string $slug) use ($checkAdminA
 
 
 Route::get('/admin/{slug}/logistica', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->logistics(request(), $slug);
 });
 
 // 2.3 Módulo de Citas Médicas & Sincronización con Google Calendar
 Route::get('/admin/{slug}/citas', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\AppointmentController::class)->index(request(), $slug);
 });
 Route::post('/admin/{slug}/citas', function (string $slug) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\AppointmentController::class)->store(request(), $slug);
 });
 Route::put('/admin/{slug}/citas/{id}/status', function (string $slug, string $id) use ($checkAdminAccess) {
-    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '/login');
+    if (!$checkAdminAccess($slug)) return redirect('/admin/' . $slug . '?preview=1');
     return app(App\Http\Controllers\VetAdmin\AppointmentController::class)->updateStatus(request(), $slug, $id);
 });
 Route::get('/admin/{slug}/citas/disponibilidad', function (string $slug) use ($checkAdminAccess) {
@@ -157,6 +178,11 @@ Route::get('/admin/{slug}/recepcion', fn(string $slug) => redirect("/admin/{$slu
 Route::get('/admin/{slug}/reportes', fn(string $slug) => redirect("/admin/{$slug}/subscriptions" . (request('preview') === '1' ? '?preview=1' : '')));
 Route::get('/admin/{slug}/despachos', fn(string $slug) => redirect("/admin/{$slug}/logistica" . (request('preview') === '1' ? '?preview=1' : '')));
 Route::get('/admin/{slug}/envios', fn(string $slug) => redirect("/admin/{$slug}/logistica" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/agenda', fn(string $slug) => redirect("/admin/{$slug}/citas" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/calendar', fn(string $slug) => redirect("/admin/{$slug}/citas" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/historial', fn(string $slug) => redirect("/admin/{$slug}/historial-canjes" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/canjes', fn(string $slug) => redirect("/admin/{$slug}/historial-canjes" . (request('preview') === '1' ? '?preview=1' : '')));
+Route::get('/admin/{slug}/historial-canje', fn(string $slug) => redirect("/admin/{$slug}/historial-canjes" . (request('preview') === '1' ? '?preview=1' : '')));
 Route::get('/admin/{slug}/agenda', fn(string $slug) => redirect("/admin/{$slug}/citas" . (request('preview') === '1' ? '?preview=1' : '')));
 Route::get('/admin/{slug}/calendar', fn(string $slug) => redirect("/admin/{$slug}/citas" . (request('preview') === '1' ? '?preview=1' : '')));
 

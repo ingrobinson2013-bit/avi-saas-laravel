@@ -290,7 +290,7 @@ export default function VetAdminLayout({
                                     <span>Canje en Recepción</span>
                                 </Link>
                                 <Link
-                                    href={getHref(`/admin/${tenantSlug}/counter-redeem?tab=history`)}
+                                    href={getHref(`/admin/${tenantSlug}/historial-canjes`)}
                                     preserveScroll
                                     className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
                                         activeItem === 'Historial de Canjes' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
