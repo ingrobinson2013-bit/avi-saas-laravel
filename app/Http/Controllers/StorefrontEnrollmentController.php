@@ -12,28 +12,15 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\StorefrontEnrollmentRequest;
 use Illuminate\Support\Str;
 
 class StorefrontEnrollmentController extends Controller
 {
-    public function store(Request $request, string $slug): JsonResponse
+    public function store(StorefrontEnrollmentRequest $request, string $slug): JsonResponse
     {
         $tenant = Tenant::where('slug', $slug)->firstOrFail();
-
-        $validated = $request->validate([
-            'tutor_name' => 'required|string|max:255',
-            'tutor_phone' => 'required|string|max:50',
-            'tutor_email' => 'required|email|max:255',
-            'tutor_doc' => 'nullable|string|max:50',
-            'pet_name' => 'required|string|max:255',
-            'pet_species' => 'required|string|in:Canino,Felino,dog,cat,Perro,Gato,canino,felino,perro,gato',
-            'pet_breed' => 'nullable|string|max:255',
-            'pet_age' => 'nullable|string|max:50',
-            'pet_photo_base64' => 'nullable|string',
-            'plan_slug' => 'nullable|string',
-            'billing_cycle' => 'nullable|string|in:monthly,annual',
-            'payment_method' => 'nullable|string|max:100',
-        ]);
+        $validated = $request->validated();
 
         $billingCycle = $validated['billing_cycle'] ?? 'monthly';
         $paymentMethod = $validated['payment_method'] ?? 'nequi';

@@ -211,22 +211,13 @@ class AppointmentController extends Controller
     /**
      * Agendar Cita y Sincronizar con Google Calendar
      */
-    public function store(Request $request, string $slug): RedirectResponse
+    public function store(\App\Http\Requests\CreateAppointmentRequest $request, string $slug): RedirectResponse
     {
         $ctx = $this->getTenantContext($request, $slug);
         $tenant = $ctx['tenant'];
         $tenantId = $ctx['tenantId'];
 
-        $validated = $request->validate([
-            'pet_id' => 'required|uuid|exists:pets,id',
-            'doctor_name' => 'required|string|max:150',
-            'service_type' => 'required|string|max:50',
-            'benefit_definition_id' => 'nullable|uuid|exists:benefit_definitions,id',
-            'date' => 'required|date_format:Y-m-d',
-            'time' => 'required|date_format:H:i',
-            'duration_minutes' => 'nullable|integer|min:15|max:180',
-            'notes' => 'nullable|string|max:1000',
-        ]);
+        $validated = $request->validated();
 
         $pet = Pet::with('customer')->findOrFail($validated['pet_id']);
         $duration = (int) ($validated['duration_minutes'] ?? 30);
