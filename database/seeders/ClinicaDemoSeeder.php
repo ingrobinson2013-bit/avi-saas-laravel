@@ -383,7 +383,6 @@ class ClinicaDemoSeeder extends Seeder
             WalletTransaction::firstOrCreate(
                 ['wallet_id' => $wallet->id, 'description' => "Aporte Fondo de Emergencia Quirúrgica (Mes 1) - {$pData['pet_name']}"],
                 [
-                    'tenant_id' => $tenant->id,
                     'type' => 'accrual',
                     'amount_cop' => $pData['wallet_balance'],
                     'balance_after_cop' => $pData['wallet_balance'],
