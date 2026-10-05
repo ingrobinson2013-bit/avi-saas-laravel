@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         $middleware->validateCsrfTokens(except: [
             'admin/*/ai/chat',
+            'admin/*/ai/triage',
+            'admin/*/ai/*',
+            'api/*',
         ]);
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,

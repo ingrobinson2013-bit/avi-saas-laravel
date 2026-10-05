@@ -862,6 +862,7 @@ class VetPagesController extends Controller
             'mode' => 'required|string|in:visual,bioacoustic',
             'image_base64' => 'nullable|string',
             'preset_id' => 'nullable|string',
+            'symptoms' => 'nullable|string|max:1000',
             'audio_base64' => 'nullable|string',
         ]);
 
@@ -886,7 +887,12 @@ class VetPagesController extends Controller
         $triageService = new GeminiClinicalTriageService();
 
         if ($validated['mode'] === 'visual') {
-            $result = $triageService->triageSkinLesion($validated['image_base64'] ?? null, $petContext, $validated['preset_id'] ?? null);
+            $result = $triageService->triageSkinLesion(
+                $validated['image_base64'] ?? null,
+                $petContext,
+                $validated['preset_id'] ?? null,
+                $validated['symptoms'] ?? null
+            );
         } else {
             $result = $triageService->triageBioacoustic($validated['audio_base64'] ?? null, $petContext, $validated['preset_id'] ?? null);
         }

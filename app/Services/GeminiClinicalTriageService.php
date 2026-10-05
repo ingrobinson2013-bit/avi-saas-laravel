@@ -18,9 +18,9 @@ class GeminiClinicalTriageService
     }
 
     /**
-     * Triaje Visual de Lesiones Dérmicas y Cicatrices por Imagen.
+     * Triaje Visual & Clínico de Lesiones Dérmicas, Cicatrices y Síntomas.
      */
-    public function triageSkinLesion(?string $imageData, array $petContext, ?string $presetId = null): array
+    public function triageSkinLesion(?string $imageData, array $petContext, ?string $presetId = null, ?string $symptoms = null): array
     {
         $petName = $petContext['pet_name'] ?? 'Paciente';
         $species = $petContext['species'] ?? 'Canino';
@@ -31,8 +31,24 @@ class GeminiClinicalTriageService
         $customerPhone = $petContext['customer_phone'] ?? '';
         $cleanPhone = preg_replace('/\D/', '', $customerPhone);
 
-        // Si tenemos API Key real de Gemini y una imagen en base64 real
-        if (!empty($this->apiKey) && $this->apiKey !== 'demo_key' && !empty($imageData) && str_starts_with($imageData, 'data:image')) {
+        $hasImage = !empty($imageData) && str_starts_with($imageData, 'data:image');
+        
+        // Si no se proporcionaron síntomas específicos pero se seleccionó un preset, expandir la clínica para Gemini
+        if (empty($symptoms) && !empty($presetId)) {
+            $presetDescriptions = [
+                'dapp' => 'Prurito intenso en zona dorso-lumbar con eritema focal, costras y pérdida de pelo por rascado continuo.',
+                'otitis' => 'Sacudidas constantes de cabeza, pabellón auricular eritematoso, presencia de cerumen oscuro e hipersensibilidad a la palpación.',
+                'alopecia' => 'Placas alopécicas focales bien delimitadas con descamación superficial en cara o extremidades.',
+                'herida' => 'Laceración dérmica traumática superficial, eritema perilesional sin compromiso óseo evidente.',
+                'ocular' => 'Secreción conjuntival, blefaroespasmo y epífora con hiperemia moderada en globo ocular.',
+            ];
+            $symptoms = $presetDescriptions[$presetId] ?? null;
+        }
+
+        $hasSymptoms = !empty($symptoms) && strlen(trim($symptoms)) > 3;
+
+        // Si tenemos API Key real de Gemini y (imagen o síntomas clínicos)
+        if (!empty($this->apiKey) && $this->apiKey !== 'demo_key' && ($hasImage || $hasSymptoms)) {
             $modelsToTry = [
                 'gemini-2.5-flash',
                 'gemini-1.5-flash',
@@ -41,45 +57,47 @@ class GeminiClinicalTriageService
                 'gemini-3.5-flash',
             ];
 
-            $mimeType = 'image/jpeg';
-            if (preg_match('#^data:(image/\w+);base64,#i', $imageData, $m)) {
-                $mimeType = $m[1];
-            }
-            $base64Raw = preg_replace('#^data:image/\w+;base64,#i', '', $imageData);
-
-            $systemInstruction = "Eres un Asistente Veterinario Actuarial de Triaje Clínico de AVI SaaS. "
-                . "Analiza la imagen médica suministrada para un {$species} raza {$breed} de {$age} (Nombre: {$petName}). "
-                . "Determina si presenta alguna anomalía dérmica, herida, eritema, alopecia, otitis, lesión ocular o trauma. "
-                . "Debes responder ÚNICAMENTE un JSON válido sin formato markdown adicional con la siguiente estructura exacta: "
+            $symptomContext = $hasSymptoms ? "\nSignos y motivo de consulta descrito por el médico veterinario: \"{$symptoms}\"." : "";
+            
+            $systemInstruction = "Eres un Asistente Veterinario Actuarial y Médico de Triaje Clínico de AVI SaaS para clínicas veterinarias en Colombia. "
+                . "Analiza la consulta clínica para un paciente {$species} raza {$breed} de {$age} (Nombre: {$petName}). {$symptomContext} "
+                . "Determina la hipótesis diagnóstica más probable (dermatológica, infecciosa, ótica, respiratoria, traumática u ocular). "
+                . "Debes responder ÚNICAMENTE un JSON válido sin formato markdown ni comillas invertidas, con la siguiente estructura exacta: "
                 . "{\n"
                 . '  "urgency_level": "Baja" | "Media (Prioritaria)" | "Alta (Urgencia Vital)",' . "\n"
                 . '  "urgency_color": "emerald" | "amber" | "rose",' . "\n"
-                . '  "confidence_score": 95.8,' . "\n"
-                . '  "roi_box": {"top": 35, "left": 28, "width": 42, "height": 38, "label": "Lesión Dérmica"},' . "\n"
-                . '  "preliminary_hypothesis": "Texto descriptivo de la hipótesis diagnóstica.",' . "\n"
-                . '  "clinical_findings": ["Hallazgo 1", "Hallazgo 2", "Hallazgo 3"],' . "\n"
-                . '  "recommended_action": "Pasos y recomendaciones clínicas a seguir.",' . "\n"
-                . '  "plan_coverage_match": "Servicios cubiertos en el plan.",' . "\n"
-                . '  "covered_cop": "$50.000 COP cubiertos por membresía activa",' . "\n"
+                . '  "confidence_score": 94.5,' . "\n"
+                . '  "roi_box": {"top": 30, "left": 25, "width": 45, "height": 45, "label": "Zona de Lesión / Signo Clínico"},' . "\n"
+                . '  "preliminary_hypothesis": "Hipótesis diagnóstica clara y profesional en español.",' . "\n"
+                . '  "clinical_findings": ["Hallazgo o signo 1", "Hallazgo o signo 2", "Hallazgo o signo 3"],' . "\n"
+                . '  "recommended_action": "Conducta médica inmediata y recomendaciones de manejo.",' . "\n"
+                . '  "plan_coverage_match": "Procedimientos sugeridos cubiertos en su membresía (' . $planName . ').",' . "\n"
+                . '  "covered_cop": "$55.000 COP cubiertos por membresía activa",' . "\n"
                 . '  "requires_in_person_visit": true' . "\n"
                 . "}";
 
             foreach ($modelsToTry as $model) {
                 try {
                     $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$this->apiKey}";
+                    
+                    $parts = [['text' => $systemInstruction]];
+                    if ($hasImage) {
+                        $mimeType = 'image/jpeg';
+                        if (preg_match('#^data:(image/\w+);base64,#i', $imageData, $m)) {
+                            $mimeType = $m[1];
+                        }
+                        $base64Raw = preg_replace('#^data:image/\w+;base64,#i', '', $imageData);
+                        $parts[] = [
+                            'inline_data' => [
+                                'mime_type' => $mimeType,
+                                'data' => $base64Raw,
+                            ]
+                        ];
+                    }
+
                     $response = Http::timeout(18)->post($url, [
                         'contents' => [
-                            [
-                                'parts' => [
-                                    ['text' => $systemInstruction],
-                                    [
-                                        'inline_data' => [
-                                            'mime_type' => $mimeType,
-                                            'data' => $base64Raw,
-                                        ]
-                                    ]
-                                ]
-                            ]
+                            ['parts' => $parts]
                         ],
                         'generationConfig' => [
                             'temperature' => 0.2,
@@ -92,7 +110,7 @@ class GeminiClinicalTriageService
                         $cleaned = preg_replace('/```json|```/', '', $jsonText);
                         $decoded = json_decode(trim($cleaned), true);
                         if ($decoded && isset($decoded['urgency_level'])) {
-                            $decoded['source'] = "{$model}-multimodal-live";
+                            $decoded['source'] = "{$model}-live";
                             $decoded['whatsapp_message'] = $this->buildWhatsAppMessage($petName, $customerName, $decoded['preliminary_hypothesis'], $planName, $decoded['urgency_level']);
                             $decoded['whatsapp_url'] = !empty($cleanPhone)
                                 ? "https://wa.me/{$cleanPhone}?text=" . urlencode($decoded['whatsapp_message'])
@@ -130,6 +148,66 @@ class GeminiClinicalTriageService
         $customerName = $petContext['customer_name'] ?? 'Tutor';
         $customerPhone = $petContext['customer_phone'] ?? '';
         $cleanPhone = preg_replace('/\D/', '', $customerPhone);
+
+        if (!empty($this->apiKey) && $this->apiKey !== 'demo_key') {
+            $acousticDescriptions = [
+                'cough_kennel' => 'Tos paroxística seca en ráfagas de 4.2 kHz compatible con traqueobronquitis infecciosa canina.',
+                'stridor' => 'Estridor laríngeo inspiratorio de alta frecuencia 5.6 kHz compatible con sospecha de colapso traqueal o afección de vías aéreas superiores.',
+                'wheezing_cat' => 'Sibilancias espiratorias y broncoespasmo 3.8 kHz compatible con asma bronquial felino o bronquitis crónica.',
+                'crackles' => 'Estertores crepitantes húmedos basales de baja frecuencia 2.1 kHz compatible con sospecha de congestión pulmonar o edema.',
+            ];
+            $condDesc = $acousticDescriptions[$presetId] ?? 'Patrón acústico tusígeno o respiratorio evaluado en consulta.';
+
+            $systemInstruction = "Eres un Asistente Veterinario Actuarial y Especialista Cardiorrespiratorio de AVI SaaS Colombia. "
+                . "Analiza el patrón bioacústico de auscultación para un paciente {$species} raza {$breed} (Nombre: {$petName}). "
+                . "Signo acústico reportado: {$condDesc}. "
+                . "Debes responder ÚNICAMENTE un JSON válido sin formato markdown ni comillas invertidas: "
+                . "{\n"
+                . '  "urgency_level": "Baja" | "Media (Monitoreo Clínico)" | "Alta (Urgencia Vital)",' . "\n"
+                . '  "urgency_color": "emerald" | "amber" | "rose",' . "\n"
+                . '  "confidence_score": 96.8,' . "\n"
+                . '  "sound_pattern": "Patrón auscultatorio identificado",' . "\n"
+                . '  "peak_frequency": "4.2 kHz",' . "\n"
+                . '  "preliminary_hypothesis": "Hipótesis diagnóstica cardiorrespiratoria en español.",' . "\n"
+                . '  "acoustic_markers": ["Marcador 1", "Marcador 2", "Marcador 3"],' . "\n"
+                . '  "recommended_action": "Conducta clínica y recomendaciones inmediatas.",' . "\n"
+                . '  "plan_coverage_match": "Chequeo Cardiorrespiratorio cubierto en ' . $planName . '.",' . "\n"
+                . '  "covered_cop": "$50.000 COP cubiertos sin costo adicional",' . "\n"
+                . '  "requires_in_person_visit": true' . "\n"
+                . "}";
+
+            $modelsToTry = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash'];
+            foreach ($modelsToTry as $model) {
+                try {
+                    $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$this->apiKey}";
+                    $response = Http::timeout(15)->post($url, [
+                        'contents' => [
+                            ['parts' => [['text' => $systemInstruction]]]
+                        ],
+                        'generationConfig' => [
+                            'temperature' => 0.2,
+                            'maxOutputTokens' => 1200,
+                        ]
+                    ]);
+
+                    if ($response->successful()) {
+                        $jsonText = $response->json('candidates.0.content.parts.0.text');
+                        $cleaned = preg_replace('/```json|```/', '', $jsonText);
+                        $decoded = json_decode(trim($cleaned), true);
+                        if ($decoded && isset($decoded['urgency_level'])) {
+                            $decoded['source'] = "{$model}-live";
+                            $decoded['whatsapp_message'] = $this->buildBioacousticWhatsAppMessage($petName, $customerName, $decoded['preliminary_hypothesis'], $planName);
+                            $decoded['whatsapp_url'] = !empty($cleanPhone)
+                                ? "https://wa.me/{$cleanPhone}?text=" . urlencode($decoded['whatsapp_message'])
+                                : "https://wa.me/?text=" . urlencode($decoded['whatsapp_message']);
+                            return $decoded;
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning("Bioacoustic Gemini error: " . $e->getMessage());
+                }
+            }
+        }
 
         $caseData = $this->getBioacousticHeuristicCase($presetId, $species, $breed, $petName, $planName);
 
