@@ -336,6 +336,50 @@ Route::get('/v/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentController
 Route::get('/impersonate-clinic/{tenant_id}', [App\Http\Controllers\ImpersonationController::class, 'impersonateTenant'])->name('superadmin.impersonate');
 Route::get('/impersonate-clinic-stop', [App\Http\Controllers\ImpersonationController::class, 'stopImpersonating'])->name('superadmin.stop-impersonating');
 
+// 11. SEO: Generador Dinámico de Sitemap XML para Google Search Console
+Route::get('/sitemap.xml', function () {
+    $baseUrl = config('app.url', 'https://avipetapp.com');
+    if (!str_starts_with($baseUrl, 'http')) {
+        $baseUrl = 'https://' . ltrim($baseUrl, '/');
+    }
+    $baseUrl = rtrim($baseUrl, '/');
+
+    $tenants = Tenant::query()
+        ->whereNotNull('slug')
+        ->orderBy('updated_at', 'desc')
+        ->get();
+
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+    // 1. Landing Principal B2B
+    $xml .= "  <url>\n";
+    $xml .= "    <loc>{$baseUrl}/</loc>\n";
+    $xml .= "    <lastmod>" . now()->toDateString() . "</lastmod>\n";
+    $xml .= "    <changefreq>daily</changefreq>\n";
+    $xml .= "    <priority>1.0</priority>\n";
+    $xml .= "  </url>\n";
+
+    // 2. Vitrinas B2C de cada Clínica Veterinaria activa
+    foreach ($tenants as $tenant) {
+        $lastmod = $tenant->updated_at ? $tenant->updated_at->toDateString() : now()->toDateString();
+        $xml .= "  <url>\n";
+        $xml .= "    <loc>{$baseUrl}/v/{$tenant->slug}</loc>\n";
+        $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
+        $xml .= "    <changefreq>weekly</changefreq>\n";
+        $xml .= "    <priority>0.85</priority>\n";
+        $xml .= "  </url>\n";
+    }
+
+    $xml .= '</urlset>';
+
+    return response($xml, 200, [
+        'Content-Type' => 'application/xml; charset=utf-8',
+        'Cache-Control' => 'public, max-age=3600',
+    ]);
+});
+
+
 
 
 

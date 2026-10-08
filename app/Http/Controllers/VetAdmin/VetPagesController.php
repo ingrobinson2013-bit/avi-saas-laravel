@@ -59,24 +59,36 @@ class VetPagesController extends Controller
         $saasPaidUntil = $tenant->branding['saas_paid_until'] ?? null;
         $saasPaidUntilFormatted = $saasPaidUntil ? \Carbon\Carbon::parse($saasPaidUntil)->format('d/m/Y') : ($tenant->trial_ends_at ? $tenant->trial_ends_at->format('d/m/Y') : 'Al día');
 
-        $greetingName = 'Dra. Vicky';
-        $userName = 'Dra. Vicky Naranjo';
-        $userRole = 'Administradora de Sede';
+        $isPilot = ($tenant?->slug === 'vet-pet-patitas');
+        $doctorName = $tenant?->branding['doctor_name'] ?? null;
+        $doctorTitle = $tenant?->branding['doctor_title'] ?? 'Médica Veterinaria Directora';
 
-        $user = auth()->user();
-        if ($user) {
-            $rawName = $user->name ?? '';
-            if (str_contains($rawName, 'Robinson')) {
-                $greetingName = 'Dr. Robinson';
-                $userName = 'Dr. Robinson Naranjo';
-                $userRole = 'Director General · NODIA';
-            } elseif (str_contains($rawName, 'Vicky')) {
-                $greetingName = 'Dra. Vicky';
-                $userName = 'Dra. Vicky Naranjo';
-                $userRole = 'Administradora de Sede';
+        if ($isPilot) {
+            $greetingName = 'Dra. Vicky';
+            $userName = 'Dra. Vicky Naranjo';
+            $userRole = 'Administradora de Sede';
+        } elseif (!empty($doctorName)) {
+            $userName = $doctorName;
+            $userRole = $doctorTitle;
+            $cleanName = trim($doctorName);
+            $parts = explode(' ', $cleanName);
+            if (count($parts) >= 2 && in_array(strtolower($parts[0]), ['dr.', 'dr', 'dra.', 'dra', 'doctor', 'doctora'])) {
+                $greetingName = $parts[0] . ' ' . $parts[1];
             } else {
-                $greetingName = explode(' ', trim($rawName))[0];
+                $greetingName = str_starts_with(strtolower($parts[0]), 'dr') ? $parts[0] : 'Dr(a). ' . $parts[0];
+            }
+        } else {
+            $user = auth()->user();
+            if ($user && !empty($user->name) && !str_starts_with($user->name, 'Dr(a). ' . ($tenant?->name ?? ''))) {
+                $rawName = $user->name;
                 $userName = $rawName;
+                $userRole = $doctorTitle;
+                $parts = explode(' ', trim($rawName));
+                $greetingName = $parts[0] ?? 'Doctor(a)';
+            } else {
+                $greetingName = 'Doctor(a)';
+                $userName = 'Doctor(a) Principal';
+                $userRole = $doctorTitle;
             }
         }
 
@@ -763,6 +775,8 @@ class VetPagesController extends Controller
             'payment_nequi' => $branding['payment_nequi'] ?? ($branding['phone'] ?? ''),
             'payment_bank_info' => $branding['payment_bank_info'] ?? ($isPilot ? 'Bancolombia Ahorros # 123-456789-01 (Titular: Vet-Pet Patitas)' : ''),
             'payment_bold_link' => $branding['payment_bold_link'] ?? ($isPilot ? 'https://checkout.bold.co/payment/LNK_VET_PATITAS' : ''),
+            'doctor_name' => $branding['doctor_name'] ?? ($isPilot ? 'Dra. Vicky Naranjo' : ($tenant->users()->where('role', 'clinic_admin')->first()?->name ?? '')),
+            'doctor_title' => $branding['doctor_title'] ?? ($isPilot ? 'Médica Veterinaria Directora' : 'Médica Veterinaria Directora'),
             'auto_enrollment' => true,
         ];
 
@@ -842,6 +856,8 @@ class VetPagesController extends Controller
             'payment_nequi' => 'nullable|string|max:50',
             'payment_bank_info' => 'nullable|string|max:255',
             'payment_bold_link' => 'nullable|string|max:500',
+            'doctor_name' => 'nullable|string|max:255',
+            'doctor_title' => 'nullable|string|max:255',
             'logo_base64' => 'nullable|string',
             'hero_base64' => 'nullable|string',
             'banner_base64' => 'nullable|string',
@@ -902,6 +918,17 @@ class VetPagesController extends Controller
         $branding['payment_nequi'] = $validated['payment_nequi'] ?? null;
         $branding['payment_bank_info'] = $validated['payment_bank_info'] ?? null;
         $branding['payment_bold_link'] = $validated['payment_bold_link'] ?? null;
+        $branding['doctor_name'] = isset($validated['doctor_name']) ? trim($validated['doctor_name']) : ($branding['doctor_name'] ?? '');
+        $branding['doctor_title'] = isset($validated['doctor_title']) ? trim($validated['doctor_title']) : ($branding['doctor_title'] ?? 'Médica Veterinaria Directora');
+
+        if (!empty($branding['doctor_name'])) {
+            if (auth()->check()) {
+                auth()->user()->update(['name' => $branding['doctor_name']]);
+            }
+            \App\Models\User::where('tenant_id', $tenant->id)
+                ->where('role', 'clinic_admin')
+                ->update(['name' => $branding['doctor_name']]);
+        }
 
         $tenant->update([
             'name' => $validated['name'],

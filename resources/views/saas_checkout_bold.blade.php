@@ -66,6 +66,61 @@
                     </p>
                 </div>
 
+                <!-- SELECTOR INTERACTIVO DE PLANES SAAS -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-blue-700">Cambiar o Seleccionar Plan</span>
+                            <h2 class="text-lg font-black text-slate-900 mt-0.5">Elige el plan que necesita tu clínica:</h2>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+                            Sin permanencia
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        @foreach($plans as $planKey => $p)
+                            @php $isSelected = ($tier === $planKey); @endphp
+                            <a 
+                                href="/admin/{{ $tenant->slug }}/renovar-saas?tier={{ $planKey }}"
+                                class="relative p-4 rounded-2xl border-2 transition-all flex flex-col justify-between text-left {{ $isSelected ? 'border-blue-600 bg-blue-50/60 shadow-xs ring-2 ring-blue-500/20' : 'border-slate-200 bg-slate-50/50 hover:border-slate-300 hover:bg-white' }}"
+                            >
+                                @if($isSelected)
+                                    <div class="absolute top-3 right-3 w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-black shadow-xs">
+                                        ✓
+                                    </div>
+                                @endif
+
+                                <div>
+                                    <div class="flex items-center space-x-1.5">
+                                        <span class="text-sm font-black text-slate-900">{{ $p['name'] }}</span>
+                                        <span class="text-[9px] font-extrabold px-2 py-0.5 rounded-full {{ $planKey === 'pro' ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-slate-200/80 text-slate-700' }}">
+                                            {{ $p['badge'] }}
+                                        </span>
+                                    </div>
+                                    <div class="text-xs font-black text-blue-700 mt-1.5 font-mono">
+                                        {{ $p['price_label'] }}
+                                    </div>
+                                    <div class="text-[11px] font-semibold text-slate-600 mt-0.5">
+                                        {{ $p['limit'] }}
+                                    </div>
+                                    <div class="text-[10.5px] text-slate-500 mt-1 leading-snug">
+                                        {{ $p['desc'] }}
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 pt-2.5 border-t border-slate-200/70 text-[10.5px] font-bold {{ $isSelected ? 'text-blue-700 flex items-center space-x-1' : 'text-slate-400 group-hover:text-slate-600' }}">
+                                    @if($isSelected)
+                                        <span>● Seleccionado para pagar</span>
+                                    @else
+                                        <span>Cambiar a este plan →</span>
+                                    @endif
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+
                 <!-- RESUMEN DEL PLAN SELECCIONADO -->
                 <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
                     <div class="flex items-center justify-between">

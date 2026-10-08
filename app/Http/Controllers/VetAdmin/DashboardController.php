@@ -73,31 +73,37 @@ class DashboardController extends Controller
             'monthlyFee' => (float) ($tenant->branding['saas_monthly_fee'] ?? 229000),
         ];
 
-        // Usuario autenticado
-        $greetingName = 'Doctor(a)';
-        $userName = 'Administrador de Sede';
-        $userRole = 'Administradora de Sede';
+        // Usuario autenticado y perfil del Doctor(a)
+        $doctorName = $tenant?->branding['doctor_name'] ?? null;
+        $doctorTitle = $tenant?->branding['doctor_title'] ?? 'Médica Veterinaria Directora';
 
-        $user = auth()->user();
-        if ($user) {
-            $rawName = $user->name ?? '';
-            if (str_contains($rawName, 'Robinson')) {
-                $greetingName = 'Dr. Robinson';
-                $userName = 'Dr. Robinson Naranjo';
-                $userRole = 'Director General · NODIA';
-            } elseif (str_contains($rawName, 'Vicky')) {
-                $greetingName = 'Dra. Vicky';
-                $userName = 'Dra. Vicky Naranjo';
-                $userRole = 'Administradora de Sede';
-            } else {
-                $greetingName = explode(' ', trim($rawName))[0];
-                $userName = $rawName;
-            }
-        } else {
-            // Default amigable si no hay sesión abierta en preview
+        if ($isPilot) {
             $greetingName = 'Dra. Vicky';
             $userName = 'Dra. Vicky Naranjo';
             $userRole = 'Administradora de Sede';
+        } elseif (!empty($doctorName)) {
+            $userName = $doctorName;
+            $userRole = $doctorTitle;
+            $cleanName = trim($doctorName);
+            $parts = explode(' ', $cleanName);
+            if (count($parts) >= 2 && in_array(strtolower($parts[0]), ['dr.', 'dr', 'dra.', 'dra', 'doctor', 'doctora'])) {
+                $greetingName = $parts[0] . ' ' . $parts[1];
+            } else {
+                $greetingName = str_starts_with(strtolower($parts[0]), 'dr') ? $parts[0] : 'Dr(a). ' . $parts[0];
+            }
+        } else {
+            $user = auth()->user();
+            if ($user && !empty($user->name) && !str_starts_with($user->name, 'Dr(a). ' . ($tenant?->name ?? ''))) {
+                $rawName = $user->name;
+                $userName = $rawName;
+                $userRole = $doctorTitle;
+                $parts = explode(' ', trim($rawName));
+                $greetingName = $parts[0] ?? 'Doctor(a)';
+            } else {
+                $greetingName = 'Doctor(a)';
+                $userName = 'Doctor(a) Principal';
+                $userRole = $doctorTitle;
+            }
         }
 
         // City & Date

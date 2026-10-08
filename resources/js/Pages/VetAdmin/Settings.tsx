@@ -19,7 +19,8 @@ import {
     Sliders,
     QrCode,
     Sparkles,
-    CheckCircle2
+    CheckCircle2,
+    Stethoscope
 } from 'lucide-react';
 
 interface SettingsData {
@@ -28,6 +29,8 @@ interface SettingsData {
     address: string;
     phone: string;
     email: string;
+    doctor_name?: string;
+    doctor_title?: string;
     logo_url?: string;
     tagline?: string;
     hero_image_url?: string;
@@ -169,8 +172,8 @@ export default function Settings({
             logoUrl={form.logo_url || logoUrl}
             saasPlan={saasPlan}
             logoutUrl={logoutUrl}
-            userName={userName}
-            userRole={userRole}
+            userName={form.doctor_name || userName}
+            userRole={form.doctor_title || userRole}
             activeItem="Configuración"
         >
             <Head title={`Configuración, Fotos & Video · ${brandName}`} />
@@ -844,6 +847,48 @@ export default function Settings({
                                             onChange={(e) => setForm({ ...form, email: e.target.value })}
                                             className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                                         />
+                                    </div>
+
+                                    {/* Dirección Médica & Nombre de la Doctora / Médico */}
+                                    <div className="pt-3 pb-1 border-t border-slate-100">
+                                        <div className="flex items-center gap-1.5 mb-2.5">
+                                            <Stethoscope className="w-4 h-4 text-blue-600" />
+                                            <span className="text-[11px] font-black uppercase tracking-wider text-blue-700">
+                                                Dirección Médica & Doctor(a) Principal
+                                            </span>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <div>
+                                                <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                                                    <span>Nombre de la Doctora / Médico Veterinario</span>
+                                                    <span className="text-[10px] text-blue-600 font-bold bg-blue-50 px-1.5 py-0.5 rounded">Saludo & Perfil</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={form.doctor_name || ''}
+                                                    onChange={(e) => setForm({ ...form, doctor_name: e.target.value })}
+                                                    placeholder="Ej. Dra. Vicky Naranjo o Dr. Carlos Méndez"
+                                                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                                                />
+                                                <p className="text-[10px] text-slate-500 mt-1">
+                                                    Personaliza el saludo del panel («¡Buenos días, Dra.!»), la barra superior y las citas médicas.
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-xs font-bold text-slate-700 mb-1">
+                                                    Cargo o Especialidad Médica
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={form.doctor_title || ''}
+                                                    onChange={(e) => setForm({ ...form, doctor_title: e.target.value })}
+                                                    placeholder="Ej. Médica Veterinaria Directora / Cirujana"
+                                                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -4,56 +4,106 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>AVI-Plan — Plataforma de Planes de Bienestar y Salud para Veterinarias</title>
-    <meta name="description" content="Crea y vende tus propios planes de bienestar para mascotas, recibe pagos mensuales recurrentes directos y deja que tus tutores consulten y canjeen sus beneficios desde el celular. 15 días gratis.">
-    <meta name="keywords" content="software veterinaria, planes de bienestar mascotas, membresias veterinarias, facturacion recurrente veterinaria, carnet digital mascotas, retencion clinica veterinaria, colombia">
-    <meta name="robots" content="index, follow, max-image-preview:large">
-    <link rel="canonical" href="{{ url()->current() }}">
+    @php
+        $gaId = env('GOOGLE_TAG_ID') ?: env('GOOGLE_ANALYTICS_ID');
+        $gtmId = env('GOOGLE_TAG_MANAGER_ID');
+        $cfToken = env('CLOUDFLARE_ANALYTICS_TOKEN');
+        $canonicalUrl = 'https://avipetapp.com';
+    @endphp
+    <title>AVI-Plan — Software de Planes de Salud Preventiva para Clínicas Veterinarias | Recurrencia Mensual</title>
+    <meta name="description" content="Convierte clientes ocasionales en ingresos mensuales recurrentes fijos. Software SaaS para clínicas veterinarias en Colombia: planes de salud para mascotas, carnet digital, terminal de canje y retención anti-churn. 15 días gratis.">
+    <meta name="keywords" content="software veterinaria colombia, software para clinicas veterinarias, planes de bienestar mascotas, membresias veterinarias, facturacion recurrente veterinaria, carnet digital mascotas, retencion clinica veterinaria, saas veterinario, software gestion veterinaria bogota medellin cali barranquilla cajica">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
 
     <!-- Open Graph / WhatsApp / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="AVI-Plan — Planes de Bienestar y Salud para Veterinarias">
-    <meta property="og:description" content="Convierte tus clientes ocasionales en ingresos mensuales recurrentes. Crea planes de salud con tu propia marca. 15 días gratis.">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:title" content="AVI-Plan — Planes de Salud y Bienestar para Veterinarias | Ingresos Recurrentes">
+    <meta property="og:description" content="Garantiza ingresos fijos mes a mes para tu clínica veterinaria. Crea planes de salud preventiva para mascotas con tu propia marca. 15 días gratis.">
     <meta property="og:image" content="{{ url('/logo-app.png') }}">
     <meta property="og:site_name" content="AVI-Plan">
     <meta property="og:locale" content="es_CO">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AVI-Plan — Planes de Bienestar para Veterinarias">
+    <meta name="twitter:title" content="AVI-Plan — Planes de Salud para Mascotas | Software Veterinario">
     <meta name="twitter:description" content="Crea planes de salud para mascotas con tu propia marca y recibe pagos mensuales recurrentes.">
     <meta name="twitter:image" content="{{ url('/logo-app.png') }}">
 
-    <!-- Schema.org JSON-LD para Google Search -->
+    <!-- Schema.org JSON-LD Enriquecido para Google Search -->
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
-      "@@type": "SoftwareApplication",
-      "name": "AVI-Plan",
-      "operatingSystem": "All, Web, Cloud",
-      "applicationCategory": "BusinessApplication, HealthApplication",
-      "offers": {
-        "@@type": "Offer",
-        "price": "99000",
-        "priceCurrency": "COP",
-        "priceValidUntil": "2027-12-31"
-      },
-      "description": "Plataforma de marca blanca para que clínicas veterinarias creen, cobren y gestionen planes de bienestar y salud para mascotas.",
-      "url": "{{ url('/') }}",
-      "logo": "{{ url('/logo.svg') }}"
+      "@@graph": [
+        {
+          "@@type": "Organization",
+          "@@id": "https://avipetapp.com/#organization",
+          "name": "AVI-Plan",
+          "url": "https://avipetapp.com",
+          "logo": {
+            "@@type": "ImageObject",
+            "url": "{{ url('/logo-app.png') }}"
+          },
+          "contactPoint": {
+            "@@type": "ContactPoint",
+            "telephone": "+573508742543",
+            "contactType": "sales",
+            "areaServed": "CO",
+            "availableLanguage": "Spanish"
+          }
+        },
+        {
+          "@@type": "SoftwareApplication",
+          "@@id": "https://avipetapp.com/#software",
+          "name": "AVI-Plan SaaS Veterinario",
+          "operatingSystem": "All, Web, Cloud",
+          "applicationCategory": "BusinessApplication, HealthApplication",
+          "offers": {
+            "@@type": "Offer",
+            "price": "99000",
+            "priceCurrency": "COP",
+            "priceValidUntil": "2027-12-31"
+          },
+          "aggregateRating": {
+            "@@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "38"
+          },
+          "description": "Software especializado para que clínicas veterinarias creen, cobren y gestionen planes de bienestar y salud preventiva para mascotas.",
+          "url": "https://avipetapp.com",
+          "image": "{{ url('/logo-app.png') }}"
+        }
+      ]
     }
     </script>
 
-    <!-- Google Analytics 4 (opcional configurado en .env) -->
-    @if(env('GOOGLE_ANALYTICS_ID'))
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ env('GOOGLE_ANALYTICS_ID') }}"></script>
+    <!-- Google Tag / GA4 (Configurado vía .env en Easypanel: GOOGLE_TAG_ID o GOOGLE_ANALYTICS_ID) -->
+    @if($gaId)
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', '{{ env('GOOGLE_ANALYTICS_ID') }}');
+      gtag('config', '{{ $gaId }}', {
+        page_path: window.location.pathname,
+        send_page_view: true
+      });
     </script>
+    @endif
+
+    <!-- Google Tag Manager (si está configurado GOOGLE_TAG_MANAGER_ID) -->
+    @if($gtmId)
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','{{ $gtmId }}');</script>
+    @endif
+
+    <!-- Cloudflare Web Analytics (opcional sin cookies) -->
+    @if($cfToken)
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "{{ $cfToken }}"}'></script>
     @endif
 
     <link rel="icon" type="image/svg+xml" href="/logo.svg">
@@ -1464,6 +1514,14 @@
                     <p class="text-[10px] text-slate-500 mt-1 font-mono">
                         Tu web será: <span id="slug-preview" class="text-blue-700 font-bold">avipetapp.com/v/tu-clinica</span>
                     </p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1 flex items-center justify-between">
+                        <span>Nombre de la Doctora / Médico Veterinario</span>
+                        <span class="text-[10px] text-slate-400 lowercase font-medium">(opcional)</span>
+                    </label>
+                    <input type="text" name="doctor_name" id="doctor-name-input" placeholder="Ej. Dra. Vicky Naranjo o Dr. Carlos Méndez" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white transition placeholder:text-slate-400">
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">

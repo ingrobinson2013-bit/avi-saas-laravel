@@ -42,10 +42,14 @@ class BoldWebhookController extends Controller
             return response()->json(['success' => true, 'type' => 'subscription', 'status' => $status]);
         }
 
-        // 2. Caso B: Pago de Canon SaaS de Clínica Veterinaria B2B (ej. SAAS-vet-pet-patitas-1234)
+        // 2. Caso B: Pago de Canon SaaS de Clínica Veterinaria B2B (ej. SAAS-vet-pet-patitas-pro-1234 o SAAS-slug-1234)
         if (str_starts_with($orderId, 'SAAS-')) {
             $parts = explode('-', $orderId);
             $tenantSlug = $parts[1] ?? null;
+            $newTier = null;
+            if (isset($parts[2]) && in_array($parts[2], ['starter', 'pro', 'enterprise', 'pay_per_pet'])) {
+                $newTier = $parts[2];
+            }
             $tenant = $tenantSlug ? Tenant::where('slug', $tenantSlug)->first() : null;
 
             if ($tenant && $isApproved) {
@@ -55,6 +59,11 @@ class BoldWebhookController extends Controller
                 $branding['saas_next_payment_due'] = now()->addDays(30)->toDateString();
                 $branding['saas_paid_until'] = now()->addDays(30)->toDateString();
                 $branding['saas_payment_method'] = 'bold_wompi';
+                if ($newTier) {
+                    $branding['saas_plan'] = $newTier;
+                    $branding['saas_monthly_fee'] = $amount > 0 ? $amount : ($branding['saas_monthly_fee'] ?? 229000);
+                    $tenant->saas_plan_tier = $newTier;
+                }
                 $tenant->update(['branding' => $branding, 'is_active' => true]);
 
                 // Registrar en el Log Oficial de Pagos SaaS

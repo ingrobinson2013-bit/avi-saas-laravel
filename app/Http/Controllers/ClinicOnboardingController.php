@@ -22,6 +22,7 @@ class ClinicOnboardingController extends Controller
     {
         $validated = $request->validate([
             'clinic_name' => ['required', 'string', 'min:3', 'max:120'],
+            'doctor_name' => ['nullable', 'string', 'max:120'],
             'city' => ['required', 'string', 'min:2', 'max:80'],
             'phone' => ['required', 'string', 'min:7', 'max:25'],
             'email' => ['required', 'string', 'email', 'max:150', 'unique:users,email'],
@@ -60,6 +61,8 @@ class ClinicOnboardingController extends Controller
                     'address' => 'Sede Principal',
                     'phone' => $validated['phone'],
                     'email' => $validated['email'],
+                    'doctor_name' => !empty($validated['doctor_name']) ? trim($validated['doctor_name']) : null,
+                    'doctor_title' => 'Médica Veterinaria Directora',
                     'logo_url' => null,
                     'hero_image_url' => 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=700&auto=format&fit=crop&q=80',
                     'banner_image_url' => 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=1000',
@@ -86,9 +89,10 @@ class ClinicOnboardingController extends Controller
             ]);
 
             // 3. Crear el Usuario Administrador de la Clínica
+            $adminName = !empty($validated['doctor_name']) ? trim($validated['doctor_name']) : ('Dr(a). ' . $validated['clinic_name']);
             $user = User::create([
                 'tenant_id' => $tenant->id,
-                'name' => 'Dr(a). ' . $validated['clinic_name'],
+                'name' => $adminName,
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
                 'role' => 'clinic_admin',

@@ -3,8 +3,11 @@ Allow: /
 Allow: /v/
 Disallow: /admin
 Disallow: /admin/
+Disallow: /super-admin
+Disallow: /super-admin/
 Disallow: /login
 Disallow: /register
 Disallow: /registro-clinica
+Disallow: /api/
 
-Sitemap: https://avi-saas-avi-app.gvle2r.easypanel.host/sitemap.xml
+Sitemap: https://avipetapp.com/sitemap.xml

@@ -49,24 +49,36 @@ class AppointmentController extends Controller
         $saasPaidUntil = $tenant?->branding['saas_paid_until'] ?? '2026-10-30';
         $saasPaidUntilFormatted = $saasPaidUntil ? Carbon::parse($saasPaidUntil)->format('d/m/Y') : '30/10/2026';
 
-        $greetingName = 'Dra. Vicky';
-        $userName = 'Dra. Vicky Naranjo';
-        $userRole = 'Administradora de Sede';
+        $isPilot = ($tenant?->slug === 'vet-pet-patitas');
+        $doctorName = $tenant?->branding['doctor_name'] ?? null;
+        $doctorTitle = $tenant?->branding['doctor_title'] ?? 'Médica Veterinaria Directora';
 
-        $user = auth()->user();
-        if ($user) {
-            $rawName = $user->name ?? '';
-            if (str_contains($rawName, 'Robinson')) {
-                $greetingName = 'Dr. Robinson';
-                $userName = 'Dr. Robinson Naranjo';
-                $userRole = 'Director General · NODIA';
-            } elseif (str_contains($rawName, 'Vicky')) {
-                $greetingName = 'Dra. Vicky';
-                $userName = 'Dra. Vicky Naranjo';
-                $userRole = 'Administradora de Sede';
+        if ($isPilot) {
+            $greetingName = 'Dra. Vicky';
+            $userName = 'Dra. Vicky Naranjo';
+            $userRole = 'Administradora de Sede';
+        } elseif (!empty($doctorName)) {
+            $userName = $doctorName;
+            $userRole = $doctorTitle;
+            $cleanName = trim($doctorName);
+            $parts = explode(' ', $cleanName);
+            if (count($parts) >= 2 && in_array(strtolower($parts[0]), ['dr.', 'dr', 'dra.', 'dra', 'doctor', 'doctora'])) {
+                $greetingName = $parts[0] . ' ' . $parts[1];
             } else {
-                $greetingName = explode(' ', trim($rawName))[0];
+                $greetingName = str_starts_with(strtolower($parts[0]), 'dr') ? $parts[0] : 'Dr(a). ' . $parts[0];
+            }
+        } else {
+            $user = auth()->user();
+            if ($user && !empty($user->name) && !str_starts_with($user->name, 'Dr(a). ' . ($tenant?->name ?? ''))) {
+                $rawName = $user->name;
                 $userName = $rawName;
+                $userRole = $doctorTitle;
+                $parts = explode(' ', trim($rawName));
+                $greetingName = $parts[0] ?? 'Doctor(a)';
+            } else {
+                $greetingName = 'Doctor(a)';
+                $userName = 'Doctor(a) Principal';
+                $userRole = $doctorTitle;
             }
         }
 
@@ -202,8 +214,8 @@ class AppointmentController extends Controller
             'services' => $services,
             'availableSlots' => $availableSlots,
             'doctors' => [
-                ['name' => 'Dra. Vicky Naranjo', 'role' => 'Médica Veterinaria Principal'],
-                ['name' => 'Dr. Robinson Naranjo', 'role' => 'Cirugía & Especialidades'],
+                ['name' => $isPilot ? 'Dra. Vicky Naranjo' : ($doctorName ?: ($tenant->name ? "Dr(a). {$tenant->name}" : 'Médico(a) Veterinario(a)')), 'role' => $doctorTitle],
+                ['name' => 'Dr. Robinson Naranjo', 'role' => 'Cirugía & Especialidades (NODIA)'],
             ],
         ]));
     }

@@ -4,10 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $tenant->name }} — Planes de Bienestar y Membresías Veterinarias</title>
     @php
         $favIcon = $tenant->branding['logo_url'] ?? '/logo.svg';
+        $city = $tenant->branding['city'] ?? ($tenant->slug === 'vet-pet-patitas' ? 'Cajicá, Cundinamarca' : '');
+        $metaDescription = "Planes de salud preventiva, consultas y vacunas para tu mascota en {$tenant->name}" . ($city ? " en {$city}" : "") . ". Afíliate con carnet digital y cobertura médica inmediata.";
+        $shareImage = $tenant->branding['logo_url'] ?? $tenant->branding['hero_image_url'] ?? url('/logo-app.png');
+        $googleTagId = $tenant->branding['google_tag_id'] ?? env('GOOGLE_TAG_ID') ?? env('GOOGLE_ANALYTICS_ID');
+        $gtmId = $tenant->branding['google_tag_manager_id'] ?? env('GOOGLE_TAG_MANAGER_ID');
+        $cfToken = env('CLOUDFLARE_ANALYTICS_TOKEN');
     @endphp
+
+    <title>{{ $tenant->name }} — Planes de Salud y Bienestar para Mascotas{{ $city ? ' · ' . $city : '' }}</title>
+    <meta name="description" content="{{ $metaDescription }}">
+    <meta name="keywords" content="veterinaria {{ $tenant->name }}, planes de bienestar mascotas {{ $city }}, carnet digital mascotas, vacunas perros gatos, salud preventiva veterinaria">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    <!-- Open Graph / WhatsApp / Facebook -->
+    <meta property="og:type" content="business.business">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $tenant->name }} — Planes de Salud para Mascotas">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:image" content="{{ $shareImage }}">
+    <meta property="og:site_name" content="{{ $tenant->name }}">
+    <meta property="og:locale" content="es_CO">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $tenant->name }} — Planes de Salud para Mascotas">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $shareImage }}">
+
+    <!-- Schema.org JSON-LD para Google Search Local (VeterinaryCare) -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "VeterinaryCare",
+      "name": "{{ $tenant->name }}",
+      "url": "{{ url()->current() }}",
+      "logo": "{{ $shareImage }}",
+      "image": "{{ $shareImage }}",
+      "telephone": "{{ $tenant->branding['phone'] ?? '+573508742543' }}",
+      "priceRange": "$$",
+      "address": {
+        "@@type": "PostalAddress",
+        "streetAddress": "{{ $tenant->branding['address'] ?? 'Sede Principal' }}",
+        "addressLocality": "{{ $city ?: 'Colombia' }}",
+        "addressCountry": "CO"
+      },
+      "description": "{{ $metaDescription }}"
+    }
+    </script>
+
+    <!-- Google Tag / GA4 (Activable vía .env o configuración de clínica) -->
+    @if($googleTagId)
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $googleTagId }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ $googleTagId }}');
+    </script>
+    @endif
+
+    <!-- Google Tag Manager (si está configurado) -->
+    @if($gtmId)
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','{{ $gtmId }}');</script>
+    @endif
+
+    <!-- Cloudflare Web Analytics (opcional sin cookies) -->
+    @if($cfToken)
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "{{ $cfToken }}"}'></script>
+    @endif
+
     <link rel="icon" type="image/webp" href="{{ $favIcon }}">
     <link rel="shortcut icon" href="{{ $favIcon }}">
     <link rel="apple-touch-icon" href="{{ $favIcon }}">
