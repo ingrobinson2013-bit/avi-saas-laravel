@@ -137,6 +137,61 @@ class TenantResource extends Resource
                                         ->maxLength(255),
                                 ]),
 
+                                Forms\Components\Placeholder::make('clinic_access_urls')
+                                    ->label('Rutas Oficiales de Acceso de esta Clínica')
+                                    ->columnSpanFull()
+                                    ->content(function (?Tenant $record): \Illuminate\Support\HtmlString {
+                                        if (!$record) return new \Illuminate\Support\HtmlString('<span class="text-xs text-gray-500">Guarda la clínica primero para generar sus enlaces oficiales.</span>');
+
+                                        $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+                                        $storefrontUrl = $record->domain ? "https://{$record->domain}" : "https://{$baseDomain}/v/{$record->slug}";
+                                        $adminUrl = $record->domain ? "https://{$record->domain}/admin" : "https://{$baseDomain}/admin/{$record->slug}?preview=1";
+
+                                        $html = "
+                                        <div class='grid grid-cols-1 md:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs'>
+                                            <!-- Vitrina -->
+                                            <div class='p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1.5'>
+                                                <div class='flex items-center justify-between'>
+                                                    <span class='text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider flex items-center gap-1'>
+                                                        🌐 Vitrina Pública para Tutores
+                                                    </span>
+                                                    <a href='{$storefrontUrl}' target='_blank' class='text-[11px] font-bold text-blue-600 hover:underline'>
+                                                        Abrir ↗
+                                                    </a>
+                                                </div>
+                                                <div class='flex items-center justify-between gap-2 p-1.5 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800'>
+                                                    <code class='text-xs font-mono font-bold text-slate-800 dark:text-slate-200 truncate select-all'>{$storefrontUrl}</code>
+                                                    <button type='button' onclick=\"navigator.clipboard.writeText('{$storefrontUrl}'); alert('¡Copiado al portapapeles!:\\n{$storefrontUrl}');\" class='px-2.5 py-1 text-[11px] font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 rounded-md shrink-0 cursor-pointer'>
+                                                        Copiar
+                                                    </button>
+                                                </div>
+                                                <p class='text-[10px] text-slate-500'>Donde los clientes eligen planes y afilian a sus mascotas.</p>
+                                            </div>
+
+                                            <!-- Panel Admin -->
+                                            <div class='p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1.5'>
+                                                <div class='flex items-center justify-between'>
+                                                    <span class='text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1'>
+                                                        ⚙️ Tu Panel de Administración
+                                                    </span>
+                                                    <a href='{$adminUrl}' target='_blank' class='text-[11px] font-bold text-emerald-600 hover:underline'>
+                                                        Abrir ↗
+                                                    </a>
+                                                </div>
+                                                <div class='flex items-center justify-between gap-2 p-1.5 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800'>
+                                                    <code class='text-xs font-mono font-bold text-slate-800 dark:text-slate-200 truncate select-all'>{$adminUrl}</code>
+                                                    <button type='button' onclick=\"navigator.clipboard.writeText('{$adminUrl}'); alert('¡Copiado al portapapeles!:\\n{$adminUrl}');\" class='px-2.5 py-1 text-[11px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 rounded-md shrink-0 cursor-pointer'>
+                                                        Copiar
+                                                    </button>
+                                                </div>
+                                                <p class='text-[10px] text-slate-500'>Donde la clínica gestiona pacientes, canjes en mostrador y citas.</p>
+                                            </div>
+                                        </div>
+                                        ";
+
+                                        return new \Illuminate\Support\HtmlString($html);
+                                    }),
+
                                 Forms\Components\Grid::make(3)->schema([
                                     Forms\Components\TextInput::make('branding.city')
                                         ->label('Ciudad / Municipio')
@@ -308,10 +363,36 @@ class TenantResource extends Resource
                         return $days > 3 ? 'warning' : 'danger';
                     }),
 
+                Tables\Columns\TextColumn::make('storefront_link')
+                    ->label('🌐 Vitrina Pública')
+                    ->state(function (Tenant $record): string {
+                        $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+                        return $record->domain ? "https://{$record->domain}" : "https://{$baseDomain}/v/{$record->slug}";
+                    })
+                    ->badge()
+                    ->color('info')
+                    ->icon('heroicon-m-globe-alt')
+                    ->copyable()
+                    ->copyMessage('Enlace de vitrina copiado al portapapeles')
+                    ->url(fn (Tenant $record): string => $record->domain ? "https://{$record->domain}" : url("/v/{$record->slug}"), true),
+
+                Tables\Columns\TextColumn::make('admin_link')
+                    ->label('⚙️ Panel Admin')
+                    ->state(function (Tenant $record): string {
+                        $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+                        return $record->domain ? "https://{$record->domain}/admin" : "https://{$baseDomain}/admin/{$record->slug}?preview=1";
+                    })
+                    ->badge()
+                    ->color('primary')
+                    ->icon('heroicon-m-computer-desktop')
+                    ->copyable()
+                    ->copyMessage('Enlace de panel copiado al portapapeles')
+                    ->url(fn (Tenant $record): string => $record->domain ? "https://{$record->domain}/admin" : url("/admin/{$record->slug}?preview=1"), true),
+
                 Tables\Columns\TextColumn::make('domain')
                     ->label('Dominio Oficial')
                     ->badge()
-                    ->color('info')
+                    ->color('gray')
                     ->icon('heroicon-m-globe-alt')
                     ->copyable()
                     ->copyMessage('Dominio copiado')
@@ -451,8 +532,20 @@ class TenantResource extends Resource
                     }),
 
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('openStorefront')
+                        ->label('🌐 Abrir Vitrina Pública de Tutores')
+                        ->icon('heroicon-o-globe-alt')
+                        ->color('info')
+                        ->url(fn (Tenant $record): string => $record->domain ? "https://{$record->domain}" : url("/v/{$record->slug}"), true),
+
+                    Tables\Actions\Action::make('openAdmin')
+                        ->label('⚙️ Abrir Panel Administrativo')
+                        ->icon('heroicon-o-computer-desktop')
+                        ->color('primary')
+                        ->url(fn (Tenant $record): string => $record->domain ? "https://{$record->domain}/admin" : url("/admin/{$record->slug}?preview=1"), true),
+
                     Tables\Actions\Action::make('impersonate')
-                        ->label('🔑 Entrar al Panel de la Clínica (Soporte)')
+                        ->label('🔑 Impersonar Sesión (Soporte 1-Clic)')
                         ->icon('heroicon-o-key')
                         ->color('warning')
                         ->url(fn (Tenant $record): string => url("/impersonate-clinic/{$record->id}")),
