@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $tenant->name }} — Planes de Bienestar y Membresías Veterinarias</title>
+    @php
+        $favIcon = $tenant->branding['logo_url'] ?? '/logo.svg';
+    @endphp
+    <link rel="icon" type="image/webp" href="{{ $favIcon }}">
+    <link rel="shortcut icon" href="{{ $favIcon }}">
+    <link rel="apple-touch-icon" href="{{ $favIcon }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

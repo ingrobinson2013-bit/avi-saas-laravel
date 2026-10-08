@@ -9,11 +9,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     @php
-        $tenantSlug = request()->route('slug') ?? session('current_tenant_slug') ?? 'vet-pet-patitas';
-        $currentTenant = \App\Models\Tenant::where('slug', $tenantSlug)->first() ?? \App\Models\Tenant::first();
-        $favIcon = $currentTenant?->branding['logo_url'] ?? '/logo.svg';
+        $subdomain = request()->route('subdomain');
+        $tenantSlug = request()->route('slug') ?? $subdomain ?? session('current_tenant_slug') ?? 'vet-pet-patitas';
+        $currentTenant = \App\Models\Tenant::where('slug', $tenantSlug)
+            ->orWhere('slug', 'LIKE', "%{$tenantSlug}%")
+            ->orWhere('domain', 'LIKE', "%{$tenantSlug}%")
+            ->first() ?? \App\Models\Tenant::first();
+        $favIcon = $currentTenant?->branding['logo_url'] ?? '/logo-app.png';
     @endphp
-    <link rel="icon" type="image/webp" href="{{ $favIcon }}">
+    <link rel="icon" href="{{ $favIcon }}">
+    <link rel="shortcut icon" href="{{ $favIcon }}">
+    <link rel="apple-touch-icon" href="{{ $favIcon }}">
 
     @viteReactRefresh
     @vite(['resources/js/app.tsx'])
