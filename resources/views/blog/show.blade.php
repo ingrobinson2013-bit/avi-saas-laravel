@@ -103,9 +103,9 @@
                 <img src="/logo-app.png" alt="AVI-Plan Logo" class="h-9 w-auto">
                 <span class="font-extrabold text-lg tracking-tight text-slate-900">AVI<span class="text-blue-600">-Plan</span></span>
             </a>
-            <div class="flex items-center gap-3">
-                <a href="/blog" class="text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 transition">← Ver más Guías</a>
-                <a href="/registro-clinica" class="text-xs sm:text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow-sm transition">Probar Gratis</a>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="/blog" class="text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 px-2 sm:px-3 py-1.5 transition whitespace-nowrap">← <span class="hidden sm:inline">Ver más </span>Guías</a>
+                <a href="/registro-clinica" class="text-xs sm:text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-xl shadow-sm transition whitespace-nowrap">Probar Gratis</a>
             </div>
         </div>
     </header>
@@ -153,7 +153,7 @@
         </div>
 
         <!-- Article Body -->
-        <article class="bg-white rounded-3xl p-6 sm:p-12 border border-slate-200 shadow-sm text-slate-800 leading-relaxed text-base sm:text-lg">
+        <article class="bg-white rounded-3xl p-5 sm:p-8 md:p-12 border border-slate-200 shadow-sm text-slate-800 leading-relaxed text-base sm:text-lg">
             {!! $post['content'] !!}
         </article>
 

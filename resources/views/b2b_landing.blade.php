@@ -265,17 +265,77 @@
                 <a href="/blog" class="text-blue-600 font-bold hover:text-blue-800 transition-colors">Blog</a>
             </nav>
 
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 sm:space-x-3">
                 <a href="/admin" class="hidden sm:inline-flex px-3.5 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 transition-colors rounded-xl border border-transparent hover:border-slate-200">
                     Iniciar Sesión
                 </a>
-                <button type="button" onclick="openRegisterModal('pro')" class="relative group px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-600/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center space-x-2 overflow-hidden">
+                <button type="button" onclick="openRegisterModal('pro')" class="relative group px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-600/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center space-x-1.5 sm:space-x-2 overflow-hidden shrink-0">
                     <span class="relative flex h-2 w-2">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-300 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
                     </span>
-                    <span>Probar AVI-Plan gratis</span>
+                    <span>Probar <span class="hidden sm:inline">AVI-Plan </span>Gratis</span>
                 </button>
+                <!-- BOTÓN HAMBURGUESA MÓVIL (VISIBLE EN < LG) -->
+                <button type="button" onclick="toggleMobileMenu()" id="mobile-menu-btn" class="lg:hidden p-2 rounded-xl text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition focus:outline-none" aria-label="Abrir menú de navegación">
+                    <svg id="hamburger-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- MENÚ MÓVIL DESPLEGABLE CON ACCESO COMPLETO -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white/98 backdrop-blur-md border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 shadow-xl">
+            <nav class="flex flex-col space-y-1.5 text-sm font-semibold text-slate-700">
+                <a href="#como-funciona" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-blue-600 transition flex items-center justify-between">
+                    <span>💡 Cómo Funciona</span>
+                    <span class="text-xs text-slate-400">→</span>
+                </a>
+                <a href="#recibes" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-blue-600 transition flex items-center justify-between">
+                    <span>📦 Lo que Recibes</span>
+                    <span class="text-xs text-slate-400">→</span>
+                </a>
+                <a href="#calculadora" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-blue-600 transition flex items-center justify-between">
+                    <span>🧮 Calculadora de Retorno</span>
+                    <span class="text-xs text-slate-400">→</span>
+                </a>
+                <a href="#scanner-demo" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-blue-600 transition flex items-center justify-between">
+                    <span>📱 Escáner QR en Mostrador</span>
+                    <span class="px-1.5 py-0.5 text-[9px] font-bold bg-blue-100 text-blue-800 rounded-full">Demo</span>
+                </a>
+                <a href="#carnet-interactivo" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-blue-600 transition flex items-center justify-between">
+                    <span>💳 Carnet Digital del Tutor</span>
+                    <span class="text-xs text-slate-400">→</span>
+                </a>
+                <a href="#inteligencia" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-blue-600 transition flex items-center justify-between">
+                    <span>🤖 AVI Intelligence</span>
+                    <span class="text-xs text-slate-400">→</span>
+                </a>
+                <a href="#precios" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-blue-600 transition flex items-center justify-between">
+                    <span>🏷️ Precios y Planes</span>
+                    <span class="text-xs text-slate-400">→</span>
+                </a>
+                <a href="#faq" onclick="toggleMobileMenu()" class="px-3 py-2 rounded-xl hover:bg-slate-100 hover:text-blue-600 transition flex items-center justify-between">
+                    <span>❓ Preguntas Frecuentes</span>
+                    <span class="text-xs text-slate-400">→</span>
+                </a>
+                <a href="/blog" class="px-3 py-2 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold transition flex items-center justify-between">
+                    <span>📚 Blog y Guías B2B</span>
+                    <span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-black">Nuevo</span>
+                </a>
+            </nav>
+
+            <div class="pt-3 border-t border-slate-200 flex flex-col gap-2">
+                <a href="/admin" class="w-full py-2.5 px-4 text-center rounded-xl border border-slate-300 text-slate-800 font-bold text-xs hover:bg-slate-50 transition flex items-center justify-center gap-1.5">
+                    <span>🔐 Iniciar Sesión en tu Clínica</span>
+                </a>
+                <a href="https://wa.me/573235813942?text=Hola%20Robinson,%20quiero%20conocer%20m%C3%A1s%20sobre%20AVI-Plan" target="_blank" class="w-full py-2.5 px-4 text-center rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
+                    <span>💬 Contacto por WhatsApp (323 581 3942)</span>
+                </a>
             </div>
         </div>
     </header>
@@ -523,15 +583,15 @@
 
                             <div>
                                 <label class="text-xs font-bold text-slate-700 uppercase block mb-2">Tarifa promedio mensual del plan:</label>
-                                <div class="grid grid-cols-3 gap-2.5">
-                                    <button type="button" onclick="setPlanPrice(49000)" class="price-btn py-2.5 px-3 rounded-xl border border-slate-300 bg-white text-xs font-bold text-slate-700 hover:border-blue-600 transition" data-price="49000">
-                                        $49.000 <span class="block text-[10px] text-slate-400 font-normal">Básico</span>
+                                <div class="grid grid-cols-3 gap-1.5 sm:gap-2.5">
+                                    <button type="button" onclick="setPlanPrice(49000)" class="price-btn py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl border border-slate-300 bg-white text-[11px] sm:text-xs font-bold text-slate-700 hover:border-blue-600 transition" data-price="49000">
+                                        $49.000 <span class="block text-[9px] sm:text-[10px] text-slate-400 font-normal">Básico</span>
                                     </button>
-                                    <button type="button" onclick="setPlanPrice(65000)" class="price-btn py-2.5 px-3 rounded-xl border-2 border-blue-600 bg-blue-50 text-xs font-black text-blue-900 transition shadow-xs" data-price="65000">
-                                        $65.000 ⭐ <span class="block text-[10px] text-blue-600 font-medium">Recomendado</span>
+                                    <button type="button" onclick="setPlanPrice(65000)" class="price-btn py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl border-2 border-blue-600 bg-blue-50 text-[11px] sm:text-xs font-black text-blue-900 transition shadow-xs" data-price="65000">
+                                        $65.000 ⭐ <span class="block text-[9px] sm:text-[10px] text-blue-600 font-medium">Recomendado</span>
                                     </button>
-                                    <button type="button" onclick="setPlanPrice(89000)" class="price-btn py-2.5 px-3 rounded-xl border border-slate-300 bg-white text-xs font-bold text-slate-700 hover:border-blue-600 transition" data-price="89000">
-                                        $89.000 <span class="block text-[10px] text-slate-400 font-normal">Premium</span>
+                                    <button type="button" onclick="setPlanPrice(89000)" class="price-btn py-2 sm:py-2.5 px-1.5 sm:px-3 rounded-xl border border-slate-300 bg-white text-[11px] sm:text-xs font-bold text-slate-700 hover:border-blue-600 transition" data-price="89000">
+                                        $89.000 <span class="block text-[9px] sm:text-[10px] text-slate-400 font-normal">Premium</span>
                                     </button>
                                 </div>
                             </div>
@@ -1699,8 +1759,8 @@
     </footer>
 
     <!-- MODAL DE REGISTRO EXPRESS CLÍNICO -->
-    <div id="register-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 hidden transition-opacity opacity-0 pointer-events-none duration-300">
-        <div class="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 text-slate-900 transform scale-95 transition-transform duration-300">
+    <div id="register-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-3 sm:p-4 hidden transition-opacity opacity-0 pointer-events-none duration-300 overflow-y-auto">
+        <div class="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-5 sm:p-8 shadow-2xl space-y-4 sm:space-y-5 text-slate-900 transform scale-95 transition-transform duration-300 max-h-[92vh] overflow-y-auto my-auto">
             
             <button type="button" onclick="closeRegisterModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2 rounded-xl bg-slate-100 hover:bg-slate-200 transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -2422,6 +2482,24 @@
             setTimeout(() => {
                 if (toast) toast.classList.add('hidden');
             }, 4500);
+        }
+
+        // 10. MENÚ MÓVIL RESPONSIVE
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const hIcon = document.getElementById('hamburger-icon');
+            const cIcon = document.getElementById('close-icon');
+            if (!menu) return;
+            const isHidden = menu.classList.contains('hidden');
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                if (hIcon) hIcon.classList.add('hidden');
+                if (cIcon) cIcon.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+                if (hIcon) hIcon.classList.remove('hidden');
+                if (cIcon) cIcon.classList.add('hidden');
+            }
         }
     </script>
 </body>
