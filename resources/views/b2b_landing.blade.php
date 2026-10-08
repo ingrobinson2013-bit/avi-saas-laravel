@@ -216,6 +216,7 @@
                 <a href="#inteligencia" class="hover:text-blue-600 transition-colors">AVI Intelligence</a>
                 <a href="#precios" class="hover:text-blue-600 transition-colors">Precios</a>
                 <a href="#faq" class="hover:text-blue-600 transition-colors">FAQ</a>
+                <a href="/blog" class="text-blue-600 font-bold hover:text-blue-800 transition-colors">Blog</a>
             </nav>
 
             <div class="flex items-center space-x-3">

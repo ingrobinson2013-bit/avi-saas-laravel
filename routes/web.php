@@ -377,6 +377,15 @@ Route::get('/sitemap.xml', function () {
         $xml .= "    <changefreq>weekly</changefreq>\n";
         $xml .= "    <priority>0.85</priority>\n";
         $xml .= "  </url>\n";
+    // 3. Artículos Estratégicos del Blog de AVI-Plan (SEO B2B)
+    $blogPosts = \App\Services\BlogService::getAllPosts();
+    foreach ($blogPosts as $post) {
+        $xml .= "  <url>\n";
+        $xml .= "    <loc>{$baseUrl}/blog/{$post['slug']}</loc>\n";
+        $xml .= "    <lastmod>{$post['updated_at']}</lastmod>\n";
+        $xml .= "    <changefreq>monthly</changefreq>\n";
+        $xml .= "    <priority>0.80</priority>\n";
+        $xml .= "  </url>\n";
     }
 
     $xml .= '</urlset>';
@@ -386,6 +395,10 @@ Route::get('/sitemap.xml', function () {
         'Cache-Control' => 'public, max-age=3600',
     ]);
 });
+
+// 12. Blog SEO B2B para Clínicas Veterinarias
+Route::get('/blog', [App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
 
 
 
