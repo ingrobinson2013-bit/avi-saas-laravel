@@ -338,14 +338,7 @@ Route::get('/impersonate-clinic-stop', [App\Http\Controllers\ImpersonationContro
 
 // 11. SEO: Generador Dinámico de Sitemap XML para Google Search Console
 Route::get('/sitemap.xml', function () {
-    $host = request()->getHost();
-    $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
-    
-    // Si la petición viene por avipetapp.com o el host es de easypanel, fijar siempre el dominio público canónico
-    $baseUrl = 'https://' . $baseDomain;
-    if (str_contains($host, 'avipetapp.com')) {
-        $baseUrl = 'https://' . $host;
-    }
+    $baseUrl = 'https://avipetapp.com';
 
     $tenants = Tenant::query()
         ->whereNotNull('slug')
