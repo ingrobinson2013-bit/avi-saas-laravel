@@ -131,11 +131,16 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Eliminar Cuenta')
+                    ->modalHeading(fn ($record) => "⚠️ ¿Eliminar la cuenta de {$record->name} ({$record->email})?")
+                    ->modalDescription('Esta acción eliminará de forma permanente al usuario y revocará de inmediato todos sus accesos.')
+                    ->hidden(fn ($record) => $record->id === auth()->id() || $record->email === 'contacto@avipetapp.com'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->action(fn (\Illuminate\Database\Eloquent\Collection $records) => $records->reject(fn ($u) => $u->id === auth()->id() || $u->email === 'contacto@avipetapp.com')->each->delete()),
                 ]),
             ]);
     }

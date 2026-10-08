@@ -59,7 +59,7 @@ export default function VetAdminLayout({
     tenantSlug = 'vet-pet-patitas',
     brandName = 'Vet-Pet Patitas',
     clinicSubtitle = 'Planes de salud para su mascota',
-    logoUrl = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp',
+    logoUrl = null,
     primaryColor = '#0080ff',
     secondaryColor = '#d437b5',
     saasPlan = {

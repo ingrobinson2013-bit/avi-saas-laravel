@@ -728,25 +728,27 @@ class VetPagesController extends Controller
         $tenant = $ctx['tenant'];
         $branding = $tenant?->branding ?? [];
 
+        $isPilot = ($tenant?->slug === 'vet-pet-patitas');
+
         $settings = [
-            'name' => $tenant?->name ?? 'Vet-Pet Patitas Consultorio Veterinario',
-            'city' => $branding['city'] ?? 'Cajicá, Cundinamarca',
-            'address' => $branding['address'] ?? 'Calle 7 # 4-73 Este',
-            'phone' => $branding['phone'] ?? '3508742543',
-            'email' => $branding['email'] ?? 'petmovilveterinario@gmail.com',
-            'logo_url' => $branding['logo_url'] ?? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp',
+            'name' => $tenant?->name ?? 'Clínica Veterinaria',
+            'city' => $branding['city'] ?? ($isPilot ? 'Cajicá, Cundinamarca' : ''),
+            'address' => $branding['address'] ?? ($isPilot ? 'Calle 7 # 4-73 Este' : 'Sede Principal'),
+            'phone' => $branding['phone'] ?? ($isPilot ? '3508742543' : ''),
+            'email' => $branding['email'] ?? ($isPilot ? 'petmovilveterinario@gmail.com' : ''),
+            'logo_url' => $branding['logo_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp' : null),
             'tagline' => $branding['tagline'] ?? $branding['subtitle'] ?? 'Planes de salud para su mascota',
-            'hero_image_url' => $branding['hero_image_url'] ?? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/heroes/01M1FEY7TJ5HDAE20YXX3X46G4.webp',
-            'banner_image_url' => $branding['banner_image_url'] ?? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/banners/01M1WMMT19GBVFKCHN2BWNNMF4.webp',
-            'banner_video_url' => $branding['banner_video_url'] ?? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/videos/01M1WMMTC4TCADMGJPNSESE0GR.mp4',
+            'hero_image_url' => $branding['hero_image_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/heroes/01M1FEY7TJ5HDAE20YXX3X46G4.webp' : 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=700&auto=format&fit=crop&q=80'),
+            'banner_image_url' => $branding['banner_image_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/banners/01M1WMMT19GBVFKCHN2BWNNMF4.webp' : 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=1000'),
+            'banner_video_url' => $branding['banner_video_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/videos/01M1WMMTC4TCADMGJPNSESE0GR.mp4' : null),
             'hero_title' => $branding['hero_title'] ?? 'El cuidado de tu mascota, todo el año.',
-            'hero_subtitle' => $branding['hero_subtitle'] ?? 'Accede a servicios veterinarios y beneficios exclusivos con una membresía diseñada por Vet-Pet Patitas Consultorio Veterinario.',
+            'hero_subtitle' => $branding['hero_subtitle'] ?? ('Accede a servicios veterinarios y beneficios exclusivos con una membresía diseñada por ' . ($tenant?->name ?? 'tu veterinaria') . '.'),
             'hero_price_badge' => $branding['hero_price_badge'] ?? 'Desde $50.000/mes',
-            'primary_color' => $branding['primary_color'] ?? '#0080ff',
-            'secondary_color' => $branding['secondary_color'] ?? '#d437b5',
-            'payment_nequi' => $branding['payment_nequi'] ?? '3508742543',
-            'payment_bank_info' => $branding['payment_bank_info'] ?? 'Bancolombia Ahorros # 123-456789-01 (Titular: Vet-Pet Patitas)',
-            'payment_bold_link' => $branding['payment_bold_link'] ?? 'https://checkout.bold.co/payment/LNK_VET_PATITAS',
+            'primary_color' => $branding['primary_color'] ?? ($isPilot ? '#0080ff' : '#0D9488'),
+            'secondary_color' => $branding['secondary_color'] ?? ($isPilot ? '#d437b5' : '#0F172A'),
+            'payment_nequi' => $branding['payment_nequi'] ?? ($branding['phone'] ?? ''),
+            'payment_bank_info' => $branding['payment_bank_info'] ?? ($isPilot ? 'Bancolombia Ahorros # 123-456789-01 (Titular: Vet-Pet Patitas)' : ''),
+            'payment_bold_link' => $branding['payment_bold_link'] ?? ($isPilot ? 'https://checkout.bold.co/payment/LNK_VET_PATITAS' : ''),
             'auto_enrollment' => true,
         ];
 
@@ -833,10 +835,10 @@ class VetPagesController extends Controller
         ]);
 
         $branding = $tenant->branding ?? [];
-        $branding['city'] = $validated['city'] ?? $branding['city'] ?? 'Cajicá, Cundinamarca';
-        $branding['address'] = $validated['address'] ?? $branding['address'] ?? 'Calle 7 # 4-73 Este';
-        $branding['phone'] = $validated['phone'] ?? $branding['phone'] ?? '3508742543';
-        $branding['email'] = $validated['email'] ?? $branding['email'] ?? 'petmovilveterinario@gmail.com';
+        $branding['city'] = $validated['city'] ?? $branding['city'] ?? '';
+        $branding['address'] = $validated['address'] ?? $branding['address'] ?? 'Sede Principal';
+        $branding['phone'] = $validated['phone'] ?? $branding['phone'] ?? '';
+        $branding['email'] = $validated['email'] ?? $branding['email'] ?? '';
 
         // Procesar subidas de Logo
         $uploadedLogo = $this->storeBase64OrFile($request, 'logo_file', 'logo_base64', 'logos');

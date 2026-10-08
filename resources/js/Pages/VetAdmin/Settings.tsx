@@ -61,6 +61,9 @@ const DEFAULT_HERO_IMAGE = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/
 const DEFAULT_BANNER_IMAGE = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/banners/01M1WMMT19GBVFKCHN2BWNNMF4.webp';
 const DEFAULT_BANNER_VIDEO = 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/videos/01M1WMMTC4TCADMGJPNSESE0GR.mp4';
 
+const NEUTRAL_HERO_IMAGE = 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=700&auto=format&fit=crop&q=80';
+const NEUTRAL_BANNER_IMAGE = 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=1000';
+
 const BRAND_COLOR_PRESETS = [
     { label: 'Azul Veterinario', hex: '#0080ff' },
     { label: 'Turquesa Clínico', hex: '#0D9488' },
@@ -88,6 +91,9 @@ export default function Settings({
     userRole,
     settings,
 }: SettingsProps) {
+    const isPilot = tenantSlug === 'vet-pet-patitas';
+    const isFirstTime = typeof window !== 'undefined' && window.location.search.includes('first_time=1');
+
     const [saved, setSaved] = useState(false);
     const [saving, setSaving] = useState(false);
 
@@ -109,16 +115,16 @@ export default function Settings({
         videoFileName?: string;
     }>({
         ...settings,
-        logo_url: settings.logo_url || logoUrl || DEFAULT_OFFICIAL_LOGO,
+        logo_url: settings.logo_url || (isPilot ? (logoUrl || DEFAULT_OFFICIAL_LOGO) : ''),
         tagline: settings.tagline || clinicSubtitle || 'Planes de salud para su mascota',
-        hero_image_url: settings.hero_image_url || DEFAULT_HERO_IMAGE,
-        banner_image_url: settings.banner_image_url || DEFAULT_BANNER_IMAGE,
-        banner_video_url: settings.banner_video_url || DEFAULT_BANNER_VIDEO,
+        hero_image_url: settings.hero_image_url || (isPilot ? DEFAULT_HERO_IMAGE : NEUTRAL_HERO_IMAGE),
+        banner_image_url: settings.banner_image_url || (isPilot ? DEFAULT_BANNER_IMAGE : NEUTRAL_BANNER_IMAGE),
+        banner_video_url: settings.banner_video_url || (isPilot ? DEFAULT_BANNER_VIDEO : ''),
         hero_title: settings.hero_title || 'El cuidado de tu mascota, todo el año.',
-        hero_subtitle: settings.hero_subtitle || 'Accede a servicios veterinarios y beneficios exclusivos con una membresía diseñada por Vet-Pet Patitas Consultorio Veterinario.',
+        hero_subtitle: settings.hero_subtitle || `Accede a servicios veterinarios y beneficios exclusivos con una membresía diseñada por ${brandName || 'tu veterinaria'}.`,
         hero_price_badge: settings.hero_price_badge || 'Desde $50.000/mes',
-        primary_color: settings.primary_color || '#0080ff',
-        secondary_color: settings.secondary_color || '#d437b5',
+        primary_color: settings.primary_color || (isPilot ? '#0080ff' : '#0D9488'),
+        secondary_color: settings.secondary_color || (isPilot ? '#d437b5' : '#0F172A'),
     });
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldBase64: string, fieldPreviewUrl: string, nameKey: string) => {
@@ -202,6 +208,28 @@ export default function Settings({
             {/* Layout Fluido que ocupa todo el ancho de pantalla de forma armónica */}
             <div className="w-full space-y-5 pb-20">
                 
+                {/* Banner de Bienvenida en Primer Registro (Onboarding Paso 1) */}
+                {isFirstTime && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-teal-600 via-emerald-600 to-blue-600 text-white shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fadeIn">
+                        <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0">
+                                <Sparkles className="w-5 h-5 text-amber-300" />
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-extrabold flex items-center gap-1.5">
+                                    🎉 ¡Bienvenido a AVI Plan! Paso 1: Configura tu Marca
+                                </h3>
+                                <p className="text-xs text-emerald-100 mt-0.5 max-w-xl">
+                                    Sube el logotipo oficial de tu veterinaria, elige los colores corporativos y actualiza los datos de contacto. Tu vitrina pública se adaptará automáticamente a tu identidad.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="px-3 py-1.5 rounded-lg bg-white/15 text-[11px] font-bold tracking-wide shrink-0 border border-white/20">
+                            Paso 1 de 2
+                        </div>
+                    </div>
+                )}
+
                 {/* Header Banner Superior - Ancho Completo */}
                 <div className="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
@@ -274,18 +302,27 @@ export default function Settings({
 
                                 {/* Caja del Logo con Botones de Acción */}
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200/80">
-                                    <div className="w-24 h-24 rounded-2xl bg-white border-2 border-slate-200 shadow-xs p-2 flex items-center justify-center shrink-0 overflow-hidden relative">
+                                    <div 
+                                        className="w-24 h-24 rounded-2xl bg-white border-2 border-slate-200 shadow-xs p-2 flex items-center justify-center shrink-0 overflow-hidden relative cursor-pointer group hover:border-blue-400 transition"
+                                        onClick={() => logoFileRef.current?.click()}
+                                        title="Haz clic para subir o cambiar el logotipo"
+                                    >
                                         {form.logo_url ? (
                                             <img 
                                                 src={form.logo_url} 
                                                 alt={form.name} 
                                                 className="w-full h-full object-contain"
                                                 onError={(e) => {
-                                                    (e.target as HTMLImageElement).src = DEFAULT_OFFICIAL_LOGO;
+                                                    if (isPilot) {
+                                                        (e.target as HTMLImageElement).src = DEFAULT_OFFICIAL_LOGO;
+                                                    }
                                                 }}
                                             />
                                         ) : (
-                                            <span className="text-3xl">🐾</span>
+                                            <div className="flex flex-col items-center justify-center text-center">
+                                                <Camera className="w-6 h-6 text-slate-400 group-hover:text-blue-600 transition" />
+                                                <span className="text-[10px] font-bold text-slate-400 group-hover:text-blue-600 mt-1">Subir Logo</span>
+                                            </div>
                                         )}
                                     </div>
 
@@ -297,8 +334,10 @@ export default function Settings({
                                                     <FileCheck className="w-3 h-3" />
                                                     <span>Nuevo archivo: {form.logoFileName}</span>
                                                 </span>
-                                            ) : (
+                                            ) : form.logo_url ? (
                                                 <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">Logotipo Activo</span>
+                                            ) : (
+                                                <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">Sin Logotipo Subido</span>
                                             )}
                                         </div>
                                         <p className="text-[11px] text-slate-500">
@@ -323,7 +362,7 @@ export default function Settings({
                                                             ...prev,
                                                             logo_base64: undefined,
                                                             logoFileName: undefined,
-                                                            logo_url: settings.logo_url || DEFAULT_OFFICIAL_LOGO
+                                                            logo_url: settings.logo_url || (isPilot ? DEFAULT_OFFICIAL_LOGO : '')
                                                         }));
                                                     }}
                                                     className="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 text-xs font-semibold transition"
@@ -547,7 +586,7 @@ export default function Settings({
                                                     src={form.hero_image_url} 
                                                     alt="Hero Portada" 
                                                     className="w-full h-full object-cover"
-                                                    onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_HERO_IMAGE; }}
+                                                    onError={(e) => { (e.target as HTMLImageElement).src = isPilot ? DEFAULT_HERO_IMAGE : NEUTRAL_HERO_IMAGE; }}
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-xs text-slate-400">Sin foto</div>
@@ -577,7 +616,7 @@ export default function Settings({
                                                         ...prev, 
                                                         hero_base64: undefined,
                                                         heroFileName: undefined,
-                                                        hero_image_url: settings.hero_image_url || DEFAULT_HERO_IMAGE
+                                                        hero_image_url: settings.hero_image_url || (isPilot ? DEFAULT_HERO_IMAGE : NEUTRAL_HERO_IMAGE)
                                                     }))}
                                                     className="w-full py-1 text-[11px] text-slate-500 hover:text-slate-700 font-medium text-center"
                                                 >
@@ -600,7 +639,7 @@ export default function Settings({
                                                     src={form.banner_image_url} 
                                                     alt="Fachada" 
                                                     className="w-full h-full object-cover"
-                                                    onError={(e) => { (e.target as HTMLImageElement).src = DEFAULT_BANNER_IMAGE; }}
+                                                    onError={(e) => { (e.target as HTMLImageElement).src = isPilot ? DEFAULT_BANNER_IMAGE : NEUTRAL_BANNER_IMAGE; }}
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-xs text-slate-400">Sin foto</div>
@@ -630,7 +669,7 @@ export default function Settings({
                                                         ...prev, 
                                                         banner_base64: undefined,
                                                         bannerFileName: undefined,
-                                                        banner_image_url: settings.banner_image_url || DEFAULT_BANNER_IMAGE
+                                                        banner_image_url: settings.banner_image_url || (isPilot ? DEFAULT_BANNER_IMAGE : NEUTRAL_BANNER_IMAGE)
                                                     }))}
                                                     className="w-full py-1 text-[11px] text-slate-500 hover:text-slate-700 font-medium text-center"
                                                 >
@@ -662,7 +701,7 @@ export default function Settings({
                                                     Tu navegador no soporta video.
                                                 </video>
                                             ) : (
-                                                <div className="text-xs text-slate-400">Sin video</div>
+                                                <div className="text-xs text-slate-400 font-medium">Sin video institucional (Opcional)</div>
                                             )}
                                         </div>
 
@@ -689,7 +728,7 @@ export default function Settings({
                                                         ...prev, 
                                                         video_base64: undefined,
                                                         videoFileName: undefined,
-                                                        banner_video_url: settings.banner_video_url || DEFAULT_BANNER_VIDEO
+                                                        banner_video_url: settings.banner_video_url || (isPilot ? DEFAULT_BANNER_VIDEO : '')
                                                     }))}
                                                     className="w-full py-1 text-[11px] text-slate-500 hover:text-slate-700 font-medium text-center"
                                                 >

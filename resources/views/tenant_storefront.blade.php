@@ -17,24 +17,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     @php
-        $primaryColor = $tenant->branding['primary_color'] ?? '#0D9488';
-        $secondaryColor = $tenant->branding['secondary_color'] ?? '#0B1120';
-        $logoUrl = $tenant->branding['logo_url'] ?? null;
-        $heroImage = $tenant->branding['hero_image_url'] ?? 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=700&auto=format&fit=crop&q=80';
-        $bannerImage = $tenant->branding['banner_image_url'] ?? 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=1000';
-        $bannerVideo = $tenant->branding['banner_video_url'] ?? null;
-        $city = $tenant->branding['city'] ?? 'Cajicá, Cundinamarca';
-        $address = $tenant->branding['address'] ?? 'Calle 7 # 4-73 Este';
-        $phone = $tenant->branding['phone'] ?? '3508742543';
+        $isPilot = ($tenant->slug === 'vet-pet-patitas');
+        $primaryColor = $tenant->branding['primary_color'] ?? ($isPilot ? '#0080ff' : '#0D9488');
+        $secondaryColor = $tenant->branding['secondary_color'] ?? ($isPilot ? '#d437b5' : '#0B1120');
+        $logoUrl = $tenant->branding['logo_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp' : null);
+        $heroImage = $tenant->branding['hero_image_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/heroes/01M1FEY7TJ5HDAE20YXX3X46G4.webp' : 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=700&auto=format&fit=crop&q=80');
+        $bannerImage = $tenant->branding['banner_image_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/banners/01M1WMMT19GBVFKCHN2BWNNMF4.webp' : 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=1000');
+        $bannerVideo = $tenant->branding['banner_video_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/videos/01M1WMMTC4TCADMGJPNSESE0GR.mp4' : null);
+        $city = $tenant->branding['city'] ?? ($isPilot ? 'Cajicá, Cundinamarca' : '');
+        $address = $tenant->branding['address'] ?? ($isPilot ? 'Calle 7 # 4-73 Este' : 'Sede Principal');
+        $phone = $tenant->branding['phone'] ?? ($isPilot ? '3508742543' : '');
         $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
         $paymentNequi = $tenant->branding['payment_nequi'] ?? $phone;
-        $paymentBank = $tenant->branding['payment_bank_info'] ?? 'Bancolombia Ahorros # 123-456789-01 (Titular: ' . $tenant->name . ')';
+        $paymentBank = $tenant->branding['payment_bank_info'] ?? ($isPilot ? 'Bancolombia Ahorros # 123-456789-01 (Titular: ' . $tenant->name . ')' : '');
         $paymentBoldLink = $tenant->branding['payment_bold_link'] ?? null;
         $paymentInstructions = $tenant->branding['payment_instructions'] ?? 'Una vez realizado el pago, confirma por WhatsApp con tu número de carnet.';
 
+        // Nombres de planes dinámicos
+        $planBasicoModel = $plans->where('billing_interval', 'monthly')->first() ?? $plans->first();
+        $planPremiumModel = $plans->where('billing_interval', 'monthly')->skip(1)->first() ?? $plans->last();
+        $planBasicoName = $planBasicoModel?->name ?? ($isPilot ? 'Plan Patitas Básico' : 'Plan Bienestar Básico');
+        $planPremiumName = $planPremiumModel?->name ?? ($isPilot ? 'Plan Patitas Premium' : 'Plan Salud Total');
+
         // Textos del Hero personalizables
         $heroTitle = $tenant->branding['hero_title'] ?? 'El cuidado de tu mascota, todo el año.';
-        $heroSubtitle = $tenant->branding['hero_subtitle'] ?? 'Accede a consultas, vacunas, controles incluidos y precios preferenciales en ' . $city . ' con la membresía de salud preventiva de ' . $tenant->name . '.';
+        $heroSubtitle = $tenant->branding['hero_subtitle'] ?? ('Accede a consultas, vacunas, controles incluidos y precios preferenciales ' . ($city ? 'en ' . $city . ' ' : '') . 'con la membresía de salud preventiva de ' . $tenant->name . '.');
         $heroPriceBadge = $tenant->branding['hero_price_badge'] ?? 'Desde $50.000/mes';
 
         // Toggles de Bloques y Secciones Activas
@@ -381,7 +388,7 @@
                                         🛡️
                                     </div>
                                     <div>
-                                        <h3 class="text-xl font-black text-slate-900">Plan Patitas Básico</h3>
+                                        <h3 class="text-xl font-black text-slate-900">{{ $planBasicoName }}</h3>
                                         <p class="text-xs text-slate-500 font-medium">Prevención integral y controles médicos</p>
                                     </div>
                                 </div>
@@ -452,7 +459,7 @@
 
                         <div class="pt-6">
                             <button type="button" onclick="openEnrollModal('basico')" class="w-full py-3.5 bg-brand-primary text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-md hover:opacity-95 transition-all flex items-center justify-center space-x-1.5">
-                                <span>🐾 Afiliarme al Plan Básico</span>
+                                <span>🐾 Afiliarme al {{ $planBasicoName }}</span>
                                 <span>›</span>
                             </button>
                         </div>
@@ -472,7 +479,7 @@
                                         💎
                                     </div>
                                     <div>
-                                        <h3 class="text-xl font-black text-slate-900">Plan Patitas Premium</h3>
+                                        <h3 class="text-xl font-black text-slate-900">{{ $planPremiumName }}</h3>
                                         <p class="text-xs text-slate-500 font-medium">Máxima cobertura preventiva y diagnóstica</p>
                                     </div>
                                 </div>
@@ -718,7 +725,7 @@
                             <div class="grid grid-cols-2 gap-3 pt-2 bg-black/25 p-3.5 rounded-2xl border border-white/10">
                                 <div>
                                     <p class="text-[8px] uppercase tracking-wider text-white/60 font-bold">Membresía</p>
-                                    <p class="text-xs font-black text-amber-300">Plan Patitas Premium</p>
+                                    <p class="text-xs font-black text-amber-300">{{ $planPremiumName }}</p>
                                 </div>
                                 <div>
                                     <p class="text-[8px] uppercase tracking-wider text-white/60 font-bold">Contrato Digital</p>
@@ -1376,7 +1383,7 @@
             <div>
                 <p class="font-black text-white uppercase tracking-wider mb-2">Contacto Directo</p>
                 <p class="text-slate-400">WhatsApp: <strong class="text-teal-400">{{ $phone }}</strong></p>
-                <p class="text-slate-400">Email: {{ $tenant->branding['email'] ?? 'contacto@vetpetpatitas.com' }}</p>
+                <p class="text-slate-400">Email: {{ $tenant->branding['email'] ?? ($isPilot ? 'contacto@vetpetpatitas.com' : 'contacto@avipetapp.com') }}</p>
             </div>
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-slate-900 text-center text-slate-400 text-[11px]">
@@ -1475,7 +1482,7 @@
                     <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1">
                         <div class="flex justify-between items-center text-xs">
                             <span class="text-slate-500">Plan Seleccionado:</span>
-                            <span id="summary-plan-name" class="font-black text-slate-900">Plan Patitas Básico</span>
+                            <span id="summary-plan-name" class="font-black text-slate-900">{{ $planBasicoName }}</span>
                         </div>
                         <div class="flex justify-between items-center text-xs">
                             <span class="text-slate-500">Frecuencia:</span>
@@ -1846,7 +1853,7 @@
                 const isPremium = (selectedPlan === 'premium');
                 const isAnnual = (currentCycle === 'annual');
 
-                document.getElementById('summary-plan-name').innerText = isPremium ? 'Plan Patitas Premium' : 'Plan Patitas Básico';
+                document.getElementById('summary-plan-name').innerText = isPremium ? @json($planPremiumName) : @json($planBasicoName);
                 document.getElementById('summary-cycle').innerText = isAnnual ? 'Pago Anual Anticipado (-10%)' : 'Pago Mensual';
                 
                 let priceText = '$50.000 COP / mes';

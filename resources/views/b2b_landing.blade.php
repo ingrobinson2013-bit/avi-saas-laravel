@@ -1552,7 +1552,7 @@
 
                 <div class="space-y-2 pt-1">
                     <a id="success-enter-btn" href="#" class="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center space-x-2">
-                        <span>🚀 Entrar a mi Panel de Control</span>
+                        <span>🚀 Configurar mi Marca y Logotipo (Paso 1)</span>
                         <span id="countdown-timer" class="text-blue-200 text-xs font-normal">(redirigiendo en 6s...)</span>
                     </a>
                     <p class="text-[10px] text-center text-slate-400">Si no haces clic, entrarás automáticamente en unos segundos.</p>

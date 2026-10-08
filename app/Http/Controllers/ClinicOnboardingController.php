@@ -60,12 +60,18 @@ class ClinicOnboardingController extends Controller
                     'address' => 'Sede Principal',
                     'phone' => $validated['phone'],
                     'email' => $validated['email'],
+                    'logo_url' => null,
+                    'hero_image_url' => 'https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=700&auto=format&fit=crop&q=80',
+                    'banner_image_url' => 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=1000',
+                    'banner_video_url' => null,
                     'primary_color' => '#0D9488', // Teal profesional
                     'secondary_color' => '#0F172A',
                     'hero_title' => 'El cuidado de tu mascota, todo el año.',
                     'hero_subtitle' => 'Accede a servicios veterinarios y beneficios exclusivos con una membresía diseñada por ' . $validated['clinic_name'] . '.',
                     'hero_price_badge' => 'Desde $50.000/mes',
                     'payment_nequi' => $validated['phone'],
+                    'payment_bank_info' => '',
+                    'payment_bold_link' => '',
                     'payment_instructions' => 'Transfiere a nuestro Nequi o cuenta y envía tu comprobante indicando el código de tu carnet digital.',
                     'section_how_it_works' => true,
                     'section_plans' => true,
@@ -114,10 +120,10 @@ class ClinicOnboardingController extends Controller
                 \Illuminate\Support\Facades\Log::warning('No se pudo enviar notificación de correo a Robinson: ' . $e->getMessage());
             }
 
-            // 8. Iniciar Sesión de inmediato
+            // 8. Iniciar Sesión de inmediato y redirigir a configurar Logo y Marca
             Auth::login($user, true);
 
-            $targetUrl = "/admin/{$tenant->slug}";
+            $targetUrl = "/admin/{$tenant->slug}/clinic-settings?first_time=1";
 
             if (request()->wantsJson() || request()->ajax()) {
                 return response()->json([

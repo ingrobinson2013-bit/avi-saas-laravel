@@ -25,7 +25,8 @@ class EditTenant extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->hidden(fn ($record) => $record->slug === 'vet-pet-patitas'),
         ];
     }
 }

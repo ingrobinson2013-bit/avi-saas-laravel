@@ -658,6 +658,15 @@ class TenantResource extends Resource
                         ->action(fn (Tenant $record) => $record->update(['is_active' => !$record->is_active])),
 
                     Tables\Actions\EditAction::make(),
+
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Eliminar Clínica y Datos')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->modalHeading(fn (Tenant $record) => "⚠️ ¿Eliminar permanentemente a {$record->name}?")
+                        ->modalDescription('Esta acción es irreversible: se eliminarán automáticamente todos los usuarios, tutores, mascotas, citas y configuraciones de esta clínica en cascada.')
+                        ->modalSubmitActionLabel('Sí, eliminar clínica')
+                        ->hidden(fn (Tenant $record) => $record->slug === 'vet-pet-patitas'),
                 ]),
             ])
             ->bulkActions([

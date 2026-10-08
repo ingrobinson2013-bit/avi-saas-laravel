@@ -125,8 +125,12 @@ class Tenant extends Model
         );
 
         // 2. Plan Básico ($50.000 COP)
+        $isPilot = ($this->slug === 'vet-pet-patitas');
+        $basicPlanName = $isPilot ? 'Plan Patitas Básico' : 'Plan Bienestar Básico';
+        $premiumPlanName = $isPilot ? 'Plan Patitas Premium' : 'Plan Salud Total';
+
         $planBasico = Plan::firstOrCreate(
-            ['tenant_id' => $this->id, 'name' => 'Plan Patitas Básico'],
+            ['tenant_id' => $this->id, 'name' => $basicPlanName],
             [
                 'description' => 'Afiliación $50.000 + mensualidad de $50.000 COP. Incluye Kit Bienvenida, 3 consultas, vacunas, desparasitaciones y descuentos.',
                 'price_cop' => 50000.00,
@@ -148,15 +152,13 @@ class Tenant extends Model
 
         // 3. Plan Premium ($80.000 COP)
         $planPremium = Plan::firstOrCreate(
-            ['tenant_id' => $this->id, 'name' => 'Plan Patitas Premium'],
+            ['tenant_id' => $this->id, 'name' => $premiumPlanName],
             [
                 'description' => 'Primer mes $150.000 y $80.000 COP desde el 2do mes. Cobertura premium total con laboratorio, consultas, vacunación y servicio funerario 100% incluido.',
                 'price_cop' => 80000.00,
                 'billing_interval' => 'monthly',
                 'is_active' => true,
             ]
-        );
-
         PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bKit->id], ['quantity' => 1]);
         PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bConsultaVirtual->id], ['quantity' => 999]);
         PlanBenefit::firstOrCreate(['plan_id' => $planPremium->id, 'benefit_definition_id' => $bConsultaPresencial->id], ['quantity' => 3]);
