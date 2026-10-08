@@ -356,13 +356,23 @@ Route::get('/sitemap.xml', function () {
     $xml .= "    <priority>1.0</priority>\n";
     $xml .= "  </url>\n";
 
-    // 2. Vitrinas B2C de cada Clínica Veterinaria activa
+    // 2. Vitrinas B2C de cada Clínica Veterinaria activa (Subdominio de marca + URL central)
     foreach ($tenants as $tenant) {
         $lastmod = $tenant->updated_at ? $tenant->updated_at->toDateString() : now()->toDateString();
-        $targetUrl = "{$baseUrl}/v/{$tenant->slug}";
+        $subdomainUrl = "https://{$tenant->slug}.avipetapp.com/";
+        $pathUrl = "{$baseUrl}/v/{$tenant->slug}";
         
+        // 2.1 Subdominio Oficial de la Clínica (ej: https://vet-pet-patitas.avipetapp.com/)
         $xml .= "  <url>\n";
-        $xml .= "    <loc>{$targetUrl}</loc>\n";
+        $xml .= "    <loc>{$subdomainUrl}</loc>\n";
+        $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
+        $xml .= "    <changefreq>weekly</changefreq>\n";
+        $xml .= "    <priority>0.90</priority>\n";
+        $xml .= "  </url>\n";
+
+        // 2.2 Ruta Alternativa en Catálogo Central (ej: https://avipetapp.com/v/vet-pet-patitas)
+        $xml .= "  <url>\n";
+        $xml .= "    <loc>{$pathUrl}</loc>\n";
         $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
         $xml .= "    <changefreq>weekly</changefreq>\n";
         $xml .= "    <priority>0.85</priority>\n";
