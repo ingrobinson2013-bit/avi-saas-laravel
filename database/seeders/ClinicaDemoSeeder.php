@@ -34,7 +34,7 @@ class ClinicaDemoSeeder extends Seeder
                     'logo_url' => 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp',
                     'primary_color' => '#0080ff',
                     'secondary_color' => '#000000',
-                    'phone' => '3235813942',
+                    'phone' => '3508742543',
                     'email' => 'petmovilveterinario@gmail.com',
                     'city' => 'Cajicá, Cundinamarca',
                     'address' => 'Calle 7 # 4-73 Este (hacia El Parasol rojo)',

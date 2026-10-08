@@ -86,6 +86,7 @@ export default function VetAdminLayout({
     // Estado del buscador interactivo (Command Palette / ⌘K)
     const [isCommandOpen, setIsCommandOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -187,40 +188,61 @@ export default function VetAdminLayout({
     };
 
     return (
-        <div className="min-h-screen flex bg-[#F3F6FB] text-slate-800 font-sans antialiased selection:bg-blue-500 selection:text-white">
+        <div className="min-h-screen flex bg-[#F3F6FB] text-slate-800 font-sans antialiased selection:bg-blue-500 selection:text-white relative">
             
+            {/* Backdrop para móviles */}
+            {isMobileMenuOpen && (
+                <div 
+                    className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-40 md:hidden"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
+
             {/* =========================================================
-                 SIDEBAR FIJO (DARK NAVY THEME - IDENTICO A LA IMAGEN)
+                 SIDEBAR (DRAWER MÓVIL EN CELULAR / FIJO EN DESKTOP)
                  ========================================================= */}
-            <aside className="w-[235px] 2xl:w-[250px] bg-[#0c1527] text-slate-300 flex flex-col shrink-0 min-h-screen sticky top-0 h-screen select-none z-40 border-r border-slate-800/80">
+            <aside className={`w-[260px] md:w-[235px] 2xl:w-[250px] bg-[#0c1527] text-slate-300 flex flex-col shrink-0 min-h-screen fixed md:sticky top-0 h-screen select-none z-50 md:z-40 border-r border-slate-800/80 transition-transform duration-300 ease-in-out ${
+                isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+            }`}>
                 
                 {/* Brand Header (Marca Blanca Dinámica 100% de la Clínica) */}
-                <div className="h-16 flex items-center gap-2.5 px-3.5 border-b border-slate-800/80 shrink-0">
-                    {logoUrl ? (
-                        <div className="w-10 h-10 rounded-xl bg-white border border-slate-700/80 shadow-xs p-1 flex items-center justify-center shrink-0 overflow-hidden">
-                            <img 
-                                src={logoUrl} 
-                                alt={brandName} 
-                                className="w-full h-full object-contain"
-                            />
+                <div className="h-16 flex items-center justify-between gap-2.5 px-3.5 border-b border-slate-800/80 shrink-0">
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                        {logoUrl ? (
+                            <div className="w-10 h-10 rounded-xl bg-white border border-slate-700/80 shadow-xs p-1 flex items-center justify-center shrink-0 overflow-hidden">
+                                <img 
+                                    src={logoUrl} 
+                                    alt={brandName} 
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
+                        ) : (
+                            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-base shadow-sm shrink-0 font-bold">
+                                🐾
+                            </div>
+                        )}
+                        <div className="flex flex-col min-w-0 flex-1">
+                            <span className="text-[13.5px] font-black text-white leading-tight tracking-tight truncate" title={brandName}>
+                                {brandName}
+                            </span>
+                            <span className="text-[9.5px] font-medium text-slate-400 truncate" title={clinicSubtitle}>
+                                {clinicSubtitle}
+                            </span>
                         </div>
-                    ) : (
-                        <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-base shadow-sm shrink-0 font-bold">
-                            🐾
-                        </div>
-                    )}
-                    <div className="flex flex-col min-w-0 flex-1">
-                        <span className="text-[13.5px] font-black text-white leading-tight tracking-tight truncate" title={brandName}>
-                            {brandName}
-                        </span>
-                        <span className="text-[9.5px] font-medium text-slate-400 truncate" title={clinicSubtitle}>
-                            {clinicSubtitle}
-                        </span>
                     </div>
+
+                    <button 
+                        type="button" 
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition shrink-0"
+                        aria-label="Cerrar menú"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
                 </div>
 
                 {/* Nav Links con Acordeón Jerárquico */}
-                <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-1 scrollbar-thin scrollbar-thumb-slate-700">
+                <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-1 scrollbar-thin scrollbar-thumb-slate-700" onClick={() => setIsMobileMenuOpen(false)}>
                     
                     {/* Inicio */}
                     <Link
@@ -575,7 +597,19 @@ export default function VetAdminLayout({
             <div className="flex-1 flex flex-col min-w-0">
                 
                 {/* TOPBAR */}
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-30 shadow-2xs">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-3 sm:px-6 sticky top-0 z-30 shadow-2xs gap-2">
+                    
+                    {/* Botón menú móvil (hamburguesa) */}
+                    <button
+                        type="button"
+                        onClick={() => setIsMobileMenuOpen(true)}
+                        className="md:hidden p-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 shrink-0"
+                        aria-label="Abrir menú"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
                     
                     {/* Centered Search Pill */}
                     <div className="flex-1 max-w-xl">

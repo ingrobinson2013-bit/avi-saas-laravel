@@ -44,7 +44,7 @@
       "url": "{{ url()->current() }}",
       "logo": "{{ $shareImage }}",
       "image": "{{ $shareImage }}",
-      "telephone": "{{ $tenant->branding['phone'] ?? '+573235813942' }}",
+      "telephone": "{{ $tenant->branding['phone'] ?? ($isPilot ? '+573508742543' : '') }}",
       "priceRange": "$$",
       "address": {
         "@@type": "PostalAddress",
@@ -99,7 +99,7 @@
         $bannerVideo = $tenant->branding['banner_video_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/videos/01M1WMMTC4TCADMGJPNSESE0GR.mp4' : null);
         $city = $tenant->branding['city'] ?? ($isPilot ? 'Cajicá, Cundinamarca' : '');
         $address = $tenant->branding['address'] ?? ($isPilot ? 'Calle 7 # 4-73 Este' : 'Sede Principal');
-        $phone = $tenant->branding['phone'] ?? ($isPilot ? '3235813942' : '');
+        $phone = $tenant->branding['phone'] ?? ($isPilot ? '3508742543' : '');
         $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
         $paymentNequi = $tenant->branding['payment_nequi'] ?? $phone;
         $paymentBank = $tenant->branding['payment_bank_info'] ?? ($isPilot ? 'Bancolombia Ahorros # 123-456789-01 (Titular: ' . $tenant->name . ')' : '');
@@ -252,11 +252,12 @@
                 @endif
             </nav>
 
-            <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
-                <a href="/admin/{{ $tenant->slug }}?preview=1" class="hidden sm:inline-block px-3.5 sm:px-4 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all">
-                    Panel
+            <div class="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
+                <a href="/admin/{{ $tenant->slug }}?preview=1" class="inline-flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all shrink-0">
+                    <span>🔐</span>
+                    <span>Panel</span>
                 </a>
-                <button type="button" onclick="openEnrollModal('basico')" class="px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-black text-white bg-brand-primary hover:opacity-90 rounded-full shadow-md transition-all whitespace-nowrap">
+                <button type="button" onclick="openEnrollModal('basico')" class="px-3 sm:px-5 py-1.5 sm:py-2.5 text-[11px] sm:text-sm font-black text-white bg-brand-primary hover:opacity-90 rounded-full shadow-md transition-all whitespace-nowrap">
                     Afiliar Mascota 🐾
                 </button>
             </div>
@@ -1417,16 +1418,20 @@
     </main>
 
     <!-- STICKY BOTTOM ACTION BAR PARA CELULARES -->
-    <div class="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200 p-3 px-4 flex items-center justify-between gap-3 shadow-2xl">
+    <div class="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200 p-2.5 px-3 sm:px-4 flex items-center justify-between gap-2 shadow-2xl">
         <div class="min-w-0">
-            <p class="text-[10px] text-slate-400 font-black uppercase">Membresía</p>
+            <p class="text-[9px] text-slate-400 font-black uppercase">Membresía</p>
             <p class="text-xs font-black text-slate-900 truncate">{{ $heroPriceBadge }}</p>
         </div>
-        <div class="flex items-center space-x-2 shrink-0">
-            <a href="https://wa.me/57{{ $cleanPhone }}" target="_blank" class="p-2.5 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-200 text-sm">
+        <div class="flex items-center space-x-1.5 shrink-0">
+            <a href="/admin/{{ $tenant->slug }}?preview=1" class="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] rounded-xl border border-slate-200 flex items-center gap-1 transition shadow-2xs">
+                <span>🔐</span>
+                <span>Panel</span>
+            </a>
+            <a href="https://wa.me/57{{ $cleanPhone }}" target="_blank" class="p-2 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-200 text-sm">
                 💬
             </a>
-            <button type="button" onclick="openEnrollModal('basico')" class="px-4 py-2.5 bg-brand-primary text-white font-black text-xs rounded-xl shadow-xs">
+            <button type="button" onclick="openEnrollModal('basico')" class="px-3 py-2 bg-brand-primary text-white font-black text-[11px] sm:text-xs rounded-xl shadow-xs">
                 Afiliar Mascota 🐾
             </button>
         </div>
@@ -1457,6 +1462,12 @@
                 <p class="font-black text-white uppercase tracking-wider mb-2">Contacto Directo</p>
                 <p class="text-slate-400">WhatsApp: <strong class="text-teal-400">{{ $phone }}</strong></p>
                 <p class="text-slate-400">Email: {{ $tenant->branding['email'] ?? ($isPilot ? 'contacto@vetpetpatitas.com' : 'contacto@avipetapp.com') }}</p>
+                <p class="text-slate-400 mt-2">
+                    <a href="/admin/{{ $tenant->slug }}?preview=1" class="inline-flex items-center gap-1 text-teal-400 hover:text-teal-300 font-bold transition">
+                        <span>🔐</span>
+                        <span>Acceso al Panel de Control</span>
+                    </a>
+                </p>
             </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-slate-900 text-center text-slate-400 text-[11px] flex flex-col sm:flex-row items-center justify-between gap-3">
             <div>© {{ date('Y') }} {{ $tenant->name }}. Todos los derechos reservados. Sistema Integral de Membresías y Salud Preventiva.</div>
