@@ -3,6 +3,66 @@
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Route;
 
+// 0. Enrutamiento Dinámico Multi-Tenant por Subdominio (*.avipetapp.com)
+$baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+
+Route::domain('{subdomain}.' . $baseDomain)->group(function () {
+    Route::get('/', function (string $subdomain) {
+        if ($subdomain === 'www') {
+            return view('b2b_landing');
+        }
+        $tenant = Tenant::where('slug', $subdomain)
+            ->orWhere('slug', 'LIKE', "%{$subdomain}%")
+            ->orWhere('domain', 'LIKE', "%{$subdomain}%")
+            ->firstOrFail();
+        $plans = $tenant->plans()->with('planBenefits.benefitDefinition')->where('is_active', true)->get();
+        return view('tenant_storefront', compact('tenant', 'plans'));
+    });
+
+    Route::get('/admin/{section?}', function (string $subdomain, ?string $section = null) {
+        if ($subdomain === 'www') {
+            return redirect('/admin');
+        }
+        $tenant = Tenant::where('slug', $subdomain)
+            ->orWhere('slug', 'LIKE', "%{$subdomain}%")
+            ->orWhere('domain', 'LIKE', "%{$subdomain}%")
+            ->firstOrFail();
+        $target = '/admin/' . $tenant->slug . ($section ? '/' . $section : '');
+        $query = request()->getQueryString();
+        $hasPreview = request('preview') === '1' || !auth()->check();
+        $finalUrl = $target . ($hasPreview ? ($query ? '?' . $query : '?preview=1') : ($query ? '?' . $query : ''));
+        return redirect($finalUrl);
+    })->where('section', '.*');
+
+    Route::post('/afiliar', function (string $subdomain) {
+        $tenant = Tenant::where('slug', $subdomain)
+            ->orWhere('slug', 'LIKE', "%{$subdomain}%")
+            ->orWhere('domain', 'LIKE', "%{$subdomain}%")
+            ->firstOrFail();
+        return app(App\Http\Controllers\StorefrontEnrollmentController::class)->store(request(), $tenant->slug);
+    });
+
+    Route::get('/carnet/{subscription_id}', function (string $subdomain, string $subscription_id) {
+        $tenant = Tenant::where('slug', $subdomain)->orWhere('slug', 'LIKE', "%{$subdomain}%")->firstOrFail();
+        return app(App\Http\Controllers\SubscriptionCarnetController::class)->show(request(), $tenant->slug, $subscription_id);
+    });
+
+    Route::get('/carnet/{subscription_id}/pdf', function (string $subdomain, string $subscription_id) {
+        $tenant = Tenant::where('slug', $subdomain)->orWhere('slug', 'LIKE', "%{$subdomain}%")->firstOrFail();
+        return app(App\Http\Controllers\SubscriptionCarnetController::class)->downloadPdf(request(), $tenant->slug, $subscription_id);
+    });
+
+    Route::get('/afiche', function (string $subdomain) {
+        $tenant = Tenant::where('slug', $subdomain)->orWhere('slug', 'LIKE', "%{$subdomain}%")->firstOrFail();
+        return app(App\Http\Controllers\ClinicFlyerController::class)->show(request(), $tenant->slug);
+    });
+
+    Route::get('/afiche/pdf', function (string $subdomain) {
+        $tenant = Tenant::where('slug', $subdomain)->orWhere('slug', 'LIKE', "%{$subdomain}%")->firstOrFail();
+        return app(App\Http\Controllers\ClinicFlyerController::class)->downloadPdf(request(), $tenant->slug);
+    });
+});
+
 // 1. Landing B2B para vender la Marca Blanca SaaS de AVI-Plan a Veterinarias
 Route::get('/', function () {
     return view('b2b_landing');
