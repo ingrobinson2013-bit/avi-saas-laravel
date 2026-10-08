@@ -88,9 +88,9 @@ class ClinicOnboardingController extends Controller
                 'role' => 'clinic_admin',
             ]);
 
-            // 7. Notificar a Robinson por Correo (Gmail) de inmediato para asesoría
+            // 7. Notificar a Robinson y SuperAdmin por Correo de inmediato para asesoría
             try {
-                $destinatarios = array_filter(array_map('trim', explode(',', env('ADMIN_NOTIFY_EMAILS', 'ingrobinson2013@gmail.com,petmovilveterinario@gmail.com'))));
+                $destinatarios = array_filter(array_map('trim', explode(',', env('ADMIN_NOTIFY_EMAILS', 'contacto@avipetapp.com,ingrobinson2013@gmail.com,petmovilveterinario@gmail.com'))));
                 $waDigits = preg_replace('/[^0-9]/', '', $validated['phone']);
                 $waPrefix = str_starts_with($waDigits, '57') ? $waDigits : "57{$waDigits}";
                 $waLink = "https://wa.me/{$waPrefix}?text=" . urlencode("Hola Dr(a) de {$validated['clinic_name']}, soy Robinson Naranjo de AVI-Plan. Vi que te acabas de registrar para tu prueba de 15 días gratis. Te escribo para asesorarte y ayudarte a dejar listo tu primer plan y tu afiche de mostrador.");
@@ -104,7 +104,8 @@ class ClinicOnboardingController extends Controller
                     . "📅 Fecha: " . now()->format('Y-m-d H:i:s') . "\n\n"
                     . "📲 Escríbele al WhatsApp con 1 clic: {$waLink}\n\n"
                     . "🔗 Panel Admin de la Clínica: " . url("/admin/{$tenant->slug}") . "\n"
-                    . "🌐 Portal Web de Pacientes: " . url("/v/{$tenant->slug}") . "\n";
+                    . "🌐 Portal Web de Pacientes: " . url("/v/{$tenant->slug}") . "\n"
+                    . "⚙️ Gestionar en SuperAdmin: " . url("/super-admin/tenants") . "\n";
 
                 \Illuminate\Support\Facades\Mail::raw($cuerpo, function ($msg) use ($destinatarios, $asunto) {
                     $msg->to($destinatarios)->subject($asunto);

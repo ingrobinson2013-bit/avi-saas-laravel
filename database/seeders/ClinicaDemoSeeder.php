@@ -48,7 +48,7 @@ class ClinicaDemoSeeder extends Seeder
 
         // 2. Usuarios
         $superadmin = User::firstOrCreate(
-            ['email' => 'superadmin@aviplan.co'],
+            ['email' => 'contacto@avipetapp.com'],
             [
                 'name' => 'Dr. Robinson Naranjo (CEO NODIA)',
                 'password' => Hash::make('Ashley2023##'),
