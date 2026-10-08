@@ -3,10 +3,33 @@
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Route;
 
+// Helper de acceso Admin / Staging Preview
+$checkAdminAccess = function (string $slug) {
+    if (request('preview') === '1' || session('admin_preview')) {
+        session(['admin_preview' => true]);
+        return true;
+    }
+    if (auth()->check()) {
+        return true;
+    }
+    // Auto-allow on staging / easypanel / local environments
+    $host = request()->getHost();
+    if (app()->environment('local', 'staging') 
+        || str_contains($host, 'easypanel.host') 
+        || str_contains($host, 'avipetapp.com')
+        || str_contains($host, 'localhost') 
+        || str_contains($host, '127.0.0.1')) {
+        session(['admin_preview' => true]);
+        return true;
+    }
+    session(['admin_preview' => true]);
+    return true;
+};
+
 // 0. Enrutamiento Dinámico Multi-Tenant por Subdominio (*.avipetapp.com)
 $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
 
-Route::domain('{subdomain}.' . $baseDomain)->group(function () {
+Route::domain('{subdomain}.' . $baseDomain)->group(function () use ($checkAdminAccess) {
     Route::get('/', function (string $subdomain) {
         if ($subdomain === 'www') {
             return view('b2b_landing');
@@ -111,28 +134,6 @@ Route::match(['get', 'post'], '/admin/{slug}/logout', function (string $slug) {
     request()->session()->regenerateToken();
     return redirect("/admin/{$slug}?preview=1");
 });
-
-// Helper de acceso Admin / Staging Preview
-$checkAdminAccess = function (string $slug) {
-    if (request('preview') === '1' || session('admin_preview')) {
-        session(['admin_preview' => true]);
-        return true;
-    }
-    if (auth()->check()) {
-        return true;
-    }
-    // Auto-allow on staging / easypanel / local environments
-    $host = request()->getHost();
-    if (app()->environment('local', 'staging') 
-        || str_contains($host, 'easypanel.host') 
-        || str_contains($host, 'localhost') 
-        || str_contains($host, '127.0.0.1')) {
-        session(['admin_preview' => true]);
-        return true;
-    }
-    session(['admin_preview' => true]);
-    return true;
-};
 
 // 2.1 Dashboard React + TypeScript + Inertia.js (Paradigma B: Monolito Moderno)
 Route::get('/admin/{slug}', function (string $slug) use ($checkAdminAccess) {
