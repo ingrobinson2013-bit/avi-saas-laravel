@@ -51,15 +51,6 @@ return new class extends Migration
 
             $tenant->branding = $branding;
             $tenant->save();
-
-            // 2. Renombrar planes heredados con nombre 'Plan Patitas'
-            Plan::where('tenant_id', $tenant->id)
-                ->where('name', 'Plan Patitas Básico')
-                ->update(['name' => 'Plan Bienestar Básico']);
-
-            Plan::where('tenant_id', $tenant->id)
-                ->where('name', 'Plan Patitas Premium')
-                ->update(['name' => 'Plan Salud Total']);
         }
     }
 

@@ -36,8 +36,8 @@
         // Nombres de planes dinámicos
         $planBasicoModel = $plans->where('billing_interval', 'monthly')->first() ?? $plans->first();
         $planPremiumModel = $plans->where('billing_interval', 'monthly')->skip(1)->first() ?? $plans->last();
-        $planBasicoName = $planBasicoModel?->name ?? ($isPilot ? 'Plan Patitas Básico' : 'Plan Bienestar Básico');
-        $planPremiumName = $planPremiumModel?->name ?? ($isPilot ? 'Plan Patitas Premium' : 'Plan Salud Total');
+        $planBasicoName = $planBasicoModel?->name ?? 'Plan Patitas Básico';
+        $planPremiumName = $planPremiumModel?->name ?? 'Plan Patitas Premium';
 
         // Textos del Hero personalizables
         $heroTitle = $tenant->branding['hero_title'] ?? 'El cuidado de tu mascota, todo el año.';
