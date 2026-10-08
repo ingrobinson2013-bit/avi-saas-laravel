@@ -321,8 +321,14 @@ export default function Logistics({
                     </div>
 
                     {filteredOrders.length === 0 && (
-                        <div className="text-center py-8 text-slate-400 text-xs">
-                            No se encontraron despachos con los filtros seleccionados.
+                        <div className="text-center py-12 px-4 space-y-3">
+                            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto text-xl shadow-xs">
+                                📦
+                            </div>
+                            <h4 className="text-sm font-bold text-slate-800">Aún no hay despachos domiciliarios programados</h4>
+                            <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                                Cuando tus tutores afiliados soliciten o tengan programada la entrega periódica de antiparasitarios en su plan preventivo, sus envíos aparecerán listados aquí para rotulado y despacho.
+                            </p>
                         </div>
                     )}
                 </div>

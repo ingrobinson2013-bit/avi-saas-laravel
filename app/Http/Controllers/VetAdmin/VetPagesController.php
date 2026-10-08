@@ -145,14 +145,14 @@ class VetPagesController extends Controller
                     'name' => $pet->name,
                     'species' => $pet->species === 'cat' ? 'Felino' : 'Canino',
                     'breed' => $pet->breed ?: 'Mestizo',
-                    'birthdate' => $pet->birthdate ? $pet->birthdate->format('d/m/Y') : '15/04/2022',
-                    'age' => $pet->birthdate ? $pet->birthdate->age . ' años' : '4 años',
-                    'customer_name' => $pet->customer?->name ?? 'María Camila Rodríguez',
-                    'customer_phone' => $pet->customer?->phone ?? '3508742543',
-                    'plan_name' => $pet->activeSubscription?->plan?->name ?? 'Plan Patitas Básico',
-                    'plan_status' => $pet->activeSubscription?->status ?? 'active',
+                    'birthdate' => $pet->birthdate ? $pet->birthdate->format('d/m/Y') : '',
+                    'age' => $pet->birthdate ? $pet->birthdate->age . ' años' : 'Sin registrar',
+                    'customer_name' => $pet->customer?->name ?? 'Tutor sin asignar',
+                    'customer_phone' => $pet->customer?->phone ?? '',
+                    'plan_name' => $pet->activeSubscription?->plan?->name ?? 'Sin plan activo',
+                    'plan_status' => $pet->activeSubscription?->status ?? 'inactive',
                     'photo_url' => $pet->photo_url,
-                    'medical_notes' => $pet->medical_notes ?: 'Vacunación al día. Propenso a alergias de piel estacionales.',
+                    'medical_notes' => $pet->medical_notes ?: '',
                 ];
             });
 
@@ -246,14 +246,14 @@ class VetPagesController extends Controller
                 return [
                     'id' => $c->id,
                     'name' => $c->name,
-                    'identification' => $c->identification ?: '1018456789',
-                    'phone' => $c->phone ?: '3508742543',
-                    'email' => $c->email ?: 'mariacamilac@gmail.com',
-                    'address' => $c->address ?: 'Cajicá, Cundinamarca',
+                    'identification' => $c->identification ?: '',
+                    'phone' => $c->phone ?: '',
+                    'email' => $c->email ?: '',
+                    'address' => $c->address ?: '',
                     'pets_count' => $c->pets->count(),
-                    'pets_names' => $petNames ?: 'Max',
+                    'pets_names' => $petNames ?: 'Sin mascotas registradas',
                     'status' => 'active',
-                    'created_at' => $c->created_at ? $c->created_at->format('d/m/Y') : '01/09/2026',
+                    'created_at' => $c->created_at ? $c->created_at->format('d/m/Y') : now()->format('d/m/Y'),
                 ];
             });
 
@@ -361,21 +361,21 @@ class VetPagesController extends Controller
                 $walletBalance = (float) ($s->wallet?->balance_cop ?? 0);
                 return [
                     'id' => $s->id,
-                    'pet_name' => $s->pet?->name ?? 'Max',
-                    'pet_breed' => $s->pet?->breed ?? 'Golden Retriever',
+                    'pet_name' => $s->pet?->name ?? 'Mascota',
+                    'pet_breed' => $s->pet?->breed ?? 'Mestizo',
                     'pet_species' => $s->pet?->species ?? 'dog',
                     'pet_photo_url' => $s->pet?->photo_url,
-                    'customer_name' => $s->pet?->customer?->name ?? 'María Camila Rodríguez',
-                    'customer_phone' => $s->pet?->customer?->phone ?? '3508742543',
-                    'plan_name' => $s->plan?->name ?? 'Plan Patitas Básico',
-                    'price_cop' => (float) ($s->plan?->price_cop ?? 50000),
-                    'formatted_price' => '$' . number_format($s->plan?->price_cop ?? 50000, 0, ',', '.') . ' COP',
+                    'customer_name' => $s->pet?->customer?->name ?? 'Tutor sin asignar',
+                    'customer_phone' => $s->pet?->customer?->phone ?? '',
+                    'plan_name' => $s->plan?->name ?? 'Plan de Salud',
+                    'price_cop' => (float) ($s->plan?->price_cop ?? 0),
+                    'formatted_price' => '$' . number_format($s->plan?->price_cop ?? 0, 0, ',', '.') . ' COP',
                     'wallet_balance' => $walletBalance,
                     'formatted_wallet' => '$' . number_format($walletBalance, 0, ',', '.') . ' COP',
                     'status' => $s->status ?? 'active',
                     'status_label' => ($s->status === 'active') ? 'Activo · Al día' : 'Pendiente',
-                    'start_date' => $s->current_period_start ? \Carbon\Carbon::parse($s->current_period_start)->format('d/m/Y') : '01/10/2026',
-                    'end_date' => $s->current_period_end ? \Carbon\Carbon::parse($s->current_period_end)->format('d/m/Y') : '31/10/2026',
+                    'start_date' => $s->current_period_start ? \Carbon\Carbon::parse($s->current_period_start)->format('d/m/Y') : now()->format('d/m/Y'),
+                    'end_date' => $s->current_period_end ? \Carbon\Carbon::parse($s->current_period_end)->format('d/m/Y') : now()->addMonth()->format('d/m/Y'),
                 ];
             });
 
@@ -504,7 +504,8 @@ class VetPagesController extends Controller
                 ];
             });
 
-        if ($history->isEmpty()) {
+        $isPilot = ($ctx['tenant']?->slug === 'vet-pet-patitas');
+        if ($history->isEmpty() && $isPilot) {
             $history = collect([
                 [
                     'id' => 'red-001',
@@ -574,7 +575,8 @@ class VetPagesController extends Controller
                 ];
             });
 
-        if ($history->isEmpty()) {
+        $isPilot = ($ctx['tenant']?->slug === 'vet-pet-patitas');
+        if ($history->isEmpty() && $isPilot) {
             $history = collect([
                 [
                     'id' => 'red-001',
@@ -1134,26 +1136,27 @@ class VetPagesController extends Controller
             ->map(function ($order) {
                 return [
                     'id' => $order->id,
-                    'pet_name' => $order->pet?->name ?? 'Max',
+                    'pet_name' => $order->pet?->name ?? 'Mascota',
                     'pet_species' => $order->pet?->species === 'cat' ? 'Felino' : 'Canino',
-                    'pet_breed' => $order->pet?->breed ?? 'Golden Retriever',
-                    'customer_name' => $order->customer?->name ?? 'María Camila Rodríguez',
+                    'pet_breed' => $order->pet?->breed ?? 'Mestizo',
+                    'customer_name' => $order->customer?->name ?? 'Tutor',
                     'recipient_phone' => $order->recipient_phone,
                     'delivery_address' => $order->delivery_address,
                     'product_name' => $order->product_name,
                     'dosage' => $order->dosage,
                     'frequency_label' => "Cada {$order->frequency_months} meses",
-                    'scheduled_date' => $order->scheduled_dispatch_date ? $order->scheduled_dispatch_date->format('d/m/Y') : '15/10/2026',
+                    'scheduled_date' => $order->scheduled_dispatch_date ? $order->scheduled_dispatch_date->format('d/m/Y') : now()->format('d/m/Y'),
                     'status' => $order->status,
                     'status_label' => $order->status_label,
                     'courier_name' => $order->courier_name,
                     'tracking_number' => $order->tracking_number,
-                    'whatsapp_tracking_url' => 'https://wa.me/' . preg_replace('/\D/', '', $order->recipient_phone) . '?text=' . urlencode("📦 ¡Hola " . ($order->customer?->name ?? 'Tutor') . "! Tu despacho preventivo de " . $order->product_name . " para " . ($order->pet?->name ?? 'tu mascota') . " está " . $order->status_label . ". Dirección: " . $order->delivery_address . ". ¡Cuidado oportuno sin salir de casa con Vet-Pet Patitas!"),
+                    'whatsapp_tracking_url' => 'https://wa.me/' . preg_replace('/\D/', '', $order->recipient_phone) . '?text=' . urlencode("📦 ¡Hola " . ($order->customer?->name ?? 'Tutor') . "! Tu despacho preventivo de " . $order->product_name . " para " . ($order->pet?->name ?? 'tu mascota') . " está " . $order->status_label . ". Dirección: " . $order->delivery_address . "."),
                 ];
             });
 
-        // Si la tabla aún no tiene registros en BD, retornamos pedidos de demostración inicial
-        if ($orders->isEmpty()) {
+        // Solo mostramos pedidos demostrativos en la clínica piloto fundadora si aún no hay registros en BD
+        $isPilot = ($ctx['tenant']?->slug === 'vet-pet-patitas');
+        if ($orders->isEmpty() && $isPilot) {
             $orders = collect([
                 [
                     'id' => 'disp-001',
@@ -1225,7 +1228,7 @@ class VetPagesController extends Controller
                 'total_shipped' => $totalShipped,
                 'total_delivered' => $totalDelivered,
                 'total_orders' => $orders->count(),
-                'adherence_rate' => '98.5%',
+                'adherence_rate' => $orders->isEmpty() ? '100%' : '98.5%',
             ],
         ]));
     }
