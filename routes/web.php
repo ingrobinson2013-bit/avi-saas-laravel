@@ -19,7 +19,7 @@ Route::domain('{subdomain}.' . $baseDomain)->group(function () {
         return view('tenant_storefront', compact('tenant', 'plans'));
     });
 
-    Route::get('/admin/{section?}', function (string $subdomain, ?string $section = null) {
+    Route::get('/admin/{section?}', function (string $subdomain, ?string $section = null) use ($checkAdminAccess) {
         if ($subdomain === 'www') {
             return redirect('/admin');
         }
@@ -27,10 +27,18 @@ Route::domain('{subdomain}.' . $baseDomain)->group(function () {
             ->orWhere('slug', 'LIKE', "%{$subdomain}%")
             ->orWhere('domain', 'LIKE', "%{$subdomain}%")
             ->firstOrFail();
-        $target = '/admin/' . $tenant->slug . ($section ? '/' . $section : '');
+
+        if ($section === null || $section === $tenant->slug) {
+            $checkAdminAccess($tenant->slug);
+            return app(App\Http\Controllers\VetAdmin\DashboardController::class)->index(request(), $tenant->slug);
+        }
+
+        if (str_starts_with($section, $tenant->slug . '/')) {
+            $section = substr($section, strlen($tenant->slug) + 1);
+        }
+
         $query = request()->getQueryString();
-        $hasPreview = request('preview') === '1' || !auth()->check();
-        $finalUrl = $target . ($hasPreview ? ($query ? '?' . $query : '?preview=1') : ($query ? '?' . $query : ''));
+        $finalUrl = '/admin/' . $tenant->slug . '/' . $section . ($query ? '?' . $query : '?preview=1');
         return redirect($finalUrl);
     })->where('section', '.*');
 
