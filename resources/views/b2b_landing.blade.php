@@ -73,6 +73,52 @@
           "description": "Software especializado para que clínicas veterinarias creen, cobren y gestionen planes de bienestar y salud preventiva para mascotas.",
           "url": "https://avipetapp.com",
           "image": "{{ url('/logo-app.png') }}"
+        },
+        {
+          "@@type": "FAQPage",
+          "@@id": "https://avipetapp.com/#faq",
+          "mainEntity": [
+            {
+              "@@type": "Question",
+              "name": "¿En qué momento se paga el servicio de AVI-Plan?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Siempre es mes anticipado (prepago), garantizando cero deudas acumuladas. Tienes 15 días gratis para probar la plataforma sin tarjeta de crédito. Luego puedes recargar paquetes prepago de 10 mascotas por $50.000 COP o activar mensualidad plana."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Tengo que reemplazar mi software actual de historia clínica veterinaria?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "No. AVI-Plan no compite con tu software de historia clínica tradicional. Es una plataforma especializada en planes de bienestar, membresías y facturación recurrente para mascotas que convive perfectamente con cualquier sistema."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿AVI-Plan cobra comisión por cada plan de salud vendido en la clínica?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "No. El 100% del dinero cobrado a tus clientes va directo a tus cuentas o pasarelas de pago. No retenemos comisiones por transacción."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Puedo crear mis propios planes de salud veterinaria con precios y servicios personalizados?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Sí, con total libertad. Puedes definir el nombre de tus planes, qué servicios incluye cada uno (vacunas, desparasitación, consultas, profilaxis o baños) y la cuota mensual en pesos colombianos."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Cómo beneficia el Carnet Digital para mascotas a la clínica?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "El carnet digital con código QR se envía directamente por WhatsApp al tutor, permitiendo validar vigencias, coberturas y realizar canjes en recepción en 2 segundos sin papeleos ni carnets de cartón."
+              }
+            }
+          ]
         }
       ]
     }

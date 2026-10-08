@@ -1458,9 +1458,11 @@
                 <p class="text-slate-400">WhatsApp: <strong class="text-teal-400">{{ $phone }}</strong></p>
                 <p class="text-slate-400">Email: {{ $tenant->branding['email'] ?? ($isPilot ? 'contacto@vetpetpatitas.com' : 'contacto@avipetapp.com') }}</p>
             </div>
-        </div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-slate-900 text-center text-slate-400 text-[11px]">
-            © {{ date('Y') }} {{ $tenant->name }}. Todos los derechos reservados. Sistema Integral de Membresías y Salud Preventiva.
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-slate-900 text-center text-slate-400 text-[11px] flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div>© {{ date('Y') }} {{ $tenant->name }}. Todos los derechos reservados. Sistema Integral de Membresías y Salud Preventiva.</div>
+            <div class="text-slate-400">
+                Tecnología y Planes de Salud Preventiva por <a href="https://avipetapp.com" target="_blank" rel="follow" title="AVI-Plan — Software SaaS de Planes de Salud para Mascotas en Colombia" class="text-teal-400 hover:text-teal-300 font-bold underline decoration-teal-500/50">AVI-Plan</a>
+            </div>
         </div>
     </footer>
 

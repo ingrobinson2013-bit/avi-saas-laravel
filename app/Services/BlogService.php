@@ -286,6 +286,137 @@ Si tu prioridad exclusiva es archivar historias clínicas de urgencias, un softw
     </a>
 </div>
 HTML,
+            ],
+            [
+                'slug' => 'como-calcular-precio-planes-salud-veterinaria-plantilla-costos',
+                'title' => 'Cómo Calcular el Precio de los Planes de Salud para Mascotas: Plantilla de Costos y Margen para Veterinarias',
+                'excerpt' => 'Guía actuarial práctica para clínicas veterinarias en Colombia: cómo calcular el costo unitario de insumos biológicos, horas médicas y fijar cuotas mensuales con un 65% de margen neto real.',
+                'category' => 'Finanzas & Rentabilidad',
+                'read_time' => '9 min de lectura',
+                'author' => 'Robinson R. & Equipo Actuarial AVI',
+                'author_role' => 'Ingeniero en Telecomunicaciones & Director Técnico',
+                'published_at' => '2026-10-08',
+                'updated_at' => '2026-10-08',
+                'image' => 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',
+                'keywords' => [
+                    'como calcular precios veterinaria',
+                    'plantilla costos clinica veterinaria',
+                    'margen ganancia planes salud mascotas',
+                    'fijacion precios veterinaria colombia',
+                    'costo vacunas desparasitacion perros gatos'
+                ],
+                'content' => <<<'HTML'
+<p class="lead text-lg text-slate-700 leading-relaxed font-medium mb-6">
+Uno de los mayores temores de un director médico veterinario al lanzar planes de bienestar es: <em>"¿Y si pongo un precio muy bajo y termino perdiendo dinero en insumos o tiempo médico?"</em>. Fijar precios por intuición o copiando a la clínica del frente sin conocer tus costos reales es la receta perfecta para el fracaso financiero.
+</p>
+
+<div class="bg-emerald-50 border-l-4 border-emerald-600 p-5 rounded-r-xl my-6">
+    <p class="text-emerald-950 font-bold mb-1">Regla de Oro Actuarial en AVI-Plan:</p>
+    <p class="text-emerald-900 text-sm">
+        Un plan de salud preventiva bien estructurado debe arrojar entre un <strong>60% y un 70% de margen bruto sobre insumos</strong>, asumiendo una tasa de redención (uso real) del 75% al 85% a lo largo de los 12 meses del año.
+    </p>
+</div>
+
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">1. Desglose de Costos Directos Anuales (Ejemplo Real Canino en Colombia)</h2>
+<p class="text-slate-700 leading-relaxed mb-4">
+Calculemos el costo de adquisición de insumos al por mayor (precios de distribuidor veterinario en Colombia para un perro adulto de 10 a 20 kg):
+</p>
+
+<div class="overflow-x-auto my-6">
+    <table class="w-full text-left text-sm border-collapse border border-slate-200">
+        <thead>
+            <tr class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
+                <th class="p-3 border-r border-slate-200">Servicio / Insumo</th>
+                <th class="p-3 border-r border-slate-200">Frecuencia Anual</th>
+                <th class="p-3 border-r border-slate-200">Costo Unitario Distribuidor</th>
+                <th class="p-3">Costo Total Anual</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200 text-slate-600">
+            <tr>
+                <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Vacuna Séxtuple / Polivalente</td>
+                <td class="p-3 border-r border-slate-200">1 al año</td>
+                <td class="p-3 border-r border-slate-200">$22.000 COP</td>
+                <td class="p-3 font-semibold text-slate-900">$22.000 COP</td>
+            </tr>
+            <tr>
+                <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Vacuna Antirrábica</td>
+                <td class="p-3 border-r border-slate-200">1 al año</td>
+                <td class="p-3 border-r border-slate-200">$8.500 COP</td>
+                <td class="p-3 font-semibold text-slate-900">$8.500 COP</td>
+            </tr>
+            <tr>
+                <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Vacuna Traqueobronquitis (KC / Tos de las Perreras)</td>
+                <td class="p-3 border-r border-slate-200">1 al año</td>
+                <td class="p-3 border-r border-slate-200">$18.000 COP</td>
+                <td class="p-3 font-semibold text-slate-900">$18.000 COP</td>
+            </tr>
+            <tr>
+                <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Desparasitación Interna (Pastillas amplio espectro)</td>
+                <td class="p-3 border-r border-slate-200">4 dosis (trimestral)</td>
+                <td class="p-3 border-r border-slate-200">$9.000 COP c/u</td>
+                <td class="p-3 font-semibold text-slate-900">$36.000 COP</td>
+            </tr>
+            <tr>
+                <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Material Médico Menor (Jeringas, agujas, alcohol, algodón)</td>
+                <td class="p-3 border-r border-slate-200">7 aplicaciones</td>
+                <td class="p-3 border-r border-slate-200">$1.500 COP c/u</td>
+                <td class="p-3 font-semibold text-slate-900">$10.500 COP</td>
+            </tr>
+            <tr class="bg-blue-50/50 font-bold text-slate-900">
+                <td class="p-3 border-r border-slate-200" colspan="3">COSTO TOTAL ANUAL DE INSUMOS POR PACIENTE:</td>
+                <td class="p-3 text-blue-700 text-base">$95.000 COP</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">2. Fijando la Cuota Mensual con la Fórmula AVI-Plan</h2>
+<p class="text-slate-700 leading-relaxed mb-4">
+Si el costo anual directo de biológicos es de <strong>$95.000 COP</strong>, significa que el costo mensual de insumos es de apenas:
+<br>
+<span class="inline-block bg-slate-100 font-mono text-slate-900 font-bold px-3 py-1.5 rounded-lg my-2">$95.000 COP ÷ 12 meses = $7.916 COP al mes por mascota</span>
+</p>
+
+<p class="text-slate-700 leading-relaxed mb-4">
+Ahora aplicamos la fórmula de precio con un <strong>margen bruto objetivo del 65%</strong> para cubrir el tiempo médico de las consultas de control y generar rentabilidad neta:
+</p>
+
+<div class="bg-slate-900 text-emerald-400 font-mono p-5 rounded-2xl my-4 text-sm sm:text-base leading-relaxed">
+    Cuota Mensual Sugerida = (Costo Mensual Insumos) ÷ (1 - Margen Deseado) + Margen Clínico<br>
+    Cuota Mensual = ($7.916) ÷ (1 - 0.65) = $22.617 COP<br>
+    + Asignación de 2 Consultas Médicas Preventivas al Año ($25.000/mes)<br>
+    <strong>= $47.617 COP / mes (Redondeado a $49.000 COP / mes)</strong>
+</div>
+
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">3. La Psicología de Precio para el Tutor de la Mascota</h2>
+<p class="text-slate-700 leading-relaxed mb-4">
+Cuando le dices a un cliente: <em>"Las vacunas anuales y controles te cuestan $380.000 COP de golpe hoy"</em>, muchos tutores postergan la visita o solo pagan la rabia.
+</p>
+<p class="text-slate-700 leading-relaxed mb-4">
+Pero cuando le dices: <em>"Por solo <strong>$49.000 COP al mes</strong> (menos de lo que cuesta una pizza), tu peludo tiene todas sus vacunas del año cubiertas, desparasitación cada 3 meses, carnet digital en tu celular y 2 consultas médicas gratis cuando lo veas decaído"</em>, <strong>más del 35% de los clientes en sala de espera dicen que SÍ inmediatamente</strong>.
+</p>
+
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">4. Los Ingresos Anuales Reales de tu Clínica</h2>
+<p class="text-slate-700 leading-relaxed mb-4">
+Con solo 100 pacientes afiliados a este plan de $49.000 COP:
+</p>
+<ul class="list-disc pl-6 space-y-2 text-slate-700 mb-6">
+    <li><strong>Recaudo Total Anual:</strong> $58.800.000 COP.</li>
+    <li><strong>Gasto Total en Insumos Biológicos:</strong> $9.500.000 COP.</li>
+    <li><strong>Ganancia Bruta Libre para la Clínica:</strong> <strong class="text-emerald-700">$49.300.000 COP</strong> todos los años.</li>
+</ul>
+
+<div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-8 my-8 text-center shadow-xl">
+    <h3 class="text-2xl font-extrabold mb-3">Calcula y Activa los Planes de tu Veterinaria</h3>
+    <p class="text-blue-200 text-sm max-w-xl mx-auto mb-6">
+        No dejes el dinero sobre la mesa. Con AVI-Plan puedes personalizar tus servicios, precios y emitir carnets con código QR en minutos. 15 días gratis.
+    </p>
+    <a href="/registro-clinica" class="inline-flex items-center px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
+        Crear mi Cuenta Gratis (15 Días) →
+    </a>
+</div>
+HTML,
             ]
         ];
     }
