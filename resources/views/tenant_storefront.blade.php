@@ -9,7 +9,7 @@
         $city = $tenant->branding['city'] ?? ($tenant->slug === 'vet-pet-patitas' ? 'Cajicá, Cundinamarca' : '');
         $metaDescription = "Planes de salud preventiva, consultas y vacunas para tu mascota en {$tenant->name}" . ($city ? " en {$city}" : "") . ". Afíliate con carnet digital y cobertura médica inmediata.";
         $shareImage = $tenant->branding['logo_url'] ?? $tenant->branding['hero_image_url'] ?? url('/logo-app.png');
-        $googleTagId = $tenant->branding['google_tag_id'] ?? env('GOOGLE_TAG_ID') ?? env('GOOGLE_ANALYTICS_ID');
+        $googleTagId = $tenant->branding['google_tag_id'] ?? env('GOOGLE_TAG_ID', 'G-YRPKPVXZ2T') ?? env('GOOGLE_ANALYTICS_ID', 'G-YRPKPVXZ2T');
         $gtmId = $tenant->branding['google_tag_manager_id'] ?? env('GOOGLE_TAG_MANAGER_ID');
         $cfToken = env('CLOUDFLARE_ANALYTICS_TOKEN');
     @endphp

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
-        $gaId = env('GOOGLE_TAG_ID') ?: env('GOOGLE_ANALYTICS_ID');
+        $gaId = env('GOOGLE_TAG_ID', 'G-YRPKPVXZ2T') ?: env('GOOGLE_ANALYTICS_ID', 'G-YRPKPVXZ2T');
         $gtmId = env('GOOGLE_TAG_MANAGER_ID');
         $cfToken = env('CLOUDFLARE_ANALYTICS_TOKEN');
         $canonicalUrl = 'https://avipetapp.com';
