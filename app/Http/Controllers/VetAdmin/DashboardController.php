@@ -21,8 +21,8 @@ class DashboardController extends Controller
     public function index(Request $request, ?string $slug = null): Response
     {
         $tenantSlug = $slug ?? $request->route('slug') ?? session('current_tenant_slug') ?? 'vet-pet-patitas';
-        $tenant = Tenant::where('slug', $tenantSlug)->first() ?? Tenant::first();
-        $tenantId = $tenant?->id;
+        $tenant = Tenant::where('slug', $tenantSlug)->firstOrFail();
+        $tenantId = $tenant->id;
 
         // Brand name: Extract real clinic name dynamically from tenant
         $rawBrand = $tenant?->branding['brand_name'] ?? $tenant?->name ?? 'Vet-Pet Patitas';

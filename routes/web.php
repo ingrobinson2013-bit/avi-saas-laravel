@@ -163,6 +163,10 @@ Route::get('/admin/{slug}', function (string $slug) use ($checkAdminAccess, $res
         }
     }
 
+    if (!Tenant::where('slug', $slug)->exists()) {
+        abort(404, "La clínica veterinaria '{$slug}' no existe o fue eliminada.");
+    }
+
     if (!$checkAdminAccess($slug)) {
         session(['url.intended' => '/admin/' . $slug]);
         return redirect('/admin/' . $slug . '?preview=1');

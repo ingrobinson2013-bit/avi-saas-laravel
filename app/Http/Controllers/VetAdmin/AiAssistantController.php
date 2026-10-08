@@ -16,7 +16,7 @@ class AiAssistantController extends Controller
 
     public function chat(Request $request, string $slug): JsonResponse
     {
-        $tenant = Tenant::where('slug', $slug)->first() ?? Tenant::first();
+        $tenant = Tenant::where('slug', $slug)->first();
         if (!$tenant) {
             return response()->json([
                 'success' => false,

@@ -24,8 +24,8 @@ class VetPagesController extends Controller
     private function getTenantContext(Request $request, string $slug): array
     {
         $tenantSlug = $slug ?: 'vet-pet-patitas';
-        $tenant = Tenant::where('slug', $tenantSlug)->first() ?? Tenant::first();
-        $tenantId = $tenant?->id;
+        $tenant = Tenant::where('slug', $tenantSlug)->firstOrFail();
+        $tenantId = $tenant->id;
 
         $rawBrand = $tenant?->branding['brand_name'] ?? $tenant?->name ?? 'Vet-Pet Patitas';
         $brandName = trim(preg_replace('/\s+(Consultorio Veterinario|Clínica Veterinaria|Hospital Veterinario)$/i', '', $rawBrand));
