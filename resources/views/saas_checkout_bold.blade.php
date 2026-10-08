@@ -26,7 +26,7 @@
     <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 shadow-xs">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <a href="/" class="flex items-center space-x-2.5">
-                <img src="/logo.svg" alt="AVI-Plan" class="w-8 h-8 object-contain">
+                <img src="/images/dashboard/brand_logo.png" alt="AVI-Plan" class="w-8 h-8 object-contain">
                 <div class="flex items-center space-x-1.5">
                     <span class="text-lg font-black text-slate-900 tracking-tight">AVI<span class="text-blue-600">Plan</span></span>
                     <span class="text-[10px] font-bold uppercase bg-blue-50 text-blue-800 px-2 py-0.5 rounded-md border border-blue-200">

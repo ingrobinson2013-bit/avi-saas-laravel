@@ -106,7 +106,9 @@
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "{{ $cfToken }}"}'></script>
     @endif
 
-    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -186,8 +188,8 @@
     <header class="sticky top-0 z-50 glass-nav transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between">
             <a href="/" class="flex items-center space-x-3 group">
-                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl shadow-md shadow-blue-900/10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shrink-0 flex items-center justify-center bg-white border border-slate-200">
-                    <img src="/logo.svg" alt="AVI-Plan Logo" class="w-9 h-9 object-contain">
+                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl shadow-md shadow-blue-900/10 group-hover:scale-105 group-hover:rotate-2 transition-all duration-300 shrink-0 flex items-center justify-center bg-white border border-slate-200/90 p-1.5">
+                    <img src="/images/dashboard/brand_logo.png" alt="AVI-Plan Logo" class="w-full h-full object-contain">
                 </div>
                 <div class="flex flex-col">
                     <div class="flex items-center space-x-2">
@@ -1468,7 +1470,7 @@
     <footer class="border-t border-slate-200 py-10 bg-white text-slate-500 text-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
-                <img src="/logo.svg" alt="AVI-Plan Logo" class="w-7 h-7 object-contain">
+                <img src="/images/dashboard/brand_logo.png" alt="AVI-Plan Logo" class="w-8 h-8 object-contain">
                 <div>
                     <span class="font-extrabold text-slate-900">AVI<span class="text-blue-600">Plan</span></span>
                     <span class="text-xs text-slate-500"> — Plataforma de Planes de Bienestar para Veterinarias.</span>
