@@ -338,11 +338,14 @@ Route::get('/impersonate-clinic-stop', [App\Http\Controllers\ImpersonationContro
 
 // 11. SEO: Generador Dinámico de Sitemap XML para Google Search Console
 Route::get('/sitemap.xml', function () {
-    $baseUrl = config('app.url', 'https://avipetapp.com');
-    if (!str_starts_with($baseUrl, 'http')) {
-        $baseUrl = 'https://' . ltrim($baseUrl, '/');
+    $host = request()->getHost();
+    $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+    
+    // Si la petición viene por avipetapp.com o el host es de easypanel, fijar siempre el dominio público canónico
+    $baseUrl = 'https://' . $baseDomain;
+    if (str_contains($host, 'avipetapp.com')) {
+        $baseUrl = 'https://' . $host;
     }
-    $baseUrl = rtrim($baseUrl, '/');
 
     $tenants = Tenant::query()
         ->whereNotNull('slug')
@@ -363,8 +366,10 @@ Route::get('/sitemap.xml', function () {
     // 2. Vitrinas B2C de cada Clínica Veterinaria activa
     foreach ($tenants as $tenant) {
         $lastmod = $tenant->updated_at ? $tenant->updated_at->toDateString() : now()->toDateString();
+        $targetUrl = "{$baseUrl}/v/{$tenant->slug}";
+        
         $xml .= "  <url>\n";
-        $xml .= "    <loc>{$baseUrl}/v/{$tenant->slug}</loc>\n";
+        $xml .= "    <loc>{$targetUrl}</loc>\n";
         $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
         $xml .= "    <changefreq>weekly</changefreq>\n";
         $xml .= "    <priority>0.85</priority>\n";
