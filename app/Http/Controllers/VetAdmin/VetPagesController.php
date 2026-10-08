@@ -35,19 +35,29 @@ class VetPagesController extends Controller
         $clinicSubtitle = $tenant?->branding['tagline'] ?? $tenant?->branding['subtitle'] ?? 'Planes de salud para su mascota';
         $logoUrl = $tenant?->branding['logo_url'] ?? null;
 
-        $saasPlanTier = $tenant?->saas_plan_tier ?? $tenant?->branding['saas_plan'] ?? 'starter';
+        $isPilot = ($tenant->slug === 'vet-pet-patitas');
+        $saasPlanTier = $tenant->saas_plan_tier ?? $tenant->branding['saas_plan'] ?? 'pro';
         $saasPlanNames = [
             'starter' => 'Plan Starter',
-            'pro' => 'Plan Pro',
+            'pro' => 'Plan Profesional',
             'enterprise' => 'Plan Enterprise',
             'pay_per_pet' => 'Plan Por Paciente',
             'basic' => 'Plan Básico',
         ];
-        $saasPlanName = $saasPlanNames[$saasPlanTier] ?? 'Plan Starter';
-        $saasStatus = $tenant?->saas_status ?? $tenant?->branding['saas_status'] ?? 'paid';
-        $saasStatusLabel = ($saasStatus === 'paid') ? 'Activo' : 'Al día';
-        $saasPaidUntil = $tenant?->branding['saas_paid_until'] ?? '2026-10-30';
-        $saasPaidUntilFormatted = $saasPaidUntil ? \Carbon\Carbon::parse($saasPaidUntil)->format('d/m/Y') : '30/10/2026';
+        $saasPlanName = $saasPlanNames[$saasPlanTier] ?? 'Plan Profesional';
+        $saasStatus = $isPilot ? 'paid' : $tenant->saas_status;
+        $daysRemaining = $isPilot ? 999 : $tenant->trial_days_remaining;
+
+        $saasStatusLabel = match ($saasStatus) {
+            'paid' => 'Activo',
+            'trial_active' => "Prueba ({$daysRemaining}d)",
+            'trial_expired' => 'Prueba Vencida',
+            'suspended' => 'Suspendido',
+            default => 'Al día',
+        };
+
+        $saasPaidUntil = $tenant->branding['saas_paid_until'] ?? null;
+        $saasPaidUntilFormatted = $saasPaidUntil ? \Carbon\Carbon::parse($saasPaidUntil)->format('d/m/Y') : ($tenant->trial_ends_at ? $tenant->trial_ends_at->format('d/m/Y') : 'Al día');
 
         $greetingName = 'Dra. Vicky';
         $userName = 'Dra. Vicky Naranjo';
@@ -96,6 +106,10 @@ class VetPagesController extends Controller
                 'statusLabel' => $saasStatusLabel,
                 'paidUntil' => $saasPaidUntilFormatted,
                 'manageUrl' => "/admin/{$tenantSlug}/renovar-saas",
+                'trialActive' => ($saasStatus === 'trial_active'),
+                'isTrialExpired' => ($saasStatus === 'trial_expired'),
+                'daysLeft' => max(0, $daysRemaining),
+                'monthlyFee' => (float) ($tenant->branding['saas_monthly_fee'] ?? 229000),
             ],
             'logoutUrl' => "/admin/{$tenantSlug}/logout",
         ];

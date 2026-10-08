@@ -34,7 +34,8 @@ class DashboardController extends Controller
         $logoUrl = $tenant?->branding['logo_url'] ?? null;
 
         // Estado del Plan SaaS de la Clínica
-        $saasPlanTier = $tenant?->saas_plan_tier ?? $tenant?->branding['saas_plan'] ?? 'pro';
+        $isPilot = ($tenant->slug === 'vet-pet-patitas');
+        $saasPlanTier = $tenant->saas_plan_tier ?? $tenant->branding['saas_plan'] ?? 'pro';
         $saasPlanNames = [
             'starter' => 'Plan Starter',
             'pro' => 'Plan Profesional',
@@ -43,10 +44,19 @@ class DashboardController extends Controller
             'basic' => 'Plan Básico',
         ];
         $saasPlanName = $saasPlanNames[$saasPlanTier] ?? 'Plan Profesional';
-        $saasStatus = $tenant?->saas_status ?? $tenant?->branding['saas_status'] ?? 'paid';
-        $saasStatusLabel = ($saasStatus === 'paid') ? 'Activo' : (($saasStatus === 'trial_active') ? 'Prueba Activa' : 'Por Renovar');
-        $saasPaidUntil = $tenant?->branding['saas_paid_until'] ?? null;
-        $saasPaidUntilFormatted = $saasPaidUntil ? \Carbon\Carbon::parse($saasPaidUntil)->format('d/m/Y') : 'Al día';
+        $saasStatus = $isPilot ? 'paid' : $tenant->saas_status;
+        $daysRemaining = $isPilot ? 999 : $tenant->trial_days_remaining;
+
+        $saasStatusLabel = match ($saasStatus) {
+            'paid' => 'Activo',
+            'trial_active' => "Prueba ({$daysRemaining}d)",
+            'trial_expired' => 'Prueba Vencida',
+            'suspended' => 'Suspendido',
+            default => 'Al día',
+        };
+
+        $saasPaidUntil = $tenant->branding['saas_paid_until'] ?? null;
+        $saasPaidUntilFormatted = $saasPaidUntil ? \Carbon\Carbon::parse($saasPaidUntil)->format('d/m/Y') : ($tenant->trial_ends_at ? $tenant->trial_ends_at->format('d/m/Y') : 'Al día');
         $managePlanUrl = "/admin/{$tenantSlug}/renovar-saas";
         $logoutUrl = "/admin/{$tenantSlug}/logout";
 
@@ -57,6 +67,10 @@ class DashboardController extends Controller
             'statusLabel' => $saasStatusLabel,
             'paidUntil' => $saasPaidUntilFormatted,
             'manageUrl' => $managePlanUrl,
+            'trialActive' => ($saasStatus === 'trial_active'),
+            'isTrialExpired' => ($saasStatus === 'trial_expired'),
+            'daysLeft' => max(0, $daysRemaining),
+            'monthlyFee' => (float) ($tenant->branding['saas_monthly_fee'] ?? 229000),
         ];
 
         // Usuario autenticado

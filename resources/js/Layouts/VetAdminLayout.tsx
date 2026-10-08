@@ -47,6 +47,10 @@ interface VetAdminLayoutProps {
         statusLabel?: string;
         paidUntil?: string;
         manageUrl?: string;
+        trialActive?: boolean;
+        isTrialExpired?: boolean;
+        daysLeft?: number;
+        monthlyFee?: number;
     };
     logoutUrl?: string;
     userName?: string;
@@ -66,7 +70,10 @@ export default function VetAdminLayout({
         name: 'Plan Profesional',
         statusLabel: 'Activo',
         paidUntil: '30/10/2026',
-        manageUrl: `/admin/vet-pet-patitas/renovar-saas`
+        manageUrl: `/admin/vet-pet-patitas/renovar-saas`,
+        trialActive: false,
+        isTrialExpired: false,
+        daysLeft: 15,
     },
     logoutUrl = `/admin/vet-pet-patitas/logout`,
     userName = 'Dra. Vicky Naranjo',
@@ -523,22 +530,42 @@ export default function VetAdminLayout({
                             )}
                             <div className="min-w-0 flex-1">
                                 <div className="text-xs font-black text-white truncate">{brandName}</div>
-                                <div className="text-[10px] text-emerald-400 font-bold flex items-center gap-1">
-                                    <span>Plan Profesional</span>
+                                <div className={`text-[10px] font-bold flex items-center gap-1 ${
+                                    saasPlan?.isTrialExpired ? 'text-rose-400' : saasPlan?.trialActive ? 'text-amber-400' : 'text-emerald-400'
+                                }`}>
+                                    <span>{saasPlan?.name || 'Plan Profesional'}</span>
                                     <span>·</span>
-                                    <span>Activo</span>
+                                    <span>{saasPlan?.statusLabel || (saasPlan?.isTrialExpired ? 'Prueba Vencida' : saasPlan?.trialActive ? 'Prueba Gratuita' : 'Activo')}</span>
                                 </div>
                                 <div className="text-[9.5px] text-slate-400">
-                                    Renueva: 30/10/2026
+                                    {saasPlan?.trialActive ? (
+                                        saasPlan?.isTrialExpired ? (
+                                            <span className="text-rose-400 font-bold">⚠️ Prueba finalizada</span>
+                                        ) : (
+                                            `Prueba: ${saasPlan?.daysLeft ?? 15}d restantes`
+                                        )
+                                    ) : (
+                                        `Renueva: ${saasPlan?.paidUntil || 'Al día'}`
+                                    )}
                                 </div>
                             </div>
                         </div>
 
                         <a 
                             href={saasPlan?.manageUrl || `/admin/${tenantSlug}/renovar-saas`}
-                            className="block w-full py-1.5 px-2 rounded-lg bg-[#1d4ed8] hover:bg-blue-600 text-white text-center text-xs font-bold transition shadow-xs"
+                            className={`block w-full py-1.5 px-2 rounded-lg text-white text-center text-xs font-bold transition shadow-xs ${
+                                saasPlan?.isTrialExpired
+                                    ? 'bg-rose-600 hover:bg-rose-700 animate-pulse'
+                                    : saasPlan?.trialActive
+                                        ? 'bg-amber-600 hover:bg-amber-700'
+                                        : 'bg-[#1d4ed8] hover:bg-blue-600'
+                            }`}
                         >
-                            Gestionar plan
+                            {saasPlan?.isTrialExpired
+                                ? '🚨 Activar suscripción'
+                                : saasPlan?.trialActive
+                                    ? '💳 Activar suscripción oficial'
+                                    : 'Gestionar plan'}
                         </a>
                     </div>
                 </div>
@@ -694,6 +721,57 @@ export default function VetAdminLayout({
                         </div>
                     </div>
                 </header>
+
+                {/* BANNER DE PRUEBA SAAS / ALERTA DE PAGO */}
+                {(saasPlan?.trialActive || saasPlan?.isTrialExpired) && (
+                    <div className={`px-6 py-3 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-2xs ${
+                        saasPlan?.isTrialExpired 
+                            ? 'bg-rose-50 border-rose-200 text-rose-900' 
+                            : 'bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border-amber-200 text-amber-900'
+                    }`}>
+                        <div className="flex items-center gap-3">
+                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-base shadow-xs ${
+                                saasPlan?.isTrialExpired ? 'bg-rose-100 text-rose-700 border border-rose-300' : 'bg-amber-100 text-amber-700 border border-amber-300'
+                            }`}>
+                                {saasPlan?.isTrialExpired ? '🚨' : '⏳'}
+                            </div>
+                            <div>
+                                {saasPlan?.isTrialExpired ? (
+                                    <div className="leading-snug">
+                                        <p className="font-extrabold text-rose-950">Tu período de prueba de 15 días ha finalizado</p>
+                                        <p className="text-[11px] text-rose-700 mt-0.5">
+                                            Activa tu canon mensual ($229.000 COP) para mantener tu vitrina pública, auto-afiliaciones y emisión de carnets.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="leading-snug">
+                                        <p className="font-extrabold text-amber-950 flex items-center gap-1.5">
+                                            <span>Estás en tus 15 Días de Prueba Gratis</span>
+                                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 font-black">
+                                                {saasPlan?.daysLeft ?? 15} días restantes
+                                            </span>
+                                        </p>
+                                        <p className="text-[11px] text-amber-800 mt-0.5">
+                                            Tienes acceso completo al Plan Profesional. Puedes activar tu suscripción con Bold en cualquier momento.
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <a
+                            href={saasPlan?.manageUrl || `/admin/${tenantSlug}/renovar-saas`}
+                            className={`px-4 py-2 rounded-xl font-bold text-xs shrink-0 transition flex items-center justify-center gap-1.5 shadow-xs ${
+                                saasPlan?.isTrialExpired
+                                    ? 'bg-rose-600 hover:bg-rose-700 text-white'
+                                    : 'bg-amber-600 hover:bg-amber-700 text-white'
+                            }`}
+                        >
+                            <span>💳 Activar Suscripción con Bold</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                        </a>
+                    </div>
+                )}
 
                 {/* MAIN PAGE VIEW INJECTED HERE */}
                 <main className="flex-1 p-6">
