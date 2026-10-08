@@ -9,15 +9,42 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     @php
-        $subdomain = request()->route('subdomain');
-        $tenantSlug = request()->route('slug') ?? $subdomain ?? session('current_tenant_slug') ?? 'vet-pet-patitas';
-        $currentTenant = \App\Models\Tenant::where('slug', $tenantSlug)
-            ->orWhere('slug', 'LIKE', "%{$tenantSlug}%")
-            ->orWhere('domain', 'LIKE', "%{$tenantSlug}%")
-            ->first() ?? \App\Models\Tenant::first();
+        $host = request()->getHost();
+        $cleanHost = strtolower(trim($host));
+        $hostNoWww = preg_replace('/^www\./', '', $cleanHost);
+        $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+
+        $tenantSlug = request()->route('slug') ?? request()->route('subdomain') ?? session('current_tenant_slug');
+        $currentTenant = null;
+
+        if ($tenantSlug) {
+            $currentTenant = \App\Models\Tenant::where('slug', $tenantSlug)
+                ->orWhere('domain', 'LIKE', "%{$tenantSlug}%")
+                ->first();
+        }
+
+        if (!$currentTenant && !in_array($hostNoWww, ['localhost', '127.0.0.1', $baseDomain])) {
+            $currentTenant = \App\Models\Tenant::where('domain', $cleanHost)
+                ->orWhere('domain', $hostNoWww)
+                ->first();
+
+            if (!$currentTenant && str_ends_with($cleanHost, '.' . $baseDomain)) {
+                $sub = str_replace('.' . $baseDomain, '', $hostNoWww);
+                if ($sub !== 'www') {
+                    $currentTenant = \App\Models\Tenant::where('slug', $sub)->first();
+                }
+            }
+        }
+
+        if (!$currentTenant) {
+            $currentTenant = \App\Models\Tenant::where('slug', 'vet-pet-patitas')->first() ?? \App\Models\Tenant::first();
+        }
+
         $favIcon = $currentTenant?->branding['logo_url'] ?? '/logo-app.png';
+        $clinicPageTitle = $currentTenant ? ($currentTenant->name . ' · Portal Clínico AVI') : 'AVI-Plan · Portal Veterinario';
     @endphp
-    <link rel="icon" href="{{ $favIcon }}">
+    <title inertia>{{ $clinicPageTitle }}</title>
+    <link rel="icon" type="image/webp" href="{{ $favIcon }}">
     <link rel="shortcut icon" href="{{ $favIcon }}">
     <link rel="apple-touch-icon" href="{{ $favIcon }}">
 

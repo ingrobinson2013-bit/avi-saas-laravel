@@ -27,7 +27,7 @@ class ClinicaDemoSeeder extends Seeder
             ['slug' => 'vet-pet-patitas'],
             [
                 'name' => 'Vet-Pet Patitas Consultorio Veterinario',
-                'domain' => 'patitas.aviplan.co',
+                'domain' => 'vet-pet-patitas.avipetapp.com',
                 'branding' => [
                     'brand_name' => 'Vet-Pet Patitas',
                     'tagline' => 'Planes de salud para su mascota',

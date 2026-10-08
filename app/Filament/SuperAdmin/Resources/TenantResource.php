@@ -158,8 +158,10 @@ class TenantResource extends Resource
                                     ->placeholder('Calle 7 # 4-73'),
 
                                 Forms\Components\TextInput::make('domain')
-                                    ->label('Dominio Personalizado (Opcional)')
-                                    ->placeholder('ej. mi-veterinaria.com')
+                                    ->label('Dominio Oficial / Subdominio de la Clínica')
+                                    ->placeholder('ej. vet-pet-patitas.avipetapp.com o planes.veterinariapatitas.com')
+                                    ->helperText('Configura el dominio o subdominio asignado a esta clínica. El sistema adaptará automáticamente la tienda de afiliación y el panel administrativo. Recuerda agregar este mismo dominio en Easypanel (App -> Domains).')
+                                    ->dehydrateStateUsing(fn (?string $state): ?string => $state ? strtolower(trim(preg_replace('#^https?://#', '', rtrim($state, '/')))) : null)
                                     ->maxLength(255),
                             ]),
 
@@ -305,6 +307,17 @@ class TenantResource extends Resource
                         $days = $record->trial_days_remaining;
                         return $days > 3 ? 'warning' : 'danger';
                     }),
+
+                Tables\Columns\TextColumn::make('domain')
+                    ->label('Dominio Oficial')
+                    ->badge()
+                    ->color('info')
+                    ->icon('heroicon-m-globe-alt')
+                    ->copyable()
+                    ->copyMessage('Dominio copiado')
+                    ->url(fn (Tenant $record): ?string => $record->domain ? 'https://' . $record->domain : null, true)
+                    ->placeholder('Sin dominio (usa /v/' . '{slug})')
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('saas_plan_tier')
                     ->label('Plan SaaS')

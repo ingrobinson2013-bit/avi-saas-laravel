@@ -26,87 +26,94 @@ $checkAdminAccess = function (string $slug) {
     return true;
 };
 
-// 0. Enrutamiento Dinámico Multi-Tenant por Subdominio (*.avipetapp.com)
-$baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+// 0. Resolver Dinámico de Clínica por Host (Subdominio *.avipetapp.com o Dominio Personalizado en BD)
+$resolveTenantFromHost = function (): ?Tenant {
+    try {
+        $host = request()->getHost();
+        $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+        $cleanHost = strtolower(trim($host));
+        $hostWithoutWww = preg_replace('/^www\./', '', $cleanHost);
 
-Route::domain('{subdomain}.' . $baseDomain)->group(function () use ($checkAdminAccess) {
-    Route::get('/', function (string $subdomain) {
-        if ($subdomain === 'www') {
-            return view('b2b_landing');
+        // Si es el dominio base principal o entorno local general, no forzar tenant a nivel de host
+        if (in_array($hostWithoutWww, ['localhost', '127.0.0.1', $baseDomain]) || str_contains($cleanHost, 'easypanel.host')) {
+            return null;
         }
-        $tenant = Tenant::where('slug', $subdomain)
-            ->orWhere('slug', 'LIKE', "%{$subdomain}%")
-            ->orWhere('domain', 'LIKE', "%{$subdomain}%")
-            ->firstOrFail();
+
+        // 1. Coincidencia exacta con el campo 'domain' configurado en la BD por el SuperAdmin
+        $tenant = Tenant::where(function ($query) use ($cleanHost, $hostWithoutWww) {
+            $query->where('domain', $cleanHost)
+                  ->orWhere('domain', $hostWithoutWww)
+                  ->orWhere('domain', 'https://' . $cleanHost)
+                  ->orWhere('domain', 'http://' . $cleanHost)
+                  ->orWhere('domain', 'https://' . $hostWithoutWww)
+                  ->orWhere('domain', 'http://' . $hostWithoutWww);
+        })->first();
+
+        if ($tenant) {
+            return $tenant;
+        }
+
+        // 2. Coincidencia automática por subdominio de avipetapp.com (ej: vet-pet-patitas.avipetapp.com)
+        if (str_ends_with($cleanHost, '.' . $baseDomain)) {
+            $subdomain = str_replace('.' . $baseDomain, '', $hostWithoutWww);
+            if (!empty($subdomain) && $subdomain !== 'www') {
+                return Tenant::where('slug', $subdomain)
+                    ->orWhere('slug', 'LIKE', "%{$subdomain}%")
+                    ->orWhere('domain', 'LIKE', "%{$subdomain}%")
+                    ->first();
+            }
+        }
+
+        return null;
+    } catch (\Throwable $e) {
+        return null;
+    }
+};
+
+// 1. Landing Principal B2B ó Storefront de Clínica si el dominio/subdominio está asignado
+Route::get('/', function () use ($resolveTenantFromHost) {
+    $tenant = $resolveTenantFromHost();
+    if ($tenant) {
         $plans = $tenant->plans()->with('planBenefits.benefitDefinition')->where('is_active', true)->get();
         return view('tenant_storefront', compact('tenant', 'plans'));
-    });
-
-    Route::get('/admin/{section?}', function (string $subdomain, ?string $section = null) use ($checkAdminAccess) {
-        if ($subdomain === 'www') {
-            return redirect('/admin');
-        }
-        $tenant = Tenant::where('slug', $subdomain)
-            ->orWhere('slug', 'LIKE', "%{$subdomain}%")
-            ->orWhere('domain', 'LIKE', "%{$subdomain}%")
-            ->firstOrFail();
-
-        if ($section === $tenant->slug) {
-            $query = request()->getQueryString();
-            return redirect('/admin' . ($query ? '?' . $query : '?preview=1'));
-        }
-
-        if ($section === null) {
-            $checkAdminAccess($tenant->slug);
-            return app(App\Http\Controllers\VetAdmin\DashboardController::class)->index(request(), $tenant->slug);
-        }
-
-        if (str_starts_with($section, $tenant->slug . '/')) {
-            $section = substr($section, strlen($tenant->slug) + 1);
-        }
-
-        $query = request()->getQueryString();
-        $finalUrl = '/admin/' . $tenant->slug . '/' . $section . ($query ? '?' . $query : '?preview=1');
-        return redirect($finalUrl);
-    })->where('section', '.*');
-
-    Route::post('/afiliar', function (string $subdomain) {
-        $tenant = Tenant::where('slug', $subdomain)
-            ->orWhere('slug', 'LIKE', "%{$subdomain}%")
-            ->orWhere('domain', 'LIKE', "%{$subdomain}%")
-            ->firstOrFail();
-        return app(App\Http\Controllers\StorefrontEnrollmentController::class)->store(request(), $tenant->slug);
-    });
-
-    Route::get('/carnet/{subscription_id}', function (string $subdomain, string $subscription_id) {
-        $tenant = Tenant::where('slug', $subdomain)->orWhere('slug', 'LIKE', "%{$subdomain}%")->firstOrFail();
-        return app(App\Http\Controllers\SubscriptionCarnetController::class)->show(request(), $tenant->slug, $subscription_id);
-    });
-
-    Route::get('/carnet/{subscription_id}/pdf', function (string $subdomain, string $subscription_id) {
-        $tenant = Tenant::where('slug', $subdomain)->orWhere('slug', 'LIKE', "%{$subdomain}%")->firstOrFail();
-        return app(App\Http\Controllers\SubscriptionCarnetController::class)->downloadPdf(request(), $tenant->slug, $subscription_id);
-    });
-
-    Route::get('/afiche', function (string $subdomain) {
-        $tenant = Tenant::where('slug', $subdomain)->orWhere('slug', 'LIKE', "%{$subdomain}%")->firstOrFail();
-        return app(App\Http\Controllers\ClinicFlyerController::class)->show(request(), $tenant->slug);
-    });
-
-    Route::get('/afiche/pdf', function (string $subdomain) {
-        $tenant = Tenant::where('slug', $subdomain)->orWhere('slug', 'LIKE', "%{$subdomain}%")->firstOrFail();
-        return app(App\Http\Controllers\ClinicFlyerController::class)->downloadPdf(request(), $tenant->slug);
-    });
-});
-
-// 1. Landing B2B para vender la Marca Blanca SaaS de AVI-Plan a Veterinarias
-Route::get('/', function () {
+    }
     return view('b2b_landing');
 });
 
+// 1.1 Rutas de Afiliación y Carnet directas para Clínicas con Dominio o Subdominio Propio
+Route::post('/afiliar', function () use ($resolveTenantFromHost) {
+    $tenant = $resolveTenantFromHost();
+    if (!$tenant) abort(404, 'Clínica no identificada en este dominio');
+    return app(App\Http\Controllers\StorefrontEnrollmentController::class)->store(request(), $tenant->slug);
+});
+
+Route::get('/carnet/{subscription_id}', function (string $subscription_id) use ($resolveTenantFromHost) {
+    $tenant = $resolveTenantFromHost();
+    if (!$tenant) abort(404);
+    return app(App\Http\Controllers\SubscriptionCarnetController::class)->show(request(), $tenant->slug, $subscription_id);
+});
+
+Route::get('/carnet/{subscription_id}/pdf', function (string $subscription_id) use ($resolveTenantFromHost) {
+    $tenant = $resolveTenantFromHost();
+    if (!$tenant) abort(404);
+    return app(App\Http\Controllers\SubscriptionCarnetController::class)->downloadPdf(request(), $tenant->slug, $subscription_id);
+});
+
+Route::get('/afiche', function () use ($resolveTenantFromHost) {
+    $tenant = $resolveTenantFromHost();
+    if (!$tenant) abort(404);
+    return app(App\Http\Controllers\ClinicFlyerController::class)->show(request(), $tenant->slug);
+});
+
+Route::get('/afiche/pdf', function () use ($resolveTenantFromHost) {
+    $tenant = $resolveTenantFromHost();
+    if (!$tenant) abort(404);
+    return app(App\Http\Controllers\ClinicFlyerController::class)->downloadPdf(request(), $tenant->slug);
+});
+
 // 2. Redirección amigable de /admin a la clínica activa
-Route::get('/admin', function () {
-    $tenant = auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
+Route::get('/admin', function () use ($resolveTenantFromHost) {
+    $tenant = $resolveTenantFromHost() ?? auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
     if ($tenant) {
         return redirect('/admin/' . $tenant->slug . '?preview=1');
     }
@@ -141,10 +148,21 @@ Route::match(['get', 'post'], '/admin/{slug}/logout', function (string $slug) {
 });
 
 // 2.1 Dashboard React + TypeScript + Inertia.js (Paradigma B: Monolito Moderno)
-Route::get('/admin/{slug}', function (string $slug) use ($checkAdminAccess) {
+Route::get('/admin/{slug}', function (string $slug) use ($checkAdminAccess, $resolveTenantFromHost) {
     if (in_array($slug, ['login', 'logout'])) {
         return redirect('/admin/vet-pet-patitas?preview=1');
     }
+
+    // Atajos directos a módulos si alguien entra a /admin/pets en lugar de /admin/{slug}/pets
+    $knownSections = ['pets', 'customers', 'plans', 'subscriptions', 'counter-redeem', 'historial-canjes', 'benefit-definitions', 'clinic-settings', 'inteligencia', 'citas', 'logistica', 'renovar-saas'];
+    if (in_array($slug, $knownSections)) {
+        $tenant = $resolveTenantFromHost() ?? auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
+        if ($tenant) {
+            $query = request()->getQueryString();
+            return redirect('/admin/' . $tenant->slug . '/' . $slug . ($query ? '?' . $query : '?preview=1'));
+        }
+    }
+
     if (!$checkAdminAccess($slug)) {
         session(['url.intended' => '/admin/' . $slug]);
         return redirect('/admin/' . $slug . '?preview=1');
