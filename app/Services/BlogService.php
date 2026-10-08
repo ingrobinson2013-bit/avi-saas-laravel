@@ -310,6 +310,21 @@ HTML,
 Uno de los mayores temores de un director médico veterinario al lanzar planes de bienestar es: <em>"¿Y si pongo un precio muy bajo y termino perdiendo dinero en insumos o tiempo médico?"</em>. Fijar precios por intuición o copiando a la clínica del frente sin conocer tus costos reales es la receta perfecta para el fracaso financiero.
 </p>
 
+<!-- Índice de Contenidos Interactivo (Google Sitelinks) -->
+<div class="bg-blue-50/60 border border-blue-200 rounded-2xl p-5 mb-8">
+    <div class="flex items-center gap-2 font-black text-slate-900 text-sm mb-3">
+        <span>📖</span>
+        <span>Índice del Artículo (Haz clic para saltar a la sección)</span>
+    </div>
+    <ul class="text-xs sm:text-sm text-slate-700 space-y-2">
+        <li><a href="#costos-biologicos" class="text-blue-600 hover:text-blue-800 font-semibold hover:underline">1. Desglose de Costos Directos Anuales en Colombia →</a></li>
+        <li><a href="#formula-precio" class="text-blue-600 hover:text-blue-800 font-semibold hover:underline">2. Fórmula Actuarial para Fijar la Cuota Mensual →</a></li>
+        <li><a href="#simulador-actuarial" class="text-emerald-700 hover:text-emerald-900 font-extrabold hover:underline">3. ⚡ Simulador Actuarial en Vivo (Calcula tu clínica aquí) →</a></li>
+        <li><a href="#psicologia-precio" class="text-blue-600 hover:text-blue-800 font-semibold hover:underline">4. La Psicología de Precio para el Tutor de la Mascota →</a></li>
+        <li><a href="#ingresos-reales" class="text-blue-600 hover:text-blue-800 font-semibold hover:underline">5. Proyección de Ingresos Anuales Reales →</a></li>
+    </ul>
+</div>
+
 <div class="bg-emerald-50 border-l-4 border-emerald-600 p-5 rounded-r-xl my-6">
     <p class="text-emerald-950 font-bold mb-1">Regla de Oro Actuarial en AVI-Plan:</p>
     <p class="text-emerald-900 text-sm">
@@ -317,7 +332,7 @@ Uno de los mayores temores de un director médico veterinario al lanzar planes d
     </p>
 </div>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">1. Desglose de Costos Directos Anuales (Ejemplo Real Canino en Colombia)</h2>
+<h2 id="costos-biologicos" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">1. Desglose de Costos Directos Anuales (Ejemplo Real Canino en Colombia)</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
 Calculemos el costo de adquisición de insumos al por mayor (precios de distribuidor veterinario en Colombia para un perro adulto de 10 a 20 kg):
 </p>
@@ -371,7 +386,7 @@ Calculemos el costo de adquisición de insumos al por mayor (precios de distribu
     </table>
 </div>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">2. Fijando la Cuota Mensual con la Fórmula AVI-Plan</h2>
+<h2 id="formula-precio" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">2. Fijando la Cuota Mensual con la Fórmula AVI-Plan</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
 Si el costo anual directo de biológicos es de <strong>$95.000 COP</strong>, significa que el costo mensual de insumos es de apenas:
 <br>
@@ -389,7 +404,98 @@ Ahora aplicamos la fórmula de precio con un <strong>margen bruto objetivo del 6
     <strong>= $47.617 COP / mes (Redondeado a $49.000 COP / mes)</strong>
 </div>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">3. La Psicología de Precio para el Tutor de la Mascota</h2>
+<!-- 3. SIMULADOR ACTUARIAL EN VIVO (INTERACTIVO) -->
+<div id="simulador-actuarial" class="bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white rounded-3xl p-6 sm:p-8 my-10 shadow-2xl border border-blue-900/50 scroll-mt-24">
+    <div class="flex items-center gap-2 text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider mb-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        Simulador Actuarial en Vivo
+    </div>
+    <h3 class="text-xl sm:text-2xl font-black text-white mb-2">Calcula la Rentabilidad de tu Veterinaria</h3>
+    <p class="text-slate-300 text-xs sm:text-sm mb-6">Mueve los controles para ver el recaudo mensual, el costo de insumos y la ganancia neta anual garantizada en pesos colombianos.</p>
+
+    <div class="grid sm:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+            <div class="flex justify-between items-center text-xs font-bold text-slate-300 mb-2">
+                <span>Número de Mascotas Activas:</span>
+                <span id="sim-pets-val" class="text-emerald-400 font-mono text-base font-extrabold">100 mascotas</span>
+            </div>
+            <input type="range" id="sim-pets" min="20" max="500" step="10" value="100" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-400" oninput="updateSim()">
+            <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                <span>20 mascotas</span>
+                <span>500 mascotas</span>
+            </div>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+            <div class="flex justify-between items-center text-xs font-bold text-slate-300 mb-2">
+                <span>Cuota Mensual Sugerida:</span>
+                <span id="sim-fee-val" class="text-blue-400 font-mono text-base font-extrabold">$49.000 COP</span>
+            </div>
+            <input type="range" id="sim-fee" min="35000" max="99000" step="1000" value="49000" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-400" oninput="updateSim()">
+            <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                <span>$35.000</span>
+                <span>$99.000</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resultados en vivo -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center mb-6">
+        <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+            <div class="text-[10px] text-slate-400 uppercase font-semibold">Recaudo Mensual (MRR)</div>
+            <div id="sim-mrr" class="text-sm sm:text-base font-black text-white font-mono mt-1">$4.900.000</div>
+        </div>
+        <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+            <div class="text-[10px] text-slate-400 uppercase font-semibold">Costo Insumos / Mes</div>
+            <div id="sim-costs" class="text-sm sm:text-base font-black text-rose-300 font-mono mt-1">$791.600</div>
+        </div>
+        <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+            <div class="text-[10px] text-slate-400 uppercase font-semibold">Margen Bruto</div>
+            <div id="sim-margin" class="text-sm sm:text-base font-black text-amber-300 font-mono mt-1">83.8%</div>
+        </div>
+        <div class="bg-emerald-500/20 rounded-xl p-3 border border-emerald-500/40">
+            <div class="text-[10px] text-emerald-300 uppercase font-bold">Ganancia Libre Anual</div>
+            <div id="sim-net-annual" class="text-sm sm:text-base font-black text-emerald-400 font-mono mt-1">+$49.300.800</div>
+        </div>
+    </div>
+
+    <!-- Lead Magnet Button -->
+    <div class="bg-white/10 border border-white/15 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+            <div class="font-bold text-white text-sm">¿Quieres la Plantilla de Excel con todas las fórmulas?</div>
+            <div class="text-xs text-slate-300">Incluye listas de precios de biológicos en Colombia y calculadora de punto de equilibrio.</div>
+        </div>
+        <a id="sim-whatsapp-lead" href="https://wa.me/573508742543?text=Hola%20Robinson,%20calcul%C3%A9%20mis%20costos%20con%20el%20simulador%20de%20AVI-Plan%20para%20100%20mascotas%20y%20quiero%20la%20Plantilla%20de%20Excel%20gratuita." target="_blank" class="w-full sm:w-auto px-5 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition transform hover:-translate-y-0.5 shrink-0 text-center flex items-center justify-center gap-2">
+            <span>📊 Descargar Plantilla Excel (Gratis)</span>
+        </a>
+    </div>
+
+    <script>
+      function updateSim() {
+        const pets = parseInt(document.getElementById('sim-pets').value);
+        const fee = parseInt(document.getElementById('sim-fee').value);
+        const costPerPetMonth = 7916; // $95.000 / 12
+
+        const mrr = pets * fee;
+        const totalCosts = pets * costPerPetMonth;
+        const netMonth = mrr - totalCosts;
+        const netAnnual = netMonth * 12;
+        const marginPct = ((netMonth / mrr) * 100).toFixed(1);
+
+        document.getElementById('sim-pets-val').innerText = pets + ' mascotas';
+        document.getElementById('sim-fee-val').innerText = '$' + fee.toLocaleString('es-CO') + ' COP';
+        document.getElementById('sim-mrr').innerText = '$' + mrr.toLocaleString('es-CO');
+        document.getElementById('sim-costs').innerText = '$' + totalCosts.toLocaleString('es-CO');
+        document.getElementById('sim-margin').innerText = marginPct + '%';
+        document.getElementById('sim-net-annual').innerText = '+$' + netAnnual.toLocaleString('es-CO');
+
+        const waText = encodeURIComponent(`Hola Robinson, calculé mis costos con el simulador de AVI-Plan para ${pets} mascotas a $${fee.toLocaleString('es-CO')} y quiero recibir la Plantilla de Excel de Costos.`);
+        document.getElementById('sim-whatsapp-lead').href = `https://wa.me/573508742543?text=${waText}`;
+      }
+    </script>
+</div>
+
+<h2 id="psicologia-precio" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">4. La Psicología de Precio para el Tutor de la Mascota</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
 Cuando le dices a un cliente: <em>"Las vacunas anuales y controles te cuestan $380.000 COP de golpe hoy"</em>, muchos tutores postergan la visita o solo pagan la rabia.
 </p>
@@ -397,7 +503,7 @@ Cuando le dices a un cliente: <em>"Las vacunas anuales y controles te cuestan $3
 Pero cuando le dices: <em>"Por solo <strong>$49.000 COP al mes</strong> (menos de lo que cuesta una pizza), tu peludo tiene todas sus vacunas del año cubiertas, desparasitación cada 3 meses, carnet digital en tu celular y 2 consultas médicas gratis cuando lo veas decaído"</em>, <strong>más del 35% de los clientes en sala de espera dicen que SÍ inmediatamente</strong>.
 </p>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">4. Los Ingresos Anuales Reales de tu Clínica</h2>
+<h2 id="ingresos-reales" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">5. Los Ingresos Anuales Reales de tu Clínica</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
 Con solo 100 pacientes afiliados a este plan de $49.000 COP:
 </p>

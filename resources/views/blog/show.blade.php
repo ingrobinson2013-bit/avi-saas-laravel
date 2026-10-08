@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white">
+<html lang="es" class="h-full bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -83,6 +83,18 @@
     </style>
 </head>
 <body class="min-h-full flex flex-col justify-between bg-slate-50">
+
+    <!-- Reading Progress Bar -->
+    <div id="reading-progress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-500 z-[100] transition-all duration-75" style="width: 0%"></div>
+    <script>
+      window.addEventListener('scroll', function() {
+        var h = document.documentElement, b = document.body;
+        var st = 'scrollTop', sh = 'scrollHeight';
+        var percent = (h[st]||b[st]) / ((h[sh]||b[sh]) - h.clientHeight) * 100;
+        var bar = document.getElementById('reading-progress');
+        if (bar) bar.style.width = percent + '%';
+      });
+    </script>
 
     <!-- Header / Navbar -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
