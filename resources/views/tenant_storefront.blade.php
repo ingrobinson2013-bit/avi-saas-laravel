@@ -253,7 +253,7 @@
             </nav>
 
             <div class="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
-                <a href="/admin/{{ $tenant->slug }}?preview=1" class="inline-flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all shrink-0">
+                <a href="/admin/{{ $tenant->slug }}" class="inline-flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all shrink-0">
                     <span>🔐</span>
                     <span>Panel</span>
                 </a>
@@ -1424,7 +1424,7 @@
             <p class="text-xs font-black text-slate-900 truncate">{{ $heroPriceBadge }}</p>
         </div>
         <div class="flex items-center space-x-1.5 shrink-0">
-            <a href="/admin/{{ $tenant->slug }}?preview=1" class="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] rounded-xl border border-slate-200 flex items-center gap-1 transition shadow-2xs">
+            <a href="/admin/{{ $tenant->slug }}" class="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] rounded-xl border border-slate-200 flex items-center gap-1 transition shadow-2xs">
                 <span>🔐</span>
                 <span>Panel</span>
             </a>
@@ -1463,7 +1463,7 @@
                 <p class="text-slate-400">WhatsApp: <strong class="text-teal-400">{{ $phone }}</strong></p>
                 <p class="text-slate-400">Email: {{ $tenant->branding['email'] ?? ($isPilot ? 'contacto@vetpetpatitas.com' : 'contacto@avipetapp.com') }}</p>
                 <p class="text-slate-400 mt-2">
-                    <a href="/admin/{{ $tenant->slug }}?preview=1" class="inline-flex items-center gap-1 text-teal-400 hover:text-teal-300 font-bold transition">
+                    <a href="/admin/{{ $tenant->slug }}" class="inline-flex items-center gap-1 text-teal-400 hover:text-teal-300 font-bold transition">
                         <span>🔐</span>
                         <span>Acceso al Panel de Control</span>
                     </a>
