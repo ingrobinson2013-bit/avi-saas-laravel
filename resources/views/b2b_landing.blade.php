@@ -47,7 +47,7 @@
           },
           "contactPoint": {
             "@@type": "ContactPoint",
-            "telephone": "+573508742543",
+            "telephone": "+573235813942",
             "contactType": "sales",
             "areaServed": "CO",
             "availableLanguage": "Spanish"
@@ -1551,7 +1551,7 @@
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Integración WhatsApp</span></li>
                             </ul>
                         </div>
-                        <a href="https://wa.me/573508742543?text=Hola%20Robinson,%20me%20interesa%20el%20plan%20Enterprise%20de%20AVI-Plan" target="_blank" class="mt-6 w-full py-3 text-center rounded-xl bg-white hover:bg-slate-50 text-slate-900 font-bold text-xs border border-slate-300 transition">
+                        <a href="https://wa.me/573235813942?text=Hola%20Robinson,%20me%20interesa%20el%20plan%20Enterprise%20de%20AVI-Plan" target="_blank" class="mt-6 w-full py-3 text-center rounded-xl bg-white hover:bg-slate-50 text-slate-900 font-bold text-xs border border-slate-300 transition">
                             Contactar Asesor
                         </a>
                     </div>
@@ -1693,7 +1693,7 @@
             <div class="flex space-x-6 font-semibold">
                 <a href="/admin" class="hover:text-blue-600 transition-colors">Acceso Mostrador</a>
                 <a href="/v/vet-pet-patitas" class="hover:text-blue-600 transition-colors">Clínica Piloto</a>
-                <a href="https://wa.me/573508742543" target="_blank" class="hover:text-blue-600 transition-colors">Contacto WhatsApp</a>
+                <a href="https://wa.me/573235813942" target="_blank" class="hover:text-blue-600 transition-colors">Contacto WhatsApp</a>
             </div>
         </div>
     </footer>

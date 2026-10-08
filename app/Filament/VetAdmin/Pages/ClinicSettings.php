@@ -37,7 +37,7 @@ class ClinicSettings extends Page implements HasForms
                 'name' => $tenant->name,
                 'city' => $branding['city'] ?? 'Cajicá, Cundinamarca',
                 'address' => $branding['address'] ?? 'Calle 7 # 4-73 Este',
-                'phone' => $branding['phone'] ?? '3508742543',
+                'phone' => $branding['phone'] ?? '3235813942',
                 'email' => $branding['email'] ?? 'petmovilveterinario@gmail.com',
                 'primary_color' => $branding['primary_color'] ?? '#0284c7',
                 'secondary_color' => $branding['secondary_color'] ?? '#0f172a',
@@ -45,7 +45,7 @@ class ClinicSettings extends Page implements HasForms
                 'hero_file' => $branding['hero_path'] ?? null,
                 'banner_file' => $branding['banner_path'] ?? null,
                 'banner_video_file' => $branding['banner_video_path'] ?? null,
-                'payment_nequi' => $branding['payment_nequi'] ?? '3508742543',
+                'payment_nequi' => $branding['payment_nequi'] ?? '3235813942',
                 'payment_bank_info' => $branding['payment_bank_info'] ?? 'Bancolombia Ahorros # 123-456789-01 (Titular: Clínica Veterinaria)',
                 'payment_bold_link' => $branding['payment_bold_link'] ?? '',
                 'payment_instructions' => $branding['payment_instructions'] ?? 'Una vez realizada la transferencia o pago, envía el comprobante por WhatsApp indicando el código de tu carnet.',
@@ -161,9 +161,9 @@ class ClinicSettings extends Page implements HasForms
                     ->schema([
                         Forms\Components\TextInput::make('payment_nequi')
                             ->label('Número Nequi / Daviplata')
-                            ->placeholder('Ej. 3508742543')
+                            ->placeholder('Ej. 3235813942')
                             ->helperText('Número para recibir transferencias directas por Nequi o Daviplata.')
-                            ->default('3508742543'),
+                            ->default('3235813942'),
 
                         Forms\Components\TextInput::make('payment_bold_link')
                             ->label('Link de Pago Bold / Wompi / Pasarela')
@@ -223,7 +223,7 @@ class ClinicSettings extends Page implements HasForms
                     ->schema([
                         Forms\Components\TextInput::make('phone')
                             ->label('WhatsApp Oficial')
-                            ->default('3508742543'),
+                            ->default('3235813942'),
                         Forms\Components\TextInput::make('email')
                             ->label('Correo Electrónico')
                             ->default('petmovilveterinario@gmail.com'),
@@ -247,11 +247,11 @@ class ClinicSettings extends Page implements HasForms
             $branding = $tenant->branding ?? [];
             $branding['city'] = $state['city'] ?? 'Cajicá, Cundinamarca';
             $branding['address'] = $state['address'] ?? 'Calle 7 # 4-73 Este';
-            $branding['phone'] = $state['phone'] ?? '3508742543';
+            $branding['phone'] = $state['phone'] ?? '3235813942';
             $branding['email'] = $state['email'] ?? 'petmovilveterinario@gmail.com';
             $branding['primary_color'] = $state['primary_color'] ?? '#0284c7';
             $branding['secondary_color'] = $state['secondary_color'] ?? '#0f172a';
-            $branding['payment_nequi'] = $state['payment_nequi'] ?? '3508742543';
+            $branding['payment_nequi'] = $state['payment_nequi'] ?? '3235813942';
             $branding['payment_bank_info'] = $state['payment_bank_info'] ?? '';
             $branding['payment_bold_link'] = $state['payment_bold_link'] ?? '';
             $branding['payment_instructions'] = $state['payment_instructions'] ?? '';

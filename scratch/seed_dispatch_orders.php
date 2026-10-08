@@ -51,7 +51,7 @@ $orders = [
         'tracking_number' => 'PENDIENTE-DSP-01',
         'courier_name' => 'Mensajería Express Local / Coordinadora',
         'delivery_address' => 'Calle 7 # 4-73 Este, Cajicá, Cundinamarca',
-        'recipient_phone' => '3508742543',
+        'recipient_phone' => '3235813942',
     ],
     [
         'id' => (string) Str::uuid(),

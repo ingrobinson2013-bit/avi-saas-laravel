@@ -422,7 +422,7 @@ class DashboardController extends Controller
             'samplePetName' => $samplePet?->name ?? 'Max',
             'samplePetBreed' => $samplePet?->breed ?? 'Golden Retriever',
             'sampleCustomerName' => $candidateSub?->pet?->customer?->name ?? 'María Rodríguez',
-            'sampleCustomerPhone' => $candidateSub?->pet?->customer?->phone ?? '3508742543',
+            'sampleCustomerPhone' => $candidateSub?->pet?->customer?->phone ?? '3235813942',
             'pendingVaccinesCount' => $activeSubsCount > 0 ? 1 : 0,
             'inactiveDays' => $daysSinceVisit ?? 60,
         ];

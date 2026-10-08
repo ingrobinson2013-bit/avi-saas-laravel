@@ -150,7 +150,7 @@ class AppointmentController extends Controller
                     'pet_species' => $app->pet?->species === 'cat' ? 'Felino' : 'Canino',
                     'pet_breed' => $app->pet?->breed ?? 'Mestizo',
                     'customer_name' => $app->customer?->name ?? 'Tutor',
-                    'customer_phone' => $app->customer?->phone ?? '3508742543',
+                    'customer_phone' => $app->customer?->phone ?? '3235813942',
                     'google_calendar_url' => $app->google_calendar_url ?: $this->calendarService->generateGoogleCalendarUrl($app, $tenant),
                     'whatsapp_reminder_url' => $this->calendarService->generateWhatsAppReminderUrl($app, $tenant),
                     'sync_status' => $app->sync_status,
@@ -183,7 +183,7 @@ class AppointmentController extends Controller
                 'breed' => $p->breed ?: 'Mestizo',
                 'customer_id' => $p->customer_id,
                 'customer_name' => $p->customer?->name ?? 'Tutor',
-                'customer_phone' => $p->customer?->phone ?? '3508742543',
+                'customer_phone' => $p->customer?->phone ?? '3235813942',
                 'plan_name' => $p->activeSubscription?->plan?->name ?? 'Sin Plan Activo',
             ]);
 

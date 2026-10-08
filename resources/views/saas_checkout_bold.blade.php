@@ -272,7 +272,7 @@
                         <span>💬</span>
                         <span>¿Tienes alguna duda con tu facturación?</span>
                     </div>
-                    <a href="https://wa.me/573508742543?text=Hola%20Robinson,%20tengo%20una%20duda%20sobre%20el%20pago%20SaaS%20de%20{{ urlencode($tenant->name) }}" target="_blank" class="text-blue-600 font-bold hover:underline">
+                    <a href="https://wa.me/573235813942?text=Hola%20Robinson,%20tengo%20una%20duda%20sobre%20el%20pago%20SaaS%20de%20{{ urlencode($tenant->name) }}" target="_blank" class="text-blue-600 font-bold hover:underline">
                         Hablar con Asesor →
                     </a>
                 </div>

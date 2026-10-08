@@ -465,7 +465,7 @@ Ahora aplicamos la fórmula de precio con un <strong>margen bruto objetivo del 6
             <div class="font-bold text-white text-sm">¿Quieres la Plantilla de Excel con todas las fórmulas?</div>
             <div class="text-xs text-slate-300">Incluye listas de precios de biológicos en Colombia y calculadora de punto de equilibrio.</div>
         </div>
-        <a id="sim-whatsapp-lead" href="https://wa.me/573508742543?text=Hola%20Robinson,%20calcul%C3%A9%20mis%20costos%20con%20el%20simulador%20de%20AVI-Plan%20para%20100%20mascotas%20y%20quiero%20la%20Plantilla%20de%20Excel%20gratuita." target="_blank" class="w-full sm:w-auto px-5 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition transform hover:-translate-y-0.5 shrink-0 text-center flex items-center justify-center gap-2">
+        <a id="sim-whatsapp-lead" href="https://wa.me/573235813942?text=Hola%20Robinson,%20calcul%C3%A9%20mis%20costos%20con%20el%20simulador%20de%20AVI-Plan%20para%20100%20mascotas%20y%20quiero%20la%20Plantilla%20de%20Excel%20gratuita." target="_blank" class="w-full sm:w-auto px-5 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition transform hover:-translate-y-0.5 shrink-0 text-center flex items-center justify-center gap-2">
             <span>📊 Descargar Plantilla Excel (Gratis)</span>
         </a>
     </div>
@@ -490,7 +490,7 @@ Ahora aplicamos la fórmula de precio con un <strong>margen bruto objetivo del 6
         document.getElementById('sim-net-annual').innerText = '+$' + netAnnual.toLocaleString('es-CO');
 
         const waText = encodeURIComponent(`Hola Robinson, calculé mis costos con el simulador de AVI-Plan para ${pets} mascotas a $${fee.toLocaleString('es-CO')} y quiero recibir la Plantilla de Excel de Costos.`);
-        document.getElementById('sim-whatsapp-lead').href = `https://wa.me/573508742543?text=${waText}`;
+        document.getElementById('sim-whatsapp-lead').href = `https://wa.me/573235813942?text=${waText}`;
       }
     </script>
 </div>

@@ -200,7 +200,7 @@ class TenantResource extends Resource
                                     Forms\Components\TextInput::make('branding.phone')
                                         ->label('WhatsApp Oficial de Contacto')
                                         ->tel()
-                                        ->placeholder('3508742543'),
+                                        ->placeholder('3235813942'),
 
                                     Forms\Components\TextInput::make('branding.email')
                                         ->label('Email de Contacto')
@@ -267,7 +267,7 @@ class TenantResource extends Resource
                                 Forms\Components\Grid::make(2)->schema([
                                     Forms\Components\TextInput::make('branding.payment_nequi')
                                         ->label('Número Nequi / Daviplata Oficial')
-                                        ->placeholder('3508742543'),
+                                        ->placeholder('3235813942'),
 
                                     Forms\Components\TextInput::make('branding.payment_bank_info')
                                         ->label('Cuenta Bancaria Oficial')

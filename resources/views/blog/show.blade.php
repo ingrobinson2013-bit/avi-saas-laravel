@@ -168,7 +168,7 @@
                     <p class="text-xs text-slate-500">Especialistas en arquitectura SaaS y soluciones digitales para el sector veterinario en Colombia.</p>
                 </div>
             </div>
-            <a href="https://wa.me/573508742543?text=Hola%20Robinson,%20le%C3%AD%20el%20art%C3%ADculo%20sobre%20{{ urlencode($post['title']) }}%20y%20quiero%20conocer%20m%C3%A1s" target="_blank" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow transition">
+            <a href="https://wa.me/573235813942?text=Hola%20Robinson,%20le%C3%AD%20el%20art%C3%ADculo%20sobre%20{{ urlencode($post['title']) }}%20y%20quiero%20conocer%20m%C3%A1s" target="_blank" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow transition">
                 Consultar por WhatsApp
             </a>
         </div>

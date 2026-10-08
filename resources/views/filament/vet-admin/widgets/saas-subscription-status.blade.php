@@ -117,7 +117,7 @@
 
                         <x-filament::button
                             tag="a"
-                            href="https://wa.me/573508742543?text={{ urlencode('Hola Robinson, tengo una consulta sobre el pago y suscripción de AVI-Plan para mi clínica ' . $tenantName) }}"
+                            href="https://wa.me/573235813942?text={{ urlencode('Hola Robinson, tengo una consulta sobre el pago y suscripción de AVI-Plan para mi clínica ' . $tenantName) }}"
                             target="_blank"
                             color="gray"
                             icon="heroicon-m-chat-bubble-left-ellipsis"

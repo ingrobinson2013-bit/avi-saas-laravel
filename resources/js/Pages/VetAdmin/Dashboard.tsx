@@ -214,7 +214,7 @@ export default function Dashboard({
             samplePetName: 'Max',
             samplePetBreed: 'Golden Retriever',
             sampleCustomerName: 'María Rodríguez',
-            sampleCustomerPhone: '3508742543',
+            sampleCustomerPhone: '3235813942',
             pendingVaccinesCount: 1,
             inactiveDays: 60,
         };

@@ -70,7 +70,7 @@
                         <a href="#planes" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-base hover:from-emerald-400 hover:to-teal-400 shadow-lg shadow-emerald-500/25 transition-all flex items-center justify-center space-x-2">
                             <span>Ver Planes y Afiliarme</span>
                         </a>
-                        <a href="https://wa.me/573508742543?text=Hola,%20deseo%20información%20sobre%20los%20Planes%20de%20Salud%20Patitas%20Felices" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-2xl glass hover:bg-slate-800 text-emerald-400 font-bold text-base border border-emerald-500/30 transition-all flex items-center justify-center space-x-2">
+                        <a href="https://wa.me/573235813942?text=Hola,%20deseo%20información%20sobre%20los%20Planes%20de%20Salud%20Patitas%20Felices" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-2xl glass hover:bg-slate-800 text-emerald-400 font-bold text-base border border-emerald-500/30 transition-all flex items-center justify-center space-x-2">
                             <span>WhatsApp: 350 874 2543</span>
                         </a>
                     </div>
@@ -183,7 +183,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <a href="https://wa.me/573508742543?text=Hola,%20deseo%20afiliarme%20al%20Plan%20Patitas%20Básico" target="_blank" class="mt-8 w-full py-4 text-center rounded-2xl glass hover:bg-slate-800 text-white font-bold text-sm border border-slate-700 transition-all block">
+                        <a href="https://wa.me/573235813942?text=Hola,%20deseo%20afiliarme%20al%20Plan%20Patitas%20Básico" target="_blank" class="mt-8 w-full py-4 text-center rounded-2xl glass hover:bg-slate-800 text-white font-bold text-sm border border-slate-700 transition-all block">
                             Afiliarme al Plan Básico
                         </a>
                     </div>
@@ -229,7 +229,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <a href="https://wa.me/573508742543?text=Hola,%20deseo%20afiliarme%20al%20Plan%20Patitas%20Premium" target="_blank" class="mt-8 w-full py-4 text-center rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm transition-all shadow-lg shadow-emerald-500/25 block">
+                        <a href="https://wa.me/573235813942?text=Hola,%20deseo%20afiliarme%20al%20Plan%20Patitas%20Premium" target="_blank" class="mt-8 w-full py-4 text-center rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm transition-all shadow-lg shadow-emerald-500/25 block">
                             Afiliarme al Plan Premium
                         </a>
                     </div>

@@ -15,7 +15,7 @@
         $logoUrl = $tenant->branding['logo_url'] ?? null;
         $city = $tenant->branding['city'] ?? 'Cajicá, Cundinamarca';
         $address = $tenant->branding['address'] ?? 'Calle 7 # 4-73 Este';
-        $phone = $tenant->branding['phone'] ?? '3508742543';
+        $phone = $tenant->branding['phone'] ?? '3235813942';
         $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
         
         $pet = $subscription->pet;

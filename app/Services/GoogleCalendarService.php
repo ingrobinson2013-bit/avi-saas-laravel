@@ -124,7 +124,7 @@ class GoogleCalendarService
      */
     public function generateWhatsAppReminderUrl(Appointment $appointment, Tenant $tenant): string
     {
-        $phone = preg_replace('/\D/', '', $appointment->customer?->phone ?? '3508742543');
+        $phone = preg_replace('/\D/', '', $appointment->customer?->phone ?? '3235813942');
         $tutorName = explode(' ', trim($appointment->customer?->name ?? 'Tutor'))[0];
         $petName = $appointment->pet?->name ?? 'tu mascota';
         $clinicName = $tenant->branding['brand_name'] ?? $tenant->name ?? 'Vet-Pet Patitas';

@@ -477,7 +477,7 @@ class VetPagesController extends Controller
             'species' => $subscription?->pet?->species === 'cat' ? 'Felino' : 'Canino',
             'breed' => $subscription?->pet?->breed ?? 'Golden Retriever',
             'customer_name' => $subscription?->pet?->customer?->name ?? 'María Camila Rodríguez',
-            'customer_phone' => $subscription?->pet?->customer?->phone ?? '3508742543',
+            'customer_phone' => $subscription?->pet?->customer?->phone ?? '3235813942',
             'plan_name' => $subscription?->plan?->name ?? 'Plan Patitas Básico',
             'status' => 'active',
         ];
@@ -566,7 +566,7 @@ class VetPagesController extends Controller
                     'pet_name' => $r->balance?->subscription?->pet?->name ?? 'Max',
                     'pet_breed' => $r->balance?->subscription?->pet?->breed ?? 'Golden Retriever',
                     'customer_name' => $r->balance?->subscription?->pet?->customer?->name ?? 'María Camila Rodríguez',
-                    'customer_phone' => $r->balance?->subscription?->pet?->customer?->phone ?? '3508742543',
+                    'customer_phone' => $r->balance?->subscription?->pet?->customer?->phone ?? '3235813942',
                     'benefit_name' => $r->balance?->benefitDefinition?->name ?? 'Consulta Médica General',
                     'category' => $r->balance?->benefitDefinition?->category ?? 'consultas',
                     'attended_by' => $r->vetUser?->name ?? 'Recepción Mostrador',
@@ -585,7 +585,7 @@ class VetPagesController extends Controller
                     'pet_name' => 'Max',
                     'pet_breed' => 'Golden Retriever',
                     'customer_name' => 'María Camila Rodríguez',
-                    'customer_phone' => '3508742543',
+                    'customer_phone' => '3235813942',
                     'benefit_name' => 'Desparasitación Externa Trimestral (Credelio 450mg)',
                     'category' => 'prevencion',
                     'attended_by' => 'Dra. Vicky Naranjo',
@@ -762,7 +762,7 @@ class VetPagesController extends Controller
             'name' => $tenant?->name ?? 'Clínica Veterinaria',
             'city' => $branding['city'] ?? ($isPilot ? 'Cajicá, Cundinamarca' : ''),
             'address' => $branding['address'] ?? ($isPilot ? 'Calle 7 # 4-73 Este' : 'Sede Principal'),
-            'phone' => $branding['phone'] ?? ($isPilot ? '3508742543' : ''),
+            'phone' => $branding['phone'] ?? ($isPilot ? '3235813942' : ''),
             'email' => $branding['email'] ?? ($isPilot ? 'petmovilveterinario@gmail.com' : ''),
             'logo_url' => $branding['logo_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp' : null),
             'tagline' => $branding['tagline'] ?? $branding['subtitle'] ?? 'Planes de salud para su mascota',
@@ -969,7 +969,7 @@ class VetPagesController extends Controller
                     'photo_url' => $pet->photo_url ?: ($pet->species === 'cat' ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400' : 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400'),
                     'customer_id' => $pet->customer?->id,
                     'customer_name' => $pet->customer?->name ?? 'Tutor de la Mascota',
-                    'customer_phone' => $pet->customer?->phone ?? '3508742543',
+                    'customer_phone' => $pet->customer?->phone ?? '3235813942',
                     'plan_name' => $sub?->plan?->name ?? 'Plan Patitas Básico',
                     'plan_price_cop' => (float) ($sub?->plan?->price_cop ?? 50000),
                     'plan_status' => $sub?->status ?? 'active',
@@ -992,7 +992,7 @@ class VetPagesController extends Controller
                 $petName = $pet?->name ?? 'tu mascota';
                 $customerName = $customer?->name ?? 'Tutor';
                 $firstName = explode(' ', trim($customerName))[0];
-                $phone = preg_replace('/\D/', '', $customer?->phone ?? '3508742543');
+                $phone = preg_replace('/\D/', '', $customer?->phone ?? '3235813942');
                 $planName = $s->plan?->name ?? 'Plan de Salud';
 
                 $availCount = (int) $s->benefitBalances->sum(fn ($b) => $b->remaining_count ?? ($b->total_granted - $b->used_count));
@@ -1006,7 +1006,7 @@ class VetPagesController extends Controller
                     'id' => $s->id,
                     'pet_name' => $petName,
                     'customer_name' => $customerName,
-                    'customer_phone' => $customer?->phone ?? '3508742543',
+                    'customer_phone' => $customer?->phone ?? '3235813942',
                     'plan_name' => $planName,
                     'wallet_balance' => $walletBalance,
                     'formatted_wallet' => $formattedWallet,
@@ -1043,7 +1043,7 @@ class VetPagesController extends Controller
             'breed' => $selectedPet['breed'] ?? 'Golden Retriever',
             'age' => $selectedPet['age'] ?? '3 años',
             'customer_name' => $selectedPet['customer_name'] ?? 'María Camila Rodríguez',
-            'customer_phone' => $selectedPet['customer_phone'] ?? '3508742543',
+            'customer_phone' => $selectedPet['customer_phone'] ?? '3235813942',
             'plan_name' => $selectedPet['plan_name'] ?? 'Plan Patitas Básico',
             'photo_url' => $selectedPet['photo_url'] ?? null,
         ];
@@ -1095,7 +1095,7 @@ class VetPagesController extends Controller
             'breed' => $pet?->breed ?: 'Mestizo',
             'age' => $pet?->birthdate ? $pet->birthdate->age . ' años' : '3 años',
             'customer_name' => $pet?->customer?->name ?? 'Tutor',
-            'customer_phone' => $pet?->customer?->phone ?? '3508742543',
+            'customer_phone' => $pet?->customer?->phone ?? '3235813942',
             'plan_name' => $pet?->activeSubscription?->plan?->name ?? 'Plan Patitas Básico',
         ];
 
@@ -1164,7 +1164,7 @@ class VetPagesController extends Controller
                     'pet_species' => 'Canino',
                     'pet_breed' => 'Golden Retriever',
                     'customer_name' => 'María Camila Rodríguez',
-                    'recipient_phone' => '3508742543',
+                    'recipient_phone' => '3235813942',
                     'delivery_address' => 'Calle 7 # 4-73 Este, Cajicá, Cundinamarca',
                     'product_name' => 'Credelio 450mg (Antipulgas y Garrapatas)',
                     'dosage' => '1 comprimido masticable oral (11-22 kg)',
@@ -1174,7 +1174,7 @@ class VetPagesController extends Controller
                     'status_label' => 'Programado',
                     'courier_name' => 'Mensajería Express Local / Coordinadora',
                     'tracking_number' => 'PENDIENTE-DSP-01',
-                    'whatsapp_tracking_url' => 'https://wa.me/3508742543?text=' . urlencode("📦 ¡Hola María Camila! Tu despacho preventivo de Credelio 450mg para Max está Programado para el 15/10/2026 en Calle 7 # 4-73 Este, Cajicá."),
+                    'whatsapp_tracking_url' => 'https://wa.me/3235813942?text=' . urlencode("📦 ¡Hola María Camila! Tu despacho preventivo de Credelio 450mg para Max está Programado para el 15/10/2026 en Calle 7 # 4-73 Este, Cajicá."),
                 ],
                 [
                     'id' => 'disp-002',

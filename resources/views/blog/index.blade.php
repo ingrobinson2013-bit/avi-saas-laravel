@@ -128,7 +128,7 @@
                 <a href="/registro-clinica" class="w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
                     Crear mi Cuenta Gratis (15 Días) →
                 </a>
-                <a href="https://wa.me/573508742543?text=Hola%20AVI-Plan,%20quiero%20conocer%20c%C3%B3mo%20activar%20planes%20en%20mi%20veterinaria" target="_blank" class="w-full sm:w-auto px-6 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl border border-white/20 transition">
+                <a href="https://wa.me/573235813942?text=Hola%20AVI-Plan,%20quiero%20conocer%20c%C3%B3mo%20activar%20planes%20en%20mi%20veterinaria" target="_blank" class="w-full sm:w-auto px-6 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl border border-white/20 transition">
                     Hablar con un Especialista
                 </a>
             </div>

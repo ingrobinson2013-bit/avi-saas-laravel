@@ -23,7 +23,7 @@ class TenantObserver
         $branding['primary_color'] = $branding['primary_color'] ?? '#0080ff';
         $branding['secondary_color'] = $branding['secondary_color'] ?? '#d437b5';
         $branding['city'] = $branding['city'] ?? 'Cajicá, Cundinamarca';
-        $branding['phone'] = $branding['phone'] ?? '3508742543';
+        $branding['phone'] = $branding['phone'] ?? '3235813942';
         $branding['saas_status'] = $branding['saas_status'] ?? 'paid';
         $branding['saas_plan'] = $branding['saas_plan'] ?? 'starter';
 

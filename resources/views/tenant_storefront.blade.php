@@ -44,7 +44,7 @@
       "url": "{{ url()->current() }}",
       "logo": "{{ $shareImage }}",
       "image": "{{ $shareImage }}",
-      "telephone": "{{ $tenant->branding['phone'] ?? '+573508742543' }}",
+      "telephone": "{{ $tenant->branding['phone'] ?? '+573235813942' }}",
       "priceRange": "$$",
       "address": {
         "@@type": "PostalAddress",
@@ -99,7 +99,7 @@
         $bannerVideo = $tenant->branding['banner_video_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/videos/01M1WMMTC4TCADMGJPNSESE0GR.mp4' : null);
         $city = $tenant->branding['city'] ?? ($isPilot ? 'Cajicá, Cundinamarca' : '');
         $address = $tenant->branding['address'] ?? ($isPilot ? 'Calle 7 # 4-73 Este' : 'Sede Principal');
-        $phone = $tenant->branding['phone'] ?? ($isPilot ? '3508742543' : '');
+        $phone = $tenant->branding['phone'] ?? ($isPilot ? '3235813942' : '');
         $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
         $paymentNequi = $tenant->branding['payment_nequi'] ?? $phone;
         $paymentBank = $tenant->branding['payment_bank_info'] ?? ($isPilot ? 'Bancolombia Ahorros # 123-456789-01 (Titular: ' . $tenant->name . ')' : '');
@@ -1495,7 +1495,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp / Teléfono *</label>
-                            <input type="tel" id="tutor_phone" required placeholder="Ej. 3508742543" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <input type="tel" id="tutor_phone" required placeholder="Ej. 3235813942" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Cédula / Documento</label>

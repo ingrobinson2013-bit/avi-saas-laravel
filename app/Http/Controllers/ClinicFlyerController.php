@@ -21,7 +21,7 @@ class ClinicFlyerController extends Controller
         $logoUrl = $tenant->branding['logo_url'] ?? null;
         $city = $tenant->branding['city'] ?? 'Cajicá, Cundinamarca';
         $address = $tenant->branding['address'] ?? 'Calle 7 # 4-73 Este';
-        $phone = $tenant->branding['phone'] ?? '3508742543';
+        $phone = $tenant->branding['phone'] ?? '3235813942';
 
         // URL a la que apunta el QR
         $enrollmentUrl = url("/v/{$tenant->slug}");
@@ -55,7 +55,7 @@ class ClinicFlyerController extends Controller
             $logoUrl = $tenant->branding['logo_url'] ?? null;
             $city = $tenant->branding['city'] ?? 'Cajicá, Cundinamarca';
             $address = $tenant->branding['address'] ?? 'Calle 7 # 4-73 Este';
-            $phone = $tenant->branding['phone'] ?? '3508742543';
+            $phone = $tenant->branding['phone'] ?? '3235813942';
             $enrollmentUrl = url("/v/{$tenant->slug}");
             $qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=" . urlencode($enrollmentUrl);
 

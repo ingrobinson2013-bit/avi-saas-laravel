@@ -245,7 +245,7 @@ export default function Intelligence({
         breed: 'Golden Retriever',
         age: '3 años',
         customer_name: 'María Camila Rodríguez',
-        customer_phone: '3508742543',
+        customer_phone: '3235813942',
         plan_name: 'Plan Patitas Básico',
     },
 }: IntelligenceProps) {
@@ -265,7 +265,7 @@ export default function Intelligence({
             breed: triagePatient.breed || 'Golden Retriever',
             age: triagePatient.age || '3 años',
             customer_name: triagePatient.customer_name || 'María Camila Rodríguez',
-            customer_phone: triagePatient.customer_phone || '3508742543',
+            customer_phone: triagePatient.customer_phone || '3235813942',
             plan_name: triagePatient.plan_name || 'Plan Patitas Básico',
             plan_price_cop: 50000,
             plan_status: 'active',
@@ -522,7 +522,7 @@ export default function Intelligence({
     };
 
     const getWhatsAppUrl = (phone?: string, text?: string) => {
-        const clean = (phone || '3508742543').replace(/\D/g, '') || '3508742543';
+        const clean = (phone || '3235813942').replace(/\D/g, '') || '3235813942';
         return `https://wa.me/${clean}?text=${encodeURIComponent(text || '')}`;
     };
 

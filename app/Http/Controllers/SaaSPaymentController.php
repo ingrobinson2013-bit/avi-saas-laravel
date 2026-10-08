@@ -96,7 +96,7 @@ class SaaSPaymentController extends Controller
 
         $payerEmail = $tenant->branding['email'] ?? auth()->user()?->email ?? 'doctor@veterinaria.com';
         $payerName = $tenant->name;
-        $payerPhone = $tenant->branding['phone'] ?? '3508742543';
+        $payerPhone = $tenant->branding['phone'] ?? '3235813942';
 
         return view('saas_checkout_bold', compact(
             'tenant',
