@@ -377,6 +377,8 @@ Route::get('/sitemap.xml', function () {
         $xml .= "    <changefreq>weekly</changefreq>\n";
         $xml .= "    <priority>0.85</priority>\n";
         $xml .= "  </url>\n";
+    }
+
     // 3. Artículos Estratégicos del Blog de AVI-Plan (SEO B2B)
     $blogPosts = \App\Services\BlogService::getAllPosts();
     foreach ($blogPosts as $post) {
