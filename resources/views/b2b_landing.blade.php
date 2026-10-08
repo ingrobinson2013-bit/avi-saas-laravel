@@ -541,11 +541,11 @@
             </div>
         </section>
 
-        <!-- 5. CÓMO FUNCIONA AVI-PLAN (TIMELINE INTERACTIVO CON PANTALLA EN VIVO) -->
-        <section id="como-funciona" class="py-16 sm:py-24 bg-white border-b border-slate-200">
+        <!-- 5. FLUJO INTERACTIVO EN 6 PASOS (DISEÑO SAAS APPLE/STRIPE) -->
+        <section id="como-funciona" class="py-16 sm:py-24 bg-gradient-to-b from-white via-slate-50/50 to-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-14 space-y-2 reveal-on-scroll">
-                    <span class="text-xs font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-200/90 shadow-2xs">
                         Flujo Operativo Simple
                     </span>
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Así funciona en tu clínica</h2>
@@ -557,8 +557,8 @@
                     
                     <!-- LISTA DE 6 ETAPAS CON SELECTOR ACTIVO -->
                     <div class="lg:col-span-6 space-y-3">
-                        <div onclick="selectStep(1)" id="step-btn-1" class="step-card p-4 rounded-2xl border-2 border-blue-600 bg-blue-50/60 cursor-pointer transition-all flex items-start space-x-3.5">
-                            <span class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black font-mono text-sm shrink-0">01</span>
+                        <div onclick="selectStep(1)" id="step-btn-1" class="step-card p-4 rounded-2xl border-2 border-blue-600 bg-blue-50/70 cursor-pointer transition-all flex items-start space-x-3.5 shadow-sm transform scale-[1.01]">
+                            <span class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black font-mono text-sm shrink-0 shadow-xs">01</span>
                             <div>
                                 <h4 class="text-sm font-bold text-slate-900">Crea tus planes de salud</h4>
                                 <p class="text-xs text-slate-600 mt-0.5">Define consultas, vacunas, desparasitaciones y fija tu tarifa mensual con total libertad.</p>
@@ -566,7 +566,7 @@
                         </div>
 
                         <div onclick="selectStep(2)" id="step-btn-2" class="step-card p-4 rounded-2xl border border-slate-200 bg-white hover:border-blue-300 cursor-pointer transition-all flex items-start space-x-3.5">
-                            <span class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black font-mono text-sm shrink-0">02</span>
+                            <span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black font-mono text-sm shrink-0">02</span>
                             <div>
                                 <h4 class="text-sm font-bold text-slate-900">Escaneo del Afiche QR en Mostrador</h4>
                                 <p class="text-xs text-slate-600 mt-0.5">El tutor escanea el afiche oficial en la sala de espera o entra a tu enlace web desde WhatsApp.</p>
@@ -574,7 +574,7 @@
                         </div>
 
                         <div onclick="selectStep(3)" id="step-btn-3" class="step-card p-4 rounded-2xl border border-slate-200 bg-white hover:border-blue-300 cursor-pointer transition-all flex items-start space-x-3.5">
-                            <span class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black font-mono text-sm shrink-0">03</span>
+                            <span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black font-mono text-sm shrink-0">03</span>
                             <div>
                                 <h4 class="text-sm font-bold text-slate-900">Afiliación Digital en 2 Minutos</h4>
                                 <p class="text-xs text-slate-600 mt-0.5">El tutor registra a su mascota y adquiere su membresía sin papeles ni trámites manuales.</p>
@@ -582,7 +582,7 @@
                         </div>
 
                         <div onclick="selectStep(4)" id="step-btn-4" class="step-card p-4 rounded-2xl border border-slate-200 bg-white hover:border-blue-300 cursor-pointer transition-all flex items-start space-x-3.5">
-                            <span class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black font-mono text-sm shrink-0">04</span>
+                            <span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black font-mono text-sm shrink-0">04</span>
                             <div>
                                 <h4 class="text-sm font-bold text-slate-900">Carnet Digital en el Celular</h4>
                                 <p class="text-xs text-slate-600 mt-0.5">Recibe al instante su carnet con código de barras en su móvil para consultar sus saldos.</p>
@@ -590,7 +590,7 @@
                         </div>
 
                         <div onclick="selectStep(5)" id="step-btn-5" class="step-card p-4 rounded-2xl border border-slate-200 bg-white hover:border-blue-300 cursor-pointer transition-all flex items-start space-x-3.5">
-                            <span class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black font-mono text-sm shrink-0">05</span>
+                            <span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black font-mono text-sm shrink-0">05</span>
                             <div>
                                 <h4 class="text-sm font-bold text-slate-900">Canje en Recepción en 3 Segundos</h4>
                                 <p class="text-xs text-slate-600 mt-0.5">La recepcionista digita la cédula o escanea el QR y descuenta cupos con auditoría.</p>
@@ -598,7 +598,7 @@
                         </div>
 
                         <div onclick="selectStep(6)" id="step-btn-6" class="step-card p-4 rounded-2xl border border-slate-200 bg-white hover:border-blue-300 cursor-pointer transition-all flex items-start space-x-3.5">
-                            <span class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black font-mono text-sm shrink-0">06</span>
+                            <span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black font-mono text-sm shrink-0">06</span>
                             <div>
                                 <h4 class="text-sm font-bold text-slate-900">Renovaciones y Retención Automática</h4>
                                 <p class="text-xs text-slate-600 mt-0.5">El sistema gestiona vencimientos y te ayuda a reactivar planes automáticamente.</p>
@@ -606,35 +606,44 @@
                         </div>
                     </div>
 
-                    <!-- PANTALLA DE SIMULACIÓN VISUAL DEL PASO ACTIVO -->
+                    <!-- PANTALLA DE SIMULACIÓN VISUAL DEL PASO ACTIVO (MODERN GLASS FRAME) -->
                     <div class="lg:col-span-6">
-                        <div class="relative bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800 min-h-[420px] flex flex-col justify-between">
+                        <div class="relative bg-[#0b1324] text-white rounded-3xl p-5 sm:p-7 shadow-2xl border border-slate-700/80 min-h-[460px] flex flex-col justify-between overflow-hidden">
+                            <!-- Glow ambiental -->
+                            <div class="absolute -top-20 -right-20 w-64 h-64 bg-blue-500/15 rounded-full blur-3xl pointer-events-none"></div>
                             
                             <!-- BARRA SUPERIOR DE VENTANA -->
-                            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                            <div class="flex items-center justify-between border-b border-slate-800/90 pb-3 relative z-10">
                                 <div class="flex items-center space-x-2">
-                                    <span class="w-3 h-3 rounded-full bg-rose-500"></span>
-                                    <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-                                    <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                                    <span class="w-3 h-3 rounded-full bg-rose-500/90"></span>
+                                    <span class="w-3 h-3 rounded-full bg-amber-500/90"></span>
+                                    <span class="w-3 h-3 rounded-full bg-emerald-500/90"></span>
                                 </div>
-                                <span id="step-screen-tag" class="text-xs font-mono text-cyan-400 font-bold uppercase">
+                                <div class="hidden sm:flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-slate-800/80 border border-slate-700/60 text-[11px] font-mono text-slate-300">
+                                    <span class="text-emerald-400">🔒</span>
+                                    <span>avipetapp.com/v/vet-patitas</span>
+                                </div>
+                                <span id="step-screen-tag" class="text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider">
                                     Paso 01 · Configuración
                                 </span>
                             </div>
 
                             <!-- CONTENIDO DINÁMICO DE LA PANTALLA -->
-                            <div id="step-screen-content" class="py-6 transition-all duration-300">
+                            <div id="step-screen-content" class="py-4 relative z-10 transition-all duration-300 min-h-[290px] flex flex-col justify-center">
                                 <!-- Se inyecta dinámicamente con selectStep() -->
                             </div>
 
                             <!-- BARRA DE PROGRESO DE AUTO-PLAY -->
-                            <div class="space-y-2 border-t border-slate-800 pt-3">
+                            <div class="space-y-2 border-t border-slate-800/90 pt-3 relative z-10">
                                 <div class="flex justify-between text-[11px] text-slate-400">
-                                    <span>Paso <span id="step-current-number" class="text-white font-bold font-mono">1</span> de 6</span>
-                                    <span class="text-cyan-400 font-mono">Simulación interactiva</span>
+                                    <span>Etapa <span id="step-current-number" class="text-white font-bold font-mono">1</span> de 6</span>
+                                    <span class="text-cyan-400 font-mono text-[10px] uppercase tracking-wider flex items-center space-x-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                                        <span>Simulación Interactiva</span>
+                                    </span>
                                 </div>
-                                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                                    <div id="step-progress-bar" class="bg-blue-500 h-1.5 transition-all duration-500" style="width: 16.6%"></div>
+                                <div class="w-full bg-slate-800/90 h-1.5 rounded-full overflow-hidden">
+                                    <div id="step-progress-bar" class="bg-gradient-to-r from-blue-500 to-cyan-400 h-1.5 transition-all duration-500" style="width: 16.6%"></div>
                                 </div>
                             </div>
 
@@ -646,100 +655,205 @@
         </section>
 
         <!-- 6. DEMO INTERACTIVA: ESCÁNER QR DEL MOSTRADOR EN VIVO (AZUL/CYAN) -->
-        <section id="scanner-demo" class="py-16 sm:py-20 bg-[#FAFAF9] border-b border-slate-200">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center max-w-2xl mx-auto mb-10 space-y-2 reveal-on-scroll">
-                    <span class="text-xs font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+        <section id="scanner-demo" class="py-16 sm:py-24 bg-[#FAFAF9] border-b border-slate-200">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-12 space-y-2 reveal-on-scroll">
+                    <span class="text-xs font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-200/90 shadow-2xs">
                         Experiencia en Sala de Espera
                     </span>
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Pruébalo: Simula el escaneo de recepción</h2>
-                    <p class="text-xs sm:text-sm text-slate-600">Mira lo que ve un tutor de mascota cuando escanea el afiche con su celular.</p>
+                    <p class="text-xs sm:text-sm text-slate-600">Mira exactamente lo que ve y experimenta un tutor cuando escanea el afiche físico en tu clínica.</p>
                 </div>
 
-                <div class="clinic-card p-6 sm:p-10 rounded-3xl bg-white border-2 border-slate-200 shadow-xl reveal-on-scroll">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="p-6 sm:p-10 rounded-3xl bg-white border border-slate-200 shadow-xl reveal-on-scroll">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                         
-                        <!-- SIMULADOR DE AFICHE FÍSICO CON LÁSER DE ESCANEO AZUL/CYAN -->
-                        <div class="space-y-4 text-center">
-                            <div class="inline-block p-4 rounded-3xl bg-slate-50 border-2 border-dashed border-blue-400/80 relative overflow-hidden group shadow-md max-w-xs mx-auto">
+                        <!-- COLUMNA IZQUIERDA: AFICHE FÍSICO EN ACRÍLICO REALISTA -->
+                        <div class="lg:col-span-5 space-y-5 text-center">
+                            
+                            <!-- AFICHE EN BASE DE ACRÍLICO -->
+                            <div class="relative inline-block w-full max-w-[280px] p-4 bg-gradient-to-b from-white via-slate-50 to-slate-100 rounded-2xl border-2 border-slate-300 shadow-xl mx-auto transform hover:-translate-y-1 transition duration-300">
                                 
-                                <!-- RAYO LÁSER DE ESCANEO ANIMADO -->
-                                <div class="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_12px_#06B6D4] animate-laser z-20 pointer-events-none"></div>
+                                <!-- Soporte acrílico superior -->
+                                <div class="w-16 h-1 bg-slate-300 rounded-full mx-auto mb-3"></div>
 
-                                <div class="space-y-3 relative z-10 bg-white p-4 rounded-2xl border border-slate-200">
+                                <!-- Rayo láser animado -->
+                                <div id="qr-laser-beam" class="absolute left-4 right-4 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_12px_#06B6D4] animate-laser z-20 pointer-events-none opacity-80"></div>
+
+                                <div class="p-4 bg-white rounded-xl border border-slate-200 space-y-3 shadow-inner">
+                                    <!-- Header Afiche -->
                                     <div class="flex items-center justify-center space-x-2">
-                                        <img src="/logo.svg" alt="Logo" class="w-6 h-6">
-                                        <span class="text-xs font-bold text-slate-900">Veterinaria San Roque</span>
+                                        <img src="/images/dashboard/brand_logo.png" alt="Logo Clínica" class="w-6 h-6 object-contain">
+                                        <span class="text-xs font-black text-slate-900">Vet-Pet Patitas</span>
                                     </div>
-                                    <div class="text-[10px] font-extrabold uppercase tracking-wide text-blue-700">
-                                        Plan de Bienestar Mascotas
-                                    </div>
-
-                                    <!-- QR CODE CON ESTILO MODERNO -->
-                                    <div class="w-36 h-36 mx-auto bg-slate-900 rounded-xl p-2.5 flex items-center justify-center shadow-inner relative">
-                                        <div class="grid grid-cols-4 gap-1.5 w-full h-full p-1 bg-white rounded-lg">
-                                            <div class="bg-slate-900 rounded-xs"></div>
-                                            <div class="bg-slate-900 rounded-xs"></div>
-                                            <div class="bg-blue-600 rounded-xs"></div>
-                                            <div class="bg-slate-900 rounded-xs"></div>
-                                            <div class="bg-blue-600 rounded-xs"></div>
-                                            <div class="bg-slate-900 rounded-xs"></div>
-                                            <div class="bg-slate-900 rounded-xs"></div>
-                                            <div class="bg-blue-600 rounded-xs"></div>
-                                            <div class="bg-slate-900 rounded-xs"></div>
-                                            <div class="bg-blue-600 rounded-xs"></div>
-                                            <div class="bg-slate-900 rounded-xs"></div>
-                                            <div class="bg-slate-900 rounded-xs"></div>
-                                        </div>
+                                    
+                                    <div class="bg-blue-50 py-1 px-2 rounded-md border border-blue-200">
+                                        <span class="text-[10px] font-black uppercase tracking-wider text-blue-800">
+                                            Plan de Bienestar Mascotas
+                                        </span>
                                     </div>
 
-                                    <p class="text-[9px] text-slate-500 font-medium">
-                                        Escanea para afiliar a tu mascota desde $65.000/mes
+                                    <!-- QR CODE VECTORIAL REALISTA -->
+                                    <div class="relative w-36 h-36 mx-auto bg-white p-2 rounded-xl border-2 border-slate-800 shadow-sm flex items-center justify-center">
+                                        <svg class="w-full h-full text-slate-900" viewBox="0 0 100 100" fill="currentColor">
+                                            <rect x="0" y="0" width="28" height="28" rx="4" fill="#0F172A"/>
+                                            <rect x="4" y="4" width="20" height="20" rx="2" fill="#FFFFFF"/>
+                                            <rect x="8" y="8" width="12" height="12" rx="1" fill="#2563EB"/>
+
+                                            <rect x="72" y="0" width="28" height="28" rx="4" fill="#0F172A"/>
+                                            <rect x="76" y="4" width="20" height="20" rx="2" fill="#FFFFFF"/>
+                                            <rect x="80" y="8" width="12" height="12" rx="1" fill="#2563EB"/>
+
+                                            <rect x="0" y="72" width="28" height="28" rx="4" fill="#0F172A"/>
+                                            <rect x="4" y="76" width="20" height="20" rx="2" fill="#FFFFFF"/>
+                                            <rect x="8" y="80" width="12" height="12" rx="1" fill="#2563EB"/>
+
+                                            <rect x="34" y="6" width="6" height="6" rx="1"/>
+                                            <rect x="46" y="6" width="6" height="6" rx="1"/>
+                                            <rect x="58" y="6" width="6" height="6" rx="1"/>
+                                            <rect x="34" y="18" width="6" height="6" rx="1" fill="#0284C7"/>
+                                            <rect x="46" y="18" width="6" height="6" rx="1"/>
+                                            <rect x="58" y="18" width="6" height="6" rx="1" fill="#0284C7"/>
+
+                                            <rect x="6" y="34" width="6" height="6" rx="1"/>
+                                            <rect x="18" y="34" width="6" height="6" rx="1"/>
+                                            <rect x="6" y="46" width="6" height="6" rx="1"/>
+                                            <rect x="18" y="46" width="6" height="6" rx="1"/>
+                                            <rect x="6" y="58" width="6" height="6" rx="1"/>
+                                            <rect x="18" y="58" width="6" height="6" rx="1"/>
+
+                                            <rect x="34" y="34" width="32" height="32" rx="6" fill="#0F172A"/>
+                                            <circle cx="50" cy="50" r="10" fill="#FFFFFF"/>
+                                            <circle cx="50" cy="50" r="6" fill="#2563EB"/>
+
+                                            <rect x="72" y="34" width="6" height="6" rx="1"/>
+                                            <rect x="84" y="34" width="6" height="6" rx="1"/>
+                                            <rect x="72" y="46" width="6" height="6" rx="1"/>
+                                            <rect x="84" y="46" width="6" height="6" rx="1" fill="#0284C7"/>
+                                            <rect x="72" y="58" width="6" height="6" rx="1"/>
+                                            <rect x="84" y="58" width="6" height="6" rx="1"/>
+
+                                            <rect x="34" y="72" width="6" height="6" rx="1"/>
+                                            <rect x="46" y="72" width="6" height="6" rx="1"/>
+                                            <rect x="58" y="72" width="6" height="6" rx="1"/>
+                                            <rect x="34" y="84" width="6" height="6" rx="1" fill="#0284C7"/>
+                                            <rect x="46" y="84" width="6" height="6" rx="1"/>
+                                            <rect x="58" y="84" width="6" height="6" rx="1"/>
+                                        </svg>
+                                    </div>
+
+                                    <p class="text-[9.5px] text-slate-600 font-semibold leading-tight">
+                                        Escanea con tu celular para afiliar a tu mascota desde <strong class="text-blue-700">$50.000/mes</strong>
                                     </p>
                                 </div>
+
+                                <!-- Base Acrílica Inferior -->
+                                <div class="w-full h-3 bg-gradient-to-r from-slate-300 via-slate-200 to-slate-300 rounded-b-xl mt-1 shadow-sm"></div>
                             </div>
 
                             <div>
-                                <button type="button" onclick="triggerQrScanDemo()" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition transform hover:scale-105 active:scale-95 flex items-center justify-center space-x-2 mx-auto">
-                                    <span>📲 Simular Escaneo con Celular</span>
+                                <button type="button" onclick="triggerQrScanDemo()" id="scan-trigger-btn" class="relative group px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-lg shadow-blue-600/30 transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center space-x-2 mx-auto">
+                                    <span class="text-base">📲</span>
+                                    <span id="scan-btn-text">Simular Escaneo con Celular</span>
                                 </button>
+                                <span class="text-[10px] text-slate-400 block mt-1.5">Haz clic para ver la animación en vivo del teléfono</span>
                             </div>
                         </div>
 
-                        <!-- RESULTADO DEL CELULAR AL ESCANEAR -->
-                        <div class="space-y-4">
-                            <div id="scanner-result-box" class="p-6 rounded-3xl bg-slate-50 border-2 border-blue-500/50 space-y-4 transition-all duration-300">
-                                <div class="flex items-center space-x-2 text-xs font-bold text-blue-700 uppercase">
-                                    <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-                                    <span id="scan-status-title">Escaneo Exitoso en 0.8 seg</span>
-                                </div>
-                                <h3 class="text-lg font-bold text-slate-900">
-                                    El cliente ve tu portal móvil personalizado
-                                </h3>
-                                <p class="text-xs text-slate-600 leading-relaxed">
-                                    Sin descargar apps pesadas ni crear cuentas engorrosas. Entra directo en su navegador web con tu logo, tus precios y formulario de afiliación express.
-                                </p>
+                        <!-- COLUMNA DERECHA: TELÉFONO INTERACTIVO VIVO (MOCKUP IPHONE) -->
+                        <div class="lg:col-span-7">
+                            <div id="phone-container" class="relative max-w-sm mx-auto bg-slate-900 rounded-[40px] p-3.5 shadow-2xl border-4 border-slate-800 ring-1 ring-slate-700/50 transition-all duration-500">
                                 
-                                <div class="p-3 bg-white rounded-xl border border-slate-200 text-xs space-y-2">
-                                    <div class="flex justify-between font-bold text-slate-800">
-                                        <span>Plan Elegido:</span>
-                                        <span class="text-blue-700 font-mono">Plan Premium Patitas</span>
-                                    </div>
-                                    <div class="flex justify-between text-slate-500 text-[11px]">
-                                        <span>Mascota registrada:</span>
-                                        <span class="text-slate-900 font-medium">Luna (Golden Retriever)</span>
-                                    </div>
-                                    <div class="flex justify-between text-slate-500 text-[11px]">
-                                        <span>Cobro directo:</span>
-                                        <span class="text-slate-900 font-medium">Bancolombia / Nequi / Daviplata</span>
-                                    </div>
+                                <!-- Dynamic Island -->
+                                <div class="w-24 h-5 bg-black rounded-full mx-auto mb-2 flex items-center justify-center space-x-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-900/60"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-800"></span>
                                 </div>
 
-                                <div class="pt-1">
-                                    <a href="/v/vet-pet-patitas" target="_blank" class="block w-full py-2.5 text-center rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 font-bold text-xs border border-blue-200 transition">
-                                        Abrir Portal de la Clínica Piloto →
-                                    </a>
+                                <!-- PANTALLA DEL CELULAR -->
+                                <div id="phone-screen" class="bg-white rounded-[30px] p-4 text-slate-900 min-h-[440px] flex flex-col justify-between overflow-hidden relative shadow-inner">
+                                    
+                                    <!-- VISTA 1: SCANNER EN VIVO -->
+                                    <div id="phone-view-scanner" class="absolute inset-0 bg-slate-950 text-white p-6 flex flex-col justify-between items-center text-center z-30 transition-opacity duration-300">
+                                        <div class="w-full flex justify-between items-center text-[10px] text-slate-400 font-mono">
+                                            <span>CÁMARA QR</span>
+                                            <span class="text-emerald-400 flex items-center space-x-1">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                                <span>LISTO PARA ESCANEAR</span>
+                                            </span>
+                                        </div>
+
+                                        <!-- Retícula del visor de la cámara -->
+                                        <div class="relative w-44 h-44 border-2 border-dashed border-cyan-400/80 rounded-2xl flex items-center justify-center p-4">
+                                            <div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-cyan-400"></div>
+                                            <div class="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-cyan-400"></div>
+                                            <div class="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-cyan-400"></div>
+                                            <div class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-cyan-400"></div>
+                                            
+                                            <div class="absolute left-2 right-2 h-0.5 bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-laser"></div>
+                                            
+                                            <span class="text-[11px] text-cyan-200 font-semibold">Apunta al afiche...</span>
+                                        </div>
+
+                                        <div class="space-y-1">
+                                            <p class="text-xs text-slate-300 font-bold">Presiona el botón azul</p>
+                                            <p class="text-[10px] text-slate-500">Abre tu clínica en 1 segundo</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- VISTA 2: PORTAL MÓVIL ABIERTO TRAS ESCANEO -->
+                                    <div id="phone-view-portal" class="space-y-3 opacity-0 transition-opacity duration-500">
+                                        <!-- Header de la clínica -->
+                                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                                            <div class="flex items-center space-x-2">
+                                                <img src="/images/dashboard/brand_logo.png" alt="Logo" class="w-7 h-7 object-contain">
+                                                <div>
+                                                    <h4 class="text-xs font-black text-slate-900 leading-tight">Vet-Pet Patitas</h4>
+                                                    <span class="text-[9px] text-emerald-600 font-bold">● Clínica Abierta</span>
+                                                </div>
+                                            </div>
+                                            <span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold text-[9px]">
+                                                Portal Tutor
+                                            </span>
+                                        </div>
+
+                                        <!-- Plan Elegido -->
+                                        <div class="p-3 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-md space-y-1.5">
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-200">Plan Seleccionado</span>
+                                                <span class="px-1.5 py-0.5 rounded bg-white/20 text-white text-[9px] font-bold">Recomendado</span>
+                                            </div>
+                                            <div class="text-base font-black">Plan Premium Patitas</div>
+                                            <div class="text-xs font-bold text-cyan-200 font-mono">$65.000 COP / mes</div>
+                                        </div>
+
+                                        <!-- Formulario de Afiliación Express -->
+                                        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-xs">
+                                            <div class="text-[10px] font-bold text-slate-700 uppercase">Datos de la mascota:</div>
+                                            <div class="flex items-center justify-between text-[11px] bg-white p-2 rounded-lg border border-slate-200">
+                                                <span class="text-slate-500">Nombre:</span>
+                                                <strong class="text-slate-900">Luna 🐕</strong>
+                                            </div>
+                                            <div class="flex items-center justify-between text-[11px] bg-white p-2 rounded-lg border border-slate-200">
+                                                <span class="text-slate-500">Raza:</span>
+                                                <span class="text-slate-800 font-medium">Golden Retriever</span>
+                                            </div>
+                                            <div class="flex items-center justify-between text-[11px] bg-white p-2 rounded-lg border border-slate-200">
+                                                <span class="text-slate-500">Medio de pago:</span>
+                                                <span class="text-blue-700 font-bold">Bancolombia / Nequi</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Botón CTA en Celular -->
+                                        <a href="/v/vet-pet-patitas" target="_blank" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md transition flex items-center justify-center space-x-1.5">
+                                            <span>✓ Confirmar y Activar Carnet</span>
+                                        </a>
+                                    </div>
+
                                 </div>
+
+                                <!-- Barra Home iPhone -->
+                                <div class="w-28 h-1 bg-slate-700 rounded-full mx-auto mt-2"></div>
                             </div>
                         </div>
 
@@ -882,129 +996,182 @@
             </div>
         </section>
 
-        <!-- 9. CARNET DIGITAL INTERACTIVO (EXPERIENCIA DEL PACIENTE) -->
-        <section id="carnet-interactivo" class="py-20 bg-white border-b border-slate-200">
+        <!-- 9. CARNET DIGITAL INTERACTIVO (EXPERIENCIA DEL PACIENTE - VIP PASS) -->
+        <section id="carnet-interactivo" class="py-20 sm:py-24 bg-gradient-to-b from-white via-slate-50/60 to-white border-b border-slate-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                     
+                    <!-- COLUMNA IZQUIERDA: BENEFICIOS COMERCIALES -->
                     <div class="lg:col-span-6 space-y-6 reveal-on-scroll">
-                        <span class="text-xs font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-200/90 shadow-2xs">
                             Experiencia del Tutor
                         </span>
                         <h2 class="text-3xl sm:text-5xl font-black text-slate-900 leading-tight">
                             Tu cliente lleva su carnet interactivo en el celular
                         </h2>
                         <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
-                            Una experiencia móvil de primer nivel para el tutor de la mascota. Accede a su carnet digital, consulta los beneficios incluidos y conoce con exactitud qué servicios preventivos ya utilizó y cuáles tiene disponibles.
+                            Una experiencia móvil de primer nivel para el tutor de la mascota. Accede a su carnet digital, consulta los beneficios incluidos y conoce con exactitud qué servicios preventivos ya utilizó y cuáles tiene disponibles en tiempo real.
                         </p>
 
-                        <div class="space-y-3 text-xs sm:text-sm text-slate-700 font-medium">
-                            <div class="flex items-center space-x-2.5">
-                                <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-xs">✓</span>
-                                <span>Cero carnets de papel arrugados o perdidos.</span>
+                        <div class="space-y-3.5 text-xs sm:text-sm text-slate-700 font-medium">
+                            <div class="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                                <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+                                <span><strong>Cero carnets de papel</strong> arrugados, mojados o perdidos en el bolso.</span>
                             </div>
-                            <div class="flex items-center space-x-2.5">
-                                <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-xs">✓</span>
-                                <span>Transparencia total en saldos y fechas de renovación.</span>
+                            <div class="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                                <span class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+                                <span><strong>Transparencia total</strong> en saldos, fechas de vacunación y días de renovación.</span>
                             </div>
-                            <div class="flex items-center space-x-2.5">
-                                <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-xs">✓</span>
-                                <span>Mayor fidelidad y sentido de pertenencia con tu veterinaria.</span>
+                            <div class="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                                <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs shrink-0">✓</span>
+                                <span><strong>Fidelización inquebrantable</strong> y orgullo de pertenencia con tu marca clínica.</span>
                             </div>
                         </div>
 
-                        <div class="pt-2">
-                            <a href="/v/vet-pet-patitas/carnet/VP-2026-0001" target="_blank" class="inline-flex items-center space-x-2 px-5 py-3 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-300 hover:border-blue-300 text-slate-800 text-xs font-bold shadow-xs transition">
-                                <span>Ver carnet digital real en navegador</span>
-                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <div class="pt-2 flex flex-wrap items-center gap-3">
+                            <a href="/v/vet-pet-patitas/carnet/VP-2026-0001" target="_blank" class="inline-flex items-center space-x-2 px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold shadow-lg shadow-blue-600/25 transition-all transform hover:-translate-y-0.5">
+                                <span>Ver Carnet Real en Pantalla Completa</span>
+                                <svg class="w-4 h-4 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             </a>
+                            <button type="button" onclick="simulateCarnetRedeem()" class="inline-flex items-center space-x-2 px-5 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold border border-slate-300 transition">
+                                <span>⚡ Probar Canje de Vacuna</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- MOCKUP DEL CARNET CON INTERACTIVIDAD REAL -->
+                    <!-- MOCKUP IPHONE CON CARNET DIGITAL VIP -->
                     <div class="lg:col-span-6 flex justify-center reveal-on-scroll">
-                        <div class="w-full max-w-sm bg-white rounded-3xl p-6 border-2 border-blue-600 shadow-xl space-y-4 hover:shadow-2xl transition-all">
+                        <div class="relative w-full max-w-[360px] bg-slate-900 rounded-[44px] p-3.5 shadow-2xl border-4 border-slate-800 ring-1 ring-slate-700/50">
                             
-                            <!-- CABECERA CARNET -->
-                            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-2xl font-bold border border-amber-200">
-                                        🐶
-                                    </div>
-                                    <div>
-                                        <h4 class="text-base font-black text-slate-900">Luna</h4>
-                                        <p class="text-[11px] text-slate-500 font-medium">Golden Retriever • 2 años</p>
-                                    </div>
-                                </div>
-                                <span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 text-[10px] font-bold uppercase border border-blue-200">
-                                    Activo ✓
-                                </span>
+                            <!-- Dynamic Island & Status -->
+                            <div class="w-28 h-5 bg-black rounded-full mx-auto mb-2 flex items-center justify-center space-x-2">
+                                <span class="w-2 h-2 rounded-full bg-blue-900/60"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-800"></span>
                             </div>
 
-                            <!-- DATOS BÁSICOS -->
-                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5 text-xs">
-                                <div class="flex justify-between">
-                                    <span class="text-slate-500 font-medium">Plan:</span>
-                                    <span class="font-bold text-slate-900">Plan Premium Patitas</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-slate-500 font-medium">Cédula Tutor:</span>
-                                    <span class="font-mono text-slate-700">CC 1.020.345.***</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-slate-500 font-medium">Próximo vencimiento:</span>
-                                    <span class="font-bold text-amber-700">15 Octubre 2026</span>
-                                </div>
-                            </div>
+                            <!-- PANTALLA CARNET (APPLE WALLET / VIP PASS STYLE) -->
+                            <div class="bg-gradient-to-b from-slate-900 via-[#0d1b2a] to-slate-900 rounded-[32px] p-4 text-white min-h-[480px] flex flex-col justify-between overflow-hidden relative shadow-inner border border-slate-800">
+                                
+                                <!-- TARJETA VIP PRINCIPAL (GLASSMORPHISM CON DEGRADADO REAL) -->
+                                <div class="relative rounded-2xl p-4 bg-gradient-to-br from-blue-700 via-indigo-800 to-slate-900 border border-blue-400/40 shadow-xl space-y-3.5 overflow-hidden">
+                                    
+                                    <!-- Brillo diagonal -->
+                                    <div class="absolute -top-12 -right-12 w-32 h-32 bg-cyan-400/20 rounded-full blur-2xl pointer-events-none"></div>
 
-                            <!-- RESUMEN DE BENEFICIOS CON ACCORDEÓN INTERACTIVO -->
-                            <div class="space-y-2">
-                                <div class="flex justify-between items-center text-xs font-bold text-slate-700">
-                                    <span>Beneficios del plan:</span>
-                                    <span class="text-blue-700 font-mono">5 de 8 canjeados</span>
-                                </div>
-                                <div class="w-full bg-slate-200 rounded-full h-2">
-                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 62.5%"></div>
-                                </div>
-
-                                <!-- BOTÓN EXPANDIR BENEFICIOS -->
-                                <button type="button" onclick="toggleCarnetBenefits()" id="toggle-benefits-btn" class="w-full mt-2 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-between transition">
-                                    <span>Detalle de beneficios incluidos</span>
-                                    <span id="benefits-chevron" class="text-blue-600 font-mono transition-transform">▼</span>
-                                </button>
-
-                                <!-- DETALLE DESPLEGABLE -->
-                                <div id="carnet-benefits-drawer" class="hidden pt-2 space-y-2 text-xs">
-                                    <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center">
-                                        <div>
-                                            <span class="font-bold text-slate-800 block text-[11px]">🩺 Consulta médica preventiva</span>
-                                            <span class="text-[10px] text-slate-500">2 de 2 utilizadas</span>
+                                    <!-- Top Header Tarjeta -->
+                                    <div class="flex items-center justify-between border-b border-white/15 pb-2.5">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-7 h-7 rounded-lg bg-white/95 p-1 flex items-center justify-center shadow-xs">
+                                                <img src="/images/dashboard/brand_logo.png" alt="Logo" class="w-full h-full object-contain">
+                                            </div>
+                                            <div>
+                                                <span class="text-[11px] font-black tracking-tight text-white block leading-tight">Vet-Pet Patitas</span>
+                                                <span class="text-[8.5px] font-medium text-cyan-200">Sede Principal · Medellín</span>
+                                            </div>
                                         </div>
-                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-600">Agotado</span>
-                                    </div>
-                                    <div class="p-2.5 rounded-xl bg-blue-50 border border-blue-200 flex justify-between items-center">
-                                        <div>
-                                            <span class="font-bold text-blue-950 block text-[11px]">💉 Vacuna Séxtuple Anual</span>
-                                            <span class="text-[10px] text-blue-700">1 disponible para aplicar</span>
+                                        <div class="flex items-center space-x-1.5">
+                                            <span class="px-2 py-0.5 rounded-full bg-emerald-500/25 border border-emerald-400/40 text-emerald-300 text-[9px] font-bold font-mono uppercase">
+                                                ● Activo
+                                            </span>
                                         </div>
-                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-200 text-blue-900">Disponible</span>
                                     </div>
-                                    <div class="p-2.5 rounded-xl bg-blue-50 border border-blue-200 flex justify-between items-center">
-                                        <div>
-                                            <span class="font-bold text-blue-950 block text-[11px]">💊 Desparasitación interna</span>
-                                            <span class="text-[10px] text-blue-700">2 de 3 disponibles</span>
+
+                                    <!-- Perfil Mascota -->
+                                    <div class="flex items-center space-x-3">
+                                        <div class="relative w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-400 to-amber-200 p-0.5 shadow-md shrink-0">
+                                            <div class="w-full h-full rounded-[14px] bg-slate-900 flex items-center justify-center text-2xl overflow-hidden">
+                                                🐕
+                                            </div>
+                                            <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-slate-900 flex items-center justify-center text-[8px] text-white font-bold">✓</span>
                                         </div>
-                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-200 text-blue-900">Disponible</span>
+                                        <div class="space-y-0.5 min-w-0 flex-1">
+                                            <div class="flex items-center space-x-1.5">
+                                                <h4 class="text-base font-black text-white leading-tight">Luna</h4>
+                                                <span class="text-[10px] text-amber-300 font-bold">★ VIP</span>
+                                            </div>
+                                            <p class="text-[11px] text-slate-200 font-medium truncate">Golden Retriever · 2 años</p>
+                                            <div class="flex items-center space-x-2 text-[9.5px] font-mono text-cyan-300">
+                                                <span>Chip: #98109823019</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Plan & Tutor -->
+                                    <div class="grid grid-cols-2 gap-2 bg-black/30 backdrop-blur-md p-2.5 rounded-xl border border-white/10 text-[10px]">
+                                        <div>
+                                            <span class="text-slate-400 block text-[9px] uppercase">Plan Activo</span>
+                                            <strong class="text-white font-bold truncate block">Plan Premium</strong>
+                                        </div>
+                                        <div>
+                                            <span class="text-slate-400 block text-[9px] uppercase">Tutor Responsable</span>
+                                            <span class="text-slate-200 font-medium truncate block">Carlos Mendoza</span>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <!-- BENEFICIOS DEL CARNET (DETALLE VISUAL EXPANDIDO) -->
+                                <div class="bg-slate-900/90 rounded-2xl p-3 border border-slate-800 space-y-2 text-xs">
+                                    <div class="flex justify-between items-center text-[10px] font-bold text-slate-300 uppercase tracking-wider">
+                                        <span>Coberturas Incluidas</span>
+                                        <span id="carnet-balance-count" class="text-cyan-400 font-mono">5 de 8 Utilizados</span>
+                                    </div>
+
+                                    <!-- Lista de beneficios en chips compactos -->
+                                    <div class="space-y-1.5">
+                                        <div class="p-2 rounded-xl bg-slate-800/80 border border-slate-700/60 flex justify-between items-center text-[11px]">
+                                            <div class="flex items-center space-x-2">
+                                                <span>🩺</span>
+                                                <span class="text-slate-200 font-medium">Consultas Médicas</span>
+                                            </div>
+                                            <span class="px-2 py-0.5 rounded-md bg-blue-900/60 border border-blue-500/40 text-cyan-300 text-[10px] font-mono font-bold">2/2 Disp.</span>
+                                        </div>
+
+                                        <div id="benefit-vaccine-row" class="p-2 rounded-xl bg-slate-800/80 border border-slate-700/60 flex justify-between items-center text-[11px] transition-all">
+                                            <div class="flex items-center space-x-2">
+                                                <span>💉</span>
+                                                <span class="text-slate-200 font-medium">Vacuna Séxtuple</span>
+                                            </div>
+                                            <span id="vaccine-status-badge" class="px-2 py-0.5 rounded-md bg-emerald-900/60 border border-emerald-500/40 text-emerald-300 text-[10px] font-mono font-bold">1/1 Aplicada ✓</span>
+                                        </div>
+
+                                        <div class="p-2 rounded-xl bg-slate-800/80 border border-slate-700/60 flex justify-between items-center text-[11px]">
+                                            <div class="flex items-center space-x-2">
+                                                <span>💊</span>
+                                                <span class="text-slate-200 font-medium">Desparasitación</span>
+                                            </div>
+                                            <span class="px-2 py-0.5 rounded-md bg-blue-900/60 border border-blue-500/40 text-cyan-300 text-[10px] font-mono font-bold">3/3 Disp.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CÓDIGO DE BARRAS VECTORIAL VECTOR CODE128 -->
+                                <div class="p-2.5 bg-white rounded-xl text-center space-y-1 shadow-sm">
+                                    <div class="h-8 flex items-center justify-center space-x-1 px-2">
+                                        <!-- Barcode Lines -->
+                                        <div class="w-1 h-full bg-slate-950"></div>
+                                        <div class="w-0.5 h-full bg-slate-950"></div>
+                                        <div class="w-1.5 h-full bg-slate-950"></div>
+                                        <div class="w-0.5 h-full bg-slate-950"></div>
+                                        <div class="w-2 h-full bg-slate-950"></div>
+                                        <div class="w-0.5 h-full bg-slate-950"></div>
+                                        <div class="w-1 h-full bg-slate-950"></div>
+                                        <div class="w-2 h-full bg-slate-950"></div>
+                                        <div class="w-0.5 h-full bg-slate-950"></div>
+                                        <div class="w-1.5 h-full bg-slate-950"></div>
+                                        <div class="w-1 h-full bg-slate-950"></div>
+                                        <div class="w-0.5 h-full bg-slate-950"></div>
+                                        <div class="w-2 h-full bg-slate-950"></div>
+                                        <div class="w-1 h-full bg-slate-950"></div>
+                                        <div class="w-0.5 h-full bg-slate-950"></div>
+                                        <div class="w-1.5 h-full bg-slate-950"></div>
+                                    </div>
+                                    <div class="text-[9px] font-mono font-bold text-slate-800 tracking-widest">VP-PAT-2026-0881</div>
+                                </div>
+
                             </div>
 
-                            <!-- CÓDIGO DE BARRAS SIMULADO -->
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-center space-y-1">
-                                <div class="font-mono text-base tracking-[0.3em] font-black text-slate-800">||| | |||| | ||| ||</div>
-                                <span class="text-[10px] font-mono text-slate-400">VP-2026-0001</span>
-                            </div>
-
+                            <!-- Barra Home iPhone -->
+                            <div class="w-28 h-1 bg-slate-700 rounded-full mx-auto mt-2"></div>
                         </div>
                     </div>
 
@@ -1883,127 +2050,188 @@
 
         setInterval(cycleLiveActivity, 4000);
 
-        // 5. TIMELINE INTERACTIVO EN AZUL CLÍNICO
+        // 5. TIMELINE INTERACTIVO ULTRA-MODERNO
         const stepData = {
             1: {
                 tag: 'Paso 01 · Configuración de Planes',
                 html: `
-                    <div class="space-y-4">
-                        <div class="text-xs text-cyan-400 font-mono font-bold">✓ Creador de Planes Activo</div>
-                        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 space-y-3">
-                            <div class="flex justify-between items-center text-sm">
-                                <span class="font-bold text-white">Plan Premium Patitas</span>
-                                <span class="font-mono text-cyan-400 font-bold">$65.000 / mes</span>
+                    <div class="space-y-3.5 animate-fadeIn">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-cyan-300 font-bold flex items-center space-x-1.5">
+                                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                                <span>Creador de Planes Activo</span>
+                            </span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-cyan-300 border border-blue-500/30 font-mono">100% Personalizable</span>
+                        </div>
+                        <div class="bg-slate-800/90 p-4 rounded-2xl border border-slate-700 space-y-3 shadow-lg">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h5 class="font-black text-white text-sm">Plan Premium Patitas</h5>
+                                    <span class="text-[10px] text-slate-400">Caninos adultos (1 a 7 años)</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="font-mono text-cyan-400 font-extrabold text-base">$65.000</span>
+                                    <span class="text-[9px] text-slate-400 block font-mono">COP / mes</span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300 font-mono">
-                                <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-700">✓ 2 Consultas / año</div>
-                                <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-700">✓ 1 Vacuna Séxtuple</div>
-                                <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-700">✓ 3 Desparasitaciones</div>
-                                <div class="bg-slate-900/60 p-2 rounded-lg border border-slate-700">✓ 2 Baños Medicados</div>
+                            <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-200">
+                                <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-700/80 flex items-center space-x-1.5">
+                                    <span class="text-emerald-400 font-bold">✓</span>
+                                    <span>2 Consultas / año</span>
+                                </div>
+                                <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-700/80 flex items-center space-x-1.5">
+                                    <span class="text-emerald-400 font-bold">✓</span>
+                                    <span>1 Vacuna Séxtuple</span>
+                                </div>
+                                <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-700/80 flex items-center space-x-1.5">
+                                    <span class="text-emerald-400 font-bold">✓</span>
+                                    <span>3 Desparasitaciones</span>
+                                </div>
+                                <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-700/80 flex items-center space-x-1.5">
+                                    <span class="text-emerald-400 font-bold">✓</span>
+                                    <span>2 Baños Medicados</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="text-xs text-slate-400">Total libertad: Define qué servicios incluir y cuánto cobrar a tus tutores.</div>
+                        <p class="text-xs text-slate-400">Tú decides los beneficios, exclusiones y tarifas mensuales de tu clínica sin ataduras.</p>
                     </div>
                 `
             },
             2: {
                 tag: 'Paso 02 · Escaneo QR Mostrador',
                 html: `
-                    <div class="space-y-4">
-                        <div class="text-xs text-cyan-400 font-mono font-bold">📲 Escaneo Inmediato en Sala de Espera</div>
-                        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 flex items-center space-x-4">
-                            <div class="w-16 h-16 bg-white rounded-xl p-1.5 flex items-center justify-center shrink-0">
-                                <div class="w-full h-full bg-slate-900 rounded-sm"></div>
+                    <div class="space-y-3.5 animate-fadeIn">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-cyan-300 font-bold flex items-center space-x-1.5">
+                                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                                <span>Afiche en Sala de Espera</span>
+                            </span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">Auto-atención</span>
+                        </div>
+                        <div class="bg-slate-800/90 p-4 rounded-2xl border border-slate-700 flex items-center space-x-4 shadow-lg">
+                            <div class="w-16 h-16 bg-white rounded-xl p-1.5 flex items-center justify-center shrink-0 border-2 border-cyan-400 shadow-md">
+                                <img src="/images/dashboard/brand_logo.png" alt="QR" class="w-full h-full object-contain">
                             </div>
                             <div class="space-y-1">
-                                <div class="text-xs font-bold text-white">El tutor apunta su cámara</div>
-                                <div class="text-[11px] text-slate-400 font-mono">https://avipetapp.com/v/tu-clinica</div>
-                                <span class="inline-block text-[10px] bg-blue-500/20 text-cyan-300 px-2 py-0.5 rounded font-mono">Cero descargas de apps</span>
+                                <h5 class="text-xs font-black text-white">El tutor escanea mientras espera</h5>
+                                <p class="text-[11px] text-cyan-300 font-mono">avipetapp.com/v/tu-clinica</p>
+                                <span class="inline-block text-[9.5px] bg-blue-500/20 text-blue-200 px-2 py-0.5 rounded font-mono border border-blue-500/30">Cero filas en recepción</span>
                             </div>
                         </div>
-                        <div class="text-xs text-slate-400">Sin filas en recepción: el cliente inicia su afiliación mientras espera turno.</div>
+                        <p class="text-xs text-slate-400">El afiche impreso atrae la atención de tus clientes y automatiza las ventas en el mostrador.</p>
                     </div>
                 `
             },
             3: {
                 tag: 'Paso 03 · Afiliación Digital',
                 html: `
-                    <div class="space-y-4">
-                        <div class="text-xs text-cyan-400 font-mono font-bold">⚡ Registro en 2 Minutos</div>
-                        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 space-y-2.5 font-mono text-xs">
-                            <div class="flex justify-between border-b border-slate-700 pb-1">
+                    <div class="space-y-3.5 animate-fadeIn">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-cyan-300 font-bold flex items-center space-x-1.5">
+                                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                                <span>Formulario Express en Celular</span>
+                            </span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-cyan-300 border border-blue-500/30 font-mono">2 Minutos</span>
+                        </div>
+                        <div class="bg-slate-800/90 p-4 rounded-2xl border border-slate-700 space-y-2 text-xs shadow-lg font-mono">
+                            <div class="flex justify-between border-b border-slate-700/80 pb-1.5">
                                 <span class="text-slate-400">Tutor:</span>
-                                <span class="text-white">Carlos Mendoza (CC 1.020.***)</span>
+                                <span class="text-white font-bold">Carlos Mendoza (CC 1.020.345.***)</span>
                             </div>
-                            <div class="flex justify-between border-b border-slate-700 pb-1">
+                            <div class="flex justify-between border-b border-slate-700/80 pb-1.5">
                                 <span class="text-slate-400">Mascota:</span>
-                                <span class="text-white">Luna · Golden Retriever · 2 años</span>
+                                <span class="text-cyan-300 font-bold">Luna 🐕 (Golden Retriever)</span>
                             </div>
-                            <div class="flex justify-between">
+                            <div class="flex justify-between items-center pt-0.5">
                                 <span class="text-slate-400">Medio Pago:</span>
-                                <span class="text-cyan-400 font-bold">Transferencia Bancolombia / Nequi</span>
+                                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[10px]">Bancolombia / Nequi / Bold</span>
                             </div>
                         </div>
-                        <div class="text-xs text-slate-400">Cero papeleo: Todo queda guardado y auditado en tu base de datos clínica.</div>
+                        <p class="text-xs text-slate-400">Sin papeleos ni contratos físicos: la base de datos de tu clínica se actualiza al instante.</p>
                     </div>
                 `
             },
             4: {
                 tag: 'Paso 04 · Carnet Digital Móvil',
                 html: `
-                    <div class="space-y-4">
-                        <div class="text-xs text-cyan-400 font-mono font-bold">🪪 Carnet Interactivo en WhatsApp</div>
-                        <div class="bg-slate-800/80 p-4 rounded-2xl border border-blue-500/40 space-y-3">
+                    <div class="space-y-3.5 animate-fadeIn">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-cyan-300 font-bold flex items-center space-x-1.5">
+                                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                                <span>Carnet Interactivo Oficial</span>
+                            </span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">En WhatsApp</span>
+                        </div>
+                        <div class="bg-gradient-to-br from-blue-900 via-indigo-950 to-slate-900 p-4 rounded-2xl border border-blue-400/40 space-y-2.5 shadow-xl">
                             <div class="flex justify-between items-center">
-                                <span class="text-xs font-bold text-white">CARNET OFICIAL: LUNA</span>
-                                <span class="px-2 py-0.5 rounded bg-blue-600 text-white text-[10px] font-mono">ACTIVO</span>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-lg">🐕</span>
+                                    <span class="text-xs font-black text-white">LUNA · VIP HEALTH PASS</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-full bg-emerald-500/25 text-emerald-300 text-[9px] font-mono font-bold">ACTIVO ✓</span>
                             </div>
-                            <div class="font-mono text-center tracking-[0.25em] text-slate-300 py-1 bg-slate-900 rounded-lg">
-                                ||| | |||| | ||| ||
+                            <div class="p-2 bg-white rounded-lg text-center font-mono text-[10px] text-slate-900 font-bold tracking-widest">
+                                ||| | |||| | ||| || VP-PAT-2026-0881
                             </div>
                             <div class="text-[11px] text-slate-300 flex justify-between">
-                                <span>Cupos disponibles:</span>
-                                <span class="text-cyan-400 font-bold">3 de 8 servicios</span>
+                                <span>Saldo Coberturas:</span>
+                                <span class="text-cyan-300 font-bold font-mono">5 de 8 Utilizadas</span>
                             </div>
                         </div>
-                        <div class="text-xs text-slate-400">El cliente lo tiene siempre consigo: nunca más carnets físicos perdidos.</div>
+                        <p class="text-xs text-slate-400">El tutor lo consulta 24/7 desde su móvil, reduciendo llamadas de preguntas a recepción.</p>
                     </div>
                 `
             },
             5: {
-                tag: 'Paso 05 · Canje Rápido en Caja',
+                tag: 'Paso 05 · Canje Rápido en Mostrador',
                 html: `
-                    <div class="space-y-4">
-                        <div class="text-xs text-cyan-400 font-mono font-bold">⚡ Validación en Mostrador en 3 Segundos</div>
-                        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 space-y-2">
+                    <div class="space-y-3.5 animate-fadeIn">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-cyan-300 font-bold flex items-center space-x-1.5">
+                                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                                <span>Validación en 3 Segundos</span>
+                            </span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-cyan-300 border border-blue-500/30 font-mono">Auditoría 100%</span>
+                        </div>
+                        <div class="bg-slate-800/90 p-4 rounded-2xl border border-slate-700 space-y-2.5 shadow-lg">
                             <div class="flex justify-between items-center text-xs">
-                                <span class="text-slate-400">Servicio solicitado:</span>
-                                <span class="text-cyan-400 font-bold font-mono">Vacuna Séxtuple</span>
+                                <span class="text-slate-400">Servicio Canjeado:</span>
+                                <strong class="text-white font-mono">Vacuna Séxtuple</strong>
                             </div>
-                            <div class="p-2.5 rounded-xl bg-blue-950/60 border border-blue-500/60 flex items-center space-x-2 text-xs text-blue-200">
-                                <span>✓</span>
-                                <span>Cupo descontado exitosamente. Saldo restante: 0 vacunas.</span>
+                            <div class="p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-500/60 flex items-center space-x-2 text-xs text-emerald-200">
+                                <span class="text-emerald-400 font-bold text-sm">✓</span>
+                                <span>Cupo descontado. Auditoría registrada por Dra. Vicky Naranjo.</span>
                             </div>
                         </div>
-                        <div class="text-xs text-slate-400">Tu recepcionista solo digita la cédula o escanea el carnet y listo.</div>
+                        <p class="text-xs text-slate-400">Tu recepcionista digita la cédula o escanea el carnet y listo. Cero confusión de beneficios.</p>
                     </div>
                 `
             },
             6: {
                 tag: 'Paso 06 · Renovaciones y Fidelidad',
                 html: `
-                    <div class="space-y-4">
-                        <div class="text-xs text-cyan-400 font-mono font-bold">🤖 Retención Proactiva con IA</div>
-                        <div class="bg-slate-800/80 p-4 rounded-2xl border border-blue-500/40 space-y-2 text-xs">
-                            <div class="text-amber-300 font-bold">⚠️ Alerta preventiva detectada:</div>
-                            <div class="text-slate-300 text-[11px]">
-                                El plan de Luna vence en 5 días. Notificación automática por WhatsApp lista para enviar.
+                    <div class="space-y-3.5 animate-fadeIn">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-cyan-300 font-bold flex items-center space-x-1.5">
+                                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                                <span>Retención Proactiva con IA</span>
+                            </span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono">Gemini 2.5</span>
+                        </div>
+                        <div class="bg-slate-800/90 p-4 rounded-2xl border border-purple-500/40 space-y-2 text-xs shadow-lg">
+                            <div class="text-amber-300 font-bold flex items-center space-x-1">
+                                <span>⚠️</span>
+                                <span>Alerta Preventiva de Vencimiento:</span>
                             </div>
-                            <div class="pt-1 flex items-center space-x-2 text-cyan-400 font-mono text-[10px]">
-                                <span>✓ Tasa de renovación promedio: 82%</span>
+                            <p class="text-slate-300 text-[11px] leading-relaxed">
+                                El plan de Luna vence en 5 días. Mensaje WhatsApp automatizado listo para enviar con 1 clic.
+                            </p>
+                            <div class="pt-1 flex items-center justify-between text-[10px] font-mono text-cyan-300 border-t border-slate-700/80">
+                                <span>Tasa de Retención Promedio:</span>
+                                <strong class="text-emerald-400">82% Anual</strong>
                             </div>
                         </div>
-                        <div class="text-xs text-slate-400">Mantén los ingresos constantes mes tras mes sin perseguir clientes.</div>
+                        <p class="text-xs text-slate-400">Mantén los ingresos recurrentes fijos mes a mes sin desgastar a tu equipo en cobranzas.</p>
                     </div>
                 `
             }
@@ -2015,65 +2243,117 @@
             currentActiveStep = step;
             for (let i = 1; i <= 6; i++) {
                 const btn = document.getElementById(`step-btn-${i}`);
+                if (!btn) continue;
                 const num = btn.querySelector('span');
                 if (i === step) {
-                    btn.className = 'step-card p-4 rounded-2xl border-2 border-blue-600 bg-blue-50/60 cursor-pointer transition-all flex items-start space-x-3.5 shadow-xs transform scale-[1.01]';
-                    num.className = 'w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black font-mono text-sm shrink-0 shadow-xs';
+                    btn.className = 'step-card p-4 rounded-2xl border-2 border-blue-600 bg-blue-50/70 cursor-pointer transition-all flex items-start space-x-3.5 shadow-sm transform scale-[1.01]';
+                    num.className = 'w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black font-mono text-sm shrink-0 shadow-xs';
                 } else {
                     btn.className = 'step-card p-4 rounded-2xl border border-slate-200 bg-white hover:border-blue-300 cursor-pointer transition-all flex items-start space-x-3.5';
-                    num.className = 'w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black font-mono text-sm shrink-0';
+                    num.className = 'w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-black font-mono text-sm shrink-0';
                 }
             }
 
             const data = stepData[step];
-            document.getElementById('step-screen-tag').innerText = data.tag;
-            document.getElementById('step-screen-content').innerHTML = data.html;
-            document.getElementById('step-current-number').innerText = step;
-            document.getElementById('step-progress-bar').style.width = `${(step / 6) * 100}%`;
+            if (data) {
+                const tag = document.getElementById('step-screen-tag');
+                const content = document.getElementById('step-screen-content');
+                const currentNum = document.getElementById('step-current-number');
+                const progressBar = document.getElementById('step-progress-bar');
+                
+                if (tag) tag.innerText = data.tag;
+                if (content) content.innerHTML = data.html;
+                if (currentNum) currentNum.innerText = step;
+                if (progressBar) progressBar.style.width = `${(step / 6) * 100}%`;
+            }
         }
 
-        // Auto-recorrido cada 5 segundos si el usuario no interactúa
+        // Ejecución inmediata al cargar la página
+        selectStep(1);
+
+        // Auto-recorrido cada 6 segundos si el usuario no interactúa
         let autoStepInterval = setInterval(() => {
             let next = (currentActiveStep % 6) + 1;
             selectStep(next);
-        }, 5000);
+        }, 6000);
 
         document.querySelectorAll('.step-card').forEach(card => {
             card.addEventListener('click', () => clearInterval(autoStepInterval));
         });
 
-        // 6. DEMO INTERACTIVA DE ESCANEO DE QR
+        // 6. DEMO INTERACTIVA DE ESCANEO DE QR (CON AUDIO SINTETIZADO Y ANIMACIÓN)
         function triggerQrScanDemo() {
-            const box = document.getElementById('scanner-result-box');
-            const title = document.getElementById('scan-status-title');
-            
-            box.style.transform = 'scale(0.97)';
-            box.style.opacity = '0.5';
-            title.innerText = 'Escaneando afiche en sala de espera...';
+            const scannerView = document.getElementById('phone-view-scanner');
+            const portalView = document.getElementById('phone-view-portal');
+            const btn = document.getElementById('scan-trigger-btn');
+            const btnText = document.getElementById('scan-btn-text');
+
+            if (!scannerView || !portalView) return;
+
+            // Audio Chime de escaneo sintético
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.2);
+            } catch (e) {}
+
+            btnText.innerText = '⚡ Escaneando código QR...';
+            btn.classList.add('scale-95');
 
             setTimeout(() => {
-                box.style.transform = 'scale(1)';
-                box.style.opacity = '1';
-                title.innerText = '✓ ¡Escaneo Exitoso! Portal Abierto en Celular';
-                box.classList.remove('border-blue-500/50', 'bg-slate-50');
-                box.classList.add('border-blue-600', 'bg-blue-50/60');
+                scannerView.classList.add('opacity-0', 'pointer-events-none');
+                portalView.classList.remove('opacity-0');
+                btnText.innerText = '✓ ¡Portal Abierto en Celular!';
+                btn.classList.remove('scale-95', 'bg-blue-600');
+                btn.classList.add('bg-emerald-600');
             }, 600);
         }
 
-        // 7. CARNET INTERACTIVO ACCORDEÓN
-        function toggleCarnetBenefits() {
-            const drawer = document.getElementById('carnet-benefits-drawer');
-            const chevron = document.getElementById('benefits-chevron');
-            if (drawer.classList.contains('hidden')) {
-                drawer.classList.remove('hidden');
-                chevron.innerText = '▲';
-            } else {
-                drawer.classList.add('hidden');
-                chevron.innerText = '▼';
+        // 7. SIMULADOR DE CANJE EN EL CARNET INTERACTIVO
+        function simulateCarnetRedeem() {
+            const row = document.getElementById('benefit-vaccine-row');
+            const badge = document.getElementById('vaccine-status-badge');
+            const count = document.getElementById('carnet-balance-count');
+            
+            if (!row || !badge) return;
+
+            badge.innerText = '✓ Canjeado Hoy';
+            badge.className = 'px-2 py-0.5 rounded-md bg-emerald-500 text-white text-[10px] font-mono font-bold animate-bounce';
+            row.classList.add('bg-emerald-950/80', 'border-emerald-500/80');
+            if (count) count.innerText = '6 de 8 Utilizados';
+
+            const toast = document.getElementById('ai-toast');
+            if (toast) {
+                toast.innerText = '💉 ¡Vacuna Séxtuple canjeada con éxito en mostrador! Auditoría en tiempo real registrada.';
+                toast.classList.remove('hidden');
+                setTimeout(() => toast.classList.add('hidden'), 4000);
             }
         }
 
-        // 8. SIMULADOR DE ACCIÓN IA
+        // 8. CARNET INTERACTIVO ACCORDEÓN
+        function toggleCarnetBenefits() {
+            const drawer = document.getElementById('carnet-benefits-drawer');
+            const chevron = document.getElementById('benefits-chevron');
+            if (!drawer) return;
+            if (drawer.classList.contains('hidden')) {
+                drawer.classList.remove('hidden');
+                if (chevron) chevron.innerText = '▲';
+            } else {
+                drawer.classList.add('hidden');
+                if (chevron) chevron.innerText = '▼';
+            }
+        }
+
+        // 9. SIMULADOR DE ACCIÓN IA
         function simulateAiAction(btn, msg) {
             const originalText = btn.innerText;
             btn.innerText = '✓ Procesando...';
@@ -2081,8 +2361,10 @@
             btn.classList.add('bg-blue-600', 'text-white');
 
             const toast = document.getElementById('ai-toast');
-            toast.innerText = `🤖 AVI Intelligence: ${msg}`;
-            toast.classList.remove('hidden');
+            if (toast) {
+                toast.innerText = `🤖 AVI Intelligence: ${msg}`;
+                toast.classList.remove('hidden');
+            }
 
             setTimeout(() => {
                 btn.innerText = '✓ ' + originalText;
@@ -2091,7 +2373,7 @@
             }, 2500);
 
             setTimeout(() => {
-                toast.classList.add('hidden');
+                if (toast) toast.classList.add('hidden');
             }, 4500);
         }
     </script>
