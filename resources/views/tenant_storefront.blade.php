@@ -173,7 +173,7 @@
             </nav>
 
             <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
-                <a href="/admin/{{ $tenant->slug }}" class="hidden sm:inline-block px-3.5 sm:px-4 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all">
+                <a href="{{ request()->route('subdomain') ? '/admin' : '/admin/' . $tenant->slug }}" class="hidden sm:inline-block px-3.5 sm:px-4 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 border border-slate-200 rounded-full hover:bg-slate-50 transition-all">
                     Panel
                 </a>
                 <button type="button" onclick="openEnrollModal('basico')" class="px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-black text-white bg-brand-primary hover:opacity-90 rounded-full shadow-md transition-all whitespace-nowrap">

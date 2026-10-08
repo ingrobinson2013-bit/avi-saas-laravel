@@ -51,7 +51,12 @@ Route::domain('{subdomain}.' . $baseDomain)->group(function () use ($checkAdminA
             ->orWhere('domain', 'LIKE', "%{$subdomain}%")
             ->firstOrFail();
 
-        if ($section === null || $section === $tenant->slug) {
+        if ($section === $tenant->slug) {
+            $query = request()->getQueryString();
+            return redirect('/admin' . ($query ? '?' . $query : '?preview=1'));
+        }
+
+        if ($section === null) {
             $checkAdminAccess($tenant->slug);
             return app(App\Http\Controllers\VetAdmin\DashboardController::class)->index(request(), $tenant->slug);
         }
