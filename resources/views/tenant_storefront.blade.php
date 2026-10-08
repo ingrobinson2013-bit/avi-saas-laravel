@@ -1506,7 +1506,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp / Teléfono *</label>
-                            <input type="tel" id="tutor_phone" required placeholder="Ej. 3235813942" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                            <input type="tel" id="tutor_phone" required placeholder="Ej. 3101234567" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Cédula / Documento</label>
