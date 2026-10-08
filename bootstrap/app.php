@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustProxies(at: '*');
         $middleware->validateCsrfTokens(except: [
+            'registro-clinica',
+            'afiliar',
+            'v/*/afiliar',
             'admin/*/ai/chat',
             'admin/*/ai/triage',
             'admin/*/ai/*',

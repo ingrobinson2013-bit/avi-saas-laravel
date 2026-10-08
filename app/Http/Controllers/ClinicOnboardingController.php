@@ -124,7 +124,10 @@ class ClinicOnboardingController extends Controller
                     'success' => true,
                     'message' => '¡Clínica creada con éxito! Bienvenido(a) a tu prueba de 15 días gratis.',
                     'redirect_url' => $targetUrl,
+                    'tenant_name' => $tenant->name,
                     'tenant_slug' => $tenant->slug,
+                    'storefront_url' => url("/v/{$tenant->slug}"),
+                    'admin_url' => url("/admin/{$tenant->slug}"),
                 ]);
             }
 

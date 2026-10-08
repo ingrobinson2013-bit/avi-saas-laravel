@@ -1440,7 +1440,7 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
 
-            <div class="space-y-1">
+            <div id="onboarding-header-info" class="space-y-1">
                 <div class="flex items-center space-x-2">
                     <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 text-[10px] font-bold uppercase border border-blue-200">
                         <span>Prueba Gratuita de 15 Días</span>
@@ -1483,8 +1483,28 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Contraseña <span class="text-blue-600">*</span></label>
-                    <input type="password" name="password" required minlength="6" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white transition placeholder:text-slate-400">
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-bold text-slate-700 uppercase">Contraseña <span class="text-blue-600">*</span></label>
+                        <button type="button" onclick="togglePasswordVisibility()" class="text-[11px] font-bold text-blue-600 hover:text-blue-800 transition flex items-center space-x-1 cursor-pointer">
+                            <span id="eye-icon">👁️</span>
+                            <span id="toggle-pwd-text">Ver contraseña</span>
+                        </button>
+                    </div>
+                    <div class="relative">
+                        <input type="password" name="password" id="password-input" required minlength="6" placeholder="Mínimo 6 caracteres" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 pr-10 text-sm text-slate-900 focus:outline-none focus:border-blue-600 focus:bg-white transition placeholder:text-slate-400">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-700 cursor-pointer">
+                            <svg id="eye-svg-show" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            <svg id="eye-svg-hide" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Aviso de Ayuda y Olvido de Contraseña -->
+                <div class="p-2.5 rounded-xl bg-blue-50/70 border border-blue-100 text-slate-700 text-[11px] flex items-start space-x-2">
+                    <span class="text-sm shrink-0">💬</span>
+                    <p class="leading-relaxed">
+                        ¿Olvidaste tu contraseña o necesitas ayuda? Escríbenos a WhatsApp al <a href="https://wa.me/573235813942?text=Hola,%20necesito%20ayuda%20o%20soporte%20con%20mi%20cuenta%20de%20AVI-Plan" target="_blank" class="font-black text-blue-700 hover:underline">3235813942</a> o a <a href="mailto:contacto@avipetapp.com" class="font-black text-blue-700 hover:underline">contacto@avipetapp.com</a>.
+                    </p>
                 </div>
 
                 <div id="form-error-alert" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium"></div>
@@ -1498,6 +1518,46 @@
                     Sin tarjeta de crédito requerida. Acceso inmediato.
                 </p>
             </form>
+
+            <!-- 2. CARD DE ÉXITO CON RUTAS CREADAS (SE MUESTRA AL TERMINAR EL REGISTRO) -->
+            <div id="onboarding-success-card" class="hidden space-y-4">
+                <div class="text-center space-y-1.5 pt-2">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl shadow-xs border border-emerald-200">
+                        🎉
+                    </div>
+                    <h3 class="text-xl font-black text-slate-900">¡Tu Clínica fue Creada con Éxito!</h3>
+                    <p class="text-xs text-slate-600 font-medium">Tus 15 días de prueba gratis ya están activos. Guarda tus accesos oficiales:</p>
+                </div>
+
+                <!-- Bloque de URLs Creadas -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-3">
+                    <!-- Vitrina Web -->
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500">🌐 Vitrina Pública para tus Tutores:</span>
+                        <div class="flex items-center justify-between bg-white border border-slate-200 rounded-xl px-3 py-2">
+                            <span id="success-storefront-url" class="text-xs font-bold text-blue-600 truncate select-all"></span>
+                            <button type="button" onclick="copyText('success-storefront-url')" class="text-[10px] font-bold bg-blue-50 text-blue-700 px-2.5 py-1 rounded-lg hover:bg-blue-100 transition shrink-0 ml-2 cursor-pointer">Copiar</button>
+                        </div>
+                    </div>
+
+                    <!-- Panel Admin -->
+                    <div class="space-y-1">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500">⚙️ Tu Panel Administrativo de Control:</span>
+                        <div class="flex items-center justify-between bg-white border border-slate-200 rounded-xl px-3 py-2">
+                            <span id="success-admin-url" class="text-xs font-bold text-slate-800 truncate select-all"></span>
+                            <button type="button" onclick="copyText('success-admin-url')" class="text-[10px] font-bold bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg hover:bg-slate-200 transition shrink-0 ml-2 cursor-pointer">Copiar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2 pt-1">
+                    <a id="success-enter-btn" href="#" class="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md transition flex items-center justify-center space-x-2">
+                        <span>🚀 Entrar a mi Panel de Control</span>
+                        <span id="countdown-timer" class="text-blue-200 text-xs font-normal">(redirigiendo en 6s...)</span>
+                    </a>
+                    <p class="text-[10px] text-center text-slate-400">Si no haces clic, entrarás automáticamente en unos segundos.</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1568,6 +1628,41 @@
             document.getElementById('slug-preview').innerText = `avipetapp.com/v/${preview}`;
         }
 
+        function togglePasswordVisibility() {
+            const input = document.getElementById('password-input');
+            const showSvg = document.getElementById('eye-svg-show');
+            const hideSvg = document.getElementById('eye-svg-hide');
+            const text = document.getElementById('toggle-pwd-text');
+            const icon = document.getElementById('eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                showSvg.classList.add('hidden');
+                hideSvg.classList.remove('hidden');
+                text.innerText = 'Ocultar';
+                icon.innerText = '🙈';
+            } else {
+                input.type = 'password';
+                showSvg.classList.remove('hidden');
+                hideSvg.classList.add('hidden');
+                text.innerText = 'Ver contraseña';
+                icon.innerText = '👁️';
+            }
+        }
+
+        function copyText(elementId) {
+            const el = document.getElementById(elementId);
+            const text = el.innerText || el.textContent;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('¡Enlace copiado al portapapeles!:\n' + text);
+                }).catch(() => {
+                    prompt('Copia este enlace:', text);
+                });
+            } else {
+                prompt('Copia este enlace:', text);
+            }
+        }
+
         async function submitOnboarding(event) {
             event.preventDefault();
             const form = event.target;
@@ -1588,7 +1683,6 @@
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
                     body: formData
                 });
@@ -1604,8 +1698,34 @@
                     throw new Error(errorMsg);
                 }
 
-                btnText.innerText = '¡Listo! Entrando a tu panel...';
-                window.location.href = data.redirect_url;
+                // Mostrar Card de Éxito con las Rutas Creadas
+                document.getElementById('clinic-onboarding-form').classList.add('hidden');
+                document.getElementById('onboarding-header-info').classList.add('hidden');
+                
+                const successCard = document.getElementById('onboarding-success-card');
+                const sfUrl = data.storefront_url || `https://avipetapp.com/v/${data.tenant_slug}`;
+                const admUrl = data.admin_url || `https://avipetapp.com/admin/${data.tenant_slug}`;
+                
+                document.getElementById('success-storefront-url').innerText = sfUrl;
+                document.getElementById('success-admin-url').innerText = admUrl;
+                
+                const enterBtn = document.getElementById('success-enter-btn');
+                enterBtn.href = data.redirect_url || admUrl;
+                
+                successCard.classList.remove('hidden');
+
+                // Conteo regresivo para entrar
+                let timeLeft = 7;
+                const timerEl = document.getElementById('countdown-timer');
+                const interval = setInterval(() => {
+                    timeLeft--;
+                    if (timeLeft <= 0) {
+                        clearInterval(interval);
+                        window.location.href = data.redirect_url || admUrl;
+                    } else {
+                        timerEl.innerText = `(redirigiendo en ${timeLeft}s...)`;
+                    }
+                }, 1000);
 
             } catch (err) {
                 errorAlert.innerText = err.message;
