@@ -328,7 +328,9 @@ Route::post('/registro-clinica', [App\Http\Controllers\ClinicOnboardingControlle
 Route::get('/admin/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentController::class, 'showCheckout'])->name('saas.checkout');
 Route::get('/v/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentController::class, 'showCheckout']);
 
-// 10. Impersonation de Clínicas (Soporte 1-Clic desde SuperAdmin)
+// 10. Impersonation de Clínicas y Accesos Directos (SuperAdmin Central)
+Route::redirect('/superadmin', '/super-admin');
+Route::redirect('/superadmin/login', '/super-admin/login');
 Route::get('/impersonate-clinic/{tenant_id}', [App\Http\Controllers\ImpersonationController::class, 'impersonateTenant'])->name('superadmin.impersonate');
 Route::get('/impersonate-clinic-stop', [App\Http\Controllers\ImpersonationController::class, 'stopImpersonating'])->name('superadmin.stop-impersonating');
 
