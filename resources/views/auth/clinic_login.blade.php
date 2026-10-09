@@ -29,7 +29,7 @@
 
     <!-- Encabezado superior -->
     <header class="max-w-md w-full mx-auto flex items-center justify-between text-xs text-slate-400 relative z-10 mb-4">
-        <a href="/v/{{ $slug }}" class="hover:text-white transition flex items-center gap-1.5 font-bold">
+        <a href="{{ ($isTenantHost ?? false) ? '/' : ('/v/' . $slug) }}" class="hover:text-white transition flex items-center gap-1.5 font-bold">
             <span>←</span>
             <span>Volver a la vitrina</span>
         </a>
@@ -93,7 +93,7 @@
             @endif
 
             <!-- Formulario de Acceso -->
-            <form method="POST" action="/admin/{{ $slug }}/login" class="space-y-4">
+            <form method="POST" action="{{ ($isTenantHost ?? false) ? '/admin/login' : ('/admin/' . $slug . '/login') }}" class="space-y-4">
                 @csrf
 
                 <div>
@@ -157,7 +157,7 @@
 
             <!-- Acceso Demo de Demostración para Robinson / Clientes de Prueba -->
             <div class="pt-2 border-t border-slate-800 text-center">
-                <a href="/admin/{{ $slug }}?demo=1" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-blue-400 transition py-1">
+                <a href="{{ ($isTenantHost ?? false) ? '/admin?demo=1' : ('/admin/' . $slug . '?demo=1') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-blue-400 transition py-1">
                     <span>👀</span>
                     <span>¿Quieres una demostración? Ver Demo en Vivo</span>
                 </a>

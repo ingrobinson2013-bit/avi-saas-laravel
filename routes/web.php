@@ -3,35 +3,6 @@
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Route;
 
-// Helper de acceso Admin Multi-Tenant / Autenticación Obligatoria
-$checkAdminAccess = function (string $slug) {
-    // Si viene parámetro explícito de demo para demostraciones comerciales
-    if (request('demo') === '1' || session('admin_demo')) {
-        session(['admin_demo' => true]);
-        return true;
-    }
-    // Si el usuario está autenticado en el sistema
-    if (auth()->check()) {
-        $user = auth()->user();
-        if ($user->role === 'super_admin') {
-            return true;
-        }
-        if ($user->tenant && $user->tenant->slug === $slug) {
-            return true;
-        }
-    }
-    return false;
-};
-
-// Helper de redirección al Login de Marca Blanca de la Clínica
-$redirectToLogin = function (string $slug) {
-    if (request()->expectsJson()) {
-        return response()->json(['error' => 'Unauthenticated', 'login_url' => "/admin/{$slug}/login"], 401);
-    }
-    session(['url.intended' => request()->fullUrl()]);
-    return redirect("/admin/{$slug}/login");
-};
-
 // 0. Resolver Dinámico de Clínica por Host (Subdominio *.avipetapp.com o Dominio Personalizado en BD)
 $resolveTenantFromHost = function (): ?Tenant {
     try {
@@ -76,6 +47,38 @@ $resolveTenantFromHost = function (): ?Tenant {
     }
 };
 
+// Helper de acceso Admin Multi-Tenant / Autenticación Obligatoria
+$checkAdminAccess = function (?string $slug = null) use ($resolveTenantFromHost) {
+    // Si viene parámetro explícito de demo para demostraciones comerciales
+    if (request('demo') === '1' || session('admin_demo')) {
+        session(['admin_demo' => true]);
+        return true;
+    }
+    // Si el usuario está autenticado en el sistema
+    if (auth()->check()) {
+        $user = auth()->user();
+        if ($user->role === 'super_admin') {
+            return true;
+        }
+        $targetSlug = $slug ?: $resolveTenantFromHost()?->slug;
+        if ($user->tenant && $targetSlug && $user->tenant->slug === $targetSlug) {
+            return true;
+        }
+    }
+    return false;
+};
+
+// Helper de redirección al Login de Marca Blanca de la Clínica
+$redirectToLogin = function (?string $slug = null) use ($resolveTenantFromHost) {
+    $tenantHost = $resolveTenantFromHost();
+    $loginUrl = $tenantHost ? '/admin/login' : ($slug ? "/admin/{$slug}/login" : '/admin/login');
+    if (request()->expectsJson()) {
+        return response()->json(['error' => 'Unauthenticated', 'login_url' => $loginUrl], 401);
+    }
+    session(['url.intended' => request()->fullUrl()]);
+    return redirect($loginUrl);
+};
+
 // 1. Landing Principal B2B ó Storefront de Clínica si el dominio/subdominio está asignado
 Route::get('/', function () use ($resolveTenantFromHost) {
     $tenant = $resolveTenantFromHost();
@@ -117,33 +120,57 @@ Route::get('/afiche/pdf', function () use ($resolveTenantFromHost) {
     return app(App\Http\Controllers\ClinicFlyerController::class)->downloadPdf(request(), $tenant->slug);
 });
 
-// 2. Redirección amigable de /admin a la clínica activa
-Route::get('/admin', function () use ($resolveTenantFromHost) {
+// 2. Panel Administrativo / Dashboard de la Clínica
+Route::get('/admin', function () use ($resolveTenantFromHost, $checkAdminAccess, $redirectToLogin) {
+    $tenantHost = $resolveTenantFromHost();
+
+    // Caso A: La petición proviene del subdominio o dominio propio de la clínica
+    if ($tenantHost) {
+        if (!$checkAdminAccess($tenantHost->slug)) {
+            return $redirectToLogin($tenantHost->slug);
+        }
+        return app(App\Http\Controllers\VetAdmin\DashboardController::class)->index(request(), $tenantHost->slug);
+    }
+
+    // Caso B: La petición proviene del dominio central (avipetapp.com)
     if (auth()->check()) {
         $user = auth()->user();
         if ($user->role === 'super_admin') {
-            $tenant = $resolveTenantFromHost() ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
+            $tenant = Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
             return redirect('/admin/' . ($tenant?->slug ?? 'vet-pet-patitas'));
         }
         if ($user->tenant) {
-            return redirect('/admin/' . $user->tenant->slug);
+            $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+            return redirect("https://{$user->tenant->slug}.{$baseDomain}/admin");
         }
     }
-    $tenant = $resolveTenantFromHost() ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
-    $slug = $tenant?->slug ?? 'vet-pet-patitas';
-    return redirect("/admin/{$slug}/login");
+
+    return redirect('/admin/login');
 });
 
 // Rutas de Login / Autenticación de Marca Blanca
 Route::get('/admin/login', [App\Http\Controllers\ClinicAuthController::class, 'showLoginForm']);
 Route::post('/admin/login', [App\Http\Controllers\ClinicAuthController::class, 'login']);
 
-Route::get('/admin/{slug}/login', [App\Http\Controllers\ClinicAuthController::class, 'showLoginForm']);
+Route::get('/admin/{slug}/login', function (string $slug) use ($resolveTenantFromHost) {
+    $tenantHost = $resolveTenantFromHost();
+    if ($tenantHost && $slug === $tenantHost->slug) {
+        return redirect('/admin/login', 301);
+    }
+    return app(App\Http\Controllers\ClinicAuthController::class)->showLoginForm(request(), $slug);
+});
 Route::post('/admin/{slug}/login', [App\Http\Controllers\ClinicAuthController::class, 'login']);
 
 // 2.0 Rutas de Salida / Logout
 Route::match(['get', 'post'], '/logout', [App\Http\Controllers\ClinicAuthController::class, 'logout'])->name('logout');
-Route::match(['get', 'post'], '/admin/{slug}/logout', [App\Http\Controllers\ClinicAuthController::class, 'logout']);
+Route::match(['get', 'post'], '/admin/logout', [App\Http\Controllers\ClinicAuthController::class, 'logout']);
+Route::match(['get', 'post'], '/admin/{slug}/logout', function (string $slug) use ($resolveTenantFromHost) {
+    $tenantHost = $resolveTenantFromHost();
+    if ($tenantHost && $slug === $tenantHost->slug) {
+        return app(App\Http\Controllers\ClinicAuthController::class)->logout(request());
+    }
+    return app(App\Http\Controllers\ClinicAuthController::class)->logout(request(), $slug);
+});
 
 // 2.1 Dashboard React + TypeScript + Inertia.js (Paradigma B: Monolito Moderno)
 Route::get('/admin/{slug}', function (string $slug) use ($checkAdminAccess, $resolveTenantFromHost, $redirectToLogin) {
@@ -154,10 +181,17 @@ Route::get('/admin/{slug}', function (string $slug) use ($checkAdminAccess, $res
         return app(App\Http\Controllers\ClinicAuthController::class)->logout(request());
     }
 
+    $tenantHost = $resolveTenantFromHost();
+    // Si ya estamos en el subdominio de la clínica y el slug coincide, redirigir limpiamente a /admin
+    if ($tenantHost && $slug === $tenantHost->slug) {
+        $query = request()->getQueryString();
+        return redirect('/admin' . ($query ? '?' . $query : ''), 301);
+    }
+
     // Atajos directos a módulos si alguien entra a /admin/pets en lugar de /admin/{slug}/pets
     $knownSections = ['pets', 'customers', 'plans', 'subscriptions', 'counter-redeem', 'historial-canjes', 'benefit-definitions', 'clinic-settings', 'inteligencia', 'citas', 'logistica', 'renovar-saas'];
     if (in_array($slug, $knownSections)) {
-        $tenant = $resolveTenantFromHost() ?? auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
+        $tenant = $tenantHost ?? auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
         if ($tenant) {
             $query = request()->getQueryString();
             return redirect('/admin/' . $tenant->slug . '/' . $slug . ($query ? '?' . $query : ''));

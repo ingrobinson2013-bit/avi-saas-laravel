@@ -16,15 +16,17 @@ class ClinicAuthController extends Controller
     public function showLoginForm(Request $request, ?string $slug = null)
     {
         $tenant = $this->resolveTenant($request, $slug);
+        $isTenantHost = $this->isTenantHost($request);
 
         // Si ya está autenticado, redirigir al panel correspondiente
         if (Auth::check()) {
             $user = Auth::user();
             if ($user->role === 'super_admin' || ($tenant && $user->tenant_id === $tenant->id)) {
-                return redirect($tenant ? "/admin/{$tenant->slug}" : "/admin");
+                return redirect($isTenantHost ? "/admin" : ($tenant ? "/admin/{$tenant->slug}" : "/admin"));
             }
             if ($user->tenant) {
-                return redirect("/admin/{$user->tenant->slug}");
+                $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+                return redirect("https://{$user->tenant->slug}.{$baseDomain}/admin");
             }
         }
 
@@ -33,7 +35,7 @@ class ClinicAuthController extends Controller
             $tenant = Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
         }
 
-        return view('auth.clinic_login', compact('tenant'));
+        return view('auth.clinic_login', compact('tenant', 'isTenantHost'));
     }
 
     /**
@@ -42,6 +44,7 @@ class ClinicAuthController extends Controller
     public function login(Request $request, ?string $slug = null)
     {
         $tenant = $this->resolveTenant($request, $slug);
+        $isTenantHost = $this->isTenantHost($request);
 
         $request->validate([
             'email' => ['required', 'string', 'email'],
@@ -74,19 +77,21 @@ class ClinicAuthController extends Controller
 
             // Validar si el usuario pertenece a esta clínica o es SuperAdmin
             if ($user->role === 'super_admin') {
-                $target = $tenant ? "/admin/{$tenant->slug}" : "/admin";
+                $target = $isTenantHost ? "/admin" : ($tenant ? "/admin/{$tenant->slug}" : "/admin");
                 $intended = session()->pull('url.intended', $target);
                 return redirect($intended)->with('success', "Bienvenido(a) {$user->name} (SuperAdmin)");
             }
 
             if ($tenant && $user->tenant_id === $tenant->id) {
-                $intended = session()->pull('url.intended', "/admin/{$tenant->slug}");
+                $target = $isTenantHost ? "/admin" : "/admin/{$tenant->slug}";
+                $intended = session()->pull('url.intended', $target);
                 return redirect($intended)->with('success', "Bienvenido(a) {$user->name}");
             }
 
             // Si el usuario pertenece a otra clínica diferente a la que intenta ingresar
             if ($user->tenant) {
-                return redirect("/admin/{$user->tenant->slug}")->with('info', "Has iniciado sesión en tu clínica: {$user->tenant->name}.");
+                $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+                return redirect("https://{$user->tenant->slug}.{$baseDomain}/admin")->with('info', "Has iniciado sesión en tu clínica: {$user->tenant->name}.");
             }
 
             // Si no tiene permisos de clínica
@@ -112,35 +117,68 @@ class ClinicAuthController extends Controller
     public function logout(Request $request, ?string $slug = null)
     {
         $tenant = $this->resolveTenant($request, $slug);
+        $isTenantHost = $this->isTenantHost($request);
 
         Auth::logout();
         session()->forget(['admin_preview', 'admin_demo', 'url.intended']);
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        $redirectUrl = $tenant ? "/admin/{$tenant->slug}/login" : "/admin/login";
+        $redirectUrl = $isTenantHost ? "/admin/login" : ($tenant ? "/admin/{$tenant->slug}/login" : "/admin/login");
 
         return redirect($redirectUrl)->with('success', 'Sesión cerrada correctamente.');
     }
 
     /**
-     * Resuelve el Tenant según el slug o el host.
+     * Determina si la petición actual proviene del subdominio o dominio propio de una clínica.
      */
-    protected function resolveTenant(Request $request, ?string $slug): ?Tenant
+    protected function isTenantHost(Request $request): bool
     {
-        if (!empty($slug)) {
-            return Tenant::where('slug', $slug)->first();
+        $host = strtolower(trim($request->getHost()));
+        $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+        $hostWithoutWww = preg_replace('/^www\./', '', $host);
+
+        if (in_array($hostWithoutWww, ['localhost', '127.0.0.1', $baseDomain]) || str_contains($host, 'easypanel.host')) {
+            return false;
         }
 
-        $host = $request->getHost();
-        $cleanHost = strtolower(trim($host));
-        $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+        return true;
+    }
 
-        if (str_ends_with($cleanHost, '.' . $baseDomain)) {
-            $subdomain = str_replace('.' . $baseDomain, '', $cleanHost);
-            if (!empty($subdomain) && $subdomain !== 'www') {
-                return Tenant::where('slug', $subdomain)->first();
+    /**
+     * Resuelve el Tenant según el host (prioritario) o el slug en la URL.
+     */
+    protected function resolveTenant(Request $request, ?string $slug = null): ?Tenant
+    {
+        // 1. Si viene por Host (subdominio o dominio propio de la clínica)
+        $host = strtolower(trim($request->getHost()));
+        $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+        $hostWithoutWww = preg_replace('/^www\./', '', $host);
+
+        if (!in_array($hostWithoutWww, ['localhost', '127.0.0.1', $baseDomain]) && !str_contains($host, 'easypanel.host')) {
+            $tenant = Tenant::where(function ($query) use ($host, $hostWithoutWww) {
+                $query->where('domain', $host)
+                      ->orWhere('domain', $hostWithoutWww)
+                      ->orWhere('domain', 'https://' . $host)
+                      ->orWhere('domain', 'https://' . $hostWithoutWww);
+            })->first();
+
+            if ($tenant) {
+                return $tenant;
             }
+
+            if (str_ends_with($host, '.' . $baseDomain)) {
+                $subdomain = str_replace('.' . $baseDomain, '', $hostWithoutWww);
+                if (!empty($subdomain) && $subdomain !== 'www') {
+                    $tenant = Tenant::where('slug', $subdomain)->first();
+                    if ($tenant) return $tenant;
+                }
+            }
+        }
+
+        // 2. Si viene por slug en la URL
+        if (!empty($slug) && !in_array($slug, ['login', 'logout'])) {
+            return Tenant::where('slug', $slug)->first();
         }
 
         return null;
