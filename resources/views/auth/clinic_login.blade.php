@@ -155,14 +155,6 @@
                 </button>
             </form>
 
-            <!-- Acceso Demo de Demostración para Robinson / Clientes de Prueba -->
-            <div class="pt-2 border-t border-slate-800 text-center">
-                <a href="{{ ($isTenantHost ?? false) ? '/admin?demo=1' : ('/admin/' . $slug . '?demo=1') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-blue-400 transition py-1">
-                    <span>👀</span>
-                    <span>¿Quieres una demostración? Ver Demo en Vivo</span>
-                </a>
-            </div>
-
         </div>
     </main>
 

@@ -29,9 +29,13 @@ class NotifyClinicNewEnrollmentListener implements ShouldQueue
         // Obtener usuarios administradores y veterinarios de esta sede
         $staffUsers = User::where('tenant_id', $subscription->tenant_id)->get();
 
-        if ($staffUsers->isNotEmpty()) {
+        // Notificar también a los SuperAdministradores (Robinson / Central)
+        $superAdmins = User::where('role', 'super_admin')->get();
+        $recipients = $staffUsers->merge($superAdmins)->unique('id');
+
+        if ($recipients->isNotEmpty()) {
             Notification::send(
-                $staffUsers,
+                $recipients,
                 new NewEnrollmentClinicNotification(
                     $subscription,
                     $customer,

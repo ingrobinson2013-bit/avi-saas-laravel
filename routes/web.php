@@ -49,11 +49,6 @@ $resolveTenantFromHost = function (): ?Tenant {
 
 // Helper de acceso Admin Multi-Tenant / Autenticación Obligatoria
 $checkAdminAccess = function (?string $slug = null) use ($resolveTenantFromHost) {
-    // Si viene parámetro explícito de demo para demostraciones comerciales
-    if (request('demo') === '1' || session('admin_demo')) {
-        session(['admin_demo' => true]);
-        return true;
-    }
     // Si el usuario está autenticado en el sistema
     if (auth()->check()) {
         $user = auth()->user();
