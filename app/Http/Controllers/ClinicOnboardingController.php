@@ -11,7 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use App\Mail\ClinicWelcomeMail;
+use App\Mail\NewClinicLeadAlertMail;
 
 class ClinicOnboardingController extends Controller
 {
@@ -98,30 +101,45 @@ class ClinicOnboardingController extends Controller
                 'role' => 'clinic_admin',
             ]);
 
-            // 7. Notificar a Robinson y SuperAdmin por Correo de inmediato para asesoría
+            // 7. Notificar por Correo Transaccional (Bienvenida al Doctor y Alerta a SuperAdmin)
             try {
+                $host = preg_replace('/^www\./', '', request()->getHost());
+                if (in_array($host, ['localhost', '127.0.0.1']) || filter_var($host, FILTER_VALIDATE_IP)) {
+                    $adminUrl = url("/admin/{$tenant->slug}");
+                    $storefrontUrl = url("/v/{$tenant->slug}");
+                } else {
+                    $scheme = request()->getScheme();
+                    $adminUrl = "{$scheme}://{$tenant->slug}.{$host}/admin";
+                    $storefrontUrl = "{$scheme}://{$tenant->slug}.{$host}";
+                }
+
+                // 7.1 Enviar plantilla HTML de bienvenida al Doctor registrado
+                Mail::to($user->email)->send(new ClinicWelcomeMail(
+                    $tenant,
+                    $user,
+                    $validated['clinic_name'],
+                    $adminName,
+                    $validated['city'],
+                    $adminUrl,
+                    $storefrontUrl
+                ));
+
+                // 7.2 Enviar alerta ejecutiva HTML a Robinson / SuperAdmin con link de WhatsApp
                 $destinatarios = array_filter(array_map('trim', explode(',', env('ADMIN_NOTIFY_EMAILS', 'contacto@avipetapp.com,ingrobinson2013@gmail.com,petmovilveterinario@gmail.com'))));
                 $waDigits = preg_replace('/[^0-9]/', '', $validated['phone']);
                 $waPrefix = str_starts_with($waDigits, '57') ? $waDigits : "57{$waDigits}";
                 $waLink = "https://wa.me/{$waPrefix}?text=" . urlencode("Hola Dr(a) de {$validated['clinic_name']}, soy Robinson Naranjo de AVI-Plan. Vi que te acabas de registrar para tu prueba de 15 días gratis. Te escribo para asesorarte y ayudarte a dejar listo tu primer plan y tu afiche de mostrador.");
 
-                $asunto = "🚨 ¡Nueva Veterinaria Registrada!: {$validated['clinic_name']} ({$validated['city']})";
-                $cuerpo = "¡Hola Robinson! Una nueva clínica veterinaria se acaba de registrar en AVI-Plan:\n\n"
-                    . "🏥 Clínica: {$validated['clinic_name']}\n"
-                    . "📍 Ciudad: {$validated['city']}\n"
-                    . "📱 WhatsApp: {$validated['phone']}\n"
-                    . "📧 Correo: {$validated['email']}\n"
-                    . "📅 Fecha: " . now()->format('Y-m-d H:i:s') . "\n\n"
-                    . "📲 Escríbele al WhatsApp con 1 clic: {$waLink}\n\n"
-                    . "🔗 Panel Admin de la Clínica: " . url("/admin/{$tenant->slug}") . "\n"
-                    . "🌐 Portal Web de Pacientes: " . url("/v/{$tenant->slug}") . "\n"
-                    . "⚙️ Gestionar en SuperAdmin: " . url("/super-admin/tenants") . "\n";
-
-                \Illuminate\Support\Facades\Mail::raw($cuerpo, function ($msg) use ($destinatarios, $asunto) {
-                    $msg->to($destinatarios)->subject($asunto);
-                });
+                Mail::to($destinatarios)->send(new NewClinicLeadAlertMail(
+                    $tenant,
+                    $user,
+                    $validated,
+                    $waLink,
+                    $adminUrl,
+                    $storefrontUrl
+                ));
             } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::warning('No se pudo enviar notificación de correo a Robinson: ' . $e->getMessage());
+                \Illuminate\Support\Facades\Log::warning('No se pudo enviar notificación de bienvenida/alerta de nueva clínica: ' . $e->getMessage());
             }
 
             // 8. Iniciar Sesión de inmediato y redirigir a configurar Logo y Marca
