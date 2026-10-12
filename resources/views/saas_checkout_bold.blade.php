@@ -237,6 +237,7 @@
                             <!-- CONTENEDOR DEL BOTÓN OFICIAL BOLD SDK -->
                             <div class="flex justify-center items-center py-2">
                                 <script 
+                                    src="https://checkout.bold.co/library/boldPaymentButton.js"
                                     data-bold-button="DARK"
                                     data-api-key="{{ $identityKey }}"
                                     data-order-id="{{ $orderId }}"

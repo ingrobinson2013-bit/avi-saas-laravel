@@ -87,10 +87,10 @@ class SaaSPaymentController extends Controller
         $currency = 'COP';
 
         $boldDirectLink = config('bold.default_payment_link') ?: ($tenant->branding['payment_bold_link'] ?? null);
-        $rawIdentityKey = config('bold.identity_key') ?: env('BOLD_IDENTITY_KEY');
+        $rawIdentityKey = config('bold.identity_key') ?: env('BOLD_IDENTITY_KEY') ?: ($tenant->branding['bold_api_key'] ?? null);
         $hasValidBoldKey = !empty($rawIdentityKey) && !in_array($rawIdentityKey, ['sandbox_identity_key', 'none', 'Ashley2023##', '']);
         $identityKey = $hasValidBoldKey ? $rawIdentityKey : null;
-        $secretKey = config('bold.secret_key') ?: env('BOLD_SECRET_KEY', 'sandbox_secret_key');
+        $secretKey = config('bold.secret_key') ?: env('BOLD_SECRET_KEY') ?: ($tenant->branding['bold_secret_key'] ?? null);
 
         $integritySignature = $hasValidBoldKey ? BoldPaymentService::generateSignature($orderId, $amount, $currency, $secretKey) : '';
         $redirectUrl = url("/admin/{$tenant->slug}?saas_paid=1&order_id={$orderId}&tier={$tier}");
