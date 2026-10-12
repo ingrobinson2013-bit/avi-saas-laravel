@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ProspectoVeterinaria;
+use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -28,9 +29,9 @@ class VeterinariaScraperService
     /**
      * Escanear veterinarias por región o ciudad con Google Custom Search y Crawler Web en Vivo
      */
-    public function scanRegion(string $region = 'sabana', ?string $customUrl = null, ?string $googleApiKey = null, ?string $googleCx = null): array
+    public function scanRegion(string $region = 'sabana', ?string $customUrl = null, ?string $googleApiKey = null, ?string $googleCx = null, int $limit = 10): array
     {
-        Log::info("[Scraper] Iniciando escaneo y rastreo web en vivo para región: {$region}");
+        Log::info("[Scraper] Iniciando escaneo y rastreo web en vivo para región: {$region}, límite: {$limit}");
         $contactosExtraidos = [];
 
         // 1. Si el usuario ingresó una URL específica, rastrearla de inmediato
@@ -50,9 +51,9 @@ class VeterinariaScraperService
             Log::warning("[GoogleSearch] Advertencia en búsqueda de Google: " . $e->getMessage());
         }
 
-        // 3. Motor Autónomo de Búsqueda Web en Vivo (Extracción web directa)
+        // 3. Motor Autónomo de Búsqueda Web en Vivo (Extracción web concurrente en paralelo)
         try {
-            $webLive = $this->searchWithDuckDuckGoLive($region);
+            $webLive = $this->searchWithDuckDuckGoLive($region, $limit);
             if (!empty($webLive)) {
                 Log::info("[LiveWebSearch] Se extrajeron " . count($webLive) . " clínicas con correos reales en vivo desde la web.");
                 $contactosExtraidos = array_merge($contactosExtraidos, $webLive);
@@ -402,86 +403,152 @@ class VeterinariaScraperService
      * Motor de Búsqueda Web en Vivo Autónomo (DuckDuckGo Live Search)
      * No requiere API Keys y no tiene bloqueos de proyecto de Google. Rastrea en vivo la web colombiana.
      */
-    public function searchWithDuckDuckGoLive(string $region = 'sabana'): array
+    public function searchWithDuckDuckGoLive(string $region = 'sabana', int $limit = 10): array
     {
-        $ciudades = match ($region) {
+        $ciudadesPorRegion = match ($region) {
             'zipaquira' => ['Zipaquirá', 'Cajicá', 'Chía'],
-            'sabana' => ['Zipaquirá', 'Chía', 'Cajicá', 'Cota', 'Funza'],
-            'bogota' => ['Bogotá Suba', 'Bogotá Chapinero', 'Bogotá Usaquén', 'Bogotá'],
-            'antioquia' => ['Medellín Poblado', 'Medellín Laureles', 'Envigado'],
-            'valle' => ['Cali Sur', 'Cali Norte', 'Palmira'],
-            'santander' => ['Bucaramanga', 'Floridablanca', 'Cúcuta'],
-            'ejecafetero' => ['Pereira', 'Manizales', 'Armenia'],
+            'sabana' => ['Zipaquirá', 'Chía', 'Cajicá', 'Cota', 'Funza', 'Mosquera'],
+            'bogota' => ['Bogotá Suba', 'Bogotá Chapinero', 'Bogotá Usaquén', 'Bogotá Cedritos', 'Bogotá Teusaquillo'],
+            'antioquia' => ['Medellín Poblado', 'Medellín Laureles', 'Envigado', 'Sabaneta', 'Itagüí'],
+            'valle' => ['Cali Sur', 'Cali Norte', 'Palmira', 'Jamundí'],
+            'santander' => ['Bucaramanga', 'Floridablanca', 'Cúcuta', 'Girón'],
+            'ejecafetero' => ['Pereira', 'Manizales', 'Armenia', 'Dosquebradas'],
             'caribe' => ['Barranquilla', 'Cartagena', 'Santa Marta'],
-            'cundinamarca_tolima' => ['Soacha', 'Girardot', 'Ibagué'],
-            default => ['Bogotá', 'Medellín', 'Cali'],
+            'cundinamarca_tolima' => ['Soacha', 'Girardot', 'Ibagué', 'Fusagasugá'],
+            default => ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Bucaramanga'],
         };
 
-        $prospectos = [];
-        $ciudad = $ciudades[array_rand($ciudades)];
-        $query = "clinica veterinaria {$ciudad} contacto correo";
+        // Seleccionar 2 ciudades de la región para tener un abanico amplio de clínicas
+        shuffle($ciudadesPorRegion);
+        $ciudadesBatch = array_slice($ciudadesPorRegion, 0, 2);
 
-        try {
-            $response = Http::withHeaders([
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            ])->timeout(4)->connectTimeout(2)->get('https://html.duckduckgo.com/html/', [
-                'q' => $query,
-            ]);
+        $validUrls = [];
+        $urlCityMap = [];
+        $ignoreDomains = [
+            'duckduckgo.com', 'facebook.com', 'instagram.com', 'linkedin.com', 'twitter.com',
+            'youtube.com', 'paginasamarillas.com.co', 'civico.com', 'wikipedia.org', 'wix.com',
+            'sentry.io', 'tripadvisor.com', 'google.com'
+        ];
 
-            if ($response->successful()) {
-                $html = $response->body();
-                preg_match_all('/uddg=([^&"\'\s]+)/', $html, $matches);
-                $rawUrls = $matches[1] ?? [];
+        foreach ($ciudadesBatch as $ciudad) {
+            $query = "clinica veterinaria {$ciudad} contacto correo";
+            try {
+                $response = Http::withHeaders([
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                ])->timeout(4)->connectTimeout(2)->get('https://html.duckduckgo.com/html/', [
+                    'q' => $query,
+                ]);
 
-                $validUrls = [];
-                $ignoreDomains = ['duckduckgo.com', 'facebook.com', 'instagram.com', 'linkedin.com', 'twitter.com', 'youtube.com', 'paginasamarillas.com.co', 'civico.com', 'wikipedia.org'];
+                if ($response->successful()) {
+                    $html = $response->body();
+                    preg_match_all('/uddg=([^&"\'\s]+)/', $html, $matches);
+                    $rawUrls = $matches[1] ?? [];
 
-                foreach ($rawUrls as $raw) {
-                    $decoded = urldecode($raw);
-                    if (!str_starts_with($decoded, 'http')) continue;
+                    foreach ($rawUrls as $raw) {
+                        $decoded = urldecode($raw);
+                        if (!str_starts_with($decoded, 'http')) continue;
 
-                    $skip = false;
-                    foreach ($ignoreDomains as $ign) {
-                        if (str_contains($decoded, $ign)) {
-                            $skip = true;
-                            break;
+                        $skip = false;
+                        foreach ($ignoreDomains as $ign) {
+                            if (str_contains($decoded, $ign)) {
+                                $skip = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!$skip && !in_array($decoded, $validUrls)) {
-                        $validUrls[] = $decoded;
+                        if (!$skip && !in_array($decoded, $validUrls)) {
+                            $validUrls[] = $decoded;
+                            $urlCityMap[$decoded] = explode(' ', $ciudad)[0];
+                        }
                     }
                 }
+            } catch (\Throwable $e) {
+                Log::warning("[LiveWebSearch] Error consultando DuckDuckGo para {$ciudad}: " . $e->getMessage());
+            }
+        }
 
-                // Crawl hasta 3 URLs en vivo
-                $urlsToCrawl = array_slice($validUrls, 0, 3);
-                foreach ($urlsToCrawl as $siteUrl) {
-                    $emails = $this->crawlWebsiteForEmails($siteUrl);
+        // Tomar hasta $limit URLs únicas
+        $urlsToCrawl = array_slice($validUrls, 0, max(5, $limit));
+        if (empty($urlsToCrawl)) {
+            return [];
+        }
+
+        // RASTREO CONCURRENTE EN PARALELO (Pool HTTP de Laravel)
+        // Descarga 10 a 15 páginas simultáneamente en ~3-4 segundos sin riesgo de timeout
+        $responses = Http::pool(function (Pool $pool) use ($urlsToCrawl) {
+            return array_map(function ($url) use ($pool) {
+                return $pool->as($url)
+                    ->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+                    ->timeout(4)
+                    ->connectTimeout(2)
+                    ->get($url);
+            }, $urlsToCrawl);
+        });
+
+        $prospectos = [];
+        $needContactSubpage = [];
+
+        foreach ($responses as $siteUrl => $resp) {
+            if ($resp instanceof \Illuminate\Http\Client\Response && $resp->successful()) {
+                $emails = $this->extractEmailsFromHtml($resp->body());
+                $host = parse_url($siteUrl, PHP_URL_HOST) ?? $siteUrl;
+                $cleanTitle = ucwords(str_replace(['www.', '.com.co', '.com', '.co', '-', '_', '.'], ' ', $host));
+                $ciudad = $urlCityMap[$siteUrl] ?? 'Colombia';
+
+                if (!empty($emails)) {
+                    $prospectos[] = [
+                        'razon_social' => trim($cleanTitle),
+                        'correo_comercial' => $emails[0],
+                        'telefono' => null,
+                        'municipio' => $ciudad,
+                        'departamento' => 'Colombia',
+                        'tipo' => 'Clínica Veterinaria',
+                        'fuente' => "Búsqueda Web en Vivo ({$host})",
+                        'estado' => 'pendiente',
+                    ];
+                } else {
+                    $needContactSubpage[$siteUrl] = [
+                        'url' => rtrim($siteUrl, '/') . '/contacto',
+                        'title' => trim($cleanTitle),
+                        'host' => $host,
+                        'city' => $ciudad,
+                    ];
+                }
+            }
+        }
+
+        // Si varias webs no tenían correo visible en la home, revisar sus subpáginas /contacto en paralelo
+        if (!empty($needContactSubpage) && count($prospectos) < $limit) {
+            $subUrls = array_slice(array_keys($needContactSubpage), 0, 6);
+            $subResponses = Http::pool(function (Pool $pool) use ($needContactSubpage, $subUrls) {
+                return array_map(function ($origUrl) use ($pool, $needContactSubpage) {
+                    $contactUrl = $needContactSubpage[$origUrl]['url'];
+                    return $pool->as($origUrl)
+                        ->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
+                        ->timeout(3)
+                        ->connectTimeout(2)
+                        ->get($contactUrl);
+                }, $subUrls);
+            });
+
+            foreach ($subResponses as $origUrl => $resp) {
+                if ($resp instanceof \Illuminate\Http\Client\Response && $resp->successful()) {
+                    $emails = $this->extractEmailsFromHtml($resp->body());
                     if (!empty($emails)) {
-                        $host = parse_url($siteUrl, PHP_URL_HOST) ?? $siteUrl;
-                        $cleanTitle = ucwords(str_replace(['www.', '.com.co', '.com', '.co', '-', '_', '.'], ' ', $host));
-
-                        // Tomar el correo comercial más relevante (info@, contacto@, etc.) y evitar duplicar la clínica
-                        $validEmails = array_filter($emails, fn($e) => !$this->isSpamOrTechnicalEmail($e));
-                        if (!empty($validEmails)) {
-                            $bestEmail = reset($validEmails);
-
-                            $prospectos[] = [
-                                'razon_social' => trim($cleanTitle),
-                                'correo_comercial' => $bestEmail,
-                                'telefono' => null,
-                                'municipio' => explode(' ', $ciudad)[0],
-                                'departamento' => 'Colombia',
-                                'tipo' => 'Clínica Veterinaria',
-                                'fuente' => "Búsqueda Web en Vivo ({$host})",
-                                'estado' => 'pendiente',
-                            ];
-                        }
+                        $meta = $needContactSubpage[$origUrl];
+                        $prospectos[] = [
+                            'razon_social' => $meta['title'],
+                            'correo_comercial' => $emails[0],
+                            'telefono' => null,
+                            'municipio' => $meta['city'],
+                            'departamento' => 'Colombia',
+                            'tipo' => 'Clínica Veterinaria',
+                            'fuente' => "Búsqueda Web en Vivo ({$meta['host']})",
+                            'estado' => 'pendiente',
+                        ];
                     }
                 }
             }
-        } catch (\Throwable $e) {
-            Log::warning("[LiveWebSearch] Error en búsqueda DuckDuckGo: " . $e->getMessage());
         }
 
         return $prospectos;

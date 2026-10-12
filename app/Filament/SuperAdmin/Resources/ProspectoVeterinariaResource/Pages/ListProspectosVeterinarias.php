@@ -80,6 +80,18 @@ class ListProspectosVeterinarias extends ListRecords
                         ->url()
                         ->helperText('Si tienes una web de clínica, el crawler la navegará en vivo y extraerá sus correos de contacto de forma inmediata.'),
 
+                    Forms\Components\Select::make('limite_extraccion')
+                        ->label('⚡ Cantidad de Clínicas a Rastrear en Paralelo')
+                        ->options([
+                            '5' => '⚡ Rápido: 5 webs simultáneas (~3 segundos)',
+                            '10' => '🚀 Recomendado: 10 webs simultáneas (~5 segundos)',
+                            '15' => '🔥 Intensivo: 15 webs simultáneas (~8 segundos)',
+                            '25' => '💥 Máximo: 25 webs simultáneas (~12 segundos)',
+                        ])
+                        ->default('10')
+                        ->required()
+                        ->helperText('Rastreo concurrente asíncrono en paralelo (sin esperas ni tiempos muertos).'),
+
                     Forms\Components\Section::make('⚡ Motor Oficial Google Search API (Buscador en Vivo)')
                         ->description('Conecta Google en tiempo real para encontrar clínicas en vivo (100 consultas gratis al día).')
                         ->schema([
@@ -106,7 +118,8 @@ class ListProspectosVeterinarias extends ListRecords
                         $data['region'],
                         $data['url_especifica'] ?? null,
                         $data['google_api_key'] ?? null,
-                        $data['google_cx_id'] ?? null
+                        $data['google_cx_id'] ?? null,
+                        (int) ($data['limite_extraccion'] ?? 10)
                     );
 
                     Notification::make()
