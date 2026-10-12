@@ -179,24 +179,6 @@ class ProspectosScanAndSend extends Command
             ['razon_social' => 'UCLIVET Unidad de Cuidado Clínico', 'correo_comercial' => 'uclivet@hotmail.com', 'municipio' => 'Facatativá', 'departamento' => 'Cundinamarca', 'tipo' => 'Hospital Veterinario', 'fuente' => 'Google Maps Facatativá'],
         ];
 
-        $nuevos = 0;
-        foreach ($catalogo as $item) {
-            $email = strtolower(trim($item['correo_comercial']));
-            $existe = ProspectoVeterinaria::where('correo_comercial', $email)->exists();
-            if (!$existe) {
-                ProspectoVeterinaria::create([
-                    'razon_social' => $item['razon_social'],
-                    'correo_comercial' => $email,
-                    'municipio' => $item['municipio'],
-                    'departamento' => $item['departamento'],
-                    'tipo' => $item['tipo'],
-                    'fuente' => $item['fuente'],
-                    'estado' => 'pendiente',
-                ]);
-                $nuevos++;
-            }
-        }
-
-        return $nuevos;
+        return ProspectoVeterinaria::upsertProspectos($catalogo);
     }
 }

@@ -43,66 +43,31 @@ return new class extends Migration
             ['razon_social' => 'ALVEIRO QUINTERO MARTINEZ', 'correo_comercial' => 'alveiro1@gmail.com', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'tipo' => 'Servicios Veterinarios'],
         ];
 
-        foreach ($enviadosTanda1 as $item) {
-            $email = strtolower(trim($item['correo_comercial']));
-            ProspectoVeterinaria::firstOrCreate(
-                ['correo_comercial' => $email],
-                [
-                    'razon_social' => $item['razon_social'],
-                    'municipio' => $item['municipio'],
-                    'departamento' => $item['departamento'],
-                    'tipo' => $item['tipo'],
-                    'estado' => 'enviado',
-                    'intentos_envio' => 1,
-                    'ultimo_envio_at' => now(),
-                    'fuente' => 'Campaña Inicial Octubre',
-                ]
-            );
-        }
+        $now = now();
+        $payloadEnviados = array_map(function ($item) use ($now) {
+            return [
+                'razon_social' => $item['razon_social'],
+                'correo_comercial' => strtolower(trim($item['correo_comercial'])),
+                'municipio' => $item['municipio'],
+                'departamento' => $item['departamento'],
+                'tipo' => $item['tipo'],
+                'estado' => 'enviado',
+                'intentos_envio' => 1,
+                'ultimo_envio_at' => $now,
+                'fuente' => 'Campaña Inicial Octubre',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }, $enviadosTanda1);
 
-        // 2. Clínicas de Zipaquirá y la Sabana listas en estado PENDIENTE
-        $pendientesSabana = [
-            ['razon_social' => 'Veterinaria El Hato (Dr. Hernando Niño)', 'correo_comercial' => 'm.v.nino.hernando@hotmail.com', 'municipio' => 'Zipaquirá', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica Veterinaria'],
-            ['razon_social' => 'Zoo-Clínica La Sabana', 'correo_comercial' => 'info@zooclinicalasabana.com', 'municipio' => 'Zipaquirá', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica & Hospital'],
-            ['razon_social' => 'Clínica Veterinaria Dra. María Claudia Tinjacá', 'correo_comercial' => 'info@clinicaveterinariadramariaclaudiatinjaca.com.co', 'municipio' => 'Zipaquirá', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica Especializada'],
-            ['razon_social' => 'Clínica Veterinaria Best Animals (Sede Zipaquirá)', 'correo_comercial' => 'veterinariabestanimals@gmail.com', 'municipio' => 'Zipaquirá', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica & Urgencias'],
-            ['razon_social' => 'Felicanvet Cajicá', 'correo_comercial' => 'veterinariafelicanvet@gmail.com', 'municipio' => 'Cajicá', 'departamento' => 'Cundinamarca', 'tipo' => 'Consultorio Veterinario'],
-            ['razon_social' => 'Inversiones The Royal Pet', 'correo_comercial' => 'veterinariatheroyalpet@gmail.com', 'municipio' => 'Cajicá', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica & Pet Shop'],
-            ['razon_social' => 'Zonovet Cajicá', 'correo_comercial' => 'verterinariazonovet@gmail.com', 'municipio' => 'Cajicá', 'departamento' => 'Cundinamarca', 'tipo' => 'Servicios Veterinarios'],
-            ['razon_social' => 'Clínica Veterinaria Pets Colombia', 'correo_comercial' => 'clinicapetscolombia@gmail.com', 'municipio' => 'Chía', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica Veterinaria'],
-            ['razon_social' => 'Animal Services Chía', 'correo_comercial' => 'clinicaveterinaria@animalservices.com.co', 'municipio' => 'Chía', 'departamento' => 'Cundinamarca', 'tipo' => 'Hospital 24/7'],
-            ['razon_social' => 'Hospital Veterinario Mascotas S.A.S.', 'correo_comercial' => 'hospitalveterinariomascotas@hotmail.com', 'municipio' => 'Cota', 'departamento' => 'Cundinamarca', 'tipo' => 'Hospital Veterinario'],
-            ['razon_social' => 'Consultorio Dra. Mónica Camargo', 'correo_comercial' => 'mmonicamargo@gmail.com', 'municipio' => 'Cota', 'departamento' => 'Cundinamarca', 'tipo' => 'Consultorio Veterinario'],
-            ['razon_social' => 'Vetmédica S.A.S. / Vetxotic', 'correo_comercial' => 'atencion.vetmedica@gmail.com', 'municipio' => 'Tenjo', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica Veterinaria'],
-            ['razon_social' => 'Clínica Veterinaria V y V', 'correo_comercial' => 'mvvargasveterinaria@gmail.com', 'municipio' => 'Tenjo', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica Veterinaria'],
-            ['razon_social' => 'Clínica Veterinaria Huellas', 'correo_comercial' => 'clinicaveterinariahuellas8@gmail.com', 'municipio' => 'Tabio', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica Veterinaria'],
-            ['razon_social' => 'Centro Médico Veterinario Vitanimal', 'correo_comercial' => 'cmvitanimal@gmail.com', 'municipio' => 'Tocancipá', 'departamento' => 'Cundinamarca', 'tipo' => 'Centro Médico Veterinario'],
-            ['razon_social' => 'Amigos del Campo MR', 'correo_comercial' => 'deysimr@hotmail.com', 'municipio' => 'Tocancipá', 'departamento' => 'Cundinamarca', 'tipo' => 'Servicios Veterinarios'],
-            ['razon_social' => 'Dra. Claudia Marcela Cuitiva', 'correo_comercial' => 'claudiacuitiva8@gmail.com', 'municipio' => 'Sopó', 'departamento' => 'Cundinamarca', 'tipo' => 'Servicios Veterinarios'],
-            ['razon_social' => 'Dra. Liliana Marcela Durán (MV)', 'correo_comercial' => 'lilianaduranvet@yahoo.com', 'municipio' => 'Sopó', 'departamento' => 'Cundinamarca', 'tipo' => 'Servicios Veterinarios'],
-            ['razon_social' => 'Clínica Veterinaria de Funza', 'correo_comercial' => 'clinicaveterinariafunza@hotmail.com', 'municipio' => 'Funza', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica Veterinaria'],
-            ['razon_social' => 'Centro Médico Veterinario Animalitos', 'correo_comercial' => 'veterinaria.animalitos@gmail.com', 'municipio' => 'Funza', 'departamento' => 'Cundinamarca', 'tipo' => 'Consultorio y Pet Shop'],
-            ['razon_social' => 'PawerVet Clínica Veterinaria', 'correo_comercial' => 'pawervet@gmail.com', 'municipio' => 'Mosquera', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica Veterinaria'],
-            ['razon_social' => 'Clínica Veterinaria Family Pets', 'correo_comercial' => 'info@familypets.com', 'municipio' => 'Madrid', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica Veterinaria'],
-            ['razon_social' => 'Veterinaria Animal Blue', 'correo_comercial' => 'vetanimalblue@gmail.com', 'municipio' => 'Madrid', 'departamento' => 'Cundinamarca', 'tipo' => 'Servicios Veterinarios'],
-            ['razon_social' => 'Clínica Veterinaria Facatativá', 'correo_comercial' => 'clinicaveterinariadrcesarayala@hotmail.com', 'municipio' => 'Facatativá', 'departamento' => 'Cundinamarca', 'tipo' => 'Clínica Veterinaria'],
-            ['razon_social' => 'UCLIVET Unidad de Cuidado Clínico', 'correo_comercial' => 'uclivet@hotmail.com', 'municipio' => 'Facatativá', 'departamento' => 'Cundinamarca', 'tipo' => 'Hospital Veterinario'],
-        ];
+        ProspectoVeterinaria::upsert(
+            $payloadEnviados,
+            uniqueBy: ['correo_comercial'],
+            update: ['razon_social', 'municipio', 'departamento', 'tipo', 'updated_at']
+        );
 
-        foreach ($pendientesSabana as $item) {
-            $email = strtolower(trim($item['correo_comercial']));
-            ProspectoVeterinaria::firstOrCreate(
-                ['correo_comercial' => $email],
-                [
-                    'razon_social' => $item['razon_social'],
-                    'municipio' => $item['municipio'],
-                    'departamento' => $item['departamento'],
-                    'tipo' => $item['tipo'],
-                    'estado' => 'pendiente',
-                    'fuente' => 'Google Maps Sabana',
-                ]
-            );
-        }
+        // 2. Clínicas de Zipaquirá y la Sabana listas en estado PENDIENTE vía upsertProspectos
+        ProspectoVeterinaria::upsertProspectos($pendientesSabana);
     }
 
     public function down(): void
