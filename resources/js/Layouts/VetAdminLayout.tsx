@@ -174,13 +174,13 @@ export default function VetAdminLayout({
         setNotifications(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n));
     };
 
-    // Estado de acordeones de menú
+    // Estado de acordeones de menú (Minimizados por defecto a petición)
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-        clientes: true,
-        planes: true,
-        recepcion: true,
-        reportes: true,
-        configuracion: true,
+        clientes: false,
+        planes: false,
+        recepcion: false,
+        reportes: false,
+        configuracion: false,
     });
 
     const toggleGroup = (group: string) => {
@@ -443,17 +443,21 @@ export default function VetAdminLayout({
                         {openGroups.reportes && (
                             <div className="pl-6 pr-1 py-1 space-y-0.5">
                                 <Link
-                                    href={getHref(`/admin/${tenantSlug}/subscriptions`)}
+                                    href={getHref(`/admin/${tenantSlug}/reportes/metricas`)}
                                     preserveScroll
-                                    className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
+                                        activeItem === 'Métricas y Estadísticas' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                                    }`}
                                 >
                                     <TrendingUp className="w-3.5 h-3.5 text-slate-500" />
                                     <span>Métricas y Estadísticas</span>
                                 </Link>
                                 <Link
-                                    href={getHref(`/admin/${tenantSlug}/subscriptions`)}
+                                    href={getHref(`/admin/${tenantSlug}/reportes/crecimiento`)}
                                     preserveScroll
-                                    className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
+                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
+                                        activeItem === 'Crecimiento' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                                    }`}
                                 >
                                     <BarChart3 className="w-3.5 h-3.5 text-slate-500" />
                                     <span>Crecimiento</span>

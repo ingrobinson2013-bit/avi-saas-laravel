@@ -188,7 +188,7 @@ Route::get('/admin/{slug}', function (string $slug) use ($checkAdminAccess, $res
     }
 
     // Atajos directos a módulos si alguien entra a /admin/pets en lugar de /admin/{slug}/pets
-    $knownSections = ['pets', 'customers', 'plans', 'subscriptions', 'counter-redeem', 'historial-canjes', 'benefit-definitions', 'clinic-settings', 'inteligencia', 'citas', 'logistica', 'renovar-saas'];
+    $knownSections = ['pets', 'customers', 'plans', 'subscriptions', 'counter-redeem', 'historial-canjes', 'benefit-definitions', 'clinic-settings', 'inteligencia', 'citas', 'logistica', 'renovar-saas', 'reportes', 'metricas', 'crecimiento'];
     if (in_array($slug, $knownSections)) {
         $tenant = $tenantHost ?? auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
         if ($tenant) {
@@ -295,6 +295,17 @@ Route::get('/admin/{slug}/logistica', function (string $slug) use ($checkAdminAc
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->logistics(request(), $slug);
 });
 
+// 2.2.1 Módulo de Reportes Clínicos y Financieros (Métricas & Crecimiento)
+Route::get('/admin/{slug}/reportes/metricas', function (string $slug) use ($checkAdminAccess, $redirectToLogin) {
+    if (!$checkAdminAccess($slug)) return $redirectToLogin($slug);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->metrics(request(), $slug);
+});
+
+Route::get('/admin/{slug}/reportes/crecimiento', function (string $slug) use ($checkAdminAccess, $redirectToLogin) {
+    if (!$checkAdminAccess($slug)) return $redirectToLogin($slug);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->growth(request(), $slug);
+});
+
 // 2.3 Módulo de Citas Médicas & Sincronización con Google Calendar
 Route::get('/admin/{slug}/citas', function (string $slug) use ($checkAdminAccess, $redirectToLogin) {
     if (!$checkAdminAccess($slug)) return $redirectToLogin($slug);
@@ -319,7 +330,11 @@ Route::get('/admin/{slug}/configuracion-clinica', fn(string $slug) => redirect("
 Route::get('/admin/{slug}/servicios', fn(string $slug) => redirect("/admin/{$slug}/benefit-definitions"));
 Route::get('/admin/{slug}/ai', fn(string $slug) => redirect("/admin/{$slug}/inteligencia"));
 Route::get('/admin/{slug}/recepcion', fn(string $slug) => redirect("/admin/{$slug}/counter-redeem"));
-Route::get('/admin/{slug}/reportes', fn(string $slug) => redirect("/admin/{$slug}/subscriptions"));
+Route::get('/admin/{slug}/reportes', fn(string $slug) => redirect("/admin/{$slug}/reportes/metricas"));
+Route::get('/admin/{slug}/metricas', fn(string $slug) => redirect("/admin/{$slug}/reportes/metricas"));
+Route::get('/admin/{slug}/crecimiento', fn(string $slug) => redirect("/admin/{$slug}/reportes/crecimiento"));
+Route::get('/admin/{slug}/reports/metrics', fn(string $slug) => redirect("/admin/{$slug}/reportes/metricas"));
+Route::get('/admin/{slug}/reports/growth', fn(string $slug) => redirect("/admin/{$slug}/reportes/crecimiento"));
 Route::get('/admin/{slug}/despachos', fn(string $slug) => redirect("/admin/{$slug}/logistica"));
 Route::get('/admin/{slug}/envios', fn(string $slug) => redirect("/admin/{$slug}/logistica"));
 Route::get('/admin/{slug}/agenda', fn(string $slug) => redirect("/admin/{$slug}/citas"));
