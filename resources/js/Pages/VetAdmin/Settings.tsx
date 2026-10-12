@@ -41,6 +41,7 @@ interface SettingsData {
     hero_price_badge?: string;
     primary_color?: string;
     secondary_color?: string;
+    storefront_theme?: 'classic' | 'modern';
     payment_nequi: string;
     payment_bank_info: string;
     payment_bold_link: string;
@@ -128,6 +129,7 @@ export default function Settings({
         hero_price_badge: settings.hero_price_badge || 'Desde $50.000/mes',
         primary_color: settings.primary_color || (isPilot ? '#0080ff' : '#0D9488'),
         secondary_color: settings.secondary_color || (isPilot ? '#d437b5' : '#0F172A'),
+        storefront_theme: settings.storefront_theme || 'classic',
     });
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldBase64: string, fieldPreviewUrl: string, nameKey: string) => {
@@ -389,6 +391,93 @@ export default function Settings({
                                             placeholder="Planes de salud para su mascota"
                                             className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                                         />
+                                    </div>
+
+                                    {/* Selector de Plantilla de la Vitrina Web */}
+                                    <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/90 space-y-3">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-slate-200/80">
+                                            <div>
+                                                <h4 className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                                                    <span>🌐</span>
+                                                    <span>Plantilla Visual de tu Vitrina Web (2 Opciones Modernas)</span>
+                                                </h4>
+                                                <p className="text-[11px] text-slate-500 mt-0.5">
+                                                    Elige el estilo con el que tus clientes verán tus planes de salud y carnet digital en internet.
+                                                </p>
+                                            </div>
+                                            <a
+                                                href={form.storefront_theme === 'modern' ? `/v/${tenantSlug}?theme=modern` : `/v/${tenantSlug}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition shadow-2xs self-start sm:self-auto cursor-pointer"
+                                            >
+                                                <span>👁️ Ver Mi Web en Vivo</span>
+                                            </a>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                                            {/* Plantilla 1: Clásica Médica */}
+                                            <div
+                                                onClick={() => setForm({ ...form, storefront_theme: 'classic' })}
+                                                className={`p-3.5 rounded-xl border-2 transition cursor-pointer flex flex-col justify-between ${
+                                                    (form.storefront_theme || 'classic') === 'classic'
+                                                        ? 'border-blue-600 bg-white shadow-md ring-2 ring-blue-500/20'
+                                                        : 'border-slate-200 bg-slate-100/60 hover:border-slate-300'
+                                                }`}
+                                            >
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-xs font-black text-slate-900 flex items-center gap-1.5">
+                                                            <span>🏥</span>
+                                                            <span>Plantilla 1: Clásica Médica</span>
+                                                        </span>
+                                                        {(form.storefront_theme || 'classic') === 'classic' && (
+                                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-600 text-white">
+                                                                Activa
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                                                        Diseño limpio, formal e institucional con fondo blanco. Enfocada en salud preventiva, calculadora clínica y fácil lectura para todo público.
+                                                    </p>
+                                                </div>
+                                                <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                                                    <span className="text-slate-400">Estilo: Sanitario / Institucional</span>
+                                                    <span className="font-bold text-blue-600">Recomendado</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Plantilla 2: Neo-Moderna Boutique */}
+                                            <div
+                                                onClick={() => setForm({ ...form, storefront_theme: 'modern' })}
+                                                className={`p-3.5 rounded-xl border-2 transition cursor-pointer flex flex-col justify-between ${
+                                                    form.storefront_theme === 'modern'
+                                                        ? 'border-indigo-600 bg-slate-900 text-white shadow-md ring-2 ring-indigo-500/20'
+                                                        : 'border-slate-200 bg-slate-100/60 hover:border-slate-300'
+                                                }`}
+                                            >
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className={`text-xs font-black flex items-center gap-1.5 ${form.storefront_theme === 'modern' ? 'text-white' : 'text-slate-900'}`}>
+                                                            <span>✨</span>
+                                                            <span>Plantilla 2: Neo-Moderna Boutique</span>
+                                                        </span>
+                                                        {form.storefront_theme === 'modern' && (
+                                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500 text-white">
+                                                                Activa
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className={`text-[11px] leading-relaxed ${form.storefront_theme === 'modern' ? 'text-slate-300' : 'text-slate-500'}`}>
+                                                        Estilo Pet Club Vanguardista con fondo oscuro elegante, esferas de luz ambiental, badges de cristal y tarjetas con glow. Ideal para clínicas boutique.
+                                                    </p>
+                                                </div>
+                                                <div className={`mt-3 pt-2.5 border-t flex items-center justify-between text-[11px] ${form.storefront_theme === 'modern' ? 'border-slate-800' : 'border-slate-100'}`}>
+                                                    <span className={form.storefront_theme === 'modern' ? 'text-indigo-300' : 'text-slate-400'}>Estilo: Glassmorphism / VIP</span>
+                                                    <span className="font-bold text-indigo-400">Nueva ✨</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     {/* Combinación de 2 Colores de la Marca */}

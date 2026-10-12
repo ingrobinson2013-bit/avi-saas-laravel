@@ -113,6 +113,15 @@ class ProspectoVeterinariaResource extends Resource
                             ->label('Fecha del Último Envío')
                             ->nullable(),
 
+                        Forms\Components\DateTimePicker::make('abierto_at')
+                            ->label('Primera Vez Abierto / Leído')
+                            ->nullable(),
+
+                        Forms\Components\TextInput::make('aperturas_count')
+                            ->label('Cantidad de Veces Abierto')
+                            ->numeric()
+                            ->default(0),
+
                         Forms\Components\Textarea::make('error_mensaje')
                             ->label('Último Mensaje de Error')
                             ->columnSpanFull()
@@ -180,6 +189,17 @@ class ProspectoVeterinariaResource extends Resource
                     })
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('aperturas_count')
+                    ->label('Lectura / Apertura')
+                    ->badge()
+                    ->color(fn (ProspectoVeterinaria $record) => $record->aperturas_count > 0 ? 'success' : 'gray')
+                    ->icon(fn (ProspectoVeterinaria $record) => $record->aperturas_count > 0 ? 'heroicon-m-eye' : 'heroicon-m-eye-slash')
+                    ->formatStateUsing(fn (ProspectoVeterinaria $record) => $record->aperturas_count > 0 
+                        ? "👀 Leído ({$record->aperturas_count})" 
+                        : "Sin abrir")
+                    ->description(fn (ProspectoVeterinaria $record) => $record->abierto_at ? $record->abierto_at->diffForHumans() : null)
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('ultimo_envio_at')
                     ->label('Enviado el')
                     ->dateTime('d/m/Y H:i')
@@ -192,6 +212,10 @@ class ProspectoVeterinariaResource extends Resource
             ])
             ->defaultSort('id', 'desc')
             ->filters([
+                Tables\Filters\Filter::make('solo_abiertos')
+                    ->label('👀 Solo que Abrieron el Correo')
+                    ->query(fn ($query) => $query->where('aperturas_count', '>', 0)),
+
                 Tables\Filters\SelectFilter::make('estado')
                     ->label('Filtrar por Estado')
                     ->options([

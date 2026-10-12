@@ -22,13 +22,17 @@ class ProspectoVeterinaria extends Model
         'estado',
         'intentos_envio',
         'ultimo_envio_at',
+        'abierto_at',
+        'aperturas_count',
         'error_mensaje',
         'fuente',
     ];
 
     protected $casts = [
         'ultimo_envio_at' => 'datetime',
+        'abierto_at' => 'datetime',
         'intentos_envio' => 'integer',
+        'aperturas_count' => 'integer',
     ];
 
     public function scopePendientes($query)
@@ -39,6 +43,11 @@ class ProspectoVeterinaria extends Model
     public function scopeEnviados($query)
     {
         return $query->where('estado', 'enviado');
+    }
+
+    public function scopeAbiertos($query)
+    {
+        return $query->where('aperturas_count', '>', 0);
     }
 
     public function scopeConError($query)

@@ -253,5 +253,10 @@
 
     </div>
   </div>
+
+  @if(!empty($prospectoId))
+    <!-- PÍXEL DE SEGUIMIENTO DE APERTURA (1x1 TRANSPARENTE) -->
+    <img src="https://avipetapp.com/track/p/{{ $prospectoId }}.png" width="1" height="1" style="display:none !important; border:none; outline:none;" alt="" />
+  @endif
 </body>
 </html>

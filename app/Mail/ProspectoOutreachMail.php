@@ -38,6 +38,7 @@ class ProspectoOutreachMail extends Mailable
                 'correoComercial' => $this->prospecto->correo_comercial,
                 'whatsappLinkNumber' => '573235813942',
                 'razonSocialEncoded' => urlencode($this->prospecto->razon_social),
+                'prospectoId' => $this->prospecto->id,
             ],
         );
     }

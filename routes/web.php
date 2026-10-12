@@ -79,6 +79,10 @@ Route::get('/', function () use ($resolveTenantFromHost) {
     $tenant = $resolveTenantFromHost();
     if ($tenant) {
         $plans = $tenant->plans()->with('planBenefits.benefitDefinition')->where('is_active', true)->get();
+        $selectedTheme = request('theme') ?: ($tenant->branding['storefront_theme'] ?? 'classic');
+        if ($selectedTheme === 'modern') {
+            return view('tenant_storefront_modern', compact('tenant', 'plans'));
+        }
         return view('tenant_storefront', compact('tenant', 'plans'));
     }
     return view('b2b_landing');
@@ -336,6 +340,10 @@ Route::get('/v/{slug}/admin/{section?}', function (string $slug, ?string $sectio
 Route::get('/v/{slug}', function (string $slug) {
     $tenant = Tenant::where('slug', $slug)->firstOrFail();
     $plans = $tenant->plans()->with('planBenefits.benefitDefinition')->where('is_active', true)->get();
+    $selectedTheme = request('theme') ?: ($tenant->branding['storefront_theme'] ?? 'classic');
+    if ($selectedTheme === 'modern') {
+        return view('tenant_storefront_modern', compact('tenant', 'plans'));
+    }
     return view('tenant_storefront', compact('tenant', 'plans'));
 });
 
@@ -430,6 +438,28 @@ Route::get('/sitemap.xml', function () {
 // 12. Blog SEO B2B para Clínicas Veterinarias
 Route::get('/blog', [App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
+
+// 13. Píxel de Seguimiento de Aperturas de Correo (Prospección AVI-Plan)
+Route::get('/track/p/{id}.png', function ($id) {
+    try {
+        $prospecto = \App\Models\ProspectoVeterinaria::find($id);
+        if ($prospecto) {
+            $prospecto->update([
+                'abierto_at' => $prospecto->abierto_at ?? now(),
+                'aperturas_count' => ($prospecto->aperturas_count ?? 0) + 1,
+            ]);
+        }
+    } catch (\Throwable $e) {}
+
+    // Retorna GIF transparente de 1x1 píxel
+    $gif = base64_decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
+    return response($gif, 200, [
+        'Content-Type' => 'image/gif',
+        'Cache-Control' => 'no-cache, no-store, must-revalidate, max-age=0',
+        'Pragma' => 'no-cache',
+        'Expires' => '0',
+    ]);
+})->name('prospecto.track.open');
 
 
 

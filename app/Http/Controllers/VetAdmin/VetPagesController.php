@@ -779,6 +779,7 @@ class VetPagesController extends Controller
             'payment_bold_link' => $branding['payment_bold_link'] ?? ($isPilot ? 'https://checkout.bold.co/payment/LNK_VET_PATITAS' : ''),
             'doctor_name' => $branding['doctor_name'] ?? ($isPilot ? 'Dra. Vicky Naranjo' : ($tenant->users()->where('role', 'clinic_admin')->first()?->name ?? '')),
             'doctor_title' => $branding['doctor_title'] ?? ($isPilot ? 'Médica Veterinaria Directora' : 'Médica Veterinaria Directora'),
+            'storefront_theme' => $branding['storefront_theme'] ?? 'classic',
             'auto_enrollment' => true,
         ];
 
@@ -855,6 +856,7 @@ class VetPagesController extends Controller
             'hero_price_badge' => 'nullable|string|max:100',
             'primary_color' => 'nullable|string|max:25',
             'secondary_color' => 'nullable|string|max:25',
+            'storefront_theme' => 'nullable|string|in:classic,modern',
             'payment_nequi' => 'nullable|string|max:50',
             'payment_bank_info' => 'nullable|string|max:255',
             'payment_bold_link' => 'nullable|string|max:500',
@@ -917,6 +919,7 @@ class VetPagesController extends Controller
         }
         $branding['primary_color'] = $validated['primary_color'] ?? $branding['primary_color'] ?? '#0080ff';
         $branding['secondary_color'] = $validated['secondary_color'] ?? $branding['secondary_color'] ?? '#d437b5';
+        $branding['storefront_theme'] = $validated['storefront_theme'] ?? $branding['storefront_theme'] ?? 'classic';
         $branding['payment_nequi'] = $validated['payment_nequi'] ?? null;
         $branding['payment_bank_info'] = $validated['payment_bank_info'] ?? null;
         $branding['payment_bold_link'] = $validated['payment_bold_link'] ?? null;

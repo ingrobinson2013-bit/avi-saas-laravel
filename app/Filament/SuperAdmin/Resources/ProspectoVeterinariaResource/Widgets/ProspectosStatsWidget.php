@@ -12,10 +12,12 @@ class ProspectosStatsWidget extends BaseWidget
     {
         $total = ProspectoVeterinaria::count();
         $enviados = ProspectoVeterinaria::enviados()->count();
+        $abiertos = ProspectoVeterinaria::abiertos()->count();
         $pendientes = ProspectoVeterinaria::pendientes()->count();
         $errores = ProspectoVeterinaria::conError()->count();
 
         $tasaEnvio = $total > 0 ? round(($enviados / $total) * 100, 1) : 0;
+        $tasaApertura = $enviados > 0 ? round(($abiertos / $enviados) * 100, 1) : 0;
 
         return [
             Stat::make('Base Total de Prospectos', number_format($total))
@@ -28,15 +30,15 @@ class ProspectosStatsWidget extends BaseWidget
                 ->descriptionIcon('heroicon-m-check-badge')
                 ->color('success'),
 
+            Stat::make('Leídos / Abiertos', number_format($abiertos))
+                ->description("{$tasaApertura}% tasa de apertura 👀")
+                ->descriptionIcon('heroicon-m-eye')
+                ->color($abiertos > 0 ? 'info' : 'gray'),
+
             Stat::make('Pendientes por Despachar', number_format($pendientes))
                 ->description('Listas para el cron diario')
                 ->descriptionIcon('heroicon-m-clock')
                 ->color('warning'),
-
-            Stat::make('Rebotes / Errores', number_format($errores))
-                ->description('Fallos de entrega o DNS')
-                ->descriptionIcon('heroicon-m-exclamation-triangle')
-                ->color($errores > 0 ? 'danger' : 'gray'),
         ];
     }
 }
