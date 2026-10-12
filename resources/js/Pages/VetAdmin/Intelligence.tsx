@@ -311,25 +311,67 @@ export default function Intelligence({
     const [triageMode, setTriageMode] = useState<'visual' | 'bioacoustic'>('visual');
     const [selectedBioPreset, setSelectedBioPreset] = useState<string>('cough_kennel');
     const [isPlayingSound, setIsPlayingSound] = useState(false);
+    const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
     const handleSelectPreset = (preset: typeof VISUAL_PRESETS[0]) => {
         setSelectedPreset(preset.id);
         setActiveImage(preset.image);
         setSymptomsInput(preset.symptoms);
         setCustomImageBase64(null);
+        setUploadedFileName(null);
+        setTriageResult({
+            source: 'gemini-2.5-flash-live',
+            preset_id: preset.id,
+            sample_image_url: preset.image,
+            urgency_level: 'Media (Prioritaria)',
+            urgency_color: preset.color as any,
+            confidence_score: 95.8,
+            roi_box: { top: 28, left: 32, width: 38, height: 42, label: preset.badge },
+            preliminary_hypothesis: `Caso clínico preestablecido: ${preset.title}. Presiona "Evaluar con Gemini AI" para re-analizar.`,
+            clinical_findings: [
+                'Signos clásicos evaluados en caso clínico de muestra.',
+                preset.symptoms,
+            ],
+            recommended_action: 'Examen clínico directo y toma de muestras complementarias.',
+            plan_coverage_match: `Consulta y raspado cubiertos en su ${currentPet.plan_name}.`,
+            covered_cop: '$55.000 COP cubiertos por membresía activa',
+            requires_in_person_visit: true
+        });
     };
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            const fileName = file.name;
+            setUploadedFileName(fileName);
             const reader = new FileReader();
             reader.onloadend = () => {
                 const b64 = reader.result as string;
                 setCustomImageBase64(b64);
                 setActiveImage(b64);
                 setSelectedPreset('custom');
+                setSymptomsInput('Lesión dérmica / signo clínico fotografiado directamente en consulta.');
+                setTriageResult({
+                    source: 'user_uploaded',
+                    preset_id: 'custom',
+                    sample_image_url: b64,
+                    urgency_level: 'Lista para Análisis',
+                    urgency_color: 'amber',
+                    confidence_score: undefined,
+                    roi_box: undefined,
+                    preliminary_hypothesis: `Fotografía "${fileName}" cargada. Haz clic en "Evaluar con Gemini AI" para procesar el diagnóstico visual y cruce de coberturas.`,
+                    clinical_findings: [
+                        `Fotografía de ${currentPet.name} (${currentPet.breed}) recibida en alta resolución.`,
+                        'Lista para detección morfológica y cruce actuarial de coberturas con Gemini 2.5 Flash.'
+                    ],
+                    recommended_action: 'Pulsa el botón azul "Evaluar con Gemini AI" para ejecutar el informe médico asistido.',
+                    plan_coverage_match: `Plan activo: ${currentPet.plan_name}`,
+                    covered_cop: 'Consultas y procedimientos cubiertos según plan',
+                    requires_in_person_visit: true
+                });
             };
             reader.readAsDataURL(file);
+            e.target.value = '';
         }
     };
 
@@ -361,7 +403,7 @@ export default function Intelligence({
             if (data.success && data.triage) {
                 setTriageResult({
                     ...data.triage,
-                    sample_image_url: activeImage
+                    sample_image_url: customImageBase64 || activeImage || data.triage.sample_image_url
                 });
             }
         } catch (err) {
@@ -789,9 +831,13 @@ export default function Intelligence({
                                 </div>
 
                                 <div className="flex items-center gap-2">
-                                    <label className="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold border border-blue-200 cursor-pointer flex items-center gap-1.5 transition">
+                                    <label className={`px-3.5 py-2 rounded-xl text-xs font-bold border cursor-pointer flex items-center gap-1.5 transition ${
+                                        customImageBase64 
+                                            ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300 ring-2 ring-emerald-500/20' 
+                                            : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200'
+                                    }`}>
                                         <Camera className="w-3.5 h-3.5" />
-                                        <span>Subir Foto del Paciente</span>
+                                        <span>{customImageBase64 ? '✓ Foto Cargada (Cambiar)' : 'Subir Foto del Paciente'}</span>
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -801,6 +847,37 @@ export default function Intelligence({
                                     </label>
                                 </div>
                             </div>
+
+                            {/* Banner de Foto Personalizada Cargada */}
+                            {customImageBase64 && (
+                                <div className="p-3 bg-emerald-50/80 border-2 border-emerald-400 rounded-2xl flex items-center justify-between gap-3 shadow-xs animate-in fade-in duration-200">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-emerald-500 bg-slate-900 shrink-0">
+                                            <img src={customImageBase64} alt="Subida" className="w-full h-full object-cover" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <div className="flex items-center gap-1.5">
+                                                <span className="text-xs font-black text-emerald-950">📸 Foto del Paciente Lista en Pantalla</span>
+                                                <span className="text-[9.5px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-200 text-emerald-900">Activa</span>
+                                            </div>
+                                            <p className="text-[11px] text-emerald-700 truncate mt-0.5">
+                                                {uploadedFileName || 'Fotografía de la lesión'} · Pulsa <strong>"Evaluar con Gemini AI"</strong> para diagnosticar.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setCustomImageBase64(null);
+                                            setUploadedFileName(null);
+                                            handleSelectPreset(VISUAL_PRESETS[0]);
+                                        }}
+                                        className="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 transition shrink-0 cursor-pointer"
+                                    >
+                                        Restaurar Presets
+                                    </button>
+                                </div>
+                            )}
 
                             {/* Presets visuales frecuentes */}
                             <div>
@@ -879,18 +956,22 @@ export default function Intelligence({
                                             <ScanLine className="w-4 h-4 text-blue-600" />
                                             Detección de Región de Interés (ROI)
                                         </span>
-                                        {triageResult.confidence_score && (
+                                        {triageResult.confidence_score ? (
                                             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                                                 {triageResult.confidence_score}% Coincidencia
                                             </span>
-                                        )}
+                                        ) : customImageBase64 ? (
+                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                                                📸 Foto en Pantalla
+                                            </span>
+                                        ) : null}
                                     </div>
 
-                                    <div className="relative w-full aspect-4/3 rounded-xl overflow-hidden border border-slate-200 bg-slate-900">
+                                    <div className="relative w-full aspect-4/3 rounded-xl overflow-hidden border border-slate-200 bg-slate-950 flex items-center justify-center">
                                         <img 
-                                            src={triageResult.sample_image_url || activeImage} 
+                                            src={customImageBase64 || activeImage || triageResult.sample_image_url || VISUAL_PRESETS[0].image} 
                                             alt="Lesión clínica" 
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-contain"
                                         />
 
                                         {/* Overlay ROI Box */}
@@ -914,7 +995,9 @@ export default function Intelligence({
                                     <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 text-[11px] leading-relaxed flex items-start gap-2">
                                         <Info className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
                                         <span>
-                                            El modelo detectó una región eritematosa perilesional activa compatible con signos inflamatorios.
+                                            {customImageBase64 
+                                                ? 'Fotografía cargada por el médico. Pulsa "Evaluar con Gemini AI" para ejecutar el informe morfológico asistido.'
+                                                : 'El modelo detectó una región eritematosa perilesional activa compatible con signos inflamatorios.'}
                                         </span>
                                     </div>
                                 </div>
