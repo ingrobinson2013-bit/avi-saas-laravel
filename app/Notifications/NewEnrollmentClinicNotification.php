@@ -30,8 +30,9 @@ class NewEnrollmentClinicNotification extends Notification implements ShouldQueu
 
     public function toMail(object $notifiable): MailMessage
     {
-        $tenantName = $this->subscription->tenant->name ?? 'Clínica Veterinaria';
-        $carnetUrl = url("/v/" . ($this->subscription->tenant->slug ?? 'vet-pet-patitas') . "/carnet/{$this->subscription->gateway_subscription_id}");
+        $tenant = $this->subscription->tenant;
+        $tenantName = $tenant->name ?? 'Clínica Veterinaria';
+        $carnetUrl = $tenant ? $tenant->getCarnetUrl($this->subscription->gateway_subscription_id) : "https://vet-pet-patitas.avipetapp.com/carnet/{$this->subscription->gateway_subscription_id}";
 
         return (new MailMessage)
             ->subject("🐾 ¡Nuevo Paciente Afiliado en {$tenantName}!: {$this->pet->name} - {$this->plan->name}")
@@ -48,6 +49,9 @@ class NewEnrollmentClinicNotification extends Notification implements ShouldQueu
 
     public function toDatabase(object $notifiable): array
     {
+        $tenant = $this->subscription->tenant;
+        $carnetUrl = $tenant ? $tenant->getCarnetUrl($this->subscription->gateway_subscription_id) : "https://vet-pet-patitas.avipetapp.com/carnet/{$this->subscription->gateway_subscription_id}";
+
         return [
             'type' => 'new_patient_enrolled',
             'title' => '🎉 ¡Nuevo Paciente Afiliado!',
@@ -61,7 +65,7 @@ class NewEnrollmentClinicNotification extends Notification implements ShouldQueu
             'plan_name' => $this->plan->name,
             'payment_method' => $this->paymentMethod,
             'amount_cop' => $this->plan->price_cop,
-            'carnet_url' => url("/v/" . ($this->subscription->tenant->slug ?? 'vet-pet-patitas') . "/carnet/{$this->subscription->gateway_subscription_id}"),
+            'carnet_url' => $carnetUrl,
             'created_at' => now()->toIso8601String(),
         ];
     }

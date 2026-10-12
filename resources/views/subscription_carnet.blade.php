@@ -38,7 +38,7 @@
         $isCanino = in_array(strtolower($petSpecies), ['canino', 'perro', 'dog']);
         $contractId = $subscription->gateway_subscription_id ?? ('VP-2026-' . str_pad($subscription->id, 4, '0', STR_PAD_LEFT));
         $expirationDate = $subscription->current_period_end ? $subscription->current_period_end->format('d/m/Y') : now()->addYear()->format('d/m/Y');
-        $qrData = url('/v/' . $tenant->slug . '/carnet/' . $contractId);
+        $qrData = $tenant->getCarnetUrl($contractId);
     @endphp
 
     <style>

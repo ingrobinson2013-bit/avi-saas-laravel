@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\DispatchOrder;
 use App\Models\Pet;
 use App\Models\Plan;
+use App\Models\PlanBenefit;
 use App\Models\Subscription;
 use App\Models\SubscriptionBenefitBalance;
 use App\Models\Tenant;
@@ -16,6 +17,7 @@ use App\Services\ActuarialMonteCarloService;
 use App\Services\GeminiClinicalTriageService;
 use App\Services\HealthWalletService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -152,6 +154,7 @@ class VetPagesController extends Controller
                     'plan_name' => $pet->activeSubscription?->plan?->name ?? 'Sin plan activo',
                     'plan_status' => $pet->activeSubscription?->status ?? 'inactive',
                     'photo_url' => $pet->photo_url,
+                    'carnet_url' => ($pet->activeSubscription && $ctx['tenant']) ? $ctx['tenant']->getCarnetUrl($pet->activeSubscription->gateway_subscription_id) : null,
                     'medical_notes' => $pet->medical_notes ?: '',
                 ];
             });
@@ -285,7 +288,7 @@ class VetPagesController extends Controller
                 $benefits = $plan->planBenefits->map(function ($pb) {
                     return [
                         'name' => $pb->benefitDefinition?->name ?? 'Beneficio Clínico',
-                        'quantity' => $pb->quantity_granted,
+                        'quantity' => $pb->quantity ?? $pb->quantity_granted ?? 1,
                         'category' => $pb->benefitDefinition?->category ?? 'clinica',
                     ];
                 });
@@ -307,6 +310,114 @@ class VetPagesController extends Controller
             'plans' => $plans,
             'totalPlans' => $plans->count(),
         ]));
+    }
+
+    /**
+     * Guardar Nuevo Plan de Salud Preventiva en Base de Datos
+     */
+    public function storePlan(Request $request, string $slug)
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
+
+        if (!$tenantId) {
+            return back()->with('error', 'Clínica no encontrada.');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'price_cop' => 'required|numeric|min:1000',
+            'billing_interval' => 'nullable|in:monthly,annual',
+            'selected_services' => 'nullable|array',
+            'selected_services.*' => 'string',
+            'service_quantities' => 'nullable|array',
+        ]);
+
+        return DB::transaction(function () use ($tenantId, $validated, $slug) {
+            $plan = Plan::create([
+                'tenant_id' => $tenantId,
+                'name' => trim($validated['name']),
+                'description' => $validated['description'] ?? null,
+                'price_cop' => $validated['price_cop'],
+                'billing_interval' => $validated['billing_interval'] ?? 'monthly',
+                'is_active' => true,
+            ]);
+
+            $selectedServices = $validated['selected_services'] ?? [];
+            $quantities = $validated['service_quantities'] ?? [];
+
+            foreach ($selectedServices as $serviceId) {
+                $benefitDef = BenefitDefinition::where(function ($q) use ($tenantId) {
+                    $q->where('tenant_id', $tenantId)->orWhereNull('tenant_id');
+                })->where('id', $serviceId)->first();
+
+                if ($benefitDef) {
+                    $qty = isset($quantities[$serviceId]) ? (int) $quantities[$serviceId] : 1;
+                    if ($qty <= 0) $qty = 1;
+
+                    PlanBenefit::create([
+                        'plan_id' => $plan->id,
+                        'benefit_definition_id' => $benefitDef->id,
+                        'quantity' => $qty,
+                        'expires_each_cycle' => true,
+                    ]);
+                }
+            }
+
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "¡Plan '{$plan->name}' creado exitosamente en el catálogo!",
+                    'plan' => $plan,
+                    'redirect_url' => "/admin/{$slug}/plans",
+                ]);
+            }
+
+            return redirect("/admin/{$slug}/plans")->with('success', "¡Plan '{$plan->name}' creado exitosamente!");
+        });
+    }
+
+    /**
+     * Activar o Pausar Plan
+     */
+    public function togglePlan(Request $request, string $slug, string $id)
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
+
+        $plan = Plan::where('tenant_id', $tenantId)->findOrFail($id);
+        $plan->update(['is_active' => !$plan->is_active]);
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => $plan->is_active,
+                'message' => "Estado del plan actualizado a " . ($plan->is_active ? 'activo' : 'pausado'),
+            ]);
+        }
+
+        return back()->with('success', "Estado del plan actualizado.");
+    }
+
+    /**
+     * Eliminar Plan
+     */
+    public function destroyPlan(Request $request, string $slug, string $id)
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
+
+        $plan = Plan::where('tenant_id', $tenantId)->findOrFail($id);
+        
+        $hasSubscriptions = Subscription::where('plan_id', $plan->id)->exists();
+        if ($hasSubscriptions) {
+            $plan->update(['is_active' => false]);
+            return back()->with('warning', 'El plan tiene pacientes afiliados, por lo que fue desactivado en lugar de eliminado.');
+        }
+
+        $plan->delete();
+        return back()->with('success', "Plan eliminado exitosamente.");
     }
 
     /**
@@ -376,6 +487,8 @@ class VetPagesController extends Controller
                     'status_label' => ($s->status === 'active') ? 'Activo · Al día' : 'Pendiente',
                     'start_date' => $s->current_period_start ? \Carbon\Carbon::parse($s->current_period_start)->format('d/m/Y') : now()->format('d/m/Y'),
                     'end_date' => $s->current_period_end ? \Carbon\Carbon::parse($s->current_period_end)->format('d/m/Y') : now()->addMonth()->format('d/m/Y'),
+                    'gateway_subscription_id' => $s->gateway_subscription_id,
+                    'carnet_url' => $ctx['tenant'] ? $ctx['tenant']->getCarnetUrl($s->gateway_subscription_id ?? $s->id) : "/carnet/{$s->id}",
                 ];
             });
 

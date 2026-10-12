@@ -56,6 +56,34 @@ class Tenant extends Model
         return 'trial_active';
     }
 
+    public function getBaseUrlAttribute(): string
+    {
+        $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
+        if (!empty($this->domain)) {
+            $cleanDomain = preg_replace('#^https?://#', '', trim($this->domain));
+            $cleanDomain = rtrim($cleanDomain, '/');
+            return "https://{$cleanDomain}";
+        }
+        return "https://{$this->slug}.{$baseDomain}";
+    }
+
+    public function getCarnetUrl(string $contractId): string
+    {
+        return "{$this->base_url}/carnet/{$contractId}";
+    }
+
+    public function getAdminUrl(string $section = ''): string
+    {
+        $path = $section ? "/admin/" . ltrim($section, '/') : "/admin";
+        return "{$this->base_url}{$path}";
+    }
+
+    public function getStorefrontUrl(): string
+    {
+        return $this->base_url;
+    }
+
+
     protected static function booted(): void
     {
         static::created(function (Tenant $tenant) {

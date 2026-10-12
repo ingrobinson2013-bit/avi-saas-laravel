@@ -24,8 +24,10 @@ class AiAssistantController extends Controller
             ], 404);
         }
 
-        $raw = json_decode($request->getContent(), true);
+        $raw = json_decode($request->getContent(), true) ?: [];
         $prompt = trim($request->input('message') ?? ($raw['message'] ?? '') ?? $request->get('message') ?? '');
+        $petId = $request->input('pet_id') ?? ($raw['pet_id'] ?? null);
+
         if (empty($prompt)) {
             return response()->json([
                 'success' => false,
@@ -34,7 +36,7 @@ class AiAssistantController extends Controller
         }
         $user = auth()->user();
 
-        $result = $this->geminiService->ask($prompt, $tenant, $user);
+        $result = $this->geminiService->ask($prompt, $tenant, $user, $petId);
 
         return response()->json($result);
     }

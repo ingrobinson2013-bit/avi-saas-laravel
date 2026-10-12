@@ -97,14 +97,14 @@ Route::post('/afiliar', function () use ($resolveTenantFromHost) {
 
 Route::get('/carnet/{subscription_id}', function (string $subscription_id) use ($resolveTenantFromHost) {
     $tenant = $resolveTenantFromHost();
-    if (!$tenant) abort(404);
-    return app(App\Http\Controllers\SubscriptionCarnetController::class)->show(request(), $tenant->slug, $subscription_id);
+    if (!$tenant) abort(404, 'Clínica no identificada para este carnet.');
+    return app(App\Http\Controllers\SubscriptionCarnetController::class)->show($tenant->slug, $subscription_id);
 });
 
 Route::get('/carnet/{subscription_id}/pdf', function (string $subscription_id) use ($resolveTenantFromHost) {
     $tenant = $resolveTenantFromHost();
-    if (!$tenant) abort(404);
-    return app(App\Http\Controllers\SubscriptionCarnetController::class)->downloadPdf(request(), $tenant->slug, $subscription_id);
+    if (!$tenant) abort(404, 'Clínica no identificada para este carnet.');
+    return app(App\Http\Controllers\SubscriptionCarnetController::class)->downloadPdf($tenant->slug, $subscription_id);
 });
 
 Route::get('/afiche', function () use ($resolveTenantFromHost) {
@@ -230,6 +230,21 @@ Route::get('/admin/{slug}/plans', function (string $slug) use ($checkAdminAccess
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->plans(request(), $slug);
 });
 
+Route::post('/admin/{slug}/plans', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return response()->json(['error' => 'Unauthorized'], 401);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->storePlan(request(), $slug);
+});
+
+Route::post('/admin/{slug}/plans/{id}/toggle', function (string $slug, string $id) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return response()->json(['error' => 'Unauthorized'], 401);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->togglePlan(request(), $slug, $id);
+});
+
+Route::delete('/admin/{slug}/plans/{id}', function (string $slug, string $id) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return response()->json(['error' => 'Unauthorized'], 401);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->destroyPlan(request(), $slug, $id);
+});
+
 Route::get('/admin/{slug}/plans/create', function (string $slug) use ($checkAdminAccess, $redirectToLogin) {
     if (!$checkAdminAccess($slug)) return $redirectToLogin($slug);
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->planCreate(request(), $slug);
@@ -242,6 +257,26 @@ Route::get('/admin/{slug}/subscriptions', function (string $slug) use ($checkAdm
 
 Route::get('/admin/{slug}/subscriptions/create', function (string $slug) {
     return redirect("/admin/{$slug}/plans");
+});
+
+// Rutas directas para Mostrador / Counter Redeem (Tanto con Slug como directo en Subdominio)
+Route::get('/admin/counter-redeem', function () use ($resolveTenantFromHost, $checkAdminAccess, $redirectToLogin) {
+    $tenant = $resolveTenantFromHost() ?? auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first();
+    if (!$tenant) return redirect('/admin/login');
+    if (!$checkAdminAccess($tenant->slug)) return $redirectToLogin($tenant->slug);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->counterRedeem(request(), $tenant->slug);
+});
+
+Route::post('/admin/counter-redeem', function () use ($resolveTenantFromHost, $checkAdminAccess) {
+    $tenant = $resolveTenantFromHost() ?? auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first();
+    if (!$tenant || !$checkAdminAccess($tenant->slug)) return response()->json(['error' => 'Unauthorized'], 401);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->storeCounterRedeem(request(), $tenant->slug);
+});
+
+Route::post('/admin/plans', function () use ($resolveTenantFromHost, $checkAdminAccess) {
+    $tenant = $resolveTenantFromHost() ?? auth()->user()?->tenant ?? Tenant::where('slug', 'vet-pet-patitas')->first();
+    if (!$tenant || !$checkAdminAccess($tenant->slug)) return response()->json(['error' => 'Unauthorized'], 401);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->storePlan(request(), $tenant->slug);
 });
 
 Route::get('/admin/{slug}/counter-redeem', function (string $slug) use ($checkAdminAccess, $redirectToLogin) {
@@ -376,8 +411,23 @@ Route::get('/v/{slug}', function (string $slug) use ($resolveTenantFromHost) {
 Route::post('/v/{slug}/afiliar', [App\Http\Controllers\StorefrontEnrollmentController::class, 'store'])->middleware('throttle:storefront-enrollment');
 
 // 6. Carnet Digital y Certificado de Afiliación Imprimible / PDF
-Route::get('/v/{slug}/carnet/{subscription_id}', [App\Http\Controllers\SubscriptionCarnetController::class, 'show'])->name('carnet.show');
-Route::get('/v/{slug}/carnet/{subscription_id}/pdf', [App\Http\Controllers\SubscriptionCarnetController::class, 'downloadPdf'])->name('carnet.pdf');
+Route::get('/v/{slug}/carnet/{subscription_id}', function (string $slug, string $subscription_id) {
+    $tenant = Tenant::where('slug', $slug)->firstOrFail();
+    $host = request()->getHost();
+    if (!str_contains($host, $tenant->slug) && (!empty($tenant->domain) && !str_contains($host, $tenant->domain))) {
+        return redirect($tenant->getCarnetUrl($subscription_id), 301);
+    }
+    return app(App\Http\Controllers\SubscriptionCarnetController::class)->show($slug, $subscription_id);
+})->name('carnet.show');
+
+Route::get('/v/{slug}/carnet/{subscription_id}/pdf', function (string $slug, string $subscription_id) {
+    $tenant = Tenant::where('slug', $slug)->firstOrFail();
+    $host = request()->getHost();
+    if (!str_contains($host, $tenant->slug) && (!empty($tenant->domain) && !str_contains($host, $tenant->domain))) {
+        return redirect("{$tenant->getCarnetUrl($subscription_id)}/pdf", 301);
+    }
+    return app(App\Http\Controllers\SubscriptionCarnetController::class)->downloadPdf($slug, $subscription_id);
+})->name('carnet.pdf');
 
 // 7. Afiche Oficial de Mostrador con Código QR para Impresión / PDF
 Route::get('/v/{slug}/afiche', function (string $slug) use ($resolveTenantFromHost) {

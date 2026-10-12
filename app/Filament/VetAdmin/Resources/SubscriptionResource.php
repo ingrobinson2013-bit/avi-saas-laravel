@@ -252,7 +252,7 @@ class SubscriptionResource extends Resource
                     ->label('Carnet PDF')
                     ->icon('heroicon-o-identification')
                     ->color('info')
-                    ->url(fn (Subscription $record): string => url("/v/{$record->tenant->slug}/carnet/{$record->gateway_subscription_id}"))
+                    ->url(fn (Subscription $record): string => $record->tenant ? $record->tenant->getCarnetUrl($record->gateway_subscription_id) : url("/carnet/{$record->gateway_subscription_id}"))
                     ->openUrlInNewTab(),
 
                 // Acción de Enviar Recordatorio por WhatsApp
@@ -262,7 +262,7 @@ class SubscriptionResource extends Resource
                     ->color('success')
                     ->url(function (Subscription $record): string {
                         $phone = preg_replace('/[^0-9]/', '', $record->pet?->customer?->phone ?? '');
-                        $carnetUrl = url("/v/{$record->tenant->slug}/carnet/{$record->gateway_subscription_id}");
+                        $carnetUrl = $record->tenant ? $record->tenant->getCarnetUrl($record->gateway_subscription_id) : url("/carnet/{$record->gateway_subscription_id}");
                         $msg = "¡Hola {$record->pet?->customer?->name}! 🐾 Te saludamos de {$record->tenant->name}. Te recordamos que la membresía de tu mascota *{$record->pet?->name}* ({$record->plan?->name}) está activa. Puedes consultar tu saldo de consultas y carnet aquí: {$carnetUrl}. ¡Agenda tu próxima cita con nosotros!";
                         return "https://wa.me/57{$phone}?text=" . urlencode($msg);
                     })

@@ -23,7 +23,7 @@ class SendWelcomeNotificationListener implements ShouldQueue
         $tenant = $subscription->tenant;
 
         $contractId = $subscription->gateway_subscription_id;
-        $carnetUrl = url("/v/" . ($tenant->slug ?? 'vet-pet-patitas') . "/carnet/{$contractId}");
+        $carnetUrl = $tenant ? $tenant->getCarnetUrl($contractId) : "https://vet-pet-patitas.avipetapp.com/carnet/{$contractId}";
 
         Log::info("🐾 [QUEUE ASYNC] Paciente Afiliado exitosamente en segundo plano:", [
             'tenant' => $tenant->name ?? 'Clínica',

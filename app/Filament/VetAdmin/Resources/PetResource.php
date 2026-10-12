@@ -119,7 +119,7 @@ class PetResource extends Resource
                     ->label('Ver Carnet')
                     ->icon('heroicon-o-identification')
                     ->color('success')
-                    ->url(fn (Pet $record) => $record->activeSubscription ? "/v/{$record->customer->tenant->slug}/carnet/{$record->activeSubscription->gateway_subscription_id}" : null)
+                    ->url(fn (Pet $record) => ($record->activeSubscription && $record->customer?->tenant) ? $record->customer->tenant->getCarnetUrl($record->activeSubscription->gateway_subscription_id) : null)
                     ->openUrlInNewTab()
                     ->visible(fn (Pet $record) => (bool) $record->activeSubscription),
 

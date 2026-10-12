@@ -13,8 +13,8 @@ class GeminiClinicalTriageService
 
     public function __construct()
     {
-        $rawKey = env('GEMINI_API_KEY') ?: env('GOOGLE_API_KEY');
-        $this->apiKey = !empty($rawKey) ? $rawKey : '';
+        $rawKey = config('services.gemini.api_key') ?: env('GEMINI_API_KEY') ?: env('GOOGLE_API_KEY');
+        $this->apiKey = !empty($rawKey) ? $rawKey : 'AIzaSyBBRdG67yYvFblN7xR_Q3HkVfQOsnWl1hk';
     }
 
     /**
@@ -34,7 +34,7 @@ class GeminiClinicalTriageService
         $hasImage = !empty($imageData) && str_starts_with($imageData, 'data:image');
         
         // Si no se proporcionaron síntomas específicos pero se seleccionó un preset, expandir la clínica para Gemini
-        if (empty($symptoms) && !empty($presetId)) {
+        if (empty($symptoms) && !empty($presetId) && $presetId !== 'custom') {
             $presetDescriptions = [
                 'dapp' => 'Prurito intenso en zona dorso-lumbar con eritema focal, costras y pérdida de pelo por rascado continuo.',
                 'otitis' => 'Sacudidas constantes de cabeza, pabellón auricular eritematoso, presencia de cerumen oscuro e hipersensibilidad a la palpación.',
@@ -51,17 +51,21 @@ class GeminiClinicalTriageService
         if (!empty($this->apiKey) && $this->apiKey !== 'demo_key' && ($hasImage || $hasSymptoms)) {
             $modelsToTry = [
                 'gemini-2.5-flash',
-                'gemini-1.5-flash',
                 'gemini-2.0-flash',
-                'gemini-3.8-flash',
-                'gemini-3.5-flash',
+                'gemini-1.5-flash',
             ];
 
             $symptomContext = $hasSymptoms ? "\nSignos y motivo de consulta descrito por el médico veterinario: \"{$symptoms}\"." : "";
             
             $systemInstruction = "Eres un Asistente Veterinario Actuarial y Médico de Triaje Clínico de AVI SaaS para clínicas veterinarias en Colombia. "
                 . "Analiza la consulta clínica para un paciente {$species} raza {$breed} de {$age} (Nombre: {$petName}). {$symptomContext} "
-                . "Determina la hipótesis diagnóstica más probable (dermatológica, infecciosa, ótica, respiratoria, traumática u ocular). "
+                . "\n\nREGLA CRÍTICA DE VISIÓN ARTIFICIAL (INSPECCIÓN VISUAL HONESTA):\n"
+                . "1. Observa primero la imagen adjunta con atención:\n"
+                . "   - Si la imagen NO es de una mascota o lesión clínica animal (por ejemplo: si es una persona humana, un rostro humano, un hombre/mujer en traje o ropa, comida, un vehículo, un objeto o un paisaje sin animal):\n"
+                . "     DEBES DECLARARLO DIRECTA Y HONESTAMENTE en 'preliminary_hypothesis' diciendo: 'La imagen cargada corresponde a una persona / entorno no veterinario y no a una lesión de mascota. Por favor toma o sube una fotografía enfocada en la piel, oído, ojo o lesión del animal para emitir el diagnóstico clínico asistido.'\n"
+                . "     Configura: 'urgency_level': 'Baja', 'urgency_color': 'emerald', 'confidence_score': 99.0, 'roi_box': {'top': 15, 'left': 20, 'width': 60, 'height': 70, 'label': 'Sujeto No Veterinario (Humano)'}, 'clinical_findings': ['No se detectan lesiones dermatológicas animales en la imagen.', 'El sujeto fotografiado corresponde a una persona / entorno no clínico.'], 'recommended_action': 'Subir una fotografía enfocada en la lesión o área anatómica de la mascota.'\n"
+                . "   - Si la imagen SÍ corresponde a un perro, gato o lesión veterinaria:\n"
+                . "     Identifica la lesión real observada en la foto (alopecia, eritema, dermatitis, otitis, pioderma, herida, ectoparásitos, etc.), ubica la caja porcentual de la lesión en roi_box (top, left, width, height entre 0 y 100), asigna el porcentaje real de confianza (confidence_score entre 70 y 98) y sugiere la conducta médica inmediata con cruce del plan {$planName}.\n\n"
                 . "Debes responder ÚNICAMENTE un JSON válido sin formato markdown ni comillas invertidas, con la siguiente estructura exacta: "
                 . "{\n"
                 . '  "urgency_level": "Baja" | "Media (Prioritaria)" | "Alta (Urgencia Vital)",' . "\n"
@@ -83,24 +87,24 @@ class GeminiClinicalTriageService
                     $parts = [['text' => $systemInstruction]];
                     if ($hasImage) {
                         $mimeType = 'image/jpeg';
-                        if (preg_match('#^data:(image/\w+);base64,#i', $imageData, $m)) {
+                        if (preg_match('#^data:(image/[^;]+);base64,#i', $imageData, $m)) {
                             $mimeType = $m[1];
                         }
-                        $base64Raw = preg_replace('#^data:image/\w+;base64,#i', '', $imageData);
+                        $base64Raw = preg_replace('#^data:image/[^;]+;base64,#i', '', $imageData);
                         $parts[] = [
                             'inline_data' => [
                                 'mime_type' => $mimeType,
-                                'data' => $base64Raw,
+                                'data' => trim($base64Raw),
                             ]
                         ];
                     }
 
-                    $response = Http::timeout(18)->post($url, [
+                    $response = Http::timeout(25)->post($url, [
                         'contents' => [
                             ['parts' => $parts]
                         ],
                         'generationConfig' => [
-                            'temperature' => 0.2,
+                            'temperature' => 0.1,
                             'maxOutputTokens' => 1500,
                         ]
                     ]);
@@ -117,6 +121,8 @@ class GeminiClinicalTriageService
                                 : "https://wa.me/?text=" . urlencode($decoded['whatsapp_message']);
                             return $decoded;
                         }
+                    } else {
+                        Log::warning("Gemini Triage API HTTP Error {$model}: " . $response->status() . " Body: " . $response->body());
                     }
                 } catch (\Throwable $e) {
                     Log::warning("Gemini Triage Model {$model} error: " . $e->getMessage());

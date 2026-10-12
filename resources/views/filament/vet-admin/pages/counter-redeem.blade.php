@@ -195,7 +195,7 @@
                         $isCat = strtolower($pet?->species ?? '') === 'cat' || strtolower($pet?->species ?? '') === 'felino';
                         $photo = $pet?->photo_url;
                         $cleanPhone = preg_replace('/[^0-9]/', '', $customer?->phone ?? '');
-                        $carnetUrl = "/v/{$tenant->slug}/carnet/{$sub->gateway_subscription_id}";
+                        $carnetUrl = $tenant ? $tenant->getCarnetUrl($sub->gateway_subscription_id) : "/carnet/{$sub->gateway_subscription_id}";
                     @endphp
 
                     <div class="space-y-6">
