@@ -29,7 +29,7 @@ class VeterinariaScraperService
     /**
      * Escanear veterinarias por región o ciudad con Google Custom Search y Crawler Web en Vivo
      */
-    public function scanRegion(string $region = 'sabana', ?string $customUrl = null, ?string $googleApiKey = null, ?string $googleCx = null, int $limit = 10): array
+    public function scanRegion(string $region = 'sabana', ?string $customUrl = null, ?string $googleApiKey = null, ?string $googleCx = null, int $limit = 25): array
     {
         Log::info("[Scraper] Iniciando escaneo y rastreo web en vivo para región: {$region}, límite: {$limit}");
         $contactosExtraidos = [];
@@ -403,7 +403,7 @@ class VeterinariaScraperService
      * Motor de Búsqueda Web en Vivo Autónomo (DuckDuckGo Live Search)
      * No requiere API Keys y no tiene bloqueos de proyecto de Google. Rastrea en vivo la web colombiana.
      */
-    public function searchWithDuckDuckGoLive(string $region = 'sabana', int $limit = 10): array
+    public function searchWithDuckDuckGoLive(string $region = 'sabana', int $limit = 25): array
     {
         $ciudadesPorRegion = match ($region) {
             'zipaquira' => ['Zipaquirá', 'Cajicá', 'Chía'],
@@ -418,9 +418,9 @@ class VeterinariaScraperService
             default => ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Bucaramanga'],
         };
 
-        // Seleccionar 2 ciudades de la región para tener un abanico amplio de clínicas
+        // Seleccionar hasta 4 ciudades/zonas de la región para garantizar más de 50 URLs únicas
         shuffle($ciudadesPorRegion);
-        $ciudadesBatch = array_slice($ciudadesPorRegion, 0, 2);
+        $ciudadesBatch = array_slice($ciudadesPorRegion, 0, 4);
 
         $validUrls = [];
         $urlCityMap = [];
@@ -467,14 +467,14 @@ class VeterinariaScraperService
             }
         }
 
-        // Tomar hasta $limit URLs únicas
-        $urlsToCrawl = array_slice($validUrls, 0, max(5, $limit));
+        // Tomar hasta $limit URLs únicas a rastrear en paralelo
+        $urlsToCrawl = array_slice($validUrls, 0, max(25, $limit));
         if (empty($urlsToCrawl)) {
             return [];
         }
 
         // RASTREO CONCURRENTE EN PARALELO (Pool HTTP de Laravel)
-        // Descarga 10 a 15 páginas simultáneamente en ~3-4 segundos sin riesgo de timeout
+        // Descarga hasta 25-30 páginas simultáneamente en ~4-6 segundos
         $responses = Http::pool(function (Pool $pool) use ($urlsToCrawl) {
             return array_map(function ($url) use ($pool) {
                 return $pool->as($url)
@@ -519,7 +519,7 @@ class VeterinariaScraperService
 
         // Si varias webs no tenían correo visible en la home, revisar sus subpáginas /contacto en paralelo
         if (!empty($needContactSubpage) && count($prospectos) < $limit) {
-            $subUrls = array_slice(array_keys($needContactSubpage), 0, 6);
+            $subUrls = array_slice(array_keys($needContactSubpage), 0, 10);
             $subResponses = Http::pool(function (Pool $pool) use ($needContactSubpage, $subUrls) {
                 return array_map(function ($origUrl) use ($pool, $needContactSubpage) {
                     $contactUrl = $needContactSubpage[$origUrl]['url'];

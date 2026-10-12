@@ -83,14 +83,14 @@ class ListProspectosVeterinarias extends ListRecords
                     Forms\Components\Select::make('limite_extraccion')
                         ->label('⚡ Cantidad de Clínicas a Rastrear en Paralelo')
                         ->options([
-                            '5' => '⚡ Rápido: 5 webs simultáneas (~3 segundos)',
-                            '10' => '🚀 Recomendado: 10 webs simultáneas (~5 segundos)',
-                            '15' => '🔥 Intensivo: 15 webs simultáneas (~8 segundos)',
-                            '25' => '💥 Máximo: 25 webs simultáneas (~12 segundos)',
+                            '25' => '💥 Lote Completo: 25 clínicas simultáneas (Por defecto)',
+                            '15' => '🔥 Intensivo: 15 clínicas simultáneas',
+                            '10' => '🚀 Rápido: 10 clínicas simultáneas',
+                            '5' => '⚡ Mínimo: 5 clínicas simultáneas',
                         ])
-                        ->default('10')
+                        ->default('25')
                         ->required()
-                        ->helperText('Rastreo concurrente asíncrono en paralelo (sin esperas ni tiempos muertos).'),
+                        ->helperText('Rastreo concurrente en paralelo: descarga e inspecciona 25 clínicas simultáneamente en pocos segundos.'),
 
                     Forms\Components\Section::make('⚡ Motor Oficial Google Search API (Buscador en Vivo)')
                         ->description('Conecta Google en tiempo real para encontrar clínicas en vivo (100 consultas gratis al día).')
