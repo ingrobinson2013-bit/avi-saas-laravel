@@ -86,11 +86,13 @@ class SaaSPaymentController extends Controller
         $orderId = "SAAS-{$tenant->slug}-{$tier}-" . time();
         $currency = 'COP';
 
-        $isProduction = config('bold.environment') === 'production';
-        $identityKey = config('bold.identity_key') ?: env('BOLD_IDENTITY_KEY', 'sandbox_identity_key');
+        $boldDirectLink = config('bold.default_payment_link') ?: ($tenant->branding['payment_bold_link'] ?? null);
+        $rawIdentityKey = config('bold.identity_key') ?: env('BOLD_IDENTITY_KEY');
+        $hasValidBoldKey = !empty($rawIdentityKey) && !in_array($rawIdentityKey, ['sandbox_identity_key', 'none', 'Ashley2023##', '']);
+        $identityKey = $hasValidBoldKey ? $rawIdentityKey : null;
         $secretKey = config('bold.secret_key') ?: env('BOLD_SECRET_KEY', 'sandbox_secret_key');
 
-        $integritySignature = BoldPaymentService::generateSignature($orderId, $amount, $currency, $secretKey);
+        $integritySignature = $hasValidBoldKey ? BoldPaymentService::generateSignature($orderId, $amount, $currency, $secretKey) : '';
         $redirectUrl = url("/admin/{$tenant->slug}?saas_paid=1&order_id={$orderId}&tier={$tier}");
         $webhookUrl = url('/api/webhooks/bold');
 
@@ -105,6 +107,8 @@ class SaaSPaymentController extends Controller
             'amount',
             'orderId',
             'currency',
+            'hasValidBoldKey',
+            'boldDirectLink',
             'identityKey',
             'integritySignature',
             'redirectUrl',

@@ -227,29 +227,84 @@
                         </div>
                     </div>
 
-                    <!-- BOTÓN OFICIAL DE BOLD (INTEGRACIÓN BOTÓN DE PAGOS) -->
-                    <div class="pt-4 border-t border-slate-100 space-y-4 text-center">
-                        <p class="text-xs font-semibold text-slate-600">
-                            Haz clic en el botón a continuación para abrir la pasarela segura:
-                        </p>
+                    <!-- MEDIOS DE PAGO Y BOTÓN DE ACCIÓN -->
+                    <div class="pt-4 border-t border-slate-100 space-y-4">
+                        @if($hasValidBoldKey)
+                            <p class="text-xs font-semibold text-slate-600 text-center">
+                                Haz clic en el botón a continuación para abrir la pasarela segura:
+                            </p>
 
-                        <!-- CONTENEDOR DEL BOTÓN OFICIAL BOLD -->
-                        <div class="flex justify-center items-center py-2">
-                            <script 
-                                data-bold-button="DARK"
-                                data-api-key="{{ $identityKey }}"
-                                data-order-id="{{ $orderId }}"
-                                data-amount="{{ (int) round($amount) }}"
-                                data-currency="COP"
-                                data-integrity-signature="{{ $integritySignature }}"
-                                data-description="Mensualidad SaaS AVI-Plan - {{ $tenant->name }}"
-                                data-redirection-url="{{ $redirectUrl }}"
-                                data-webhook-url="{{ $webhookUrl }}"
-                                data-payer-email="{{ $payerEmail }}"
-                                data-payer-name="{{ $payerName }}"
-                                data-payer-phone="{{ $payerPhone }}"
-                            ></script>
-                        </div>
+                            <!-- CONTENEDOR DEL BOTÓN OFICIAL BOLD SDK -->
+                            <div class="flex justify-center items-center py-2">
+                                <script 
+                                    data-bold-button="DARK"
+                                    data-api-key="{{ $identityKey }}"
+                                    data-order-id="{{ $orderId }}"
+                                    data-amount="{{ (int) round($amount) }}"
+                                    data-currency="COP"
+                                    data-integrity-signature="{{ $integritySignature }}"
+                                    data-description="Mensualidad SaaS AVI-Plan - {{ $tenant->name }}"
+                                    data-redirection-url="{{ $redirectUrl }}"
+                                    data-webhook-url="{{ $webhookUrl }}"
+                                    data-payer-email="{{ $payerEmail }}"
+                                    data-payer-name="{{ $payerName }}"
+                                    data-payer-phone="{{ $payerPhone }}"
+                                ></script>
+                            </div>
+                        @elseif($boldDirectLink)
+                            <!-- LINK DE COBRO DIRECTO BOLD (SMART LINK) -->
+                            <div class="space-y-3 text-center">
+                                <a 
+                                    href="{{ $boldDirectLink }}" 
+                                    target="_blank" 
+                                    class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-extrabold text-sm sm:text-base shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2.5"
+                                >
+                                    <span>💳 Pagar ${{ number_format($amount, 0, ',', '.') }} con Bold</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                </a>
+                                <p class="text-[11px] text-slate-500">
+                                    Acepta Tarjetas de Crédito, Débito, PSE, Nequi y Daviplata.
+                                </p>
+                            </div>
+                        @else
+                            <!-- PAGO DIRECTO / TRANSFERENCIA INMEDIATA + WHATSAPP -->
+                            <div class="space-y-4 text-left">
+                                <div class="p-4 rounded-2xl bg-blue-50/70 border border-blue-200/80 space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-black text-blue-900 uppercase">Transferencia Inmediata</span>
+                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-200/80 text-blue-900">0% Comisión</span>
+                                    </div>
+                                    <div class="space-y-1.5 text-xs text-slate-700">
+                                        <div class="flex justify-between items-center py-1 border-b border-blue-200/50">
+                                            <span class="text-slate-500 font-medium">Bancolombia Ahorros:</span>
+                                            <strong class="font-mono text-slate-900 select-all">123-456789-01</strong>
+                                        </div>
+                                        <div class="flex justify-between items-center py-1 border-b border-blue-200/50">
+                                            <span class="text-slate-500 font-medium">Nequi / Daviplata:</span>
+                                            <strong class="font-mono text-slate-900 select-all">323 581 3942</strong>
+                                        </div>
+                                        <div class="flex justify-between items-center pt-1">
+                                            <span class="text-slate-500 font-medium">Titular:</span>
+                                            <span class="font-bold text-slate-900">AVI Plan SaaS Colombia</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a 
+                                    href="https://wa.me/573235813942?text={{ urlencode('Hola Robinson, adjunto comprobante de pago de la suscripción SaaS AVI-Plan (' . $tenant->name . ') por valor de $' . number_format($amount, 0, ',', '.') . ' COP. ID de orden: ' . $orderId) }}"
+                                    target="_blank"
+                                    class="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-600/25 transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 text-center"
+                                >
+                                    <span>📲 Enviar Comprobante por WhatsApp</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                </a>
+
+                                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[10.5px] text-slate-500 space-y-1">
+                                    <p class="font-bold text-slate-700">⚙️ ¿Tienes tu propio Link o Llaves de Bold?</p>
+                                    <p>Pega tu <strong>Link de Pago Bold</strong> en Ajustes de la clínica o configura tus llaves API en el archivo <code class="bg-white px-1 rounded border">.env</code> para habilitar el botón automático sin error BTN-000.</p>
+                                </div>
+                            </div>
+                        @endif
 
                         <!-- TRUST & SEGURIDAD -->
                         <div class="pt-2 flex flex-wrap items-center justify-center gap-3 text-[11px] text-slate-500 font-medium">
