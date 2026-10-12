@@ -55,15 +55,27 @@ class ListProspectosVeterinarias extends ListRecords
                 ->label('🔍 Escanear Nuevas Veterinarias')
                 ->color('primary')
                 ->icon('heroicon-o-magnifying-glass')
-                ->action(function () {
-                    Artisan::call('avi:prospectos-scan-and-send', [
-                        '--scan' => true,
-                        '--limit' => 0,
-                    ]);
+                ->form([
+                    Forms\Components\Select::make('region')
+                        ->label('Seleccionar Región a Explorar')
+                        ->options([
+                            'sabana' => '🐾 Zipaquirá y Sabana Centro (Chía, Cajicá, Cota, Tenjo, Tabio, Sopó, Tocancipá, Funza, Mosquera)',
+                            'bogota' => '🏙️ Bogotá D.C. (Suba, Cedritos, Modelia, Salitre, Chapinero, Usaquén)',
+                            'antioquia' => '🏔️ Antioquia (Medellín, Envigado, Sabaneta, Poblado, Laureles)',
+                            'valle' => '☀️ Valle del Cauca (Cali y alrededores)',
+                            'todo_el_pais' => '🇨🇴 Barrido Nacional Completo (Todas las regiones)',
+                        ])
+                        ->default('sabana')
+                        ->required()
+                        ->helperText('El motor rastrea directorios y registros de clínicas, extrae datos y aplica Upsert blindado.'),
+                ])
+                ->action(function (array $data) {
+                    $scraper = app(\App\Services\VeterinariaScraperService::class);
+                    $res = $scraper->scanRegion($data['region']);
 
                     Notification::make()
-                        ->title('Escaneo Completado')
-                        ->body('Se han verificado e integrado nuevas veterinarias al inventario de prospección.')
+                        ->title('Escaneo y Sincronización Exitosa')
+                        ->body("Se procesaron {$res['total_encontrados']} clínicas en {$res['region']}. Total pendientes en cola: {$res['pendientes_en_cola']}.")
                         ->success()
                         ->send();
                 }),

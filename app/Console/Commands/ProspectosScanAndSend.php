@@ -34,8 +34,8 @@ class ProspectosScanAndSend extends Command
         // 1. Escaneo / Enriquecimiento si se solicitó
         if ($shouldScan) {
             $this->info("\n🔍 Iniciando escaneo de directorios y registros veterinarios de Colombia...");
-            $nuevos = $this->escanearVeterinariasColombia();
-            $this->info("✓ Escaneo completado: {$nuevos} nuevos prospectos agregados.");
+            $res = app(\App\Services\VeterinariaScraperService::class)->scanRegion('todo_el_pais');
+            $this->info("✓ Escaneo completado: {$res['guardados_o_actualizados']} prospectos procesados con Upsert (Total cola: {$res['pendientes_en_cola']}).");
         }
 
         // 2. Modo Test individual
