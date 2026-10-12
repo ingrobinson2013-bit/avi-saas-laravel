@@ -100,6 +100,8 @@ class SaaSPaymentController extends Controller
         $payerName = $tenant->name;
         $payerPhone = $tenant->branding['phone'] ?? '3235813942';
 
+        $isProduction = config('bold.environment') === 'production';
+
         return view('saas_checkout_bold', compact(
             'tenant',
             'tier',
