@@ -370,11 +370,9 @@ class VeterinariaScraperService
                         preg_match('/(?:3\d{2}[-.\s]?\d{3}[-.\s]?\d{4}|\b60\d{8}\b)/', $textToScan, $telMatch);
                         $phone = $telMatch[0] ?? null;
 
-                        foreach ($foundEmails as $email) {
-                            $emailClean = strtolower(trim($email));
-                            if (!filter_var($emailClean, FILTER_VALIDATE_EMAIL)) continue;
-                            $domain = substr(strrchr($emailClean, "@"), 1);
-                            if (in_array($domain, $this->blacklistedDomains)) continue;
+                        $validEmails = array_filter($foundEmails, fn($e) => !$this->isSpamOrTechnicalEmail($e));
+                        if (!empty($validEmails)) {
+                            $emailClean = reset($validEmails);
 
                             $cleanName = preg_replace('/(\||-|–).*(Facebook|Instagram|LinkedIn|Twitter|Google).*$/i', '', $title);
                             $cleanName = trim($cleanName) ?: 'Clínica Veterinaria';
@@ -463,15 +461,14 @@ class VeterinariaScraperService
                         $host = parse_url($siteUrl, PHP_URL_HOST) ?? $siteUrl;
                         $cleanTitle = ucwords(str_replace(['www.', '.com.co', '.com', '.co', '-', '_', '.'], ' ', $host));
 
-                        foreach ($emails as $email) {
-                            $emailClean = strtolower(trim($email));
-                            if (!filter_var($emailClean, FILTER_VALIDATE_EMAIL)) continue;
-                            $dom = substr(strrchr($emailClean, "@"), 1);
-                            if (in_array($dom, $this->blacklistedDomains)) continue;
+                        // Tomar el correo comercial más relevante (info@, contacto@, etc.) y evitar duplicar la clínica
+                        $validEmails = array_filter($emails, fn($e) => !$this->isSpamOrTechnicalEmail($e));
+                        if (!empty($validEmails)) {
+                            $bestEmail = reset($validEmails);
 
                             $prospectos[] = [
                                 'razon_social' => trim($cleanTitle),
-                                'correo_comercial' => $emailClean,
+                                'correo_comercial' => $bestEmail,
                                 'telefono' => null,
                                 'municipio' => explode(' ', $ciudad)[0],
                                 'departamento' => 'Colombia',
@@ -639,35 +636,78 @@ class VeterinariaScraperService
     }
 
     /**
+     * Valida si un correo es técnico, bot, telemetría o spam no comercial
+     */
+    public function isSpamOrTechnicalEmail(string $email): bool
+    {
+        $email = strtolower(trim($email));
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return true;
+        }
+
+        // Extensiones de archivos falsos
+        $ext = pathinfo($email, PATHINFO_EXTENSION);
+        if (in_array(strtolower($ext), ['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'css', 'js', 'woff', 'woff2', 'ico'])) {
+            return true;
+        }
+
+        // Hashes hexadecimales (ej. Sentry DSNs en Wix, webpack, sentry-next)
+        if (preg_match('/^[a-f0-9]{10,}@/i', $email)) {
+            return true;
+        }
+
+        // Términos y dominios técnicos / telemetría
+        $blockedKeywords = [
+            'sentry', 'wixpress', 'wix.com', 'cloudflare', 'wordpress', 'schema.org', 'w3.org',
+            'example.com', 'domain.com', 'github', 'webpack', 'polyfill', 'gravatar', 'doubleclick',
+            'google', 'facebook', 'instagram', 'twitter', 'tiktok', 'apple', 'microsoft',
+            'noreply', 'no-reply', 'mailer-daemon', 'postmaster', 'abuse@', 'privacy@', 'security@',
+            'report@', 'dpo@', 'optout', 'hostgator', 'bluehost', 'cpanel', 'webmaster@', 'support@wix'
+        ];
+
+        foreach ($blockedKeywords as $bad) {
+            if (str_contains($email, $bad)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Extrae y limpia direcciones de correo electrónico desde un bloque HTML
      */
     protected function extractEmailsFromHtml(string $html): array
     {
+        // 1. Eliminar completamente scripts, estilos y SVGs para no leer telemetría JS de Wix/WordPress
+        $cleanHtml = preg_replace('/<(script|style|svg|noscript|iframe)\b[^>]*>(.*?)<\/\1>/is', '', $html);
+
         $emails = [];
 
-        // 1. Enlaces mailto:
-        if (preg_match_all('/mailto:([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i', $html, $m)) {
+        // 2. Enlaces mailto:
+        if (preg_match_all('/mailto:([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i', $cleanHtml, $m)) {
             $emails = array_merge($emails, $m[1]);
         }
 
-        // 2. Coincidencia regex de texto plano
-        if (preg_match_all('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i', $html, $m)) {
+        // 3. Coincidencia regex de texto plano
+        if (preg_match_all('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i', $cleanHtml, $m)) {
             $emails = array_merge($emails, $m[0]);
         }
 
         $cleaned = [];
         foreach ($emails as $email) {
             $e = strtolower(trim($email));
-            if (!filter_var($e, FILTER_VALIDATE_EMAIL)) continue;
-
-            $ext = pathinfo($e, PATHINFO_EXTENSION);
-            if (in_array(strtolower($ext), ['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'css', 'js'])) continue;
-
-            $domain = substr(strrchr($e, "@"), 1);
-            if (in_array($domain, $this->blacklistedDomains)) continue;
-
-            $cleaned[] = $e;
+            if (!$this->isSpamOrTechnicalEmail($e)) {
+                $cleaned[] = $e;
+            }
         }
+
+        // Ordenar dando prioridad a correos de contacto directo (contacto@, info@, etc.)
+        usort($cleaned, function ($a, $b) {
+            $scoreA = (str_starts_with($a, 'info@') || str_starts_with($a, 'contacto@') || str_starts_with($a, 'ventas@') || str_starts_with($a, 'citas@') || str_starts_with($a, 'recepcion@') || str_starts_with($a, 'veterinaria@')) ? 2 : 1;
+            $scoreB = (str_starts_with($b, 'info@') || str_starts_with($b, 'contacto@') || str_starts_with($b, 'ventas@') || str_starts_with($b, 'citas@') || str_starts_with($b, 'recepcion@') || str_starts_with($b, 'veterinaria@')) ? 2 : 1;
+            return $scoreB <=> $scoreA;
+        });
 
         return array_values(array_unique($cleaned));
     }
@@ -683,13 +723,7 @@ class VeterinariaScraperService
         foreach ($items as $item) {
             $email = strtolower(trim($item['correo_comercial'] ?? ''));
 
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                continue;
-            }
-
-            // Validar dominios bloqueados
-            $domain = substr(strrchr($email, "@"), 1);
-            if (in_array($domain, $this->blacklistedDomains)) {
+            if ($this->isSpamOrTechnicalEmail($email)) {
                 continue;
             }
 
