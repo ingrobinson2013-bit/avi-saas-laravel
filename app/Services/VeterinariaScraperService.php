@@ -297,10 +297,11 @@ class VeterinariaScraperService
             default => '4.0,-75.5,5.5,-73.0',
         };
 
-        $query = "[out:json][timeout:15];(node[\"amenity\"=\"veterinary\"]({$bbox});way[\"amenity\"=\"veterinary\"]({$bbox}););out tags 100;";
+        $query = "[out:json][timeout:8];(node[\"amenity\"=\"veterinary\"]({$bbox});way[\"amenity\"=\"veterinary\"]({$bbox}););out tags 25;";
         
         $response = Http::asForm()
-            ->timeout(12)
+            ->timeout(6)
+            ->connectTimeout(3)
             ->withUserAgent('AVISaasBot/1.0 (contacto@avipetapp.com)')
             ->post('https://overpass-api.de/api/interpreter', [
                 'data' => $query,
@@ -313,6 +314,8 @@ class VeterinariaScraperService
         $data = $response->json();
         $elements = $data['elements'] ?? [];
         $prospectos = [];
+        $crawledSites = 0;
+        $maxSitesToCrawl = app()->runningInConsole() ? 10 : 3;
 
         foreach ($elements as $el) {
             $tags = $el['tags'] ?? [];
@@ -327,8 +330,9 @@ class VeterinariaScraperService
             $emails = [];
             if ($directEmail && filter_var($directEmail, FILTER_VALIDATE_EMAIL)) {
                 $emails[] = $directEmail;
-            } elseif ($website) {
+            } elseif ($website && $crawledSites < $maxSitesToCrawl) {
                 $emails = $this->crawlWebsiteForEmails($website);
+                $crawledSites++;
             }
 
             if (!empty($emails)) {
@@ -389,8 +393,8 @@ class VeterinariaScraperService
         $emails = [];
 
         try {
-            $response = Http::timeout(5)
-                ->connectTimeout(3)
+            $response = Http::timeout(3)
+                ->connectTimeout(2)
                 ->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
                 ->get($url);
 
@@ -401,7 +405,7 @@ class VeterinariaScraperService
             try {
                 if (str_starts_with($url, 'https://')) {
                     $httpUrl = 'http://' . substr($url, 8);
-                    $respHttp = Http::timeout(4)->connectTimeout(3)->get($httpUrl);
+                    $respHttp = Http::timeout(2)->connectTimeout(2)->get($httpUrl);
                     if ($respHttp->successful()) {
                         $emails = array_merge($emails, $this->extractEmailsFromHtml($respHttp->body()));
                     }
@@ -409,18 +413,15 @@ class VeterinariaScraperService
             } catch (\Throwable $ex) {}
         }
 
-        // Si no encontró en la home, buscar en /contacto o /nosotros
+        // Si no encontró en la home, buscar solo en /contacto con timeout rápido
         if (empty($emails)) {
             $baseUrl = rtrim($url, '/');
-            foreach (['/contacto', '/contactenos', '/nosotros', '/contact'] as $sub) {
-                try {
-                    $subResp = Http::timeout(4)->connectTimeout(3)->get($baseUrl . $sub);
-                    if ($subResp->successful()) {
-                        $emails = array_merge($emails, $this->extractEmailsFromHtml($subResp->body()));
-                        if (!empty($emails)) break;
-                    }
-                } catch (\Throwable $ex) {}
-            }
+            try {
+                $subResp = Http::timeout(2)->connectTimeout(2)->get($baseUrl . '/contacto');
+                if ($subResp->successful()) {
+                    $emails = array_merge($emails, $this->extractEmailsFromHtml($subResp->body()));
+                }
+            } catch (\Throwable $ex) {}
         }
 
         return array_values(array_unique($emails));
