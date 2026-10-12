@@ -51,8 +51,6 @@ class GeminiClinicalTriageService
         if (!empty($this->apiKey) && $this->apiKey !== 'demo_key' && ($hasImage || $hasSymptoms)) {
             $modelsToTry = [
                 'gemini-2.5-flash',
-                'gemini-2.0-flash',
-                'gemini-1.5-flash',
             ];
 
             $symptomContext = $hasSymptoms ? "\nSignos y motivo de consulta descrito por el médico veterinario: \"{$symptoms}\"." : "";
@@ -110,10 +108,23 @@ class GeminiClinicalTriageService
                     ]);
 
                     if ($response->successful()) {
-                        $jsonText = $response->json('candidates.0.content.parts.0.text');
-                        $cleaned = preg_replace('/```json|```/', '', $jsonText);
-                        $decoded = json_decode(trim($cleaned), true);
-                        if ($decoded && isset($decoded['urgency_level'])) {
+                        $jsonText = (string) $response->json('candidates.0.content.parts.0.text');
+                        $decoded = null;
+                        if (preg_match('/\{[\s\S]*\}/', $jsonText, $matches)) {
+                            $decoded = json_decode($matches[0], true);
+                        }
+                        if (!$decoded) {
+                            $cleaned = preg_replace('/```(?:json)?|```/', '', $jsonText);
+                            $decoded = json_decode(trim($cleaned), true);
+                        }
+
+                        if ($decoded && (isset($decoded['urgency_level']) || isset($decoded['preliminary_hypothesis']))) {
+                            if (!isset($decoded['urgency_level'])) {
+                                $decoded['urgency_level'] = 'Baja';
+                            }
+                            if (!isset($decoded['urgency_color'])) {
+                                $decoded['urgency_color'] = 'emerald';
+                            }
                             $decoded['source'] = "{$model}-live";
                             $decoded['whatsapp_message'] = $this->buildWhatsAppMessage($petName, $customerName, $decoded['preliminary_hypothesis'], $planName, $decoded['urgency_level']);
                             $decoded['whatsapp_url'] = !empty($cleanPhone)

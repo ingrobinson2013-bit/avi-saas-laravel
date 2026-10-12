@@ -20,6 +20,8 @@ interface SubItem {
     status_label: string;
     start_date: string;
     end_date: string;
+    carnet_url?: string;
+    gateway_subscription_id?: string;
 }
 
 interface SubscriptionsProps {
@@ -229,7 +231,7 @@ export default function Subscriptions({
                                                     Canjear
                                                 </a>
                                                 <a
-                                                    href={`/v/${tenantSlug}/carnet/${s.id}`}
+                                                    href={s.carnet_url || `/carnet/${s.id}`}
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 text-[11px] font-bold transition inline-flex items-center gap-1"

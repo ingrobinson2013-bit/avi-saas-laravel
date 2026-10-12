@@ -32,6 +32,7 @@ interface PlansProps {
     userRole: string;
     plans: PlanItem[];
     totalPlans: number;
+    storefrontUrl?: string;
 }
 
 export default function Plans({
@@ -45,6 +46,7 @@ export default function Plans({
     userRole,
     plans = [],
     totalPlans = 2,
+    storefrontUrl,
 }: PlansProps) {
     return (
         <VetAdminLayout
@@ -79,7 +81,7 @@ export default function Plans({
 
                     <div className="flex items-center gap-2">
                         <a
-                            href={`/v/${tenantSlug}`}
+                            href={storefrontUrl || `/v/${tenantSlug}`}
                             target="_blank"
                             rel="noreferrer"
                             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition shadow-2xs"

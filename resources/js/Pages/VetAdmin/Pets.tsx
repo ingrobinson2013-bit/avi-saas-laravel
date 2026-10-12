@@ -28,6 +28,7 @@ interface PetItem {
     plan_name: string;
     plan_status: string;
     photo_url?: string | null;
+    carnet_url?: string | null;
     medical_notes: string;
 }
 
@@ -398,10 +399,12 @@ export default function Pets({
                                                         Canjear
                                                     </a>
                                                     <a
-                                                        href={`/admin/${tenantSlug}/subscriptions`}
-                                                        className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 text-[11px] font-bold transition"
+                                                        href={pet.carnet_url || `/admin/${tenantSlug}/subscriptions`}
+                                                        target={pet.carnet_url ? '_blank' : undefined}
+                                                        rel="noreferrer"
+                                                        className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 text-[11px] font-bold transition inline-flex items-center gap-1"
                                                     >
-                                                        Carnet
+                                                        <span>Carnet</span>
                                                     </a>
                                                 </div>
                                             </td>

@@ -126,6 +126,8 @@ class VetPagesController extends Controller
                 'monthlyFee' => (float) ($tenant->branding['saas_monthly_fee'] ?? 229000),
             ],
             'logoutUrl' => "/admin/{$tenantSlug}/logout",
+            'storefrontUrl' => $tenant ? $tenant->base_url : "/v/{$tenantSlug}",
+            'canonicalAdminUrl' => $tenant ? $tenant->getAdminUrl() : "/admin/{$tenantSlug}",
         ];
     }
 

@@ -102,6 +102,8 @@ export default function PlanCreate({
     const [billingInterval, setBillingInterval] = useState('monthly');
     const [selectedServices, setSelectedServices] = useState<string[]>([]);
     const [savedSuccess, setSavedSuccess] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     // Estado del Simulador Actuarial
     const [simBreed, setSimBreed] = useState('golden_retriever');
@@ -190,10 +192,39 @@ export default function PlanCreate({
 
     const handleSave = (e: React.FormEvent) => {
         e.preventDefault();
-        setSavedSuccess(true);
-        setTimeout(() => {
-            window.location.href = `/admin/${tenantSlug}/plans`;
-        }, 1500);
+        if (!name.trim()) {
+            setErrorMessage('Por favor asigna un nombre para el plan de salud.');
+            return;
+        }
+        if (Number(priceCop) < 1000) {
+            setErrorMessage('El valor del plan debe ser de al menos $1.000 COP.');
+            return;
+        }
+
+        setIsSubmitting(true);
+        setErrorMessage(null);
+
+        router.post(`/admin/${tenantSlug}/plans`, {
+            name: name.trim(),
+            description: description.trim() || undefined,
+            price_cop: Number(priceCop),
+            billing_interval: billingInterval,
+            selected_services: selectedServices,
+            preview: '1',
+        }, {
+            onSuccess: () => {
+                setSavedSuccess(true);
+                setIsSubmitting(false);
+                setTimeout(() => {
+                    router.visit(`/admin/${tenantSlug}/plans?preview=1`);
+                }, 1200);
+            },
+            onError: (errs) => {
+                setIsSubmitting(false);
+                const firstErr = Object.values(errs)[0];
+                setErrorMessage(typeof firstErr === 'string' ? firstErr : 'Ocurrió un error al guardar el plan.');
+            }
+        });
     };
 
     return (
@@ -377,6 +408,20 @@ export default function PlanCreate({
                     {/* Formulario */}
                     <div className="lg:col-span-7 xl:col-span-8 bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-4">
                         <form onSubmit={handleSave} className="space-y-4">
+                            {errorMessage && (
+                                <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+                                    <span>{errorMessage}</span>
+                                </div>
+                            )}
+
+                            {savedSuccess && (
+                                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2">
+                                    <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+                                    <span>¡Plan creado y guardado exitosamente en la base de datos! Redirigiendo...</span>
+                                </div>
+                            )}
+
                             <div>
                                 <label className="block text-xs font-bold text-slate-700 mb-1">
                                     Nombre del Plan de Salud *
@@ -439,7 +484,7 @@ export default function PlanCreate({
                                     Selecciona los Servicios y Coberturas Incluidas ({selectedServices.length} seleccionados)
                                 </label>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-72 overflow-y-auto p-2 bg-slate-50 rounded-xl border border-slate-200">
-                                    {services.slice(0, 16).map((service) => {
+                                    {services.map((service) => {
                                         const isSelected = selectedServices.includes(service.id);
                                         return (
                                             <button
@@ -462,10 +507,20 @@ export default function PlanCreate({
 
                             <button
                                 type="submit"
-                                className="w-full py-2.5 px-4 rounded-xl bg-[#0080ff] hover:bg-blue-600 text-white text-xs font-bold transition shadow-xs flex items-center justify-center gap-1.5"
+                                disabled={isSubmitting}
+                                className="w-full py-2.5 px-4 rounded-xl bg-[#0080ff] hover:bg-blue-600 disabled:opacity-60 text-white text-xs font-bold transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
                             >
-                                <span>Guardar y Publicar Plan Actuarial</span>
-                                <ArrowRight className="w-4 h-4" />
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        <span>Guardando Plan en Base de Datos...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span>Guardar y Publicar Plan Actuarial</span>
+                                        <ArrowRight className="w-4 h-4" />
+                                    </>
+                                )}
                             </button>
                         </form>
                     </div>
