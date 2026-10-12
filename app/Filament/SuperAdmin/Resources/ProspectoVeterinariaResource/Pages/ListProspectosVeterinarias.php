@@ -61,12 +61,16 @@ class ListProspectosVeterinarias extends ListRecords
                         ->label('Seleccionar Región a Explorar')
                         ->options([
                             'sabana' => '🐾 Zipaquirá y Sabana Centro (Chía, Cajicá, Cota, Tenjo, Tabio, Sopó, Tocancipá, Funza, Mosquera)',
-                            'bogota' => '🏙️ Bogotá D.C. (Suba, Cedritos, Modelia, Salitre, Chapinero, Usaquén)',
-                            'antioquia' => '🏔️ Antioquia (Medellín, Envigado, Sabaneta, Poblado, Laureles)',
-                            'valle' => '☀️ Valle del Cauca (Cali y alrededores)',
+                            'bogota' => '🏙️ Bogotá D.C. (Suba, Cedritos, Modelia, Salitre, Chapinero, Usaquén, Castilla, Teusaquillo)',
+                            'antioquia' => '🏔️ Antioquia (Medellín, Envigado, Sabaneta, Poblado, Laureles, Itagüí, Rionegro)',
+                            'valle' => '☀️ Valle del Cauca (Cali, Palmira, Jamundí)',
+                            'santander' => '🦅 Santanderes (Bucaramanga, Floridablanca, Cúcuta)',
+                            'ejecafetero' => '☕ Eje Cafetero (Pereira, Manizales, Armenia)',
+                            'caribe' => '🏖️ Costa Caribe (Barranquilla, Cartagena, Santa Marta)',
+                            'cundinamarca_tolima' => '🌄 Cundinamarca Sur & Tolima (Soacha, Fusagasugá, Girardot)',
                             'todo_el_pais' => '🇨🇴 Barrido Nacional Completo (Todas las regiones)',
                         ])
-                        ->default('sabana')
+                        ->default('todo_el_pais')
                         ->required()
                         ->helperText('El motor rastrea directorios y registros de clínicas, extrae datos y aplica Upsert blindado.'),
                 ])

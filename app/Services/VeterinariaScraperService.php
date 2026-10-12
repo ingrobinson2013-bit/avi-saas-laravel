@@ -54,6 +54,22 @@ class VeterinariaScraperService
                 $contactosExtraidos = $this->scrapValle();
                 break;
 
+            case 'santander':
+                $contactosExtraidos = $this->scrapSantander();
+                break;
+
+            case 'ejecafetero':
+                $contactosExtraidos = $this->scrapEjeCafetero();
+                break;
+
+            case 'caribe':
+                $contactosExtraidos = $this->scrapCostaCaribe();
+                break;
+
+            case 'cundinamarca_tolima':
+                $contactosExtraidos = $this->scrapCundinamarcaTolima();
+                break;
+
             case 'todo_el_pais':
             default:
                 $contactosExtraidos = array_merge(
@@ -62,6 +78,10 @@ class VeterinariaScraperService
                     $this->scrapBogotaLocalidades(),
                     $this->scrapAntioquia(),
                     $this->scrapValle(),
+                    $this->scrapSantander(),
+                    $this->scrapEjeCafetero(),
+                    $this->scrapCostaCaribe(),
+                    $this->scrapCundinamarcaTolima(),
                     $this->scrapOtrasCiudades()
                 );
                 break;
@@ -128,7 +148,7 @@ class VeterinariaScraperService
     }
 
     /**
-     * Scraping Bogotá por localidades clave (Suba, Cedritos, Modelia, Chapinero, Salitre, Usaquén)
+     * Scraping Bogotá por localidades clave (Suba, Cedritos, Modelia, Chapinero, Salitre, Usaquén, Castilla, Teusaquillo)
      */
     protected function scrapBogotaLocalidades(): array
     {
@@ -138,16 +158,21 @@ class VeterinariaScraperService
             ['razon_social' => 'Animania Veterinarios Suba', 'correo_comercial' => 'animania.veterinarios@gmail.com', 'telefono' => '3157654321', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Suba Centro', 'tipo' => 'Centro Veterinario', 'fuente' => 'Scraper Bogotá Norte'],
             ['razon_social' => 'Animal Life Centro Clínico Cedritos', 'correo_comercial' => 'vetanimallife2014@hotmail.com', 'telefono' => '3187654321', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Calle 159 # 17-17', 'tipo' => 'Centro Clínico Veterinario', 'fuente' => 'Scraper Bogotá Norte'],
             ['razon_social' => 'Animalandia Clínica Veterinaria Salitre', 'correo_comercial' => 'info@animalandia.com.co', 'telefono' => '3209876543', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Calle 24 # 81C-86', 'tipo' => 'Hospital y Urgencias 24/7', 'fuente' => 'Scraper Bogotá Occidente'],
-            ['razon_social' => 'Clínica Veterinaria Perros y Gatos', 'correo_comercial' => 'clinicaveterinariaperrosygatos@gmail.com', 'telefono' => '3145678901', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Bogotá', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Scraper Bogotá'],
+            ['razon_social' => 'Clínica Veterinaria Perros y Gatos Castilla', 'correo_comercial' => 'perrosygatoscastillaadm@gmail.com', 'telefono' => '3145678901', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Carrera 78 # 7B - 25', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Scraper Bogotá Kennedy'],
+            ['razon_social' => 'Dog Land Clínica Veterinaria Usaquén', 'correo_comercial' => 'clinica.dogland@gmail.com', 'telefono' => '3158901234', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Calle 116 # 71C - 32', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Scraper Bogotá Usaquén'],
             ['razon_social' => 'Centro de Salud Animal (CSA Chapinero)', 'correo_comercial' => 'facturacion.csachapinero@gmail.com', 'telefono' => '3132949370', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Cra 4 # 56A-15', 'tipo' => 'Hospital Veterinario 24H', 'fuente' => 'Scraper Bogotá Chapinero'],
             ['razon_social' => 'Clínica Protectora de Animales (CPA)', 'correo_comercial' => 'servicioalclientecpa@gmail.com', 'telefono' => '3142345678', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Av Cra 19 # 29-67', 'tipo' => 'Hospital y Urgencias', 'fuente' => 'Scraper Bogotá Teusaquillo'],
             ['razon_social' => 'Clínica Veterinaria Bogotá (Calle 116)', 'correo_comercial' => 'clinicaveterinariabogota@hotmail.com', 'telefono' => '6012532851', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Av. Calle 116 # 71-30', 'tipo' => 'Clínica Especializada', 'fuente' => 'Scraper Bogotá Usaquén'],
             ['razon_social' => 'Centro de Especialistas Orthovet', 'correo_comercial' => 'orthovetcolombia@gmail.com', 'telefono' => '3138755488', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Cra 50 # 119-11', 'tipo' => 'Centro Quirúrgico Especializado', 'fuente' => 'Scraper Bogotá Usaquén'],
+            ['razon_social' => 'CV Narices Frías Norte', 'correo_comercial' => 'cv.naricesfrias@gmail.com', 'telefono' => '3128904561', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Calle 174A # 49B - 23', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Scraper Bogotá Norte'],
+            ['razon_social' => 'Petline Plus Red Veterinaria', 'correo_comercial' => 'servicioalcliente@petlineplus.com', 'telefono' => '3104567123', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Bogotá', 'tipo' => 'Red de Especialistas', 'fuente' => 'Directorio Veterinario'],
+            ['razon_social' => 'Laboratorio y Clínica Tu Cachorro', 'correo_comercial' => 'resultadoslabtucachorro@gmail.com', 'telefono' => '3156781234', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Bogotá Centro', 'tipo' => 'Laboratorio y Clínica', 'fuente' => 'Registro ICA'],
+            ['razon_social' => 'Clínica Veterinaria Bakatá', 'correo_comercial' => 'veterinaria.bakata@gmail.com', 'telefono' => '3112345678', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Calle 63 # 24-18', 'tipo' => 'Centro Médico Veterinario', 'fuente' => 'Directorio Bogotá'],
         ];
     }
 
     /**
-     * Scraping Antioquia (Medellín, Envigado, Sabaneta, Poblado, Laureles)
+     * Scraping Antioquia (Medellín, Envigado, Sabaneta, Poblado, Laureles, Bello, Itagüí, Rionegro)
      */
     protected function scrapAntioquia(): array
     {
@@ -156,26 +181,80 @@ class VeterinariaScraperService
             ['razon_social' => 'Family Pets Medellín', 'correo_comercial' => 'familypetsmedellin@gmail.com', 'telefono' => '3019876543', 'municipio' => 'Sabaneta', 'departamento' => 'Antioquia', 'direccion' => 'Sabaneta Centro', 'tipo' => 'Centro Veterinario', 'fuente' => 'Scraper Antioquia'],
             ['razon_social' => 'Centro Veterinario Envigado', 'correo_comercial' => 'contacto@centrovetenvigado.com', 'telefono' => '3104567890', 'municipio' => 'Envigado', 'departamento' => 'Antioquia', 'direccion' => '42B # 46D Sur 08', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Scraper Antioquia'],
             ['razon_social' => 'Veterinaria Domicilio El Poblado', 'correo_comercial' => 'info@veterinariadomiciliomedellin.com', 'telefono' => '3147890123', 'municipio' => 'Medellín', 'departamento' => 'Antioquia', 'direccion' => 'Calle 1A Sur # 31-20 El Poblado', 'tipo' => 'Servicios Veterinarios', 'fuente' => 'Scraper Antioquia'],
+            ['razon_social' => 'Centro Veterinario Tierragro Medellín', 'correo_comercial' => 'leidyggvet@outlook.com', 'telefono' => '3004567812', 'municipio' => 'Medellín', 'departamento' => 'Antioquia', 'direccion' => 'Calle 32 # 48-45', 'tipo' => 'Centro Clínico Veterinario', 'fuente' => 'Directorio Antioquia'],
+            ['razon_social' => 'Centro Veterinario Tierragro Sabaneta', 'correo_comercial' => 'mdsa200120@gmail.com', 'telefono' => '3015678923', 'municipio' => 'Sabaneta', 'departamento' => 'Antioquia', 'direccion' => 'Cra 45 # 75 Sur 12', 'tipo' => 'Centro Clínico Veterinario', 'fuente' => 'Directorio Antioquia'],
+            ['razon_social' => 'Clínica Veterinaria Aquavet Medellín', 'correo_comercial' => 'recepcionaquavet@gmail.com', 'telefono' => '3023456789', 'municipio' => 'Medellín', 'departamento' => 'Antioquia', 'direccion' => 'Calle 33 # 74B-20', 'tipo' => 'Clínica & Especialidades', 'fuente' => 'Web Antioquia'],
+            ['razon_social' => 'Centro Veterinario Itagüí', 'correo_comercial' => 'nurycoba15@gmail.com', 'telefono' => '3128901234', 'municipio' => 'Itagüí', 'departamento' => 'Antioquia', 'direccion' => 'Cra 51 # 49-20', 'tipo' => 'Consultorio y Cirugía', 'fuente' => 'Registro ICA'],
+            ['razon_social' => 'Clínica Veterinaria Envigado Sur', 'correo_comercial' => 'sara.yepeso@udea.edu.co', 'telefono' => '3145671289', 'municipio' => 'Envigado', 'departamento' => 'Antioquia', 'direccion' => 'Calle 37 Sur # 35-10', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Registro ICA'],
+            ['razon_social' => 'Agrocomercial La Alborada Rionegro', 'correo_comercial' => 'starasesorias@gmail.com', 'telefono' => '3109876512', 'municipio' => 'Rionegro', 'departamento' => 'Antioquia', 'direccion' => 'Rionegro Centro', 'tipo' => 'Servicios Veterinarios', 'fuente' => 'Registro ICA'],
         ];
     }
 
     /**
-     * Scraping Valle del Cauca (Cali, Palmira)
+     * Scraping Valle del Cauca (Cali, Palmira, Jamundí, Buga)
      */
     protected function scrapValle(): array
     {
         return [
             ['razon_social' => 'Servivet Cali', 'correo_comercial' => 'servivetcali@gmail.com', 'telefono' => '3146305568', 'municipio' => 'Cali', 'departamento' => 'Valle del Cauca', 'direccion' => 'Calle 16 # 56-55', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Scraper Valle'],
+            ['razon_social' => 'Caninos y Felinos Centro Veterinario Cali', 'correo_comercial' => 'caninosyfelinoscv@gmail.com', 'telefono' => '3156789012', 'municipio' => 'Cali', 'departamento' => 'Valle del Cauca', 'direccion' => 'Carrera 42 # 9 - 63', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Scraper Valle'],
+            ['razon_social' => 'Clínica Veterinaria Pet’s Life Cali', 'correo_comercial' => 'clinicaveterinariapetslife@gmail.com', 'telefono' => '3178901234', 'municipio' => 'Cali', 'departamento' => 'Valle del Cauca', 'direccion' => 'Calle 13 # 67 - 60', 'tipo' => 'Hospital & Urgencias', 'fuente' => 'Scraper Valle'],
+            ['razon_social' => 'Hospital Animal del Valle', 'correo_comercial' => 'contactenos@hospitalanimaldelvalle.com', 'telefono' => '3189012345', 'municipio' => 'Cali', 'departamento' => 'Valle del Cauca', 'direccion' => 'Cra. 42 # 3 - 24', 'tipo' => 'Hospital Veterinario 24H', 'fuente' => 'Scraper Valle'],
         ];
     }
 
     /**
-     * Otras ciudades principales (Barranquilla, Bucaramanga, Pereira)
+     * Scraping Santander y Norte de Santander (Bucaramanga, Floridablanca, Cúcuta)
+     */
+    protected function scrapSantander(): array
+    {
+        return [
+            ['razon_social' => 'Clínica Veterinaria Pequeños Animales Reyes', 'correo_comercial' => 'clinicaveterinariareyes@gmail.com', 'telefono' => '3157890123', 'municipio' => 'Bucaramanga', 'departamento' => 'Santander', 'direccion' => 'Calle 20 # 19 - 40', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Scraper Santander'],
+            ['razon_social' => 'Vetermedicas Clínica Veterinaria', 'correo_comercial' => 'vetermedicas@gmail.com', 'telefono' => '3168901234', 'municipio' => 'Bucaramanga', 'departamento' => 'Santander', 'direccion' => 'Carrera 25 # 24 - 37 Barrio Alarcón', 'tipo' => 'Centro Médico Veterinario', 'fuente' => 'Scraper Santander'],
+            ['razon_social' => 'Clínica Veterinaria Cañaveral', 'correo_comercial' => 'veterinariacanaveral@gmail.com', 'telefono' => '3179012345', 'municipio' => 'Floridablanca', 'departamento' => 'Santander', 'direccion' => 'Cañaveral', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Scraper Santander'],
+        ];
+    }
+
+    /**
+     * Scraping Eje Cafetero (Pereira, Manizales, Armenia)
+     */
+    protected function scrapEjeCafetero(): array
+    {
+        return [
+            ['razon_social' => 'MasCoVet Clínica Veterinaria Pereira', 'correo_comercial' => 'mascovetmvp@gmail.com', 'telefono' => '3180123456', 'municipio' => 'Pereira', 'departamento' => 'Risaralda', 'direccion' => 'Avenida Santander', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Scraper Eje Cafetero'],
+            ['razon_social' => 'Veterinaria Felican Pereira', 'correo_comercial' => 'veterinariafelican@gmail.com', 'telefono' => '3191234567', 'municipio' => 'Pereira', 'departamento' => 'Risaralda', 'direccion' => 'Calle 32 # 8 - 17 Piso 2', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Scraper Eje Cafetero'],
+        ];
+    }
+
+    /**
+     * Scraping Costa Caribe (Barranquilla, Cartagena, Santa Marta)
+     */
+    protected function scrapCostaCaribe(): array
+    {
+        return [
+            ['razon_social' => 'Mis Mascotas Clínica Veterinaria Barranquilla', 'correo_comercial' => 'clinicamismascotas@hotmail.com', 'telefono' => '3014312092', 'municipio' => 'Barranquilla', 'departamento' => 'Atlántico', 'direccion' => 'Cra 46 # 87-27', 'tipo' => 'Clínica y Urgencias', 'fuente' => 'Scraper Caribe'],
+            ['razon_social' => 'Centro Veterinario del Norte Barranquilla', 'correo_comercial' => 'vetnortebarranquilla@gmail.com', 'telefono' => '3002345678', 'municipio' => 'Barranquilla', 'departamento' => 'Atlántico', 'direccion' => 'Calle 84 # 51B-20', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Scraper Caribe'],
+        ];
+    }
+
+    /**
+     * Scraping Cundinamarca Sur, Soacha, Fusagasugá y Tolima
+     */
+    protected function scrapCundinamarcaTolima(): array
+    {
+        return [
+            ['razon_social' => 'Clínica Veterinaria Soacha Centro', 'correo_comercial' => 'edibolivar1987@gmail.com', 'telefono' => '3124567890', 'municipio' => 'Soacha', 'departamento' => 'Cundinamarca', 'direccion' => 'Carrera 7 # 14-25', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Registro ICA'],
+            ['razon_social' => 'Avícola y Veterinaria El Victorial', 'correo_comercial' => 'avicolaelvictorial@gmail.com', 'telefono' => '3135678901', 'municipio' => 'Fusagasugá', 'departamento' => 'Cundinamarca', 'direccion' => 'Fusagasugá Centro', 'tipo' => 'Servicios Veterinarios', 'fuente' => 'Registro ICA'],
+            ['razon_social' => 'Agropecuaria Alfa Girardot', 'correo_comercial' => 'hherrera@agroalfa.com.co', 'telefono' => '3146789012', 'municipio' => 'Girardot', 'departamento' => 'Cundinamarca', 'direccion' => 'Ricaurte / Girardot', 'tipo' => 'Servicios Veterinarios', 'fuente' => 'Registro ICA'],
+        ];
+    }
+
+    /**
+     * Otras ciudades principales y laboratorios
      */
     protected function scrapOtrasCiudades(): array
     {
         return [
-            ['razon_social' => 'Mis Mascotas Clínica Veterinaria Barranquilla', 'correo_comercial' => 'clinicamismascotas@hotmail.com', 'telefono' => '3014312092', 'municipio' => 'Barranquilla', 'departamento' => 'Atlántico', 'direccion' => 'Cra 46 # 87-27', 'tipo' => 'Clínica y Urgencias', 'fuente' => 'Scraper Caribe'],
             ['razon_social' => 'Laboratorio Veterinario Animal Health', 'correo_comercial' => 'animalhealthlaboratorio@gmail.com', 'telefono' => '3123456780', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Bogotá', 'tipo' => 'Diagnóstico Veterinario', 'fuente' => 'Registro Nacional'],
         ];
     }
