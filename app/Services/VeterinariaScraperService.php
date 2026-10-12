@@ -26,53 +26,73 @@ class VeterinariaScraperService
     ];
 
     /**
-     * Escanear veterinarias por región o ciudad
+     * Escanear veterinarias por región o ciudad con Crawler Web en Vivo
      */
-    public function scanRegion(string $region = 'sabana'): array
+    public function scanRegion(string $region = 'sabana', ?string $customUrl = null): array
     {
-        Log::info("[Scraper] Iniciando escaneo de veterinarias para región: {$region}");
+        Log::info("[Scraper] Iniciando escaneo y rastreo web en vivo para región: {$region}");
         $contactosExtraidos = [];
 
+        // 1. Si el usuario ingresó una URL específica, rastrearla de inmediato
+        if (!empty($customUrl)) {
+            $webContactos = $this->crawlSpecificWebsite($customUrl);
+            $contactosExtraidos = array_merge($contactosExtraidos, $webContactos);
+        }
+
+        // 2. Rastreador Web en Vivo (OpenStreetMap API + Web Crawling)
+        try {
+            $enVivo = $this->crawlLiveOpenStreetMap($region);
+            if (!empty($enVivo)) {
+                Log::info("[Crawler] Se extrajeron " . count($enVivo) . " clínicas con correos reales en vivo.");
+                $contactosExtraidos = array_merge($contactosExtraidos, $enVivo);
+            }
+        } catch (\Throwable $e) {
+            Log::warning("[Crawler] Advertencia en rastreo OpenStreetMap: " . $e->getMessage());
+        }
+
+        // 3. Catálogo enriquecido por región
         switch ($region) {
             case 'zipaquira':
             case 'sabana':
                 $contactosExtraidos = array_merge(
+                    $contactosExtraidos,
                     $this->scrapSabanaCentro(),
                     $this->scrapSabanaOccidente()
                 );
                 break;
 
             case 'bogota':
-                $contactosExtraidos = $this->scrapBogotaLocalidades();
+                $contactosExtraidos = array_merge($contactosExtraidos, $this->scrapBogotaLocalidades());
                 break;
 
             case 'antioquia':
-                $contactosExtraidos = $this->scrapAntioquia();
+                $contactosExtraidos = array_merge($contactosExtraidos, $this->scrapAntioquia());
                 break;
 
             case 'valle':
-                $contactosExtraidos = $this->scrapValle();
+                $contactosExtraidos = array_merge($contactosExtraidos, $this->scrapValle());
                 break;
 
             case 'santander':
-                $contactosExtraidos = $this->scrapSantander();
+                $contactosExtraidos = array_merge($contactosExtraidos, $this->scrapSantander());
                 break;
 
             case 'ejecafetero':
-                $contactosExtraidos = $this->scrapEjeCafetero();
+                $contactosExtraidos = array_merge($contactosExtraidos, $this->scrapEjeCafetero());
                 break;
 
             case 'caribe':
-                $contactosExtraidos = $this->scrapCostaCaribe();
+                $contactosExtraidos = array_merge($contactosExtraidos, $this->scrapCostaCaribe());
                 break;
 
             case 'cundinamarca_tolima':
-                $contactosExtraidos = $this->scrapCundinamarcaTolima();
+                $contactosExtraidos = array_merge($contactosExtraidos, $this->scrapCundinamarcaTolima());
                 break;
 
             case 'todo_el_pais':
             default:
                 $contactosExtraidos = array_merge(
+                    $contactosExtraidos,
                     $this->scrapSabanaCentro(),
                     $this->scrapSabanaOccidente(),
                     $this->scrapBogotaLocalidades(),
@@ -257,6 +277,187 @@ class VeterinariaScraperService
         return [
             ['razon_social' => 'Laboratorio Veterinario Animal Health', 'correo_comercial' => 'animalhealthlaboratorio@gmail.com', 'telefono' => '3123456780', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Bogotá', 'tipo' => 'Diagnóstico Veterinario', 'fuente' => 'Registro Nacional'],
         ];
+    }
+
+    /**
+     * Rastreador web en vivo conectando con OpenStreetMap y extracción de correo en sitios web
+     */
+    public function crawlLiveOpenStreetMap(string $region = 'todo_el_pais'): array
+    {
+        // Bounding boxes [minLat, minLon, maxLat, maxLon] de regiones de Colombia
+        $bbox = match ($region) {
+            'zipaquira', 'sabana' => '4.8,-74.3,5.2,-73.8',
+            'bogota' => '4.45,-74.25,4.85,-73.95',
+            'antioquia' => '6.0,-75.7,6.4,-75.3',
+            'valle' => '3.2,-76.6,3.6,-76.3',
+            'santander' => '7.0,-73.3,7.3,-73.0',
+            'ejecafetero' => '4.7,-75.8,5.1,-75.4',
+            'caribe' => '10.8,-75.0,11.2,-74.7',
+            'cundinamarca_tolima' => '4.2,-75.3,4.6,-74.1',
+            default => '4.0,-75.5,5.5,-73.0',
+        };
+
+        $query = "[out:json][timeout:15];(node[\"amenity\"=\"veterinary\"]({$bbox});way[\"amenity\"=\"veterinary\"]({$bbox}););out tags 100;";
+        
+        $response = Http::asForm()
+            ->timeout(12)
+            ->withUserAgent('AVISaasBot/1.0 (contacto@avipetapp.com)')
+            ->post('https://overpass-api.de/api/interpreter', [
+                'data' => $query,
+            ]);
+
+        if (!$response->successful()) {
+            return [];
+        }
+
+        $data = $response->json();
+        $elements = $data['elements'] ?? [];
+        $prospectos = [];
+
+        foreach ($elements as $el) {
+            $tags = $el['tags'] ?? [];
+            $name = trim($tags['name'] ?? '');
+            if (!$name) continue;
+
+            $phone = $tags['phone'] ?? $tags['contact:phone'] ?? null;
+            $website = $tags['website'] ?? $tags['contact:website'] ?? null;
+            $directEmail = $tags['email'] ?? $tags['contact:email'] ?? null;
+            $city = $tags['addr:city'] ?? 'Colombia';
+
+            $emails = [];
+            if ($directEmail && filter_var($directEmail, FILTER_VALIDATE_EMAIL)) {
+                $emails[] = $directEmail;
+            } elseif ($website) {
+                $emails = $this->crawlWebsiteForEmails($website);
+            }
+
+            if (!empty($emails)) {
+                $prospectos[] = [
+                    'razon_social' => $name,
+                    'correo_comercial' => $emails[0],
+                    'telefono' => $phone,
+                    'municipio' => $city,
+                    'departamento' => 'Colombia',
+                    'direccion' => $tags['addr:street'] ?? null,
+                    'tipo' => 'Clínica Veterinaria',
+                    'fuente' => 'Live Web Crawler (OpenStreetMap + Web)',
+                    'estado' => 'pendiente',
+                ];
+            }
+        }
+
+        return $prospectos;
+    }
+
+    /**
+     * Rastrear un sitio web específico ingresado por el usuario
+     */
+    public function crawlSpecificWebsite(string $url): array
+    {
+        $emails = $this->crawlWebsiteForEmails($url);
+        if (empty($emails)) {
+            return [];
+        }
+
+        $host = parse_url($url, PHP_URL_HOST) ?? $url;
+        $nombreEstimado = ucwords(str_replace(['www.', '.com', '.co', '.com.co', '-', '_', '.'], ' ', $host));
+
+        return [
+            [
+                'razon_social' => trim($nombreEstimado),
+                'correo_comercial' => $emails[0],
+                'telefono' => null,
+                'municipio' => 'Bogotá / Colombia',
+                'departamento' => 'Cundinamarca',
+                'tipo' => 'Clínica Veterinaria',
+                'fuente' => "Crawler Web Directo ({$host})",
+                'estado' => 'pendiente',
+            ]
+        ];
+    }
+
+    /**
+     * Rastrea una página web y sus subsecciones para extraer correos válidos
+     */
+    public function crawlWebsiteForEmails(string $url): array
+    {
+        $url = trim($url);
+        if (!str_starts_with($url, 'http://') && !str_starts_with($url, 'https://')) {
+            $url = 'https://' . $url;
+        }
+
+        $emails = [];
+
+        try {
+            $response = Http::timeout(5)
+                ->connectTimeout(3)
+                ->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+                ->get($url);
+
+            if ($response->successful()) {
+                $emails = array_merge($emails, $this->extractEmailsFromHtml($response->body()));
+            }
+        } catch (\Throwable $e) {
+            try {
+                if (str_starts_with($url, 'https://')) {
+                    $httpUrl = 'http://' . substr($url, 8);
+                    $respHttp = Http::timeout(4)->connectTimeout(3)->get($httpUrl);
+                    if ($respHttp->successful()) {
+                        $emails = array_merge($emails, $this->extractEmailsFromHtml($respHttp->body()));
+                    }
+                }
+            } catch (\Throwable $ex) {}
+        }
+
+        // Si no encontró en la home, buscar en /contacto o /nosotros
+        if (empty($emails)) {
+            $baseUrl = rtrim($url, '/');
+            foreach (['/contacto', '/contactenos', '/nosotros', '/contact'] as $sub) {
+                try {
+                    $subResp = Http::timeout(4)->connectTimeout(3)->get($baseUrl . $sub);
+                    if ($subResp->successful()) {
+                        $emails = array_merge($emails, $this->extractEmailsFromHtml($subResp->body()));
+                        if (!empty($emails)) break;
+                    }
+                } catch (\Throwable $ex) {}
+            }
+        }
+
+        return array_values(array_unique($emails));
+    }
+
+    /**
+     * Extrae y limpia direcciones de correo electrónico desde un bloque HTML
+     */
+    protected function extractEmailsFromHtml(string $html): array
+    {
+        $emails = [];
+
+        // 1. Enlaces mailto:
+        if (preg_match_all('/mailto:([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i', $html, $m)) {
+            $emails = array_merge($emails, $m[1]);
+        }
+
+        // 2. Coincidencia regex de texto plano
+        if (preg_match_all('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i', $html, $m)) {
+            $emails = array_merge($emails, $m[0]);
+        }
+
+        $cleaned = [];
+        foreach ($emails as $email) {
+            $e = strtolower(trim($email));
+            if (!filter_var($e, FILTER_VALIDATE_EMAIL)) continue;
+
+            $ext = pathinfo($e, PATHINFO_EXTENSION);
+            if (in_array(strtolower($ext), ['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'css', 'js'])) continue;
+
+            $domain = substr(strrchr($e, "@"), 1);
+            if (in_array($domain, $this->blacklistedDomains)) continue;
+
+            $cleaned[] = $e;
+        }
+
+        return array_values(array_unique($cleaned));
     }
 
     /**

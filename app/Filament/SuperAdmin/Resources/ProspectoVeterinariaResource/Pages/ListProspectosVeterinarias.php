@@ -72,11 +72,17 @@ class ListProspectosVeterinarias extends ListRecords
                         ])
                         ->default('todo_el_pais')
                         ->required()
-                        ->helperText('El motor rastrea directorios y registros de clínicas, extrae datos y aplica Upsert blindado.'),
+                        ->helperText('El motor consulta la API de OpenStreetMap en vivo y rastrea sitios web para extraer correos reales.'),
+
+                    Forms\Components\TextInput::make('url_especifica')
+                        ->label('🌐 Opcional: Rastrear una Web de Veterinaria Específica')
+                        ->placeholder('https://www.clinicaveterinaria.com')
+                        ->url()
+                        ->helperText('Si tienes una web de clínica, el crawler la navegará en vivo y extraerá sus correos de contacto de forma inmediata.'),
                 ])
                 ->action(function (array $data) {
                     $scraper = app(\App\Services\VeterinariaScraperService::class);
-                    $res = $scraper->scanRegion($data['region']);
+                    $res = $scraper->scanRegion($data['region'], $data['url_especifica'] ?? null);
 
                     Notification::make()
                         ->title('Escaneo y Sincronización Exitosa')
