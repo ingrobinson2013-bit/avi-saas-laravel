@@ -39,7 +39,7 @@ class VeterinariaScraperService
             $contactosExtraidos = array_merge($contactosExtraidos, $webContactos);
         }
 
-        // 2. Búsqueda en Vivo Oficial con Google Custom Search API (100 consultas/día gratis)
+        // 2. Búsqueda en Vivo Oficial con Google Custom Search API
         try {
             $googleContactos = $this->searchWithGoogleCustomSearch($region, $googleApiKey, $googleCx);
             if (!empty($googleContactos)) {
@@ -50,7 +50,18 @@ class VeterinariaScraperService
             Log::warning("[GoogleSearch] Advertencia en búsqueda de Google: " . $e->getMessage());
         }
 
-        // 3. Rastreador Web en Vivo (OpenStreetMap API + Web Crawling)
+        // 3. Motor Autónomo de Búsqueda Web en Vivo (Extracción web directa)
+        try {
+            $webLive = $this->searchWithDuckDuckGoLive($region);
+            if (!empty($webLive)) {
+                Log::info("[LiveWebSearch] Se extrajeron " . count($webLive) . " clínicas con correos reales en vivo desde la web.");
+                $contactosExtraidos = array_merge($contactosExtraidos, $webLive);
+            }
+        } catch (\Throwable $e) {
+            Log::warning("[LiveWebSearch] Advertencia en búsqueda web: " . $e->getMessage());
+        }
+
+        // 4. Rastreador Web en Vivo (OpenStreetMap API + Web Crawling)
         try {
             $enVivo = $this->crawlLiveOpenStreetMap($region);
             if (!empty($enVivo)) {
@@ -384,6 +395,96 @@ class VeterinariaScraperService
                     Log::warning("[GoogleSearch] Excepción en query {$q}: " . $e->getMessage());
                 }
             }
+        }
+
+        return $prospectos;
+    }
+
+    /**
+     * Motor de Búsqueda Web en Vivo Autónomo (DuckDuckGo Live Search)
+     * No requiere API Keys y no tiene bloqueos de proyecto de Google. Rastrea en vivo la web colombiana.
+     */
+    public function searchWithDuckDuckGoLive(string $region = 'sabana'): array
+    {
+        $ciudades = match ($region) {
+            'zipaquira' => ['Zipaquirá', 'Cajicá', 'Chía'],
+            'sabana' => ['Zipaquirá', 'Chía', 'Cajicá', 'Cota', 'Funza'],
+            'bogota' => ['Bogotá Suba', 'Bogotá Chapinero', 'Bogotá Usaquén', 'Bogotá'],
+            'antioquia' => ['Medellín Poblado', 'Medellín Laureles', 'Envigado'],
+            'valle' => ['Cali Sur', 'Cali Norte', 'Palmira'],
+            'santander' => ['Bucaramanga', 'Floridablanca', 'Cúcuta'],
+            'ejecafetero' => ['Pereira', 'Manizales', 'Armenia'],
+            'caribe' => ['Barranquilla', 'Cartagena', 'Santa Marta'],
+            'cundinamarca_tolima' => ['Soacha', 'Girardot', 'Ibagué'],
+            default => ['Bogotá', 'Medellín', 'Cali'],
+        };
+
+        $prospectos = [];
+        $ciudad = $ciudades[array_rand($ciudades)];
+        $query = "clinica veterinaria {$ciudad} contacto correo";
+
+        try {
+            $response = Http::withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            ])->timeout(4)->connectTimeout(2)->get('https://html.duckduckgo.com/html/', [
+                'q' => $query,
+            ]);
+
+            if ($response->successful()) {
+                $html = $response->body();
+                preg_match_all('/uddg=([^&"\'\s]+)/', $html, $matches);
+                $rawUrls = $matches[1] ?? [];
+
+                $validUrls = [];
+                $ignoreDomains = ['duckduckgo.com', 'facebook.com', 'instagram.com', 'linkedin.com', 'twitter.com', 'youtube.com', 'paginasamarillas.com.co', 'civico.com', 'wikipedia.org'];
+
+                foreach ($rawUrls as $raw) {
+                    $decoded = urldecode($raw);
+                    if (!str_starts_with($decoded, 'http')) continue;
+
+                    $skip = false;
+                    foreach ($ignoreDomains as $ign) {
+                        if (str_contains($decoded, $ign)) {
+                            $skip = true;
+                            break;
+                        }
+                    }
+                    if (!$skip && !in_array($decoded, $validUrls)) {
+                        $validUrls[] = $decoded;
+                    }
+                }
+
+                // Crawl hasta 3 URLs en vivo
+                $urlsToCrawl = array_slice($validUrls, 0, 3);
+                foreach ($urlsToCrawl as $siteUrl) {
+                    $emails = $this->crawlWebsiteForEmails($siteUrl);
+                    if (!empty($emails)) {
+                        $host = parse_url($siteUrl, PHP_URL_HOST) ?? $siteUrl;
+                        $cleanTitle = ucwords(str_replace(['www.', '.com.co', '.com', '.co', '-', '_', '.'], ' ', $host));
+
+                        foreach ($emails as $email) {
+                            $emailClean = strtolower(trim($email));
+                            if (!filter_var($emailClean, FILTER_VALIDATE_EMAIL)) continue;
+                            $dom = substr(strrchr($emailClean, "@"), 1);
+                            if (in_array($dom, $this->blacklistedDomains)) continue;
+
+                            $prospectos[] = [
+                                'razon_social' => trim($cleanTitle),
+                                'correo_comercial' => $emailClean,
+                                'telefono' => null,
+                                'municipio' => explode(' ', $ciudad)[0],
+                                'departamento' => 'Colombia',
+                                'tipo' => 'Clínica Veterinaria',
+                                'fuente' => "Búsqueda Web en Vivo ({$host})",
+                                'estado' => 'pendiente',
+                            ];
+                        }
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning("[LiveWebSearch] Error en búsqueda DuckDuckGo: " . $e->getMessage());
         }
 
         return $prospectos;
