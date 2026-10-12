@@ -110,13 +110,13 @@ Route::get('/carnet/{subscription_id}/pdf', function (string $subscription_id) u
 Route::get('/afiche', function () use ($resolveTenantFromHost) {
     $tenant = $resolveTenantFromHost();
     if (!$tenant) abort(404);
-    return app(App\Http\Controllers\ClinicFlyerController::class)->show(request(), $tenant->slug);
+    return app(App\Http\Controllers\ClinicFlyerController::class)->show($tenant->slug);
 });
 
 Route::get('/afiche/pdf', function () use ($resolveTenantFromHost) {
     $tenant = $resolveTenantFromHost();
     if (!$tenant) abort(404);
-    return app(App\Http\Controllers\ClinicFlyerController::class)->downloadPdf(request(), $tenant->slug);
+    return app(App\Http\Controllers\ClinicFlyerController::class)->downloadPdf($tenant->slug);
 });
 
 // 2. Panel Administrativo / Dashboard de la Clínica
@@ -352,7 +352,12 @@ Route::get('/v/{slug}/admin/{section?}', function (string $slug, ?string $sectio
 })->where('section', '.*');
 
 // 4. Portal B2C de Pacientes de la Clínica (ej. /v/vet-pet-patitas)
-Route::get('/v/{slug}', function (string $slug) {
+Route::get('/v/{slug}', function (string $slug) use ($resolveTenantFromHost) {
+    $tenantHost = $resolveTenantFromHost();
+    if ($tenantHost && $tenantHost->slug === $slug) {
+        return redirect('/');
+    }
+
     $tenant = Tenant::where('slug', $slug)->firstOrFail();
     $plans = $tenant->plans()->with('planBenefits.benefitDefinition')->where('is_active', true)->get();
     $selectedTheme = request('theme') ?: ($tenant->branding['storefront_theme'] ?? 'classic');
@@ -370,8 +375,21 @@ Route::get('/v/{slug}/carnet/{subscription_id}', [App\Http\Controllers\Subscript
 Route::get('/v/{slug}/carnet/{subscription_id}/pdf', [App\Http\Controllers\SubscriptionCarnetController::class, 'downloadPdf'])->name('carnet.pdf');
 
 // 7. Afiche Oficial de Mostrador con Código QR para Impresión / PDF
-Route::get('/v/{slug}/afiche', [App\Http\Controllers\ClinicFlyerController::class, 'show'])->name('clinic.flyer');
-Route::get('/v/{slug}/afiche/pdf', [App\Http\Controllers\ClinicFlyerController::class, 'downloadPdf'])->name('clinic.flyer.pdf');
+Route::get('/v/{slug}/afiche', function (string $slug) use ($resolveTenantFromHost) {
+    $tenantHost = $resolveTenantFromHost();
+    if ($tenantHost && $tenantHost->slug === $slug) {
+        return redirect('/afiche');
+    }
+    return app(App\Http\Controllers\ClinicFlyerController::class)->show($slug);
+})->name('clinic.flyer');
+
+Route::get('/v/{slug}/afiche/pdf', function (string $slug) use ($resolveTenantFromHost) {
+    $tenantHost = $resolveTenantFromHost();
+    if ($tenantHost && $tenantHost->slug === $slug) {
+        return redirect('/afiche/pdf');
+    }
+    return app(App\Http\Controllers\ClinicFlyerController::class)->downloadPdf($slug);
+})->name('clinic.flyer.pdf');
 
 // 8. Onboarding Express B2B en 60 Segundos (15 Días Gratis)
 Route::post('/registro-clinica', [App\Http\Controllers\ClinicOnboardingController::class, 'register'])->name('clinic.register');

@@ -82,7 +82,7 @@
         </div>
 
         <div class="flex items-center space-x-2">
-            <a href="/v/{{ $tenant->slug }}/admin" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold transition">
+            <a href="/admin" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold transition">
                 ← Volver al Panel
             </a>
             <button type="button" onclick="window.print()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow-lg transition flex items-center space-x-1.5 transform hover:scale-105">
