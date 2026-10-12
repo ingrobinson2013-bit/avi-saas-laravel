@@ -23,6 +23,7 @@ class ProspectoOutreachMail extends Mailable
         return new Envelope(
             from: new Address('contacto@avipetapp.com', 'AVI-Plan — Membresías Veterinarias'),
             replyTo: [new Address('contacto@avipetapp.com', 'Atención Oficial AVI-Plan')],
+            bcc: [new Address('contacto@avipetapp.com', 'Copia Auditoría AVI-Plan')],
             subject: "¿Cómo generar ingresos fijos en {$this->prospecto->razon_social} sin depender solo de urgencias?"
         );
     }

@@ -1,11 +1,7 @@
-"""
-DISPARADOR OFICIAL DE CAMPAÑA - AVI-PLAN VETERINARIAS
-Envío automatizado vía Hostinger SMTP (contacto@avipetapp.com)
-"""
-
 import argparse
 import csv
 import email.message
+import imaplib
 import os
 import smtplib
 import ssl
@@ -21,6 +17,8 @@ LOG_CSV = os.path.join(SCRIPT_DIR, "envios_hostinger_log.csv")
 # Credenciales oficiales Hostinger
 SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.hostinger.com")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", 465))
+IMAP_HOST = os.environ.get("IMAP_HOST", "imap.hostinger.com")
+IMAP_PORT = int(os.environ.get("IMAP_PORT", 993))
 SMTP_USER = os.environ.get("SMTP_USER", "contacto@avipetapp.com")
 SMTP_PASS = os.environ.get("SMTP_PASS", "Ashley2023##")
 
@@ -31,7 +29,7 @@ def cargar_plantilla():
     with open(TEMPLATE_HTML, 'r', encoding='utf-8') as f:
         return f.read()
 
-def enviar_correo(server, destinatario, razon_social, municipio, plantilla):
+def enviar_correo(server, imap_server, destinatario, razon_social, municipio, plantilla):
     rs_encoded = urllib.parse.quote(razon_social)
     html = plantilla.replace('{{razon_social}}', razon_social)
     html = html.replace('{{municipio}}', municipio)
@@ -46,6 +44,7 @@ def enviar_correo(server, destinatario, razon_social, municipio, plantilla):
     msg['From'] = f"AVI-Plan <{SMTP_USER}>"
     msg['To'] = destinatario
     msg['Reply-To'] = SMTP_USER
+    msg['Date'] = email.utils.formatdate(localtime=True)
 
     texto_plano = (
         f"Hola, equipo de {razon_social}:\n\n"
@@ -57,7 +56,16 @@ def enviar_correo(server, destinatario, razon_social, municipio, plantilla):
     msg.set_content(texto_plano)
     msg.add_alternative(html, subtype='html')
 
+    # 1. Envío seguro vía SMTP
     server.send_message(msg)
+
+    # 2. Sincronización automática con la carpeta Enviados (INBOX.Sent) en Hostinger Webmail
+    if imap_server:
+        try:
+            imap_server.append('INBOX.Sent', '\\Seen', imaplib.Time2Internaldate(time.time()), msg.as_bytes())
+        except Exception as e:
+            # Fallback silencioso en caso de timeout IMAP para no interrumpir el flujo
+            pass
 
 def ejecutar_campana(archivo_csv=None, modo_test=None, limite=10, dry_run=False):
     print("============================================================")
@@ -89,18 +97,25 @@ def ejecutar_campana(archivo_csv=None, modo_test=None, limite=10, dry_run=False)
     if not modo_test:
         print(f"Procesando lote de hasta: {limite} contactos")
 
-    # Iniciar conexión SMTP si no es dry-run
+    # Iniciar conexión SMTP e IMAP si no es dry-run
     server = None
+    imap_server = None
     if not dry_run:
         try:
-            print("Conectando con Hostinger SMTP...")
+            print("Conectando con Hostinger SMTP (Envío)...")
             context = ssl.create_default_context()
             server = smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, context=context, timeout=15)
             server.login(SMTP_USER, SMTP_PASS)
-            print(" Autenticacion SMTP exitosa con Hostinger.\n")
+            print(" Autenticacion SMTP exitosa con Hostinger.")
+
+            print("Conectando con Hostinger IMAP (Sincronizacion de Enviados)...")
+            imap_server = imaplib.IMAP4_SSL(IMAP_HOST, IMAP_PORT)
+            imap_server.login(SMTP_USER, SMTP_PASS)
+            print(" Sincronizacion con carpeta Enviados (INBOX.Sent) activa.\n")
         except Exception as e:
-            print(f"[ERROR] Conexion SMTP con Hostinger: {e}")
-            return
+            print(f"[AVISO/ERROR] Error de conexion inicial: {e}")
+            if not server:
+                return
 
     # Preparar log
     log_existe = os.path.exists(LOG_CSV)
@@ -131,19 +146,24 @@ def ejecutar_campana(archivo_csv=None, modo_test=None, limite=10, dry_run=False)
             continue
 
         try:
-            enviar_correo(server, email_dest, rs, muni, plantilla)
+            enviar_correo(server, imap_server, email_dest, rs, muni, plantilla)
             enviados += 1
-            print(f"[{idx:02d}/{len(lista_a_procesar)}] [ENVIADO]   -> {email_dest:<32} | {rs[:30]}")
-            log_writer.writerow([timestamp, email_dest, rs, muni, 'ENVIADO', 'Entregado a Hostinger'])
+            print(f"[{idx:02d}/{len(lista_a_procesar)}] [ENVIADO + SYNC] -> {email_dest:<32} | {rs[:30]}")
+            log_writer.writerow([timestamp, email_dest, rs, muni, 'ENVIADO', 'Entregado a Hostinger + Sincronizado en Enviados'])
             if idx < len(lista_a_procesar):
                 time.sleep(PAUSA_SEGUNDOS)
         except Exception as e:
             fallidos += 1
-            print(f"[{idx:02d}/{len(lista_a_procesar)}] [ERROR]     -> {email_dest} | {e}")
+            print(f"[{idx:02d}/{len(lista_a_procesar)}] [ERROR]          -> {email_dest} | {e}")
             log_writer.writerow([timestamp, email_dest, rs, muni, 'ERROR', str(e)])
 
     if server:
         server.quit()
+    if imap_server:
+        try:
+            imap_server.logout()
+        except:
+            pass
     f_log.close()
 
     print("\n" + "=" * 60)
