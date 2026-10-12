@@ -88,17 +88,17 @@ class ListProspectosVeterinarias extends ListRecords
                                 ->placeholder('AIzaSy...')
                                 ->password()
                                 ->revealable()
-                                ->default(env('GOOGLE_SEARCH_API_KEY'))
-                                ->helperText('Obtenla gratis en Google Cloud Console -> APIs y Servicios -> Credenciales.'),
+                                ->default(env('GOOGLE_SEARCH_API_KEY', 'AIzaSyCt2hw0ILDJh73qMGrYoZiR0eTPPtTXH8w'))
+                                ->helperText('Clave oficial de Google Cloud vinculada con éxito.'),
 
                             Forms\Components\TextInput::make('google_cx_id')
                                 ->label('Search Engine ID (CX)')
-                                ->placeholder('0123456789abcdef:ghijk')
-                                ->default(env('GOOGLE_SEARCH_ENGINE_ID'))
-                                ->helperText('Créalo gratis en programmablesearchengine.google.com con opción "Buscar en toda la web".'),
+                                ->placeholder('d423366d7396c45e5')
+                                ->default(env('GOOGLE_SEARCH_ENGINE_ID', 'd423366d7396c45e5'))
+                                ->helperText('Motor de búsqueda de Google vinculado.'),
                         ])
                         ->collapsible()
-                        ->collapsed(fn () => filled(env('GOOGLE_SEARCH_API_KEY'))),
+                        ->collapsed(true),
                 ])
                 ->action(function (array $data) {
                     $scraper = app(\App\Services\VeterinariaScraperService::class);

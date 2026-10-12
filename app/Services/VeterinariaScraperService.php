@@ -295,8 +295,8 @@ class VeterinariaScraperService
      */
     public function searchWithGoogleCustomSearch(string $region = 'sabana', ?string $apiKey = null, ?string $cx = null): array
     {
-        $apiKey = $apiKey ?: env('GOOGLE_SEARCH_API_KEY');
-        $cx = $cx ?: env('GOOGLE_SEARCH_ENGINE_ID');
+        $apiKey = $apiKey ?: env('GOOGLE_SEARCH_API_KEY', 'AIzaSyCt2hw0ILDJh73qMGrYoZiR0eTPPtTXH8w');
+        $cx = $cx ?: env('GOOGLE_SEARCH_ENGINE_ID', 'd423366d7396c45e5');
 
         if (!$apiKey || !$cx) {
             return [];
