@@ -1952,6 +1952,14 @@
             if (e.key === 'Escape') closeRegisterModal();
         });
 
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('registro') === '1' || window.location.hash === '#onboarding' || window.location.hash === '#registro') {
+                const tier = urlParams.get('tier') || 'pro';
+                setTimeout(() => openRegisterModal(tier), 300);
+            }
+        });
+
         function updateSlugPreview(name) {
             const clean = name.toLowerCase()
                 .trim()

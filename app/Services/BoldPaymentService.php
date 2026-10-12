@@ -11,10 +11,11 @@ class BoldPaymentService
     /**
      * Genera la firma de integridad SHA256 requerida por Bold.
      */
-    public static function generateSignature(string $orderId, float|int $amount, string $currency, string $secretKey): string
+    public static function generateSignature(string $orderId, float|int $amount, string $currency, ?string $secretKey = null): string
     {
+        $key = !empty($secretKey) ? $secretKey : (config('bold.secret_key') ?: 'sandbox_secret_key');
         $amountClean = (int) round($amount);
-        $raw = "{$orderId}{$amountClean}{$currency}{$secretKey}";
+        $raw = "{$orderId}{$amountClean}{$currency}{$key}";
         return hash('sha256', $raw);
     }
 

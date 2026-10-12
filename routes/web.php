@@ -352,6 +352,8 @@ Route::get('/v/{slug}/afiche/pdf', [App\Http\Controllers\ClinicFlyerController::
 
 // 8. Onboarding Express B2B en 60 Segundos (15 Días Gratis)
 Route::post('/registro-clinica', [App\Http\Controllers\ClinicOnboardingController::class, 'register'])->name('clinic.register');
+Route::get('/registro-clinica', fn() => redirect('https://' . env('APP_BASE_DOMAIN', 'avipetapp.com') . '/?registro=1#onboarding'));
+Route::get('/onboarding', fn() => redirect('https://' . env('APP_BASE_DOMAIN', 'avipetapp.com') . '/?registro=1#onboarding'));
 
 // 9. Pasarela B2B: Checkout Oficial Bold para Pago del Canon SaaS de Veterinarias
 Route::get('/admin/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentController::class, 'showCheckout'])->name('saas.checkout');

@@ -87,8 +87,8 @@ class SaaSPaymentController extends Controller
         $currency = 'COP';
 
         $isProduction = config('bold.environment') === 'production';
-        $identityKey = $isProduction ? config('bold.identity_key') : config('bold.test_identity_key');
-        $secretKey = $isProduction ? config('bold.secret_key') : config('bold.test_secret_key');
+        $identityKey = config('bold.identity_key') ?: env('BOLD_IDENTITY_KEY', 'sandbox_identity_key');
+        $secretKey = config('bold.secret_key') ?: env('BOLD_SECRET_KEY', 'sandbox_secret_key');
 
         $integritySignature = BoldPaymentService::generateSignature($orderId, $amount, $currency, $secretKey);
         $redirectUrl = url("/admin/{$tenant->slug}?saas_paid=1&order_id={$orderId}&tier={$tier}");

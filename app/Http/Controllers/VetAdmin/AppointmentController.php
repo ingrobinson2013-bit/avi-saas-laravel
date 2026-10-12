@@ -201,6 +201,10 @@ class AppointmentController extends Controller
         // Slots disponibles para el día seleccionado
         $availableSlots = $this->calendarService->getAvailableSlots($tenant, $selectedDate);
 
+        $isPilot = ($tenant->slug === 'vet-pet-patitas');
+        $doctorName = $ctx['userName'] ?? auth()->user()?->name ?? null;
+        $doctorTitle = $ctx['userRole'] ?? 'Médico(a) Veterinario(a)';
+
         return Inertia::render('VetAdmin/Calendar', array_merge($ctx, [
             'selectedDate' => $selectedDate,
             'appointments' => $appointments,
