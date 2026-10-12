@@ -406,7 +406,8 @@ class VetPagesController extends Controller
         $ctx = $this->getTenantContext($request, $slug);
         $tenantId = $ctx['tenantId'];
 
-        $selectedPetId = $request->query('pet_id');
+        $selectedPetId = $request->query('pet_id') ?? $request->query('contract_id');
+        $searchQuery = trim($request->query('q', ''));
 
         // Obtener todas las mascotas con suscripción activa en la sede
         $allSubscriptions = Subscription::query()
@@ -417,8 +418,19 @@ class VetPagesController extends Controller
 
         $subscription = null;
         if ($selectedPetId) {
-            $subscription = $allSubscriptions->firstWhere('pet_id', $selectedPetId) ?? $allSubscriptions->first();
-        } else {
+            $subscription = $allSubscriptions->firstWhere('pet_id', $selectedPetId)
+                ?? $allSubscriptions->firstWhere('id', $selectedPetId)
+                ?? $allSubscriptions->firstWhere('gateway_subscription_id', $selectedPetId);
+        } elseif (!empty($searchQuery)) {
+            $subscription = $allSubscriptions->first(function ($s) use ($searchQuery) {
+                return str_contains(strtolower($s->gateway_subscription_id ?? ''), strtolower($searchQuery))
+                    || str_contains(strtolower($s->pet?->name ?? ''), strtolower($searchQuery))
+                    || str_contains(strtolower($s->pet?->customer?->name ?? ''), strtolower($searchQuery))
+                    || str_contains(strtolower($s->pet?->customer?->phone ?? ''), strtolower($searchQuery));
+            });
+        }
+        
+        if (!$subscription) {
             $subscription = $allSubscriptions->first();
         }
 
@@ -436,12 +448,23 @@ class VetPagesController extends Controller
 
         $balances = [];
         if ($subscription) {
+            // Asegurar que la suscripción tenga sus saldos en BD
+            if ($subscription->benefitBalances()->count() === 0 && $subscription->plan) {
+                try {
+                    app(\App\Services\BenefitLedgerService::class)->resetCycleBalances($subscription);
+                    $subscription->load('benefitBalances.benefitDefinition');
+                } catch (\Throwable $e) {
+                    \Log::warning("No se pudo regenerar saldos para suscripción {$subscription->id}: " . $e->getMessage());
+                }
+            }
+
             foreach ($subscription->benefitBalances as $b) {
                 $granted = (int) $b->total_granted;
                 $used = (int) $b->used_count;
-                $available = max(0, $granted - $used);
+                $available = max(0, (int) $b->remaining_count);
                 $balances[] = [
                     'id' => (string) $b->id,
+                    'benefit_definition_id' => (string) $b->benefit_definition_id,
                     'name' => $b->benefitDefinition?->name ?? 'Beneficio Clínico',
                     'category' => $b->benefitDefinition?->category ?? 'clinica',
                     'granted' => $granted,
@@ -462,13 +485,15 @@ class VetPagesController extends Controller
             ];
         }
 
-        $walletBalance = (float) ($subscription?->wallet?->balance_cop ?? 20000);
+        $walletService = app(\App\Services\HealthWalletService::class);
+        $wallet = $subscription ? $walletService->getOrCreateWallet($subscription) : null;
+        $walletBalance = (float) ($wallet?->balance_cop ?? 20000);
         $walletData = [
             'balance_cop' => $walletBalance,
             'formatted_balance' => '$' . number_format($walletBalance, 0, ',', '.') . ' COP',
-            'reserve_percentage' => (float) ($subscription?->wallet?->reserve_percentage ?? 10.0),
-            'total_accrued_cop' => (float) ($subscription?->wallet?->total_accrued_cop ?? 20000),
-            'total_redeemed_cop' => (float) ($subscription?->wallet?->total_redeemed_cop ?? 0),
+            'reserve_percentage' => (float) ($wallet?->reserve_percentage ?? 10.0),
+            'total_accrued_cop' => (float) ($wallet?->total_accrued_cop ?? 20000),
+            'total_redeemed_cop' => (float) ($wallet?->total_redeemed_cop ?? 0),
         ];
 
         $petData = [
@@ -498,7 +523,7 @@ class VetPagesController extends Controller
                     'customer_name' => $r->balance?->subscription?->pet?->customer?->name ?? 'María Camila Rodríguez',
                     'benefit_name' => $r->balance?->benefitDefinition?->name ?? 'Consulta Médica General',
                     'category' => $r->balance?->benefitDefinition?->category ?? 'consultas',
-                    'attended_by' => $r->vetUser?->name ?? 'Recepción Mostrador',
+                    'attended_by' => $r->notes ? explode('[Atendido por: ', $r->notes)[1] ?? ($r->vetUser?->name ?? 'Recepción Mostrador') : ($r->vetUser?->name ?? 'Recepción Mostrador'),
                     'status' => 'valid',
                     'status_label' => 'Canje Efectivo',
                 ];
@@ -542,6 +567,159 @@ class VetPagesController extends Controller
             'history' => $history,
             'initialTab' => $request->query('tab', 'redeem'),
         ]));
+    }
+
+    /**
+     * Procesar y Guardar Canje Oficial en Base de Datos (Terminal de Mostrador)
+     */
+    public function storeCounterRedeem(Request $request, string $slug)
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
+
+        $validated = $request->validate([
+            'pet_id' => 'nullable|string',
+            'action_type' => 'required|in:benefit,wallet',
+            'balance_id' => 'nullable|string',
+            'amount_cop' => 'nullable|numeric|min:1000',
+            'quantity' => 'nullable|integer|min:1|max:10',
+            'notes' => 'nullable|string|max:500',
+            'attended_by' => 'nullable|string|max:120',
+        ]);
+
+        $quantity = (int) ($validated['quantity'] ?? 1);
+        $notes = $validated['notes'] ?? null;
+        $attendedByName = !empty($validated['attended_by']) ? trim($validated['attended_by']) : ($ctx['userName'] ?? 'Recepción Médica');
+
+        if ($validated['action_type'] === 'benefit') {
+            $balanceId = $validated['balance_id'];
+            $balance = null;
+
+            if ($balanceId && \Illuminate\Support\Str::isUuid($balanceId)) {
+                $balance = SubscriptionBenefitBalance::with(['subscription.pet.customer', 'benefitDefinition'])
+                    ->where('id', $balanceId)
+                    ->first();
+            }
+
+            // Si no se encuentra por balance_id directo, buscar por pet_id y la suscripción activa
+            if (!$balance && !empty($validated['pet_id'])) {
+                $sub = Subscription::with(['benefitBalances.benefitDefinition', 'pet.customer'])
+                    ->where('pet_id', $validated['pet_id'])
+                    ->where('tenant_id', $tenantId)
+                    ->where('status', 'active')
+                    ->first();
+
+                if ($sub) {
+                    if ($sub->benefitBalances()->count() === 0) {
+                        try {
+                            app(\App\Services\BenefitLedgerService::class)->resetCycleBalances($sub);
+                            $sub->load('benefitBalances.benefitDefinition');
+                        } catch (\Throwable $e) {}
+                    }
+                    $balance = $sub->benefitBalances->firstWhere('id', $balanceId) 
+                        ?? $sub->benefitBalances->firstWhere('benefit_definition_id', $balanceId)
+                        ?? $sub->benefitBalances->first();
+                }
+            }
+
+            if (!$balance) {
+                if ($request->wantsJson()) {
+                    return response()->json(['error' => 'No se encontró el saldo del beneficio médico para esta mascota.'], 404);
+                }
+                return redirect()->back()->with('error', 'No se encontró el saldo del beneficio médico para esta mascota.');
+            }
+
+            if ($balance->remaining_count < $quantity) {
+                $msg = "Cupo insuficiente. Solo quedan {$balance->remaining_count} disponible(s) en este ciclo.";
+                if ($request->wantsJson()) {
+                    return response()->json(['error' => $msg], 422);
+                }
+                return redirect()->back()->with('error', $msg);
+            }
+
+            // Canje atómico en Base de Datos
+            \DB::transaction(function () use ($balance, $quantity, $notes, $tenantId, $attendedByName) {
+                $balance->decrement('remaining_count', $quantity);
+                $balance->increment('used_count', $quantity);
+
+                $fullNotes = $notes ? "{$notes} [Atendido por: {$attendedByName}]" : "Atendido por: {$attendedByName}";
+
+                $redemption = BenefitRedemption::create([
+                    'tenant_id' => $tenantId,
+                    'balance_id' => $balance->id,
+                    'redeemed_at' => now(),
+                    'vet_user_id' => auth()->id(),
+                    'quantity' => $quantity,
+                    'notes' => $fullNotes,
+                ]);
+
+                // Evento de auditoría forense
+                \App\Events\BenefitRedeemedEvent::dispatch($redemption);
+            });
+
+            $petName = $balance->subscription?->pet?->name ?? 'la mascota';
+            $benefitName = $balance->benefitDefinition?->name ?? 'el servicio';
+            $successMsg = "✓ ¡{$quantity}x {$benefitName} canjeado exitosamente para {$petName}!";
+
+            if ($request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => $successMsg]);
+            }
+            return redirect()->back()->with('success', $successMsg);
+        }
+
+        if ($validated['action_type'] === 'wallet') {
+            $petId = $validated['pet_id'];
+            $subscription = Subscription::where('pet_id', $petId)
+                ->where('tenant_id', $tenantId)
+                ->where('status', 'active')
+                ->first();
+
+            if (!$subscription) {
+                $subFallback = Subscription::where('tenant_id', $tenantId)->where('status', 'active')->first();
+                $subscription = $subFallback;
+            }
+
+            if (!$subscription) {
+                if ($request->wantsJson()) {
+                    return response()->json(['error' => 'No se encontró una suscripción activa para deducir el crédito.'], 404);
+                }
+                return redirect()->back()->with('error', 'No se encontró una suscripción activa para deducir el crédito.');
+            }
+
+            $walletService = app(\App\Services\HealthWalletService::class);
+            $wallet = $walletService->getOrCreateWallet($subscription);
+
+            $amountToDeduct = (float) ($validated['amount_cop'] ?? 10000);
+            if ($wallet->balance_cop < $amountToDeduct) {
+                $msg = "Saldo insuficiente en Crédito Clínico de Emergencia. Saldo actual: $" . number_format($wallet->balance_cop, 0, ',', '.') . " COP.";
+                if ($request->wantsJson()) {
+                    return response()->json(['error' => $msg], 422);
+                }
+                return redirect()->back()->with('error', $msg);
+            }
+
+            $reason = $notes 
+                ? "{$notes} [Atendido por: {$attendedByName}]" 
+                : "Aplicación de Crédito de Emergencia en Mostrador [Atendido por: {$attendedByName}]";
+
+            $walletService->redeemFund(
+                $wallet,
+                $amountToDeduct,
+                $reason,
+                $subscription->id,
+                auth()->id()
+            );
+
+            $formatted = number_format($amountToDeduct, 0, ',', '.');
+            $successMsg = "✓ ¡Se aplicaron \${$formatted} COP de Crédito de Emergencia exitosamente!";
+
+            if ($request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => $successMsg]);
+            }
+            return redirect()->back()->with('success', $successMsg);
+        }
+
+        return redirect()->back();
     }
 
     /**

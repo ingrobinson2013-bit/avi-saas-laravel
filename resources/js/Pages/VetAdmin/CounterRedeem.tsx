@@ -14,7 +14,11 @@ import {
     ChevronDown, 
     Check, 
     Filter, 
-    FileText 
+    FileText,
+    QrCode,
+    AlertCircle,
+    X,
+    Loader2
 } from 'lucide-react';
 
 interface BalanceItem {
@@ -132,38 +136,116 @@ export default function CounterRedeem({
     const [patientSearch, setPatientSearch] = useState('');
     const [showPatientSelector, setShowPatientSelector] = useState(false);
     const [historySearch, setHistorySearch] = useState('');
+    const [quickCodeInput, setQuickCodeInput] = useState('');
+
+    // Modal de Canje de Beneficio
+    const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
+    const [selectedBenefit, setSelectedBenefit] = useState<BalanceItem | null>(null);
+    const [redeemNotes, setRedeemNotes] = useState('');
+    const [redeemAttendedBy, setRedeemAttendedBy] = useState(userName);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Modal de Crédito Clínico de Emergencia
+    const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+    const [walletAmount, setWalletAmount] = useState<number>(10000);
+    const [walletNotes, setWalletNotes] = useState('Descuento en Cirugía / Atención de Urgencia');
+    const [walletAttendedBy, setWalletAttendedBy] = useState(userName);
+    const [isSubmittingWallet, setIsSubmittingWallet] = useState(false);
+
+    // Sincronización en tiempo real con datos de BD
+    React.useEffect(() => {
+        setLocalBalances(balances);
+    }, [balances]);
+
+    React.useEffect(() => {
+        setCurrentWalletBalance(wallet.balance_cop);
+    }, [wallet.balance_cop]);
 
     const handleSelectPatient = (pId: string) => {
         setShowPatientSelector(false);
         router.get(`/admin/${tenantSlug}/counter-redeem`, { pet_id: pId, preview: '1' }, { preserveState: false });
     };
 
-    const handleRedeemWallet = () => {
+    const handleQuickSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!quickCodeInput.trim()) return;
+        router.get(`/admin/${tenantSlug}/counter-redeem`, { q: quickCodeInput.trim(), preview: '1' }, { preserveState: false });
+    };
+
+    const openRedeemModal = (item: BalanceItem) => {
+        if (item.available <= 0) return;
+        setSelectedBenefit(item);
+        setRedeemNotes('');
+        setRedeemAttendedBy(userName);
+        setIsRedeemModalOpen(true);
+    };
+
+    const confirmRedeemBenefit = () => {
+        if (!selectedBenefit) return;
+        setIsSubmitting(true);
+
+        router.post(`/admin/${tenantSlug}/counter-redeem`, {
+            pet_id: pet.pet_id,
+            action_type: 'benefit',
+            balance_id: selectedBenefit.id,
+            quantity: 1,
+            notes: redeemNotes.trim(),
+            attended_by: redeemAttendedBy.trim() || userName,
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setIsRedeemModalOpen(false);
+                setSelectedBenefit(null);
+                setToastMessage(`✓ ¡1x ${selectedBenefit.name} canjeado y guardado en la base de datos!`);
+                setTimeout(() => setToastMessage(null), 5000);
+            },
+            onError: (err) => {
+                setToastMessage('⚠️ ' + (Object.values(err)[0] || 'Error al registrar el canje'));
+                setTimeout(() => setToastMessage(null), 5000);
+            },
+            onFinish: () => {
+                setIsSubmitting(false);
+            }
+        });
+    };
+
+    const openWalletModal = () => {
         if (!currentWalletBalance || currentWalletBalance <= 0) {
             setToastMessage('⚠️ No hay saldo disponible en el Crédito Clínico de Emergencia.');
             setTimeout(() => setToastMessage(null), 4000);
             return;
         }
-
-        const deduct = Math.min(currentWalletBalance, 10000);
-        setCurrentWalletBalance((prev) => prev - deduct);
-        setToastMessage(`✓ ¡Se aplicaron $${deduct.toLocaleString('es-CO')} COP de Crédito de Emergencia a la cuenta de ${pet.name}! Saldo restante: $${(currentWalletBalance - deduct).toLocaleString('es-CO')} COP.`);
-        setTimeout(() => setToastMessage(null), 5000);
+        setWalletAmount(Math.min(currentWalletBalance, 10000));
+        setWalletNotes('Descuento en Cirugía / Atención Médica de Urgencia');
+        setWalletAttendedBy(userName);
+        setIsWalletModalOpen(true);
     };
 
-    const handleRedeem = (item: BalanceItem) => {
-        if (item.available <= 0) return;
+    const confirmRedeemWallet = () => {
+        if (!walletAmount || walletAmount <= 0) return;
+        setIsSubmittingWallet(true);
 
-        setLocalBalances((prev) =>
-            prev.map((b) =>
-                b.id === item.id
-                    ? { ...b, used: b.used + 1, available: b.available - 1 }
-                    : b
-            )
-        );
-
-        setToastMessage(`✓ ¡1x ${item.name} canjeado exitosamente para ${pet.name}! Saldo de cobertura actualizado.`);
-        setTimeout(() => setToastMessage(null), 4000);
+        router.post(`/admin/${tenantSlug}/counter-redeem`, {
+            pet_id: pet.pet_id,
+            action_type: 'wallet',
+            amount_cop: walletAmount,
+            notes: walletNotes.trim(),
+            attended_by: walletAttendedBy.trim() || userName,
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setIsWalletModalOpen(false);
+                setToastMessage(`✓ ¡Se aplicaron $${walletAmount.toLocaleString('es-CO')} COP del Crédito de Emergencia en la base de datos!`);
+                setTimeout(() => setToastMessage(null), 5000);
+            },
+            onError: (err) => {
+                setToastMessage('⚠️ ' + (Object.values(err)[0] || 'Error al aplicar crédito de emergencia'));
+                setTimeout(() => setToastMessage(null), 5000);
+            },
+            onFinish: () => {
+                setIsSubmittingWallet(false);
+            }
+        });
     };
 
     const filtered = localBalances.filter(
@@ -297,6 +379,42 @@ export default function CounterRedeem({
                 {/* VISTA 1: TERMINAL DE CANJE */}
                 {currentTab === 'redeem' && (
                     <div className="space-y-5">
+                        {/* Quick QR Scanner & Contract Search Bar */}
+                        <form onSubmit={handleQuickSearch} className="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 p-4 rounded-2xl shadow-sm text-white flex flex-col sm:flex-row items-center justify-between gap-3 border border-blue-900/50">
+                            <div className="flex items-center gap-3 w-full sm:w-auto">
+                                <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300 shrink-0">
+                                    <QrCode className="w-5 h-5 text-cyan-300" />
+                                </div>
+                                <div>
+                                    <span className="text-xs font-black block tracking-tight text-white flex items-center gap-1.5">
+                                        <span>📷 Escanear Carnet o Búsqueda Rápida</span>
+                                        <span className="text-[9px] bg-cyan-400/20 text-cyan-300 px-2 py-0.2 rounded-full border border-cyan-400/30 font-bold">Lector QR</span>
+                                    </span>
+                                    <span className="text-[11px] text-slate-300">Pasa la pistola QR sobre el carnet del celular o ingresa el Contrato / Mascota / Cédula</span>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 w-full sm:w-auto">
+                                <div className="relative flex-1 sm:w-80">
+                                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                                    <input
+                                        type="text"
+                                        value={quickCodeInput}
+                                        onChange={(e) => setQuickCodeInput(e.target.value)}
+                                        placeholder="Ej: VPP-2026-0001, Max, o 323..."
+                                        className="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-cyan-400 transition"
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition shadow-xs shrink-0 flex items-center gap-1"
+                                >
+                                    <span>Cargar</span>
+                                    <span>↵</span>
+                                </button>
+                            </div>
+                        </form>
+
                         {/* Patient Summary Card con Switcher */}
                         <div className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 relative">
                             <div className="flex items-center gap-3.5">
@@ -395,11 +513,11 @@ export default function CounterRedeem({
                             <div className="flex items-center gap-2 shrink-0">
                                 <button
                                     type="button"
-                                    onClick={handleRedeemWallet}
+                                    onClick={openWalletModal}
                                     className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5"
                                 >
                                     <span>💳</span>
-                                    <span>Aplicar $10.000 a Cuenta</span>
+                                    <span>Aplicar Crédito a Cuenta</span>
                                 </button>
                             </div>
                         </div>
@@ -483,7 +601,7 @@ export default function CounterRedeem({
                                             <button
                                                 type="button"
                                                 disabled={!hasAvailable}
-                                                onClick={() => handleRedeem(item)}
+                                                onClick={() => openRedeemModal(item)}
                                                 className={`w-full py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
                                                     hasAvailable
                                                         ? 'bg-[#0080ff] hover:bg-blue-600 text-white shadow-2xs'
@@ -581,6 +699,260 @@ export default function CounterRedeem({
                     </div>
                 )}
             </div>
+
+            {/* MODAL 1: CONFIRMAR CANJE OFICIAL DE BENEFICIO MÉDICO */}
+            {isRedeemModalOpen && selectedBenefit && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+                    <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all">
+                        {/* Header Modal */}
+                        <div className="bg-gradient-to-r from-blue-900 to-indigo-900 p-5 text-white flex items-center justify-between">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300">
+                                    <Zap className="w-5 h-5 text-cyan-300" />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-black tracking-tight">Confirmar Canje en Mostrador</h3>
+                                    <span className="text-[10px] text-blue-200">Registro oficial en Base de Datos & Carnet Digital</span>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setIsRedeemModalOpen(false)}
+                                className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition text-xs"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Body Modal */}
+                        <div className="p-5 space-y-4 text-xs">
+                            {/* Resumen del paciente y servicio */}
+                            <div className="p-3 rounded-2xl bg-blue-50/70 border border-blue-200/80 space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-slate-500 font-medium">Paciente:</span>
+                                    <strong className="text-slate-900">{pet.name} ({pet.breed})</strong>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-slate-500 font-medium">Tutor Responsable:</span>
+                                    <span className="text-slate-800 font-bold">{pet.customer_name}</span>
+                                </div>
+                                <div className="flex items-center justify-between pt-1 border-t border-blue-200/50">
+                                    <span className="text-blue-900 font-bold">Procedimiento a Redimir:</span>
+                                    <span className="font-black text-blue-700 bg-white px-2 py-0.5 rounded border border-blue-200">
+                                        1x {selectedBenefit.name}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between text-[11px]">
+                                    <span className="text-slate-500">Saldo restante tras canje:</span>
+                                    <strong className="text-emerald-700">{selectedBenefit.available - 1} disponible(s)</strong>
+                                </div>
+                            </div>
+
+                            {/* Profesional que atiende */}
+                            <div>
+                                <label className="block text-[11px] font-black text-slate-700 uppercase tracking-wider mb-1">
+                                    Médico Veterinario / Profesional Responsable *
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={redeemAttendedBy}
+                                    onChange={(e) => setRedeemAttendedBy(e.target.value)}
+                                    placeholder="Nombre del doctor o profesional"
+                                    className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-hidden transition"
+                                />
+                            </div>
+
+                            {/* Notas Clínicas / Lote */}
+                            <div>
+                                <label className="block text-[11px] font-black text-slate-700 uppercase tracking-wider mb-1">
+                                    Notas Clínicas, Lote o Diagnóstico (Opcional)
+                                </label>
+                                <textarea
+                                    rows={2}
+                                    value={redeemNotes}
+                                    onChange={(e) => setRedeemNotes(e.target.value)}
+                                    placeholder="Ej: Vacuna séxtuple aplicada, lote #4582, paciente en excelente estado general."
+                                    className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:outline-hidden transition"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Footer Modal */}
+                        <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2.5">
+                            <button
+                                type="button"
+                                disabled={isSubmitting}
+                                onClick={() => setIsRedeemModalOpen(false)}
+                                className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 font-bold text-xs transition"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                type="button"
+                                disabled={isSubmitting}
+                                onClick={confirmRedeemBenefit}
+                                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md transition flex items-center gap-1.5 disabled:opacity-50"
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                        <span>Guardando en BD...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Check className="w-3.5 h-3.5" />
+                                        <span>Confirmar y Descontar Saldo</span>
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL 2: APLICAR CRÉDITO CLÍNICO DE EMERGENCIA (HEALTH WALLET) */}
+            {isWalletModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+                    <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden transform transition-all">
+                        {/* Header Modal */}
+                        <div className="bg-gradient-to-r from-amber-700 via-amber-800 to-amber-900 p-5 text-white flex items-center justify-between">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-amber-200">
+                                    🛡️
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-black tracking-tight">Aplicar Crédito de Emergencia</h3>
+                                    <span className="text-[10px] text-amber-200">Fondo Quirúrgico Acumulado (10% Cuotas)</span>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setIsWalletModalOpen(false)}
+                                className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition text-xs"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Body Modal */}
+                        <div className="p-5 space-y-4 text-xs">
+                            <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 space-y-1.5">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-slate-600 font-medium">Saldo Disponible:</span>
+                                    <strong className="text-amber-900 font-mono text-sm">
+                                        ${currentWalletBalance.toLocaleString('es-CO')} COP
+                                    </strong>
+                                </div>
+                                <p className="text-[10.5px] text-amber-800">
+                                    Exclusivo como descuento en cirugías, ecografías, hospitalización o urgencias médicas de {pet.name}.
+                                </p>
+                            </div>
+
+                            {/* Monto a aplicar */}
+                            <div>
+                                <label className="block text-[11px] font-black text-slate-700 uppercase tracking-wider mb-1">
+                                    Monto a descontar de la cuenta (COP) *
+                                </label>
+                                <input
+                                    type="number"
+                                    min="1000"
+                                    max={currentWalletBalance}
+                                    step="1000"
+                                    required
+                                    value={walletAmount}
+                                    onChange={(e) => setWalletAmount(Number(e.target.value))}
+                                    className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-mono font-bold text-sm focus:ring-2 focus:ring-amber-500 focus:outline-hidden transition"
+                                />
+
+                                {/* Botones de atajo rápido */}
+                                <div className="flex items-center gap-1.5 mt-2">
+                                    {[10000, 20000, 50000].filter(v => v <= currentWalletBalance).map((val) => (
+                                        <button
+                                            key={val}
+                                            type="button"
+                                            onClick={() => setWalletAmount(val)}
+                                            className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition ${
+                                                walletAmount === val 
+                                                    ? 'bg-amber-600 text-white border-amber-600' 
+                                                    : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                                            }`}
+                                        >
+                                            ${val.toLocaleString('es-CO')}
+                                        </button>
+                                    ))}
+                                    <button
+                                        type="button"
+                                        onClick={() => setWalletAmount(currentWalletBalance)}
+                                        className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200 transition"
+                                    >
+                                        Total (${currentWalletBalance.toLocaleString('es-CO')})
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Motivo o Procedimiento */}
+                            <div>
+                                <label className="block text-[11px] font-black text-slate-700 uppercase tracking-wider mb-1">
+                                    Concepto / Procedimiento Quirúrgico o Urgencia *
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={walletNotes}
+                                    onChange={(e) => setWalletNotes(e.target.value)}
+                                    placeholder="Ej: Descuento en Limpieza Dental / Cirugía"
+                                    className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 font-medium focus:ring-2 focus:ring-amber-500 focus:outline-hidden transition"
+                                />
+                            </div>
+
+                            {/* Profesional que atiende */}
+                            <div>
+                                <label className="block text-[11px] font-black text-slate-700 uppercase tracking-wider mb-1">
+                                    Profesional que autoriza *
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={walletAttendedBy}
+                                    onChange={(e) => setWalletAttendedBy(e.target.value)}
+                                    className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 font-medium focus:ring-2 focus:ring-amber-500 focus:outline-hidden transition"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Footer Modal */}
+                        <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2.5">
+                            <button
+                                type="button"
+                                disabled={isSubmittingWallet}
+                                onClick={() => setIsWalletModalOpen(false)}
+                                className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 font-bold text-xs transition"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                type="button"
+                                disabled={isSubmittingWallet || walletAmount <= 0 || walletAmount > currentWalletBalance}
+                                onClick={confirmRedeemWallet}
+                                className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-black text-xs shadow-md transition flex items-center gap-1.5 disabled:opacity-50"
+                            >
+                                {isSubmittingWallet ? (
+                                    <>
+                                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                        <span>Aplicando...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Check className="w-3.5 h-3.5" />
+                                        <span>Confirmar Descuento</span>
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </VetAdminLayout>
     );
 }

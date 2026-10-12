@@ -249,6 +249,11 @@ Route::get('/admin/{slug}/counter-redeem', function (string $slug) use ($checkAd
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->counterRedeem(request(), $slug);
 });
 
+Route::post('/admin/{slug}/counter-redeem', function (string $slug) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return response()->json(['error' => 'Unauthorized'], 401);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->storeCounterRedeem(request(), $slug);
+});
+
 Route::get('/admin/{slug}/historial-canjes', function (string $slug) use ($checkAdminAccess, $redirectToLogin) {
     if (!$checkAdminAccess($slug)) return $redirectToLogin($slug);
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->redemptionHistory(request(), $slug);
