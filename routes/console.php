@@ -23,3 +23,11 @@ Schedule::command('avi:send-preventive-reminders')
     ->dailyAt('08:30')
     ->withoutOverlapping()
     ->onOneServer();
+
+// 3. Prospección Automática y Despacho de Membresías a Veterinarias (Lunes a Viernes a las 9:00 AM)
+Schedule::command('avi:prospectos-scan-and-send --limit=25 --scan')
+    ->dailyAt('09:00')
+    ->weekdays()
+    ->withoutOverlapping()
+    ->onOneServer();
+
