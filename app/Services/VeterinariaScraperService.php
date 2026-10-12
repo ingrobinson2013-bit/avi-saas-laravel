@@ -26,9 +26,9 @@ class VeterinariaScraperService
     ];
 
     /**
-     * Escanear veterinarias por región o ciudad con Crawler Web en Vivo
+     * Escanear veterinarias por región o ciudad con Google Custom Search y Crawler Web en Vivo
      */
-    public function scanRegion(string $region = 'sabana', ?string $customUrl = null): array
+    public function scanRegion(string $region = 'sabana', ?string $customUrl = null, ?string $googleApiKey = null, ?string $googleCx = null): array
     {
         Log::info("[Scraper] Iniciando escaneo y rastreo web en vivo para región: {$region}");
         $contactosExtraidos = [];
@@ -39,7 +39,18 @@ class VeterinariaScraperService
             $contactosExtraidos = array_merge($contactosExtraidos, $webContactos);
         }
 
-        // 2. Rastreador Web en Vivo (OpenStreetMap API + Web Crawling)
+        // 2. Búsqueda en Vivo Oficial con Google Custom Search API (100 consultas/día gratis)
+        try {
+            $googleContactos = $this->searchWithGoogleCustomSearch($region, $googleApiKey, $googleCx);
+            if (!empty($googleContactos)) {
+                Log::info("[GoogleSearch] Se descubrieron " . count($googleContactos) . " nuevas clínicas en vivo vía Google.");
+                $contactosExtraidos = array_merge($contactosExtraidos, $googleContactos);
+            }
+        } catch (\Throwable $e) {
+            Log::warning("[GoogleSearch] Advertencia en búsqueda de Google: " . $e->getMessage());
+        }
+
+        // 3. Rastreador Web en Vivo (OpenStreetMap API + Web Crawling)
         try {
             $enVivo = $this->crawlLiveOpenStreetMap($region);
             if (!empty($enVivo)) {
@@ -50,7 +61,7 @@ class VeterinariaScraperService
             Log::warning("[Crawler] Advertencia en rastreo OpenStreetMap: " . $e->getMessage());
         }
 
-        // 3. Catálogo enriquecido por región
+        // 4. Catálogo enriquecido por región
         switch ($region) {
             case 'zipaquira':
             case 'sabana':
@@ -277,6 +288,105 @@ class VeterinariaScraperService
         return [
             ['razon_social' => 'Laboratorio Veterinario Animal Health', 'correo_comercial' => 'animalhealthlaboratorio@gmail.com', 'telefono' => '3123456780', 'municipio' => 'Bogotá D.C.', 'departamento' => 'Bogotá D.C.', 'direccion' => 'Bogotá', 'tipo' => 'Diagnóstico Veterinario', 'fuente' => 'Registro Nacional'],
         ];
+    }
+
+    /**
+     * Búsqueda en vivo utilizando Google Custom Search API (Oficial y Dinámica)
+     */
+    public function searchWithGoogleCustomSearch(string $region = 'sabana', ?string $apiKey = null, ?string $cx = null): array
+    {
+        $apiKey = $apiKey ?: env('GOOGLE_SEARCH_API_KEY');
+        $cx = $cx ?: env('GOOGLE_SEARCH_ENGINE_ID');
+
+        if (!$apiKey || !$cx) {
+            return [];
+        }
+
+        $ciudades = match ($region) {
+            'zipaquira' => ['Zipaquirá', 'Cajicá', 'Chía'],
+            'sabana' => ['Zipaquirá', 'Chía', 'Cajicá', 'Cota', 'Tenjo', 'Funza', 'Mosquera'],
+            'bogota' => ['Bogotá Suba', 'Bogotá Chapinero', 'Bogotá Usaquén', 'Bogotá Cedritos', 'Bogotá Kennedy'],
+            'antioquia' => ['Medellín Poblado', 'Medellín Laureles', 'Envigado', 'Sabaneta', 'Itagüí'],
+            'valle' => ['Cali Sur', 'Cali Norte', 'Palmira', 'Jamundí'],
+            'santander' => ['Bucaramanga', 'Floridablanca', 'Cúcuta'],
+            'ejecafetero' => ['Pereira', 'Manizales', 'Armenia'],
+            'caribe' => ['Barranquilla', 'Cartagena', 'Santa Marta'],
+            'cundinamarca_tolima' => ['Soacha', 'Fusagasugá', 'Girardot', 'Ibagué'],
+            default => ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Zipaquirá'],
+        };
+
+        $prospectos = [];
+        // Tomar hasta 2 ciudades por consulta para mantener el tiempo bajo 5 segundos
+        $ciudadesBatch = array_slice($ciudades, 0, 2);
+
+        foreach ($ciudadesBatch as $ciudad) {
+            $queries = [
+                "\"veterinaria\" \"{$ciudad}\" \"@gmail.com\" OR \"@hotmail.com\"",
+            ];
+
+            foreach ($queries as $q) {
+                try {
+                    $response = Http::timeout(4)
+                        ->connectTimeout(2)
+                        ->get('https://www.googleapis.com/customsearch/v1', [
+                            'key' => $apiKey,
+                            'cx' => $cx,
+                            'q' => $q,
+                            'num' => 10,
+                            'gl' => 'co',
+                            'lr' => 'lang_es',
+                        ]);
+
+                    if (!$response->successful()) {
+                        Log::warning("[GoogleSearch] Respuesta no exitosa: " . $response->body());
+                        continue;
+                    }
+
+                    $items = $response->json('items') ?? [];
+                    foreach ($items as $item) {
+                        $title = $item['title'] ?? 'Clínica Veterinaria';
+                        $snippet = $item['snippet'] ?? '';
+                        $link = $item['link'] ?? '';
+
+                        $textToScan = $title . ' ' . $snippet;
+                        preg_match_all('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/', $textToScan, $m);
+                        $foundEmails = $m[0] ?? [];
+
+                        if (empty($foundEmails) && !empty($link) && !str_contains($link, 'facebook.com') && !str_contains($link, 'instagram.com')) {
+                            $foundEmails = $this->crawlWebsiteForEmails($link);
+                        }
+
+                        preg_match('/(?:3\d{2}[-.\s]?\d{3}[-.\s]?\d{4}|\b60\d{8}\b)/', $textToScan, $telMatch);
+                        $phone = $telMatch[0] ?? null;
+
+                        foreach ($foundEmails as $email) {
+                            $emailClean = strtolower(trim($email));
+                            if (!filter_var($emailClean, FILTER_VALIDATE_EMAIL)) continue;
+                            $domain = substr(strrchr($emailClean, "@"), 1);
+                            if (in_array($domain, $this->blacklistedDomains)) continue;
+
+                            $cleanName = preg_replace('/(\||-|–).*(Facebook|Instagram|LinkedIn|Twitter|Google).*$/i', '', $title);
+                            $cleanName = trim($cleanName) ?: 'Clínica Veterinaria';
+
+                            $prospectos[] = [
+                                'razon_social' => substr($cleanName, 0, 100),
+                                'correo_comercial' => $emailClean,
+                                'telefono' => $phone,
+                                'municipio' => explode(' ', $ciudad)[0],
+                                'departamento' => 'Colombia',
+                                'tipo' => 'Clínica Veterinaria',
+                                'fuente' => 'Google Search API (En Vivo)',
+                                'estado' => 'pendiente',
+                            ];
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning("[GoogleSearch] Excepción en query {$q}: " . $e->getMessage());
+                }
+            }
+        }
+
+        return $prospectos;
     }
 
     /**

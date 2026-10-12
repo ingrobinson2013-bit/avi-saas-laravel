@@ -79,10 +79,35 @@ class ListProspectosVeterinarias extends ListRecords
                         ->placeholder('https://www.clinicaveterinaria.com')
                         ->url()
                         ->helperText('Si tienes una web de clínica, el crawler la navegará en vivo y extraerá sus correos de contacto de forma inmediata.'),
+
+                    Forms\Components\Section::make('⚡ Motor Oficial Google Search API (Buscador en Vivo)')
+                        ->description('Conecta Google en tiempo real para encontrar clínicas en vivo (100 consultas gratis al día).')
+                        ->schema([
+                            Forms\Components\TextInput::make('google_api_key')
+                                ->label('Google Search API Key')
+                                ->placeholder('AIzaSy...')
+                                ->password()
+                                ->revealable()
+                                ->default(env('GOOGLE_SEARCH_API_KEY'))
+                                ->helperText('Obtenla gratis en Google Cloud Console -> APIs y Servicios -> Credenciales.'),
+
+                            Forms\Components\TextInput::make('google_cx_id')
+                                ->label('Search Engine ID (CX)')
+                                ->placeholder('0123456789abcdef:ghijk')
+                                ->default(env('GOOGLE_SEARCH_ENGINE_ID'))
+                                ->helperText('Créalo gratis en programmablesearchengine.google.com con opción "Buscar en toda la web".'),
+                        ])
+                        ->collapsible()
+                        ->collapsed(fn () => filled(env('GOOGLE_SEARCH_API_KEY'))),
                 ])
                 ->action(function (array $data) {
                     $scraper = app(\App\Services\VeterinariaScraperService::class);
-                    $res = $scraper->scanRegion($data['region'], $data['url_especifica'] ?? null);
+                    $res = $scraper->scanRegion(
+                        $data['region'],
+                        $data['url_especifica'] ?? null,
+                        $data['google_api_key'] ?? null,
+                        $data['google_cx_id'] ?? null
+                    );
 
                     Notification::make()
                         ->title('Escaneo y Sincronización Exitosa')
