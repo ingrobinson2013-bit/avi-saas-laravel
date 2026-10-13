@@ -174,31 +174,6 @@ export default function VetAdminLayout({
         setNotifications(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n));
     };
 
-    // Al recargar (F5 / Refresh) en el navegador en cualquier página, redirigir automáticamente al Dashboard de Inicio
-    useEffect(() => {
-        if (typeof window === 'undefined') return;
-
-        try {
-            const navEntries = performance.getEntriesByType('navigation');
-            const isReload = navEntries.length > 0
-                ? (navEntries[0] as PerformanceNavigationTiming).type === 'reload'
-                : (performance as any)?.navigation?.type === 1;
-
-            if (isReload) {
-                const pathname = window.location.pathname;
-                const isInicio = /^\/admin(?:\/[^\/]+)?\/?$/.test(pathname) && 
-                    !/\/(pets|customers|subscriptions|plans|benefit-definitions|citas|agenda|calendar|counter-redeem|historial-canjes|reportes|metricas|crecimiento|clinic-settings|renovar-saas|inteligencia|logistica)/.test(pathname);
-                
-                if (!isInicio) {
-                    const target = getHref(`/admin/${tenantSlug}`);
-                    router.visit(target, { replace: true });
-                }
-            }
-        } catch (e) {
-            console.error('Error al detectar recarga:', e);
-        }
-    }, []);
-
     const activeBgColor = primaryColor || '#2563eb';
 
     // Determina inequívocamente si la vista actual es la pantalla de Inicio / Dashboard
