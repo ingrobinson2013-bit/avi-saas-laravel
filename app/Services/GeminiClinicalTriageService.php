@@ -14,7 +14,7 @@ class GeminiClinicalTriageService
     public function __construct()
     {
         $rawKey = config('services.gemini.api_key') ?: env('GEMINI_API_KEY') ?: env('GOOGLE_API_KEY');
-        $this->apiKey = !empty($rawKey) ? $rawKey : 'AIzaSyBBRdG67yYvFblN7xR_Q3HkVfQOsnWl1hk';
+        $this->apiKey = !empty($rawKey) ? $rawKey : '';
     }
 
     /**
@@ -50,6 +50,8 @@ class GeminiClinicalTriageService
         // Si tenemos API Key real de Gemini y (imagen o síntomas clínicos)
         if (!empty($this->apiKey) && $this->apiKey !== 'demo_key' && ($hasImage || $hasSymptoms)) {
             $modelsToTry = [
+                config('services.gemini.model', 'gemini-3.8-flash'),
+                'gemini-3.8-flash',
                 'gemini-2.5-flash',
             ];
 

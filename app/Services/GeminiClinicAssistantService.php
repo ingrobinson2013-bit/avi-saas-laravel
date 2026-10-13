@@ -24,8 +24,8 @@ class GeminiClinicAssistantService
     public function __construct()
     {
         $rawKey = config('services.gemini.api_key') ?: env('GEMINI_API_KEY') ?: env('GOOGLE_API_KEY');
-        $this->apiKey = !empty($rawKey) ? $rawKey : 'AIzaSyBBRdG67yYvFblN7xR_Q3HkVfQOsnWl1hk';
-        $this->primaryModel = config('services.gemini.model', 'gemini-2.5-flash');
+        $this->apiKey = !empty($rawKey) ? $rawKey : '';
+        $this->primaryModel = config('services.gemini.model', 'gemini-3.8-flash');
         $this->fallbackModel = 'gemini-1.5-flash';
     }
 
@@ -250,9 +250,10 @@ PROMPT;
         if (!empty($this->apiKey) && $this->apiKey !== 'demo_key') {
             $modelsToTry = [
                 $this->primaryModel,
+                'gemini-3.8-flash',
                 'gemini-2.5-flash',
-                'gemini-1.5-flash',
                 'gemini-2.0-flash',
+                'gemini-1.5-flash',
                 'gemini-flash-latest',
                 'gemini-2.5-pro',
             ];
