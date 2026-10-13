@@ -91,6 +91,7 @@
     
     @php
         $isPilot = ($tenant->slug === 'vet-pet-patitas');
+        $brandName = $tenant->branding['brand_name'] ?? $tenant->name ?? 'Vet-Pet Patitas';
         $primaryColor = $tenant->branding['primary_color'] ?? ($isPilot ? '#0080ff' : '#0D9488');
         $secondaryColor = $tenant->branding['secondary_color'] ?? ($isPilot ? '#d437b5' : '#0B1120');
         $logoUrl = $tenant->branding['logo_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp' : null);
@@ -194,12 +195,9 @@
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4 text-center sm:text-left">
             <div class="flex items-center space-x-2 text-teal-200 text-[11px] sm:text-xs">
                 <span class="animate-pulse">🩺</span>
-                <span class="font-bold">Membresías de Cuidado & Salud Preventiva • {{ $tenant->name }}</span>
+                <span class="font-bold">Membresías de Cuidado & Salud Preventiva • {{ $brandName }}</span>
             </div>
             <div class="flex items-center space-x-3 shrink-0">
-                <a href="{{ url()->current() }}?theme=modern" class="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/30 text-indigo-200 border border-indigo-400/40 hover:bg-indigo-600 hover:text-white transition" title="Cambiar a la Plantilla 2 (Moderna Neo-Glass)">
-                    <span>✨ Probar Plantilla 2 (Neo-Moderna)</span>
-                </a>
                 <a href="https://wa.me/57{{ $cleanPhone }}" target="_blank" class="flex items-center space-x-1.5 hover:text-teal-300 transition-colors text-[11px] sm:text-xs">
                     <svg class="w-3.5 h-3.5 fill-current text-teal-400 shrink-0" viewBox="0 0 24 24">
                         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
@@ -216,15 +214,15 @@
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4">
             <div class="flex items-center space-x-2.5 sm:space-x-3.5 min-w-0">
                 @if(!empty($logoUrl))
-                    <img src="{{ $logoUrl }}" alt="{{ $tenant->name }}" class="h-10 sm:h-12 w-auto max-h-12 object-contain rounded-xl shrink-0 shadow-xs" loading="lazy">
+                    <img src="{{ $logoUrl }}" alt="{{ $brandName }}" class="h-10 sm:h-12 w-auto max-h-12 object-contain rounded-xl shrink-0 shadow-xs" loading="lazy">
                 @else
                     <div class="w-10 h-10 rounded-xl bg-brand-primary flex items-center justify-center text-white text-xl shadow-md shrink-0">
                         🐾
                     </div>
                 @endif
                 <div class="min-w-0">
-                    <span class="text-sm sm:text-base lg:text-lg font-black tracking-tight text-slate-900 leading-tight block">{{ $tenant->name }}</span>
-                    <span class="inline-block text-[10px] sm:text-xs font-bold text-teal-700">📍 {{ $city }}</span>
+                    <span class="text-sm sm:text-base lg:text-lg font-black tracking-tight text-slate-900 leading-tight block whitespace-nowrap">{{ $brandName }}</span>
+                    <span class="inline-block text-[10px] sm:text-xs font-bold text-teal-700 whitespace-nowrap">📍 {{ $city }}</span>
                 </div>
             </div>
 

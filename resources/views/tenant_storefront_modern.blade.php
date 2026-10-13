@@ -116,11 +116,6 @@
             Afiliación 100% Digital en 60 Segundos:
         </span>
         <span class="hidden sm:inline text-slate-600"> Cobertura médica inmediata desde el primer día en {{ $city ?: 'sede' }} &bull; Sin permanencia obligatoria.</span>
-        
-        <!-- Toggle para alternar con la plantilla clásica -->
-        <a href="{{ url()->current() }}?theme=classic" class="ml-2 underline text-blue-600 hover:text-blue-800 text-[11px] font-bold">
-            Ver Plantilla 1 (Clásica)
-        </a>
     </div>
 
     <!-- Navegación Flotante Luminosa -->
