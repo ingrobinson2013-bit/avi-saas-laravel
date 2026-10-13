@@ -174,7 +174,42 @@ export default function VetAdminLayout({
         setNotifications(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n));
     };
 
+    // Al recargar (F5 / Refresh) en el navegador en cualquier página, redirigir automáticamente al Dashboard de Inicio
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        try {
+            const navEntries = performance.getEntriesByType('navigation');
+            const isReload = navEntries.length > 0
+                ? (navEntries[0] as PerformanceNavigationTiming).type === 'reload'
+                : (performance as any)?.navigation?.type === 1;
+
+            if (isReload) {
+                const pathname = window.location.pathname;
+                const isInicio = /^\/admin(?:\/[^\/]+)?\/?$/.test(pathname) && 
+                    !/\/(pets|customers|subscriptions|plans|benefit-definitions|citas|agenda|calendar|counter-redeem|historial-canjes|reportes|metricas|crecimiento|clinic-settings|renovar-saas|inteligencia|logistica)/.test(pathname);
+                
+                if (!isInicio) {
+                    const target = getHref(`/admin/${tenantSlug}`);
+                    router.visit(target, { replace: true });
+                }
+            }
+        } catch (e) {
+            console.error('Error al detectar recarga:', e);
+        }
+    }, []);
+
     const activeBgColor = primaryColor || '#2563eb';
+
+    // Determina inequívocamente si la vista actual es la pantalla de Inicio / Dashboard
+    const isCurrentPathInicio = () => {
+        if (typeof window === 'undefined') return activeItem === 'Inicio';
+        const pathname = window.location.pathname;
+        return activeItem === 'Inicio' || (
+            /^\/admin(?:\/[^\/]+)?\/?$/.test(pathname) &&
+            !/\/(pets|customers|subscriptions|plans|benefit-definitions|citas|agenda|calendar|counter-redeem|historial-canjes|reportes|metricas|crecimiento|clinic-settings|renovar-saas|inteligencia|logistica)/.test(pathname)
+        );
+    };
 
     // Helper para verificar si un ítem está activo (por activeItem prop o por URL actual)
     const isItemActive = (keys: string[], pathPattern?: RegExp) => {
@@ -188,6 +223,9 @@ export default function VetAdminLayout({
     // Helper para detectar si un grupo de menú debe abrirse automáticamente
     const getInitialGroupOpen = (group: string) => {
         if (typeof window === 'undefined') return false;
+        // Si estamos en Inicio, ningún grupo inicia abierto
+        if (isCurrentPathInicio()) return false;
+
         const path = window.location.pathname;
         if (group === 'clientes') {
             return ['Clientes y Mascotas', 'Mascotas', 'Tutores', 'Membresías & Afiliaciones', 'Membresías'].includes(activeItem) ||
@@ -212,7 +250,7 @@ export default function VetAdminLayout({
         return false;
     };
 
-    // Estado de acordeones de menú (Abre automáticamente el grupo activo para que permanezca visible y seleccionado)
+    // Estado de acordeones de menú
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
         clientes: getInitialGroupOpen('clientes'),
         planes: getInitialGroupOpen('planes'),
@@ -222,13 +260,23 @@ export default function VetAdminLayout({
     });
 
     useEffect(() => {
+        if (isCurrentPathInicio()) {
+            setOpenGroups({
+                clientes: false,
+                planes: false,
+                recepcion: false,
+                reportes: false,
+                configuracion: false,
+            });
+            return;
+        }
+
         setOpenGroups(prev => ({
-            ...prev,
-            clientes: prev.clientes || getInitialGroupOpen('clientes'),
-            planes: prev.planes || getInitialGroupOpen('planes'),
-            recepcion: prev.recepcion || getInitialGroupOpen('recepcion'),
-            reportes: prev.reportes || getInitialGroupOpen('reportes'),
-            configuracion: prev.configuracion || getInitialGroupOpen('configuracion'),
+            clientes: getInitialGroupOpen('clientes'),
+            planes: getInitialGroupOpen('planes'),
+            recepcion: getInitialGroupOpen('recepcion'),
+            reportes: getInitialGroupOpen('reportes'),
+            configuracion: getInitialGroupOpen('configuracion'),
         }));
     }, [activeItem]);
 
@@ -332,16 +380,16 @@ export default function VetAdminLayout({
                     <Link
                         href={getHref(`/admin/${tenantSlug}`)}
                         preserveScroll
-                        style={isItemActive(['Inicio'], new RegExp(`/admin/${tenantSlug}/?$`)) ? { backgroundColor: activeBgColor, color: '#ffffff' } : undefined}
+                        style={isCurrentPathInicio() ? { backgroundColor: activeBgColor, color: '#ffffff' } : undefined}
                         className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 group ${
-                            isItemActive(['Inicio'], new RegExp(`/admin/${tenantSlug}/?$`))
+                            isCurrentPathInicio()
                                 ? 'text-white shadow-sm ring-1 ring-white/15'
                                 : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                         }`}
                     >
-                        <Home className={`w-4 h-4 shrink-0 transition-colors ${isItemActive(['Inicio'], new RegExp(`/admin/${tenantSlug}/?$`)) ? 'text-white' : 'text-slate-400 group-hover:text-white'}`} />
+                        <Home className={`w-4 h-4 shrink-0 transition-colors ${isCurrentPathInicio() ? 'text-white' : 'text-slate-400 group-hover:text-white'}`} />
                         <span className="flex-1 truncate">Inicio</span>
-                        {isItemActive(['Inicio'], new RegExp(`/admin/${tenantSlug}/?$`)) && (
+                        {isCurrentPathInicio() && (
                             <span className="w-1.5 h-1.5 rounded-full bg-white ml-auto shrink-0 shadow-xs animate-pulse"></span>
                         )}
                     </Link>
