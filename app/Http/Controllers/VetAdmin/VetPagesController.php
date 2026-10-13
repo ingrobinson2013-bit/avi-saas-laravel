@@ -143,7 +143,7 @@ class VetPagesController extends Controller
             ->with(['customer', 'activeSubscription.plan'])
             ->when($tenantId, fn ($q) => $q->whereHas('customer', fn ($c) => $c->where('tenant_id', $tenantId)))
             ->get()
-            ->map(function ($pet) {
+            ->map(function ($pet) use ($ctx) {
                 return [
                     'id' => $pet->id,
                     'name' => $pet->name,
@@ -470,7 +470,7 @@ class VetPagesController extends Controller
             ->with(['pet.customer', 'plan', 'wallet'])
             ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
             ->get()
-            ->map(function ($s) {
+            ->map(function ($s) use ($ctx) {
                 $walletBalance = (float) ($s->wallet?->balance_cop ?? 0);
                 return [
                     'id' => $s->id,
