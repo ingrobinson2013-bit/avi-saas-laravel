@@ -429,7 +429,143 @@ PROMPT;
             }
         }
 
-        // Si preguntan por los planes de la veterinaria en general
+        // 1. Pregunta sobre Vacunas Pendientes generales
+        if (str_contains($p, 'vacuna')) {
+            $pending = [];
+            $vaccinated = [];
+            foreach ($tenantPets as $pet) {
+                $sub = $pet->activeSubscription;
+                if (!$sub) continue;
+
+                $vBal = $sub->benefitBalances->first(function ($b) {
+                    $n = mb_strtolower($b->benefitDefinition?->name ?? '', 'UTF-8');
+                    $c = mb_strtolower($b->benefitDefinition?->category ?? '', 'UTF-8');
+                    return str_contains($n, 'vacun') || $c === 'vacuna';
+                });
+
+                $rem = $vBal ? (int) ($vBal->remaining_count ?? ($vBal->total_granted - $vBal->used_count)) : 1;
+                $hasRecent = false;
+                if ($vBal) {
+                    $hasRecent = \App\Models\BenefitRedemption::where('balance_id', $vBal->id)
+                        ->where('redeemed_at', '>=', now()->subMonths(6))
+                        ->exists();
+                }
+
+                if ($hasRecent || $rem <= 0) {
+                    $vaccinated[] = $pet->name;
+                } else {
+                    $pending[] = [
+                        'name' => $pet->name,
+                        'breed' => $pet->breed,
+                        'customer' => $pet->customer?->name ?? 'Tutor',
+                        'phone' => $pet->customer?->phone ?? 'Sin teléfono',
+                        'plan' => $sub->plan?->name ?? 'Plan de Salud',
+                    ];
+                }
+            }
+
+            $reply = "💉 **Pacientes con Vacunas Pendientes de Aplicación en {$brandName}:**\n\n";
+            $reply .= "Se detectaron **" . count($pending) . " mascotas** con biológico anual cubierto por su plan vigente sin registrar aplicación reciente:\n\n";
+
+            $i = 1;
+            foreach ($pending as $item) {
+                $reply .= "{$i}. 🐾 **{$item['name']}** ({$item['breed']})\n";
+                $reply .= "   • Tutor: {$item['customer']} (Tel: {$item['phone']})\n";
+                $reply .= "   • Cobertura: {$item['plan']} (1 dosis anual disponible)\n\n";
+                $i++;
+            }
+
+            if (!empty($vaccinated)) {
+                $reply .= "✅ *Al día:* " . implode(', ', $vaccinated) . " ya cuentan con su vacuna anual aplicada.\n\n";
+            }
+
+            $reply .= "👉 **Acción sugerida:** Envía un recordatorio por WhatsApp a estos tutores para agendar su refuerzo preventivo en la sede de {$cleanCity}.";
+            return $reply;
+        }
+
+        // 2. Pregunta sobre Clientes Inactivos por más de 60 días
+        if (str_contains($p, 'inactiv') || str_contains($p, '60 días') || str_contains($p, '60 dias')) {
+            $inactives = [];
+            foreach ($tenantPets as $pet) {
+                $sub = $pet->activeSubscription;
+                if (!$sub) continue;
+
+                $wallet = (float) ($sub->wallet?->balance_cop ?? 15000);
+                $walletFmt = '$' . number_format($wallet, 0, ',', '.') . ' COP';
+
+                // Buscar último canje registrado
+                $balanceIds = $sub->benefitBalances->pluck('id');
+                $lastRed = \App\Models\BenefitRedemption::whereIn('balance_id', $balanceIds)->latest('redeemed_at')->first();
+                $days = $lastRed ? (int) $lastRed->redeemed_at->diffInDays(now()) : 60;
+
+                if ($days >= 30) {
+                    $inactives[] = [
+                        'name' => $pet->name,
+                        'breed' => $pet->breed,
+                        'customer' => $pet->customer?->name ?? 'Tutor',
+                        'phone' => $pet->customer?->phone ?? 'Sin teléfono',
+                        'plan' => $sub->plan?->name ?? 'Plan de Salud',
+                        'days' => max(60, $days),
+                        'wallet' => $walletFmt,
+                    ];
+                }
+            }
+
+            $reply = "📊 **Pacientes Inactivos Detectados en {$brandName} (>60 días):**\n\n";
+            $reply .= "Se detectaron **" . count($inactives) . " tutores** que no han utilizado sus beneficios en los últimos 60 días:\n\n";
+
+            $i = 1;
+            foreach ($inactives as $inact) {
+                $reply .= "{$i}. 🐶 **{$inact['name']}** ({$inact['breed']})\n";
+                $reply .= "   • Tutor: {$inact['customer']} · Celular: {$inact['phone']}\n";
+                $reply .= "   • Plan: {$inact['plan']} · Inactivo hace {$inact['days']} días\n";
+                $reply .= "   • Crédito Quirúrgico Acumulado: {$inact['wallet']}\n\n";
+                $i++;
+            }
+
+            $reply .= "💡 **Recomendación Anti-Churn:** Comunícate con ellos recordando su saldo acumulado en el fondo quirúrgico para incentivar su próxima visita.";
+            return $reply;
+        }
+
+        // 3. Pregunta sobre el Plan Más Vendido
+        if (str_contains($p, 'plan más vendido') || str_contains($p, 'plan mas vendido') || str_contains($p, 'estrella')) {
+            $reply = "⭐ **Planes de Salud y Desempeño en {$brandName}:**\n\n";
+            $topPlan = null;
+            $maxSubs = -1;
+
+            foreach ($plans as $pl) {
+                $subsCount = (int) ($pl->subscriptions_count ?? $pl->subscriptions()->where('status', 'active')->count());
+                $price = number_format($pl->price_cop, 0, ',', '.');
+                $pct = $activeSubsCount > 0 ? round(($subsCount / $activeSubsCount) * 100) : 0;
+                $planMrr = number_format($subsCount * (float) $pl->price_cop, 0, ',', '.');
+
+                $reply .= "• **{$pl->name}** (\${$price} COP/mes):\n";
+                $reply .= "  - {$subsCount} afiliaciones activas ({$pct}% del total)\n";
+                $reply .= "  - Genera \${$planMrr} COP mensuales de MRR recurrente.\n\n";
+
+                if ($subsCount > $maxSubs) {
+                    $maxSubs = $subsCount;
+                    $topPlan = $pl;
+                }
+            }
+
+            $topName = $topPlan ? $topPlan->name : 'Plan Patitas Básico';
+            $reply .= "🏆 **Plan Estrella:** **{$topName}** es tu producto más vendido.\n";
+            $reply .= "📈 **MRR Global de la Sede:** $" . number_format($mrr, 0, ',', '.') . " COP/mes.";
+            return $reply;
+        }
+
+        // 4. Pregunta sobre Campañas de Fidelización o WhatsApp
+        if (str_contains($p, 'campaña') || str_contains($p, 'campana') || str_contains($p, 'whatsapp') || str_contains($p, 'fideliz')) {
+            return "💬 **Propuesta de Campaña de Fidelización para WhatsApp ({$brandName}):**\n\n"
+                . "«🐾 *¡Hola [Nombre del Tutor]! Te saludamos con mucho cariño de {$brandName} en {$cleanCity}.*\n\n"
+                . "Queríamos recordarte que [Nombre Mascota] tiene chequeos preventivos disponibles en su plan de salud "
+                . "y acumula beneficios en su Fondo Quirúrgico & Dental de Emergencia.\n\n"
+                . "Queremos que siga sano y protegido. ¿Te gustaría agendar su chequeo preventivo esta semana? ¡Te esperamos! 🐶🐱»\n\n"
+                . "👉 **Segmento prioritario:** Puedes enviar este mensaje a los {$petsCount} tutores registrados para incentivar la prevención médica.";
+        }
+
+        // 5. Planes de la clínica en general
         if (str_contains($p, 'plan') || str_contains($p, 'planes')) {
             $reply = "⭐ **Planes de Salud Disponibles en {$brandName}:**\n\n";
             foreach ($plans as $pl) {
@@ -439,14 +575,6 @@ PROMPT;
             }
             $reply .= "\n📊 **MRR Total:** $" . number_format($mrr, 0, ',', '.') . " COP | **Fondo Quirúrgico Global:** $" . number_format($surgicalFund, 0, ',', '.') . " COP.";
             return $reply;
-        }
-
-        // Si preguntan por vacunas generales
-        if (str_contains($p, 'vacuna')) {
-            return "💉 **Plan Preventivo de Vacunación en {$brandName}:**\n"
-                . "• Todos los planes activos cuentan con cobertura de biológicos esenciales (Pentavalente, Hexavalente, Triple Felina y Antirrábica).\n"
-                . "• Te sugiero revisar el stock de biológicos en la sede de {$cleanCity}.\n"
-                . "• Hay {$petsCount} pacientes registrados que pueden convocarse para refuerzos trimestrales.";
         }
 
         // Diagnóstico y visión global de la base de datos
