@@ -99,6 +99,9 @@ interface GoogleConnectionInfo {
     connectedAt: string | null;
     autoSync: boolean;
     defaultEmail: string | null;
+    clinicOwnerName?: string;
+    clinicOwnerRole?: string;
+    shareCalendarUrl?: string | null;
 }
 
 interface CalendarProps {
@@ -373,24 +376,36 @@ export default function CalendarPage({
                             <button
                                 type="button"
                                 onClick={() => setIsGoogleModalOpen(true)}
-                                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold transition border border-emerald-200 shadow-2xs group"
-                                title="Cuenta de Google vinculada. Clic para gestionar o sincronizar."
+                                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold transition border border-emerald-200 shadow-2xs group"
+                                title={`Calendario Central Oficial de ${brandName} (${googleConnection.clinicOwnerName || 'Dirección Médica'}). Toda la clínica sincroniza aquí.`}
                             >
                                 <GoogleIcon className="w-4 h-4 shrink-0" />
-                                <span className="max-w-[130px] md:max-w-[190px] truncate">
-                                    {googleConnection.account || 'Google Conectado'}
-                                </span>
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <div className="text-left">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="max-w-[120px] md:max-w-[180px] truncate font-extrabold text-slate-900">
+                                            {googleConnection.account}
+                                        </span>
+                                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    </div>
+                                    <span className="text-[9px] text-emerald-700 font-bold block leading-none">
+                                        Calendario Central de la Sede
+                                    </span>
+                                </div>
                             </button>
                         ) : (
                             <button
                                 type="button"
                                 onClick={() => setIsGoogleModalOpen(true)}
                                 className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-800 hover:text-slate-900 text-xs font-black transition border border-slate-300 hover:border-slate-400 shadow-xs hover:shadow group"
-                                title="Conectar la cuenta de Google de la clínica"
+                                title={`Conectar la cuenta oficial de Google de la clínica (${googleConnection?.clinicOwnerName || 'Dueño de la Veterinaria'})`}
                             >
                                 <GoogleIcon className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110" />
-                                <span>Conectar cuenta de Google</span>
+                                <div className="text-left">
+                                    <span className="block leading-tight">Conectar Calendario Central</span>
+                                    <span className="text-[9px] text-slate-500 font-semibold block leading-none">
+                                        {googleConnection?.clinicOwnerName ? `Cuenta de ${googleConnection.clinicOwnerName}` : 'Cuenta del Propietario'}
+                                    </span>
+                                </div>
                             </button>
                         )}
 
@@ -417,7 +432,7 @@ export default function CalendarPage({
                     </div>
                 </div>
 
-                {/* Banner de Sincronización Google Calendar */}
+                {/* Banner de Sincronización Google Calendar Central */}
                 {!googleConnection?.isConnected && (
                     <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/90 to-purple-50/90 border border-blue-200/80 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs">
                         <div className="flex items-center gap-3.5">
@@ -426,13 +441,13 @@ export default function CalendarPage({
                             </div>
                             <div>
                                 <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                                    Sincroniza tus Citas con Google Calendar
+                                    Conectar Calendario Central de la Veterinaria
                                     <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 tracking-wider">
-                                        Recomendado
+                                        Cuenta Maestra
                                     </span>
                                 </h3>
                                 <p className="text-xs text-slate-600 mt-0.5">
-                                    Conecta la cuenta de Google de la clínica para que los veterinarios reciban las consultas en su celular y los tutores reciban recordatorios automáticos.
+                                    El dueño o director médico ({googleConnection?.clinicOwnerName || 'Dra. Vicky Naranjo'}) debe vincular la cuenta oficial de Google ({googleConnection?.defaultEmail || 'petmovilveterinario@gmail.com'}) para que <strong>todas las citas agendadas por recepción, auxiliares y doctores se unifiquen en un solo calendario central</strong>.
                                 </p>
                             </div>
                         </div>
@@ -442,7 +457,7 @@ export default function CalendarPage({
                             className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black shadow-xs hover:shadow transition whitespace-nowrap"
                         >
                             <GoogleIcon className="w-4 h-4 brightness-200" />
-                            <span>Conectar cuenta de Google</span>
+                            <span>Vincular Calendario del Dueño</span>
                         </button>
                     </div>
                 )}
@@ -950,10 +965,10 @@ export default function CalendarPage({
                                 </div>
                                 <div>
                                     <h3 className="text-base font-black text-slate-900">
-                                        Conectar Cuenta de Google
+                                        Calendario Central de la Veterinaria
                                     </h3>
                                     <p className="text-xs text-slate-500">
-                                        Google Calendar & Recordatorios para Consultas
+                                        Cuenta Maestra de {brandName} · Sincronización Unificada
                                     </p>
                                 </div>
                             </div>
@@ -965,13 +980,31 @@ export default function CalendarPage({
                             </button>
                         </div>
 
+                        {/* Aviso de Cuenta del Propietario */}
+                        <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200/90 flex items-start gap-3">
+                            <ShieldCheck className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+                            <div className="text-xs text-amber-950 space-y-1">
+                                <div className="flex items-center justify-between">
+                                    <span className="font-black text-amber-900">Cuenta Central del Dueño / Dirección Médica</span>
+                                    {googleConnection?.clinicOwnerName && (
+                                        <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-200/70 text-amber-900 rounded-full">
+                                            {googleConnection.clinicOwnerName}
+                                        </span>
+                                    )}
+                                </div>
+                                <p className="text-[11px] text-amber-800 leading-relaxed">
+                                    Esta cuenta debe pertenecer al propietario o a la cuenta institucional de la clínica. <strong>Todas las citas agendadas por recepción, auxiliares y médicos se unifican automáticamente en este único calendario</strong> para que el equipo no trabaje con agendas dispersas.
+                                </p>
+                            </div>
+                        </div>
+
                         {/* Estado Actual */}
                         {googleConnection?.isConnected ? (
-                            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
+                            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2.5">
                                 <div className="flex items-center justify-between">
                                     <span className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-800">
                                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                        Google Calendar Conectado
+                                        Calendario Central Activo y Sincronizado
                                     </span>
                                     {googleConnection.connectedAt && (
                                         <span className="text-[11px] text-emerald-600 font-medium">
@@ -984,26 +1017,47 @@ export default function CalendarPage({
                                     <span>{googleConnection.account}</span>
                                 </div>
                                 <p className="text-xs text-emerald-700">
-                                    Las citas se sincronizan automáticamente con tu calendario de Google y los tutores reciben enlaces para agregarlas en su celular.
+                                    Todas las consultas y citas médicas se sincronizan en esta cuenta maestra. Los tutores reciben recordatorios por WhatsApp con enlace oficial.
                                 </p>
+
+                                {/* Opción de Compartir con el Equipo */}
+                                <div className="pt-2 border-t border-emerald-200/60 mt-2 space-y-1.5">
+                                    <span className="text-[11px] font-bold text-emerald-900 block">
+                                        ¿Cómo ven la agenda los demás doctores y recepción?
+                                    </span>
+                                    <p className="text-[10px] text-emerald-800 leading-normal">
+                                        Cualquier miembro del equipo puede agregar este calendario central a la app de Google Calendar en su propio teléfono para ver la agenda en vivo:
+                                    </p>
+                                    {googleConnection.shareCalendarUrl && (
+                                        <a
+                                            href={googleConnection.shareCalendarUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center justify-center gap-1.5 w-full py-1.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold transition shadow-2xs"
+                                        >
+                                            <ExternalLink className="w-3.5 h-3.5" />
+                                            <span>Agregar a mi Google Calendar en el móvil</span>
+                                        </a>
+                                    )}
+                                </div>
                             </div>
                         ) : (
                             <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-200/80 space-y-2.5">
                                 <span className="text-xs font-black text-blue-900 uppercase tracking-wider block">
-                                    Beneficios de la Integración
+                                    Beneficios de la Centralización
                                 </span>
                                 <ul className="text-xs text-slate-700 space-y-2">
                                     <li className="flex items-start gap-2">
                                         <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                                        <span><strong>Sincronización en tu móvil:</strong> Recibe alertas de citas directamente en la app de Google Calendar de tu teléfono.</span>
+                                        <span><strong>Una Sola Fuente de la Verdad:</strong> Recepción y doctores operan sobre el mismo calendario, eliminando duplicidades y confusiones.</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                                        <span><strong>Recordatorios por WhatsApp:</strong> Envía enlaces inteligentes a los tutores para que agenden la cita en 1 clic.</span>
+                                        <span><strong>Acceso Móvil Multi-Médico:</strong> Los veterinarios de turno pueden consultar la agenda de la clínica desde su celular.</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                                        <span><strong>Control de agenda médica:</strong> Visualiza bloqueos y evita cruces de citas en tiempo real.</span>
+                                        <span><strong>Recordatorios por WhatsApp:</strong> Envía enlaces automáticos a los tutores con fecha, sede y doctor asignado.</span>
                                     </li>
                                 </ul>
                             </div>
@@ -1015,7 +1069,7 @@ export default function CalendarPage({
                                 <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
                                     <span className="flex items-center gap-1.5">
                                         <GoogleIcon className="w-3.5 h-3.5" />
-                                        <span>Correo de la cuenta de Google / Gmail</span>
+                                        <span>Cuenta Central de Google / Gmail de la Clínica</span>
                                     </span>
                                     <span className="text-[10px] text-slate-400 font-normal">Gmail o Google Workspace</span>
                                 </label>
@@ -1028,7 +1082,7 @@ export default function CalendarPage({
                                     className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 bg-white font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none shadow-2xs"
                                 />
                                 <p className="text-[11px] text-slate-500">
-                                    Ingresa la cuenta de Google asociada al calendario donde deseas gestionar las citas de {brandName}.
+                                    Esta cuenta debe ser la del propietario ({googleConnection?.clinicOwnerName || 'dueño'}) o la cuenta oficial de {brandName}.
                                 </p>
                             </div>
 
@@ -1054,8 +1108,8 @@ export default function CalendarPage({
                                     <GoogleIcon className="w-4 h-4 brightness-200" />
                                     <span>
                                         {googleConnecting 
-                                            ? 'Conectando...' 
-                                            : (googleConnection?.isConnected ? 'Actualizar Cuenta de Google' : 'Conectar Cuenta de Google')}
+                                            ? 'Guardando...' 
+                                            : (googleConnection?.isConnected ? 'Actualizar Calendario Central' : 'Vincular como Calendario Central')}
                                     </span>
                                 </button>
 

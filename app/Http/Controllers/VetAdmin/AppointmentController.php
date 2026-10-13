@@ -230,6 +230,9 @@ class AppointmentController extends Controller
                 'connectedAt' => $googleConnectedAt ? Carbon::parse($googleConnectedAt)->format('d/m/Y H:i') : null,
                 'autoSync' => $googleAutoSync,
                 'defaultEmail' => $defaultEmail,
+                'clinicOwnerName' => $isPilot ? 'Dra. Vicky Naranjo' : ($tenant->branding['doctor_name'] ?? 'Director(a) Médico(a)'),
+                'clinicOwnerRole' => $isPilot ? 'Propietaria y Directora Médica' : ($tenant->branding['doctor_title'] ?? 'Administrador(a) de Sede'),
+                'shareCalendarUrl' => $googleAccount ? "https://calendar.google.com/calendar/u/0/r?cid=" . urlencode($googleAccount) : null,
             ],
             'doctors' => [
                 ['name' => $isPilot ? 'Dra. Vicky Naranjo' : ($doctorName ?: ($tenant->name ? "Dr(a). {$tenant->name}" : 'Médico(a) Veterinario(a)')), 'role' => $doctorTitle],

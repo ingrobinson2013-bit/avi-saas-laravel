@@ -43,13 +43,25 @@ class GoogleCalendarService
                  . "{$notes}\n\n"
                  . "✨ Gestionado automáticamente por AVI-Plan SaaS";
 
-        $params = http_build_query([
+        $masterAccount = $tenant->branding['google_account'] ?? null;
+        $attendees = [];
+        if (!empty($masterAccount)) {
+            $attendees[] = $masterAccount;
+        }
+
+        $queryArgs = [
             'action' => 'TEMPLATE',
             'text' => $title,
             'dates' => "{$startUtc}/{$endUtc}",
             'details' => $details,
             'location' => $location,
-        ]);
+        ];
+
+        if (!empty($attendees)) {
+            $queryArgs['add'] = implode(',', $attendees);
+        }
+
+        $params = http_build_query($queryArgs);
 
         return "https://calendar.google.com/calendar/render?{$params}";
     }
