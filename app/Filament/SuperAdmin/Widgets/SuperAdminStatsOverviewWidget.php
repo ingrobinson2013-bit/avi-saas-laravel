@@ -16,8 +16,7 @@ class SuperAdminStatsOverviewWidget extends BaseWidget
     protected int | string | array $columns = [
         'default' => 1,
         'sm' => 2,
-        'md' => 3,
-        'xl' => 5,
+        'lg' => 4,
     ];
 
     protected function getStats(): array
@@ -36,7 +35,7 @@ class SuperAdminStatsOverviewWidget extends BaseWidget
         // Ingresos SaaS Mensuales Proyectados
         $monthlySaasRevenue = Tenant::all()->sum(function ($t) {
             if ($t->saas_status === 'paid') {
-                return (float) ($t->branding['saas_monthly_fee'] ?? 280000);
+                return (float) ($t->branding['saas_monthly_fee'] ?? 99000);
             }
             return 0;
         });
@@ -48,33 +47,29 @@ class SuperAdminStatsOverviewWidget extends BaseWidget
             ->sum('plans.price_cop');
 
         return [
-            Stat::make('Clínicas Registradas', "{$totalTenants} Clínicas")
-                ->description("{$activeTenants} activas • {$trialTenants} en prueba de 15d")
+            Stat::make('Red de Clínicas', "{$totalTenants} Clínicas")
+                ->description("{$paidTenants} oficiales pagas • {$trialTenants} en prueba")
                 ->descriptionIcon('heroicon-m-building-office-2')
                 ->color('primary')
-                ->chart([max(0, $totalTenants - 2), max(0, $totalTenants - 1), $totalTenants]),
+                ->chart([1, 2, $totalTenants]),
 
-            Stat::make('Estado de Pruebas (15 Días)', "{$trialTenants} en Evaluación")
-                ->description("{$paidTenants} oficiales • {$expiredTrials} vencidas")
-                ->descriptionIcon('heroicon-m-clock')
-                ->color($expiredTrials > 0 ? 'warning' : 'info')
-                ->chart([$expiredTrials, $paidTenants, $trialTenants]),
-
-            Stat::make('Mascotas en el Ecosistema', "{$totalPets} Mascotas")
-                ->description("{$totalCustomers} tutores • {$activeSubscriptions} planes activos")
+            Stat::make('Pacientes & Membresías', "{$totalPets} Mascotas")
+                ->description("{$activeSubscriptions} planes activos • {$totalCustomers} tutores")
                 ->descriptionIcon('heroicon-m-heart')
                 ->color('success')
-                ->chart([max(0, $totalPets - 3), max(0, $totalPets - 1), $totalPets]),
+                ->chart([2, 5, $totalPets]),
 
-            Stat::make('Facturación SaaS AVI-Plan', '$' . number_format($monthlySaasRevenue, 0, ',', '.') . ' COP/mes')
-                ->description('Canon mensual SaaS de clínicas de pago')
+            Stat::make('Facturación SaaS (MRR)', '$' . number_format($monthlySaasRevenue, 0, ',', '.') . ' COP/m')
+                ->description('Canon mensual SuperAdmin')
                 ->descriptionIcon('heroicon-m-banknotes')
-                ->color('emerald'),
+                ->color('warning')
+                ->chart([150000, 250000, (int) $monthlySaasRevenue]),
 
-            Stat::make('Volumen Manejado (GMV)', '$' . number_format($totalGMV, 0, ',', '.') . ' COP/mes')
-                ->description('Ingresos recaudados por las clínicas')
-                ->descriptionIcon('heroicon-m-chart-bar')
-                ->color('gray'),
+            Stat::make('Volumen Manejado (GMV)', '$' . number_format($totalGMV, 0, ',', '.') . ' COP/m')
+                ->description('Recaudo de las veterinarias')
+                ->descriptionIcon('heroicon-m-chart-bar-square')
+                ->color('info')
+                ->chart([200000, 380000, (int) $totalGMV]),
         ];
     }
 }

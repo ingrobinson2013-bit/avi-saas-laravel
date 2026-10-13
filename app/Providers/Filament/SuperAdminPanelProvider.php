@@ -29,12 +29,17 @@ class SuperAdminPanelProvider extends PanelProvider
             ->path('super-admin')
             ->login()
             ->brandName('🐾 AVI-Plan · SuperAdmin Central')
+            ->font('Plus Jakarta Sans')
             ->colors([
                 'primary' => Color::Indigo,
+                'success' => Color::Emerald,
+                'warning' => Color::Amber,
+                'danger' => Color::Rose,
+                'info' => Color::Sky,
                 'gray' => Color::Slate,
             ])
             ->maxContentWidth(MaxWidth::Full)
-            ->sidebarWidth('16rem')
+            ->sidebarWidth('19.5rem')
             ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/SuperAdmin/Resources'), for: 'App\\Filament\\SuperAdmin\\Resources')
             ->discoverPages(in: app_path('Filament/SuperAdmin/Pages'), for: 'App\\Filament\\SuperAdmin\\Pages')
