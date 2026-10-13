@@ -24,6 +24,27 @@ import {
     X
 } from 'lucide-react';
 
+const GoogleIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none">
+        <path
+            fill="#4285F4"
+            d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
+        />
+        <path
+            fill="#34A853"
+            d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
+        />
+        <path
+            fill="#FBBC05"
+            d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.16 0 10.02 0 12s.45 3.84 1.25 5.42l4.03-3.15z"
+        />
+        <path
+            fill="#EA4335"
+            d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
+        />
+    </svg>
+);
+
 interface AppointmentItem {
     id: string;
     title: string;
@@ -72,6 +93,14 @@ interface SlotOption {
     reason: string;
 }
 
+interface GoogleConnectionInfo {
+    isConnected: boolean;
+    account: string | null;
+    connectedAt: string | null;
+    autoSync: boolean;
+    defaultEmail: string | null;
+}
+
 interface CalendarProps {
     tenant: any;
     tenantSlug: string;
@@ -97,6 +126,7 @@ interface CalendarProps {
     services: ServiceOption[];
     availableSlots: SlotOption[];
     doctors: Array<{ name: string; role: string }>;
+    googleConnection?: GoogleConnectionInfo;
 }
 
 export default function CalendarPage({
@@ -119,11 +149,69 @@ export default function CalendarPage({
     services = [],
     availableSlots = [],
     doctors = [],
+    googleConnection,
 }: CalendarProps) {
     const isPreview = typeof window !== 'undefined' && (window.location.search.includes('preview=1') || window.location.href.includes('preview=1'));
     const formatLink = (url: string) => isPreview && !url.includes('preview=1') ? `${url}${url.includes('?') ? '&' : '?'}preview=1` : url;
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
+    const [googleEmailInput, setGoogleEmailInput] = useState(googleConnection?.account || googleConnection?.defaultEmail || '');
+    const [googleAutoSync, setGoogleAutoSync] = useState(googleConnection?.autoSync ?? true);
+    const [googleConnecting, setGoogleConnecting] = useState(false);
+    const [googleSyncing, setGoogleSyncing] = useState(false);
+    const [googleDisconnecting, setGoogleDisconnecting] = useState(false);
+
+    const handleConnectGoogle = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!googleEmailInput.trim()) return;
+        setGoogleConnecting(true);
+        router.post(
+            formatLink(`/admin/${tenantSlug}/citas/google/connect`),
+            {
+                google_account: googleEmailInput.trim(),
+                auto_sync: googleAutoSync,
+            },
+            {
+                preserveScroll: true,
+                onFinish: () => {
+                    setGoogleConnecting(false);
+                    setIsGoogleModalOpen(false);
+                },
+            }
+        );
+    };
+
+    const handleDisconnectGoogle = () => {
+        if (!confirm('¿Deseas desconectar la cuenta de Google Calendar de la clínica?')) return;
+        setGoogleDisconnecting(true);
+        router.post(
+            formatLink(`/admin/${tenantSlug}/citas/google/disconnect`),
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => {
+                    setGoogleDisconnecting(false);
+                    setIsGoogleModalOpen(false);
+                },
+            }
+        );
+    };
+
+    const handleSyncAllGoogle = () => {
+        setGoogleSyncing(true);
+        router.post(
+            formatLink(`/admin/${tenantSlug}/citas/google/sync-all`),
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => {
+                    setGoogleSyncing(false);
+                },
+            }
+        );
+    };
+
     const [filterDoctor, setFilterDoctor] = useState('all');
     const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
@@ -280,15 +368,42 @@ export default function CalendarPage({
                             className="text-xs px-3 py-2 rounded-xl border border-slate-200 bg-white font-medium text-slate-700 shadow-2xs focus:ring-1 focus:ring-blue-500 outline-none"
                         />
 
+                        {/* Botón Conectar cuenta de Google / Estado Conectado */}
+                        {googleConnection?.isConnected ? (
+                            <button
+                                type="button"
+                                onClick={() => setIsGoogleModalOpen(true)}
+                                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold transition border border-emerald-200 shadow-2xs group"
+                                title="Cuenta de Google vinculada. Clic para gestionar o sincronizar."
+                            >
+                                <GoogleIcon className="w-4 h-4 shrink-0" />
+                                <span className="max-w-[130px] md:max-w-[190px] truncate">
+                                    {googleConnection.account || 'Google Conectado'}
+                                </span>
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => setIsGoogleModalOpen(true)}
+                                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-800 hover:text-slate-900 text-xs font-black transition border border-slate-300 hover:border-slate-400 shadow-xs hover:shadow group"
+                                title="Conectar la cuenta de Google de la clínica"
+                            >
+                                <GoogleIcon className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110" />
+                                <span>Conectar cuenta de Google</span>
+                            </button>
+                        )}
+
                         {/* Botón Abrir Google Calendar Oficial */}
                         <a
                             href="https://calendar.google.com"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition shadow-2xs border border-slate-200"
+                            title="Abrir Google Calendar en pestaña nueva"
                         >
                             <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
-                            <span>Google Calendar</span>
+                            <span className="hidden sm:inline">Google Calendar</span>
                         </a>
 
                         {/* Botón Agendar Cita */}
@@ -301,6 +416,36 @@ export default function CalendarPage({
                         </button>
                     </div>
                 </div>
+
+                {/* Banner de Sincronización Google Calendar */}
+                {!googleConnection?.isConnected && (
+                    <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/90 to-purple-50/90 border border-blue-200/80 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs">
+                        <div className="flex items-center gap-3.5">
+                            <div className="w-10 h-10 rounded-xl bg-white border border-blue-200 shadow-2xs flex items-center justify-center shrink-0">
+                                <GoogleIcon className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                    Sincroniza tus Citas con Google Calendar
+                                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 tracking-wider">
+                                        Recomendado
+                                    </span>
+                                </h3>
+                                <p className="text-xs text-slate-600 mt-0.5">
+                                    Conecta la cuenta de Google de la clínica para que los veterinarios reciban las consultas en su celular y los tutores reciban recordatorios automáticos.
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setIsGoogleModalOpen(true)}
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black shadow-xs hover:shadow transition whitespace-nowrap"
+                        >
+                            <GoogleIcon className="w-4 h-4 brightness-200" />
+                            <span>Conectar cuenta de Google</span>
+                        </button>
+                    </div>
+                )}
 
                 {/* 2. KPIs de Gestión de Citas */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
@@ -785,6 +930,169 @@ export default function CalendarPage({
                                 </button>
                             </div>
 
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* =========================================================
+                 MODAL: CONEXIÓN DE CUENTA GOOGLE CALENDAR
+                 ========================================================= */}
+            {isGoogleModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+                    <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-5 max-h-[90vh] overflow-y-auto">
+                        
+                        {/* Header */}
+                        <div className="flex items-start justify-between pb-3 border-b border-slate-100">
+                            <div className="flex items-center gap-3">
+                                <div className="w-11 h-11 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-center shrink-0">
+                                    <GoogleIcon className="w-6 h-6" />
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-black text-slate-900">
+                                        Conectar Cuenta de Google
+                                    </h3>
+                                    <p className="text-xs text-slate-500">
+                                        Google Calendar & Recordatorios para Consultas
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setIsGoogleModalOpen(false)}
+                                className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        {/* Estado Actual */}
+                        {googleConnection?.isConnected ? (
+                            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-800">
+                                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                        Google Calendar Conectado
+                                    </span>
+                                    {googleConnection.connectedAt && (
+                                        <span className="text-[11px] text-emerald-600 font-medium">
+                                            Desde {googleConnection.connectedAt}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="text-sm font-black text-slate-900 break-all flex items-center gap-2">
+                                    <GoogleIcon className="w-4 h-4 shrink-0" />
+                                    <span>{googleConnection.account}</span>
+                                </div>
+                                <p className="text-xs text-emerald-700">
+                                    Las citas se sincronizan automáticamente con tu calendario de Google y los tutores reciben enlaces para agregarlas en su celular.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-200/80 space-y-2.5">
+                                <span className="text-xs font-black text-blue-900 uppercase tracking-wider block">
+                                    Beneficios de la Integración
+                                </span>
+                                <ul className="text-xs text-slate-700 space-y-2">
+                                    <li className="flex items-start gap-2">
+                                        <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                                        <span><strong>Sincronización en tu móvil:</strong> Recibe alertas de citas directamente en la app de Google Calendar de tu teléfono.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                                        <span><strong>Recordatorios por WhatsApp:</strong> Envía enlaces inteligentes a los tutores para que agenden la cita en 1 clic.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                                        <span><strong>Control de agenda médica:</strong> Visualiza bloqueos y evita cruces de citas en tiempo real.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+
+                        {/* Formulario de Conexión */}
+                        <form onSubmit={handleConnectGoogle} className="space-y-4">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
+                                    <span className="flex items-center gap-1.5">
+                                        <GoogleIcon className="w-3.5 h-3.5" />
+                                        <span>Correo de la cuenta de Google / Gmail</span>
+                                    </span>
+                                    <span className="text-[10px] text-slate-400 font-normal">Gmail o Google Workspace</span>
+                                </label>
+                                <input
+                                    type="email"
+                                    required
+                                    value={googleEmailInput}
+                                    onChange={(e) => setGoogleEmailInput(e.target.value)}
+                                    placeholder="ej: clinica@gmail.com o doctor@veterinaria.com"
+                                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 bg-white font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none shadow-2xs"
+                                />
+                                <p className="text-[11px] text-slate-500">
+                                    Ingresa la cuenta de Google asociada al calendario donde deseas gestionar las citas de {brandName}.
+                                </p>
+                            </div>
+
+                            <label className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+                                <input
+                                    type="checkbox"
+                                    checked={googleAutoSync}
+                                    onChange={(e) => setGoogleAutoSync(e.target.checked)}
+                                    className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                                />
+                                <span className="text-xs font-medium text-slate-700">
+                                    Sincronizar citas automáticamente al agendar
+                                </span>
+                            </label>
+
+                            {/* Botones de Acción */}
+                            <div className="space-y-2 pt-2 border-t border-slate-100">
+                                <button
+                                    type="submit"
+                                    disabled={googleConnecting}
+                                    className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition shadow-xs hover:shadow flex items-center justify-center gap-2 disabled:opacity-50"
+                                >
+                                    <GoogleIcon className="w-4 h-4 brightness-200" />
+                                    <span>
+                                        {googleConnecting 
+                                            ? 'Conectando...' 
+                                            : (googleConnection?.isConnected ? 'Actualizar Cuenta de Google' : 'Conectar Cuenta de Google')}
+                                    </span>
+                                </button>
+
+                                {googleConnection?.isConnected && (
+                                    <div className="grid grid-cols-2 gap-2 pt-1">
+                                        <button
+                                            type="button"
+                                            onClick={handleSyncAllGoogle}
+                                            disabled={googleSyncing}
+                                            className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1.5 disabled:opacity-50"
+                                        >
+                                            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                                            <span>{googleSyncing ? 'Sincronizando...' : 'Sincronizar Todo'}</span>
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={handleDisconnectGoogle}
+                                            disabled={googleDisconnecting}
+                                            className="py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition flex items-center justify-center gap-1.5 disabled:opacity-50"
+                                        >
+                                            <XCircle className="w-3.5 h-3.5 text-rose-600" />
+                                            <span>{googleDisconnecting ? 'Desconectando...' : 'Desconectar'}</span>
+                                        </button>
+                                    </div>
+                                )}
+
+                                <a
+                                    href="https://calendar.google.com"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full py-2 px-4 rounded-xl text-center text-slate-500 hover:text-slate-800 text-xs font-semibold transition flex items-center justify-center gap-1.5"
+                                >
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                    <span>Abrir Google Calendar en el navegador</span>
+                                </a>
+                            </div>
                         </form>
                     </div>
                 </div>

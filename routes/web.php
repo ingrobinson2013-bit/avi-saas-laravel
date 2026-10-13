@@ -363,6 +363,18 @@ Route::get('/admin/{slug}/citas/disponibilidad', function (string $slug) use ($c
     if (!$checkAdminAccess($slug)) return response()->json(['error' => 'Unauthorized'], 401);
     return app(App\Http\Controllers\VetAdmin\AppointmentController::class)->availableSlots(request(), $slug);
 });
+Route::post('/admin/{slug}/citas/google/connect', function (string $slug) use ($checkAdminAccess, $redirectToLogin) {
+    if (!$checkAdminAccess($slug)) return $redirectToLogin($slug);
+    return app(App\Http\Controllers\VetAdmin\AppointmentController::class)->connectGoogle(request(), $slug);
+});
+Route::post('/admin/{slug}/citas/google/disconnect', function (string $slug) use ($checkAdminAccess, $redirectToLogin) {
+    if (!$checkAdminAccess($slug)) return $redirectToLogin($slug);
+    return app(App\Http\Controllers\VetAdmin\AppointmentController::class)->disconnectGoogle(request(), $slug);
+});
+Route::post('/admin/{slug}/citas/google/sync-all', function (string $slug) use ($checkAdminAccess, $redirectToLogin) {
+    if (!$checkAdminAccess($slug)) return $redirectToLogin($slug);
+    return app(App\Http\Controllers\VetAdmin\AppointmentController::class)->syncAllGoogle(request(), $slug);
+});
 
 // Aliases amigables hacia los módulos conectados a la base de datos
 Route::get('/admin/{slug}/canje-mostrador', fn(string $slug) => redirect("/admin/{$slug}/counter-redeem"));

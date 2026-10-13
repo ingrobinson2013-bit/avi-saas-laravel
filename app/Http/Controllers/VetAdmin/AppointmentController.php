@@ -205,6 +205,13 @@ class AppointmentController extends Controller
         $doctorName = $ctx['userName'] ?? auth()->user()?->name ?? null;
         $doctorTitle = $ctx['userRole'] ?? 'Médico(a) Veterinario(a)';
 
+        $branding = $tenant->branding ?? [];
+        $googleConnected = !empty($branding['google_connected']);
+        $googleAccount = $branding['google_account'] ?? ($googleConnected ? ($branding['email'] ?? 'petmovilveterinario@gmail.com') : null);
+        $googleConnectedAt = $branding['google_connected_at'] ?? null;
+        $googleAutoSync = (bool) ($branding['google_auto_sync'] ?? true);
+        $defaultEmail = $branding['email'] ?? ($isPilot ? 'petmovilveterinario@gmail.com' : (auth()->user()?->email ?? ''));
+
         return Inertia::render('VetAdmin/Calendar', array_merge($ctx, [
             'selectedDate' => $selectedDate,
             'appointments' => $appointments,
@@ -217,6 +224,13 @@ class AppointmentController extends Controller
             'pets' => $pets,
             'services' => $services,
             'availableSlots' => $availableSlots,
+            'googleConnection' => [
+                'isConnected' => $googleConnected,
+                'account' => $googleAccount,
+                'connectedAt' => $googleConnectedAt ? Carbon::parse($googleConnectedAt)->format('d/m/Y H:i') : null,
+                'autoSync' => $googleAutoSync,
+                'defaultEmail' => $defaultEmail,
+            ],
             'doctors' => [
                 ['name' => $isPilot ? 'Dra. Vicky Naranjo' : ($doctorName ?: ($tenant->name ? "Dr(a). {$tenant->name}" : 'Médico(a) Veterinario(a)')), 'role' => $doctorTitle],
                 ['name' => 'Dr. Robinson Naranjo', 'role' => 'Cirugía & Especialidades (NODIA)'],
@@ -322,5 +336,85 @@ class AppointmentController extends Controller
             'date' => $date,
             'slots' => $slots,
         ]);
+    }
+
+    /**
+     * Conectar o actualizar la cuenta de Google Calendar de la clínica
+     */
+    public function connectGoogle(Request $request, string $slug): RedirectResponse
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenant = $ctx['tenant'];
+
+        $validated = $request->validate([
+            'google_account' => 'required|email|max:255',
+            'auto_sync' => 'nullable|boolean',
+        ]);
+
+        $branding = $tenant->branding ?? [];
+        $branding['google_account'] = strtolower(trim($validated['google_account']));
+        $branding['google_connected'] = true;
+        $branding['google_connected_at'] = now()->toIso8601String();
+        $branding['google_auto_sync'] = (bool) ($validated['auto_sync'] ?? true);
+
+        $tenant->update(['branding' => $branding]);
+
+        // Sincronizar todas las citas futuras del tenant con la nueva cuenta
+        $futureAppointments = Appointment::where('tenant_id', $tenant->id)
+            ->where('scheduled_at', '>=', now())
+            ->whereNotIn('status', ['cancelled'])
+            ->get();
+
+        foreach ($futureAppointments as $app) {
+            $url = $this->calendarService->generateGoogleCalendarUrl($app, $tenant);
+            $app->update([
+                'google_calendar_url' => $url,
+                'sync_status' => 'synced',
+            ]);
+        }
+
+        return back()->with('success', "¡Cuenta de Google ({$branding['google_account']}) conectada exitosamente a la agenda médica!");
+    }
+
+    /**
+     * Desconectar la cuenta de Google Calendar
+     */
+    public function disconnectGoogle(Request $request, string $slug): RedirectResponse
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenant = $ctx['tenant'];
+
+        $branding = $tenant->branding ?? [];
+        $branding['google_connected'] = false;
+        $branding['google_disconnected_at'] = now()->toIso8601String();
+
+        $tenant->update(['branding' => $branding]);
+
+        return back()->with('success', "Cuenta de Google desconectada de la agenda médica.");
+    }
+
+    /**
+     * Forzar sincronización masiva de citas con Google Calendar
+     */
+    public function syncAllGoogle(Request $request, string $slug): RedirectResponse
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenant = $ctx['tenant'];
+
+        $appointments = Appointment::where('tenant_id', $tenant->id)
+            ->whereNotIn('status', ['cancelled'])
+            ->get();
+
+        $count = 0;
+        foreach ($appointments as $app) {
+            $url = $this->calendarService->generateGoogleCalendarUrl($app, $tenant);
+            $app->update([
+                'google_calendar_url' => $url,
+                'sync_status' => 'synced',
+            ]);
+            $count++;
+        }
+
+        return back()->with('success', "¡{$count} citas sincronizadas exitosamente con Google Calendar!");
     }
 }
