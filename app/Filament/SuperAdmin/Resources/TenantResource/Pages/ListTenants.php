@@ -11,6 +11,11 @@ class ListTenants extends ListRecords
 {
     protected static string $resource = TenantResource::class;
 
+    public function getTitle(): string | \Illuminate\Contracts\Support\Htmlable
+    {
+        return 'Listado de Clínicas Veterinarias';
+    }
+
     protected function getHeaderActions(): array
     {
         return [

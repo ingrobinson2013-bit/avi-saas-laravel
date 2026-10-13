@@ -328,7 +328,7 @@ class TenantResource extends Resource
             ->poll('30s')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Clínica & Identidad')
+                    ->label('CLÍNICA Y DETALLES')
                     ->searchable(['name', 'slug', 'domain'])
                     ->sortable()
                     ->html()
@@ -338,40 +338,23 @@ class TenantResource extends Resource
                         $doctor = e($record->branding['doctor_name'] ?? '');
                         $logoUrl = $record->branding['logo_url'] ?? null;
                         $domain = e($record->domain ?? ($record->slug . '.' . env('APP_BASE_DOMAIN', 'avipetapp.com')));
-                        $storefrontUrl = e($record->base_url);
-                        $adminUrl = e($record->getAdminUrl());
-                        $impersonateUrl = e(url("/impersonate-clinic/{$record->id}"));
-
-                        $initials = collect(explode(' ', $record->name))->map(fn ($p) => mb_substr($p, 0, 1))->take(2)->join('');
 
                         $avatarHtml = $logoUrl 
-                            ? "<img src='{$logoUrl}' alt='{$name}' class='w-11 h-11 rounded-xl object-contain bg-white border border-slate-200 dark:border-slate-700 shadow-xs p-0.5 shrink-0' />"
-                            : "<div class='w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white font-black text-xs flex items-center justify-center shadow-xs shrink-0 tracking-wider'>{$initials}</div>";
+                            ? "<img src='{$logoUrl}' alt='{$name}' class='w-12 h-12 rounded-xl object-contain bg-white border border-slate-200 dark:border-slate-700 shadow-xs p-1 shrink-0' />"
+                            : "<div class='w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 shrink-0'><svg class='w-6 h-6 stroke-current stroke-1' fill='none' viewBox='0 0 24 24'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='8.5' cy='8.5' r='1.5'/><polyline points='21 15 16 10 5 21'/></svg></div>";
 
-                        $doctorBadge = $doctor 
-                            ? "<span class='inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-600 dark:text-indigo-400'>👩‍⚕️ {$doctor}</span> · "
+                        $doctorHtml = $doctor 
+                            ? "<div class='text-xs text-slate-500 dark:text-slate-400 font-medium'>{$doctor}</div>"
                             : "";
 
                         return "
-                        <div class='flex items-start gap-3 py-1.5 min-w-[260px]'>
+                        <div class='flex items-center gap-3 py-1 min-w-[270px]'>
                             {$avatarHtml}
-                            <div class='space-y-1.5 flex-1 min-w-0'>
-                                <div>
-                                    <span class='text-sm font-black text-slate-900 dark:text-white leading-snug block truncate hover:text-indigo-600 transition-colors'>{$name}</span>
-                                    <div class='text-[11px] text-slate-500 dark:text-slate-400 font-medium truncate'>
-                                        {$doctorBadge}<span>📍 {$city}</span> · <span class='font-mono text-slate-600 dark:text-slate-300'>{$domain}</span>
-                                    </div>
-                                </div>
-                                <div class='flex items-center gap-1.5 pt-0.5'>
-                                    <a href='{$storefrontUrl}' target='_blank' class='inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 dark:bg-sky-950/70 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800 shadow-xs transition-all' title='Abrir Vitrina Pública de Afiliación'>
-                                        🌐 Vitrina ↗
-                                    </a>
-                                    <a href='{$adminUrl}' target='_blank' class='inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800 shadow-xs transition-all' title='Abrir Panel de Gestión de la Clínica'>
-                                        ⚙️ Panel ↗
-                                    </a>
-                                    <a href='{$impersonateUrl}' class='inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-100 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800 shadow-xs transition-all' title='Acceder como Administrador de la Clínica'>
-                                        🔑 Acceso
-                                    </a>
+                            <div class='min-w-0'>
+                                <span class='text-sm font-bold text-slate-900 dark:text-white leading-tight block truncate'>{$name}</span>
+                                {$doctorHtml}
+                                <div class='text-xs text-slate-400 dark:text-slate-500 font-mono mt-0.5 truncate'>
+                                    <span>📍 {$city}</span> • <a href='https://{$domain}' target='_blank' class='text-indigo-600 dark:text-indigo-400 hover:underline'>{$domain}</a>
                                 </div>
                             </div>
                         </div>
@@ -379,86 +362,65 @@ class TenantResource extends Resource
                     }),
 
                 Tables\Columns\TextColumn::make('saas_status_badge')
-                    ->label('Estado SaaS & Canon')
+                    ->label('ESTADO SAAS & CANON')
                     ->html()
                     ->formatStateUsing(function (Tenant $record): string {
                         $status = $record->saas_status;
-                        $days = $record->trial_days_remaining;
+                        $fee = $record->branding['saas_monthly_fee'] ?? null;
                         
                         if ($status === 'paid') {
-                            $badge = "<span class='inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'><span class='w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse'></span>⭐ Plan Pago Activo</span>";
+                            $badge = "<span class='inline-block px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300 border border-sky-200 dark:border-sky-800'>Suscripción Activa (Paga)</span>";
+                            $feeFormatted = $fee ? '$' . number_format((float) $fee, 0, ',', '.') . ' COP/m' : '$99.000 COP/m';
+                            $feeHtml = "<div class='text-xs text-slate-600 dark:text-slate-400 font-semibold mt-1'>{$feeFormatted} (Pago Mensual)</div>";
                         } elseif ($status === 'suspended') {
-                            $badge = "<span class='inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800'>⛔ Suspendido</span>";
-                        } elseif ($days < 0) {
-                            $badge = "<span class='inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800'>🔴 Vencida (" . abs($days) . "d)</span>";
+                            $badge = "<span class='inline-block px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800'>Suscripción Suspendida</span>";
+                            $feeHtml = "<div class='text-xs text-rose-600 dark:text-rose-400 font-semibold mt-1'>Acceso bloqueado</div>";
                         } else {
-                            $badge = "<span class='inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800'>⏳ Prueba ({$days}d rest.)</span>";
+                            $badge = "<span class='inline-block px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700'>Suscripción en Prueba</span>";
+                            $feeHtml = "<div class='text-xs text-slate-500 dark:text-slate-400 font-semibold mt-1'>$0 COP/m (Pago Mensual)</div>";
                         }
 
-                        $tierName = match ($record->saas_plan_tier) {
-                            'pay_per_pet' => 'Por Mascota',
-                            'starter' => 'Starter ($99k)',
-                            'pro' => 'Profesional ($229k)',
-                            'enterprise' => 'Enterprise ($489k)',
-                            default => ucfirst((string) $record->saas_plan_tier),
-                        };
-
-                        $fee = $record->branding['saas_monthly_fee'] ?? null;
-                        $feeFormatted = $fee ? '$' . number_format((float) $fee, 0, ',', '.') . ' COP/mes' : 'Tarifa convenir';
-
-                        $paidUntil = $record->branding['saas_next_payment_due'] ?? $record->branding['saas_paid_until'] ?? null;
-                        $untilText = $paidUntil ? '📅 Próx. cobro: ' . date('d/m/Y', strtotime($paidUntil)) : 'Sin fecha límite';
-
                         return "
-                        <div class='space-y-1 min-w-[140px]'>
-                            <div>{$badge}</div>
-                            <div class='text-xs font-black text-slate-800 dark:text-slate-200'>{$feeFormatted}</div>
-                            <div class='text-[10px] text-slate-500 dark:text-slate-400 font-medium'>
-                                <span>🚀 {$tierName}</span> · <span>{$untilText}</span>
-                            </div>
+                        <div class='min-w-[170px]'>
+                            {$badge}
+                            {$feeHtml}
                         </div>
                         ";
                     }),
 
                 Tables\Columns\TextColumn::make('ecosystem_metrics')
-                    ->label('Pacientes & Rendimiento')
+                    ->label('PACIENTES & MEMBRESÍAS')
                     ->html()
                     ->formatStateUsing(function (Tenant $record): string {
                         $subsCount = $record->subscriptions()->where('status', 'active')->count();
                         $petsCount = $record->pets()->count();
                         $custCount = $record->customers()->count();
-                        
-                        $gmv = $record->subscriptions()
-                            ->where('subscriptions.status', 'active')
-                            ->join('plans', 'subscriptions.plan_id', '=', 'plans.id')
-                            ->sum('plans.price_cop');
-                        $gmvFormatted = '$' . number_format($gmv, 0, ',', '.') . ' COP';
 
                         return "
-                        <div class='space-y-1 min-w-[150px]'>
-                            <div class='inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-black bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800'>
-                                ⭐ {$subsCount} membresías activas
-                            </div>
-                            <div class='text-[11px] text-slate-600 dark:text-slate-300 font-medium'>
-                                🐾 {$petsCount} mascotas · 👤 {$custCount} tutores
-                            </div>
-                            <div class='text-[11px] font-bold text-slate-500 dark:text-slate-400'>
-                                📈 {$gmvFormatted} facturado
+                        <div class='min-w-[160px]'>
+                            <span class='inline-block px-3 py-1 rounded-md text-xs font-bold bg-sky-600 text-white shadow-xs'>
+                                {$petsCount} Mascotas / {$subsCount} Planes
+                            </span>
+                            <div class='text-xs text-slate-500 dark:text-slate-400 font-medium mt-1'>
+                                {$custCount} Tutores registrados
                             </div>
                         </div>
                         ";
                     }),
 
                 Tables\Columns\TextColumn::make('contact_phone')
-                    ->label('WhatsApp Directo')
+                    ->label('WHATSAPP DIRECTO')
                     ->html()
                     ->formatStateUsing(function (Tenant $record): string {
                         $phone = preg_replace('/[^0-9]/', '', $record->branding['phone'] ?? '');
                         if (empty($phone)) {
                             return "
-                            <span class='inline-flex items-center gap-1 text-[11px] text-slate-400 italic px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800'>
-                                Sin teléfono
-                            </span>
+                            <div class='min-w-[130px]'>
+                                <span class='inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700'>
+                                    Chat WhatsApp
+                                </span>
+                                <div class='text-xs text-slate-400 dark:text-slate-500 mt-1'>(No registrado)</div>
+                            </div>
                             ";
                         }
                         $prefix = str_starts_with($phone, '57') ? $phone : "57{$phone}";
@@ -469,16 +431,18 @@ class TenantResource extends Resource
                         $waUrl = "https://wa.me/{$prefix}?text={$msg}";
 
                         return "
-                        <a href='{$waUrl}' target='_blank' class='inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white shadow-xs transition-all shrink-0' title='Abrir chat directo en WhatsApp'>
-                            <svg class='w-3.5 h-3.5 fill-current' viewBox='0 0 24 24'><path d='M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z'/></svg>
-                            <span>{$formattedPhone}</span>
-                        </a>
+                        <div class='min-w-[130px]'>
+                            <a href='{$waUrl}' target='_blank' class='inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-emerald-950 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-700 shadow-xs transition-colors' title='Abrir chat oficial'>
+                                <span>Chat WhatsApp</span>
+                            </a>
+                            <div class='text-xs text-slate-500 dark:text-slate-400 font-mono mt-1'>({$formattedPhone})</div>
+                        </div>
                         ";
                     }),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Fecha Alta')
-                    ->date('d M Y')
+                    ->label('FECHA ALTA')
+                    ->date('d M. Y')
                     ->sortable()
                     ->color('gray'),
             ])
@@ -495,9 +459,31 @@ class TenantResource extends Resource
                     ->label('Activas / Suspendidas'),
             ])
             ->actions([
+                Tables\Actions\Action::make('accessPanel')
+                    ->label('Acceso Panel')
+                    ->button()
+                    ->size('sm')
+                    ->color('gray')
+                    ->url(fn (Tenant $record): string => url("/impersonate-clinic/{$record->id}")),
+
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make()
-                        ->label('✏️ Editar Configuración Completa'),
+                    Tables\Actions\Action::make('openStorefront')
+                        ->label('🌐 Abrir Vitrina Pública')
+                        ->icon('heroicon-o-globe-alt')
+                        ->color('info')
+                        ->url(fn (Tenant $record): string => $record->base_url, true),
+
+                    Tables\Actions\Action::make('openAdmin')
+                        ->label('⚙️ Abrir Panel Administrativo')
+                        ->icon('heroicon-o-computer-desktop')
+                        ->color('primary')
+                        ->url(fn (Tenant $record): string => $record->getAdminUrl(), true),
+
+                    Tables\Actions\Action::make('impersonate')
+                        ->label('🔑 Impersonar Sesión (1-Clic)')
+                        ->icon('heroicon-o-key')
+                        ->color('warning')
+                        ->url(fn (Tenant $record): string => url("/impersonate-clinic/{$record->id}")),
 
                     Tables\Actions\Action::make('extendTrial')
                         ->label('⏳ Extender +15 Días de Prueba')
@@ -627,14 +613,8 @@ class TenantResource extends Resource
                                 ->send();
                         }),
 
-                    Tables\Actions\Action::make('openSaasCheckout')
-                        ->label('💳 Pasarela Bold SaaS de la Clínica')
-                        ->icon('heroicon-o-credit-card')
-                        ->color('info')
-                        ->url(fn (Tenant $record): string => url("/admin/{$record->slug}/renovar-saas"), true),
-
                     Tables\Actions\Action::make('sendBoldLinkWhatsApp')
-                        ->label('📲 Enviar Link Bold por WhatsApp')
+                        ->label('📲 Enviar Link de Cobro Bold por WhatsApp')
                         ->icon('heroicon-m-chat-bubble-left-ellipsis')
                         ->color('success')
                         ->url(function (Tenant $record): ?string {
@@ -647,23 +627,8 @@ class TenantResource extends Resource
                             return "https://wa.me/{$prefix}?text=" . urlencode($msg);
                         }, true),
 
-                    Tables\Actions\Action::make('impersonate')
-                        ->label('🔑 Impersonar Sesión (1-Clic)')
-                        ->icon('heroicon-o-key')
-                        ->color('warning')
-                        ->url(fn (Tenant $record): string => url("/impersonate-clinic/{$record->id}")),
-
-                    Tables\Actions\Action::make('openStorefront')
-                        ->label('🌐 Abrir Vitrina Pública')
-                        ->icon('heroicon-o-globe-alt')
-                        ->color('info')
-                        ->url(fn (Tenant $record): string => $record->base_url, true),
-
-                    Tables\Actions\Action::make('openAdmin')
-                        ->label('⚙️ Abrir Panel Administrativo')
-                        ->icon('heroicon-o-computer-desktop')
-                        ->color('primary')
-                        ->url(fn (Tenant $record): string => $record->getAdminUrl(), true),
+                    Tables\Actions\EditAction::make()
+                        ->label('✏️ Editar Configuración Completa'),
 
                     Tables\Actions\Action::make('toggleActive')
                         ->label(fn (Tenant $record) => $record->is_active ? '⛔ Suspender Acceso' : '✅ Reactivar Acceso')
@@ -681,7 +646,7 @@ class TenantResource extends Resource
                         ->modalSubmitActionLabel('Sí, eliminar clínica')
                         ->hidden(fn (Tenant $record) => $record->slug === 'vet-pet-patitas'),
                 ])
-                ->label('⚡ Gestionar')
+                ->label('Gestionar')
                 ->icon('heroicon-m-cog-6-tooth')
                 ->size('sm')
                 ->color('primary')
