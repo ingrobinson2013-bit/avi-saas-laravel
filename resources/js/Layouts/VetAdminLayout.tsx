@@ -174,17 +174,101 @@ export default function VetAdminLayout({
         setNotifications(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n));
     };
 
-    // Estado de acordeones de menú (Minimizados por defecto a petición)
+    const activeBgColor = primaryColor || '#2563eb';
+
+    // Helper para verificar si un ítem está activo (por activeItem prop o por URL actual)
+    const isItemActive = (keys: string[], pathPattern?: RegExp) => {
+        if (keys.includes(activeItem)) return true;
+        if (typeof window !== 'undefined' && pathPattern && pathPattern.test(window.location.pathname)) {
+            return true;
+        }
+        return false;
+    };
+
+    // Helper para detectar si un grupo de menú debe abrirse automáticamente
+    const getInitialGroupOpen = (group: string) => {
+        if (typeof window === 'undefined') return false;
+        const path = window.location.pathname;
+        if (group === 'clientes') {
+            return ['Clientes y Mascotas', 'Mascotas', 'Tutores', 'Membresías & Afiliaciones', 'Membresías'].includes(activeItem) ||
+                   /\/(pets|customers|subscriptions)/.test(path);
+        }
+        if (group === 'planes') {
+            return ['Planes de Salud', 'Constructor de Planes', 'Catálogo de Servicios', 'Servicios'].includes(activeItem) ||
+                   /\/(plans|benefit-definitions)/.test(path);
+        }
+        if (group === 'recepcion') {
+            return ['Citas & Agenda', 'Canje en Recepción', 'Historial de Canjes'].includes(activeItem) ||
+                   /\/(citas|agenda|calendar|counter-redeem|historial-canjes)/.test(path);
+        }
+        if (group === 'reportes') {
+            return ['Métricas y Estadísticas', 'Crecimiento'].includes(activeItem) ||
+                   /\/(reportes|metricas|crecimiento)/.test(path);
+        }
+        if (group === 'configuracion') {
+            return ['Configuración', 'Marca y Medios de Pago', 'Usuarios', 'Suscripción'].includes(activeItem) ||
+                   /\/(clinic-settings|renovar-saas)/.test(path);
+        }
+        return false;
+    };
+
+    // Estado de acordeones de menú (Abre automáticamente el grupo activo para que permanezca visible y seleccionado)
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-        clientes: false,
-        planes: false,
-        recepcion: false,
-        reportes: false,
-        configuracion: false,
+        clientes: getInitialGroupOpen('clientes'),
+        planes: getInitialGroupOpen('planes'),
+        recepcion: getInitialGroupOpen('recepcion'),
+        reportes: getInitialGroupOpen('reportes'),
+        configuracion: getInitialGroupOpen('configuracion'),
     });
+
+    useEffect(() => {
+        setOpenGroups(prev => ({
+            ...prev,
+            clientes: prev.clientes || getInitialGroupOpen('clientes'),
+            planes: prev.planes || getInitialGroupOpen('planes'),
+            recepcion: prev.recepcion || getInitialGroupOpen('recepcion'),
+            reportes: prev.reportes || getInitialGroupOpen('reportes'),
+            configuracion: prev.configuracion || getInitialGroupOpen('configuracion'),
+        }));
+    }, [activeItem]);
 
     const toggleGroup = (group: string) => {
         setOpenGroups(prev => ({ ...prev, [group]: !prev[group] }));
+    };
+
+    // Renderizador consistente de sub-items con cambio de color y estado seleccionado garantizado
+    const renderSubItem = (
+        href: string,
+        keys: string[],
+        pathPattern: RegExp,
+        Icon: any,
+        label: string,
+        badge?: string
+    ) => {
+        const isActive = isItemActive(keys, pathPattern);
+        return (
+            <Link
+                href={getHref(href)}
+                preserveScroll
+                style={isActive ? { backgroundColor: activeBgColor, color: '#ffffff' } : undefined}
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 group ${
+                    isActive
+                        ? 'text-white shadow-sm ring-1 ring-white/15'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+            >
+                <Icon className={`w-3.5 h-3.5 shrink-0 transition-colors ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                <span className="flex-1 truncate">{label}</span>
+                {badge && (
+                    <span className="ml-auto text-[8.5px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                        {badge}
+                    </span>
+                )}
+                {isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-white ml-auto shrink-0 shadow-xs animate-pulse"></span>
+                )}
+            </Link>
+        );
     };
 
     return (
@@ -248,33 +332,39 @@ export default function VetAdminLayout({
                     <Link
                         href={getHref(`/admin/${tenantSlug}`)}
                         preserveScroll
-                        style={activeItem === 'Inicio' ? { backgroundColor: primaryColor } : undefined}
-                        className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 ${
-                            activeItem === 'Inicio'
-                                ? 'text-white shadow-sm'
+                        style={isItemActive(['Inicio'], new RegExp(`/admin/${tenantSlug}/?$`)) ? { backgroundColor: activeBgColor, color: '#ffffff' } : undefined}
+                        className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 group ${
+                            isItemActive(['Inicio'], new RegExp(`/admin/${tenantSlug}/?$`))
+                                ? 'text-white shadow-sm ring-1 ring-white/15'
                                 : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                         }`}
                     >
-                        <Home className={`w-4 h-4 shrink-0 ${activeItem === 'Inicio' ? 'text-white' : 'text-slate-400'}`} />
+                        <Home className={`w-4 h-4 shrink-0 transition-colors ${isItemActive(['Inicio'], new RegExp(`/admin/${tenantSlug}/?$`)) ? 'text-white' : 'text-slate-400 group-hover:text-white'}`} />
                         <span className="flex-1 truncate">Inicio</span>
+                        {isItemActive(['Inicio'], new RegExp(`/admin/${tenantSlug}/?$`)) && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-white ml-auto shrink-0 shadow-xs animate-pulse"></span>
+                        )}
                     </Link>
 
                     {/* AVI Intelligence */}
                     <Link
                         href={getHref(`/admin/${tenantSlug}/inteligencia`)}
                         preserveScroll
-                        style={(activeItem === 'AVI Intelligence' || activeItem === 'Fidelización & WhatsApp' || activeItem === 'Inteligencia Artificial') ? { backgroundColor: primaryColor } : undefined}
-                        className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 ${
-                            (activeItem === 'AVI Intelligence' || activeItem === 'Fidelización & WhatsApp' || activeItem === 'Inteligencia Artificial')
-                                ? 'text-white shadow-sm'
+                        style={isItemActive(['AVI Intelligence', 'Fidelización & WhatsApp', 'Inteligencia Artificial'], /\/inteligencia/) ? { backgroundColor: activeBgColor, color: '#ffffff' } : undefined}
+                        className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 group ${
+                            isItemActive(['AVI Intelligence', 'Fidelización & WhatsApp', 'Inteligencia Artificial'], /\/inteligencia/)
+                                ? 'text-white shadow-sm ring-1 ring-white/15'
                                 : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                         }`}
                     >
-                        <Sparkles className={`w-4 h-4 shrink-0 ${(activeItem === 'AVI Intelligence' || activeItem === 'Fidelización & WhatsApp' || activeItem === 'Inteligencia Artificial') ? 'text-white' : 'text-purple-400'}`} />
+                        <Sparkles className={`w-4 h-4 shrink-0 transition-colors ${isItemActive(['AVI Intelligence', 'Fidelización & WhatsApp', 'Inteligencia Artificial'], /\/inteligencia/) ? 'text-white' : 'text-purple-400 group-hover:text-white'}`} />
                         <span className="flex-1 truncate">AVI Intelligence</span>
                         <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-500/25 text-purple-300 border border-purple-500/30">
                             Gemini 2.5
                         </span>
+                        {isItemActive(['AVI Intelligence', 'Fidelización & WhatsApp', 'Inteligencia Artificial'], /\/inteligencia/) && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-white ml-1.5 shrink-0 shadow-xs animate-pulse"></span>
+                        )}
                     </Link>
 
                     {/* Grupo: Clientes */}
@@ -282,7 +372,9 @@ export default function VetAdminLayout({
                         <button
                             type="button"
                             onClick={() => toggleGroup('clientes')}
-                            className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-200 transition"
+                            className={`w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold transition ${
+                                openGroups.clientes ? 'text-white' : 'text-slate-400 hover:text-slate-200'
+                            }`}
                         >
                             <span className="flex items-center gap-2 text-slate-300">
                                 <Users className="w-4 h-4 text-slate-400" />
@@ -291,37 +383,10 @@ export default function VetAdminLayout({
                             <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openGroups.clientes ? 'rotate-0' : '-rotate-90'}`} />
                         </button>
                         {openGroups.clientes && (
-                            <div className="pl-6 pr-1 py-1 space-y-0.5">
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/pets`)}
-                                    preserveScroll
-                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
-                                        activeItem === 'Clientes y Mascotas' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                    }`}
-                                >
-                                    <PawPrint className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Mascotas</span>
-                                </Link>
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/customers`)}
-                                    preserveScroll
-                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
-                                        activeItem === 'Tutores' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                    }`}
-                                >
-                                    <User className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Tutores</span>
-                                </Link>
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/subscriptions`)}
-                                    preserveScroll
-                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
-                                        activeItem === 'Membresías & Afiliaciones' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                    }`}
-                                >
-                                    <Shield className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Membresías</span>
-                                </Link>
+                            <div className="pl-4 pr-1 py-1 space-y-1">
+                                {renderSubItem(`/admin/${tenantSlug}/pets`, ['Clientes y Mascotas', 'Mascotas'], /\/pets/, PawPrint, 'Mascotas')}
+                                {renderSubItem(`/admin/${tenantSlug}/customers`, ['Tutores'], /\/customers/, User, 'Tutores')}
+                                {renderSubItem(`/admin/${tenantSlug}/subscriptions`, ['Membresías & Afiliaciones', 'Membresías'], /\/subscriptions/, Shield, 'Membresías')}
                             </div>
                         )}
                     </div>
@@ -331,7 +396,9 @@ export default function VetAdminLayout({
                         <button
                             type="button"
                             onClick={() => toggleGroup('planes')}
-                            className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-200 transition"
+                            className={`w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold transition ${
+                                openGroups.planes ? 'text-white' : 'text-slate-400 hover:text-slate-200'
+                            }`}
                         >
                             <span className="flex items-center gap-2 text-slate-300">
                                 <Calendar className="w-4 h-4 text-slate-400" />
@@ -340,37 +407,10 @@ export default function VetAdminLayout({
                             <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openGroups.planes ? 'rotate-0' : '-rotate-90'}`} />
                         </button>
                         {openGroups.planes && (
-                            <div className="pl-6 pr-1 py-1 space-y-0.5">
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/plans`)}
-                                    preserveScroll
-                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
-                                        activeItem === 'Planes de Salud' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                    }`}
-                                >
-                                    <Heart className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Planes de Salud</span>
-                                </Link>
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/plans/create`)}
-                                    preserveScroll
-                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
-                                        activeItem === 'Constructor de Planes' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                    }`}
-                                >
-                                    <Layers className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Constructor de Planes</span>
-                                </Link>
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/benefit-definitions`)}
-                                    preserveScroll
-                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
-                                        activeItem === 'Catálogo de Servicios' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                    }`}
-                                >
-                                    <BookOpen className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Servicios y Beneficios</span>
-                                </Link>
+                            <div className="pl-4 pr-1 py-1 space-y-1">
+                                {renderSubItem(`/admin/${tenantSlug}/plans`, ['Planes de Salud', 'Planes'], new RegExp(`/admin/${tenantSlug}/plans/?$`), Heart, 'Planes de Salud')}
+                                {renderSubItem(`/admin/${tenantSlug}/plans/create`, ['Constructor de Planes'], /\/plans\/create/, Layers, 'Constructor de Planes')}
+                                {renderSubItem(`/admin/${tenantSlug}/benefit-definitions`, ['Catálogo de Servicios', 'Servicios'], /\/benefit-definitions/, BookOpen, 'Servicios y Beneficios')}
                             </div>
                         )}
                     </div>
@@ -380,7 +420,9 @@ export default function VetAdminLayout({
                         <button
                             type="button"
                             onClick={() => toggleGroup('recepcion')}
-                            className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-200 transition"
+                            className={`w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold transition ${
+                                openGroups.recepcion ? 'text-white' : 'text-slate-400 hover:text-slate-200'
+                            }`}
                         >
                             <span className="flex items-center gap-2 text-slate-300">
                                 <Stethoscope className="w-4 h-4 text-slate-400" />
@@ -389,40 +431,10 @@ export default function VetAdminLayout({
                             <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openGroups.recepcion ? 'rotate-0' : '-rotate-90'}`} />
                         </button>
                         {openGroups.recepcion && (
-                            <div className="pl-6 pr-1 py-1 space-y-0.5">
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/citas`)}
-                                    preserveScroll
-                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
-                                        activeItem === 'Citas & Agenda' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                    }`}
-                                >
-                                    <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Citas & Agenda</span>
-                                    <span className="ml-auto text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300">
-                                        Google
-                                    </span>
-                                </Link>
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/counter-redeem`)}
-                                    preserveScroll
-                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
-                                        activeItem === 'Canje en Recepción' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                    }`}
-                                >
-                                    <Tag className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Canje en Recepción</span>
-                                </Link>
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/historial-canjes`)}
-                                    preserveScroll
-                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
-                                        activeItem === 'Historial de Canjes' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                    }`}
-                                >
-                                    <History className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Historial de Canjes</span>
-                                </Link>
+                            <div className="pl-4 pr-1 py-1 space-y-1">
+                                {renderSubItem(`/admin/${tenantSlug}/citas`, ['Citas & Agenda', 'Citas'], /\/(citas|agenda|calendar)/, Calendar, 'Citas & Agenda', 'Google')}
+                                {renderSubItem(`/admin/${tenantSlug}/counter-redeem`, ['Canje en Recepción', 'Canje'], /\/counter-redeem/, Tag, 'Canje en Recepción')}
+                                {renderSubItem(`/admin/${tenantSlug}/historial-canjes`, ['Historial de Canjes'], /\/historial-canjes/, History, 'Historial de Canjes')}
                             </div>
                         )}
                     </div>
@@ -432,7 +444,9 @@ export default function VetAdminLayout({
                         <button
                             type="button"
                             onClick={() => toggleGroup('reportes')}
-                            className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-200 transition"
+                            className={`w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold transition ${
+                                openGroups.reportes ? 'text-white' : 'text-slate-400 hover:text-slate-200'
+                            }`}
                         >
                             <span className="flex items-center gap-2 text-slate-300">
                                 <BarChart3 className="w-4 h-4 text-slate-400" />
@@ -441,27 +455,9 @@ export default function VetAdminLayout({
                             <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openGroups.reportes ? 'rotate-0' : '-rotate-90'}`} />
                         </button>
                         {openGroups.reportes && (
-                            <div className="pl-6 pr-1 py-1 space-y-0.5">
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/reportes/metricas`)}
-                                    preserveScroll
-                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
-                                        activeItem === 'Métricas y Estadísticas' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                    }`}
-                                >
-                                    <TrendingUp className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Métricas y Estadísticas</span>
-                                </Link>
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/reportes/crecimiento`)}
-                                    preserveScroll
-                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
-                                        activeItem === 'Crecimiento' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                    }`}
-                                >
-                                    <BarChart3 className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Crecimiento</span>
-                                </Link>
+                            <div className="pl-4 pr-1 py-1 space-y-1">
+                                {renderSubItem(`/admin/${tenantSlug}/reportes/metricas`, ['Métricas y Estadísticas', 'Métricas'], /\/reportes\/metricas/, TrendingUp, 'Métricas y Estadísticas')}
+                                {renderSubItem(`/admin/${tenantSlug}/reportes/crecimiento`, ['Crecimiento'], /\/reportes\/crecimiento/, BarChart3, 'Crecimiento')}
                             </div>
                         )}
                     </div>
@@ -471,7 +467,9 @@ export default function VetAdminLayout({
                         <button
                             type="button"
                             onClick={() => toggleGroup('configuracion')}
-                            className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-200 transition"
+                            className={`w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold transition ${
+                                openGroups.configuracion ? 'text-white' : 'text-slate-400 hover:text-slate-200'
+                            }`}
                         >
                             <span className="flex items-center gap-2 text-slate-300">
                                 <Settings className="w-4 h-4 text-slate-400" />
@@ -480,33 +478,9 @@ export default function VetAdminLayout({
                             <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openGroups.configuracion ? 'rotate-0' : '-rotate-90'}`} />
                         </button>
                         {openGroups.configuracion && (
-                            <div className="pl-6 pr-1 py-1 space-y-0.5">
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/clinic-settings`)}
-                                    preserveScroll
-                                    className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] transition ${
-                                        activeItem === 'Configuración' ? 'text-white font-bold bg-slate-800' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                    }`}
-                                >
-                                    <CreditCard className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Marca y Medios de Pago</span>
-                                </Link>
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/clinic-settings`)}
-                                    preserveScroll
-                                    className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
-                                >
-                                    <User className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Usuarios</span>
-                                </Link>
-                                <Link
-                                    href={getHref(`/admin/${tenantSlug}/renovar-saas`)}
-                                    preserveScroll
-                                    className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[11.5px] text-slate-400 hover:text-white hover:bg-slate-800/50 transition"
-                                >
-                                    <Shield className="w-3.5 h-3.5 text-slate-500" />
-                                    <span>Suscripción</span>
-                                </Link>
+                            <div className="pl-4 pr-1 py-1 space-y-1">
+                                {renderSubItem(`/admin/${tenantSlug}/clinic-settings`, ['Configuración', 'Marca y Medios de Pago'], /\/clinic-settings/, CreditCard, 'Marca y Medios de Pago')}
+                                {renderSubItem(`/admin/${tenantSlug}/renovar-saas`, ['Suscripción', 'Renovar SaaS'], /\/renovar-saas/, Shield, 'Suscripción SaaS')}
                             </div>
                         )}
                     </div>
@@ -516,18 +490,21 @@ export default function VetAdminLayout({
                         <Link
                             href={getHref(`/admin/${tenantSlug}/logistica`)}
                             preserveScroll
-                            style={activeItem === 'Logística & Envíos' ? { backgroundColor: primaryColor } : undefined}
-                            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 ${
-                                activeItem === 'Logística & Envíos'
-                                    ? 'text-white shadow-sm'
+                            style={isItemActive(['Logística & Envíos'], /\/logistica/) ? { backgroundColor: activeBgColor, color: '#ffffff' } : undefined}
+                            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all duration-150 group ${
+                                isItemActive(['Logística & Envíos'], /\/logistica/)
+                                    ? 'text-white shadow-sm ring-1 ring-white/15'
                                     : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                             }`}
                         >
-                            <Truck className={`w-4 h-4 shrink-0 ${activeItem === 'Logística & Envíos' ? 'text-white' : 'text-slate-400'}`} />
+                            <Truck className={`w-4 h-4 shrink-0 transition-colors ${isItemActive(['Logística & Envíos'], /\/logistica/) ? 'text-white' : 'text-slate-400 group-hover:text-white'}`} />
                             <span className="flex-1 truncate">Logística & Envíos</span>
                             <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-500/25 text-purple-300 border border-purple-500/30">
                                 AUTO
                             </span>
+                            {isItemActive(['Logística & Envíos'], /\/logistica/) && (
+                                <span className="w-1.5 h-1.5 rounded-full bg-white ml-1.5 shrink-0 shadow-xs animate-pulse"></span>
+                            )}
                         </Link>
                     </div>
 
