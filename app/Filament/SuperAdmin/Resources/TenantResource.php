@@ -328,18 +328,44 @@ class TenantResource extends Resource
             ->poll('30s')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Clínica Veterinaria')
+                    ->label('Clínica & Enlaces Directos')
                     ->searchable(['name', 'slug', 'domain'])
                     ->sortable()
-                    ->weight('bold')
-                    ->description(function (Tenant $record): string {
-                        $city = $record->branding['city'] ?? 'Sin ciudad';
-                        $address = $record->branding['address'] ?? '';
-                        return "📍 {$city}" . ($address ? " • {$address}" : '') . " • /v/{$record->slug}";
+                    ->html()
+                    ->formatStateUsing(function (Tenant $record): string {
+                        $name = e($record->name);
+                        $city = e($record->branding['city'] ?? 'Colombia');
+                        $domain = e($record->domain ?? ($record->slug . '.' . env('APP_BASE_DOMAIN', 'avipetapp.com')));
+                        $storefrontUrl = e($record->base_url);
+                        $adminUrl = e($record->getAdminUrl());
+                        $impersonateUrl = e(url("/impersonate-clinic/{$record->id}"));
+
+                        return "
+                        <div class='py-1 space-y-1.5 min-w-[210px]'>
+                            <div class='flex items-center gap-2'>
+                                <span class='inline-flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold text-xs shrink-0 shadow-xs border border-indigo-100 dark:border-indigo-800'>🐾</span>
+                                <div>
+                                    <span class='text-sm font-bold text-gray-900 dark:text-white leading-tight block'>{$name}</span>
+                                    <span class='text-[11px] font-medium text-gray-500 dark:text-gray-400'>📍 {$city} · <span class='font-mono text-gray-600 dark:text-gray-300'>{$domain}</span></span>
+                                </div>
+                            </div>
+                            <div class='flex items-center gap-1.5 pt-0.5'>
+                                <a href='{$storefrontUrl}' target='_blank' class='inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-950/60 dark:text-blue-300 transition-colors border border-blue-200/60 dark:border-blue-800' title='Abrir Vitrina Pública de Afiliación'>
+                                    🌐 Vitrina ↗
+                                </a>
+                                <a href='{$adminUrl}' target='_blank' class='inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 transition-colors border border-emerald-200/60 dark:border-emerald-800' title='Abrir Panel Administrativo'>
+                                    ⚙️ Panel ↗
+                                </a>
+                                <a href='{$impersonateUrl}' class='inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-md bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 transition-colors border border-amber-200/60 dark:border-amber-800' title='Acceder como Administrador de esta clínica'>
+                                    🔑 Acceso
+                                </a>
+                            </div>
+                        </div>
+                        ";
                     }),
 
                 Tables\Columns\TextColumn::make('saas_status_badge')
-                    ->label('Estado SaaS / 15 Días')
+                    ->label('Estado SaaS & Plan')
                     ->badge()
                     ->state(function (Tenant $record): string {
                         $status = $record->saas_status;
@@ -361,97 +387,77 @@ class TenantResource extends Resource
                         if ($status === 'suspended') return 'danger';
                         $days = $record->trial_days_remaining;
                         return $days > 3 ? 'warning' : 'danger';
-                    }),
-
-                Tables\Columns\TextColumn::make('storefront_link')
-                    ->label('🌐 Vitrina Pública')
-                    ->state(function (Tenant $record): string {
-                        $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
-                        return $record->domain ? "https://{$record->domain}" : "https://{$baseDomain}/v/{$record->slug}";
                     })
-                    ->badge()
-                    ->color('info')
-                    ->icon('heroicon-m-globe-alt')
-                    ->copyable()
-                    ->copyMessage('Enlace de vitrina copiado al portapapeles')
-                    ->url(fn (Tenant $record): string => $record->domain ? "https://{$record->domain}" : url("/v/{$record->slug}"), true),
-
-                Tables\Columns\TextColumn::make('admin_link')
-                    ->label('⚙️ Panel Admin')
-                    ->state(function (Tenant $record): string {
-                        $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
-                        return $record->domain ? "https://{$record->domain}/admin" : "https://{$baseDomain}/admin/{$record->slug}?preview=1";
-                    })
-                    ->badge()
-                    ->color('primary')
-                    ->icon('heroicon-m-computer-desktop')
-                    ->copyable()
-                    ->copyMessage('Enlace de panel copiado al portapapeles')
-                    ->url(fn (Tenant $record): string => $record->domain ? "https://{$record->domain}/admin" : url("/admin/{$record->slug}?preview=1"), true),
-
-                Tables\Columns\TextColumn::make('domain')
-                    ->label('Dominio Oficial')
-                    ->badge()
-                    ->color('gray')
-                    ->icon('heroicon-m-globe-alt')
-                    ->copyable()
-                    ->copyMessage('Dominio copiado')
-                    ->url(fn (Tenant $record): ?string => $record->domain ? 'https://' . $record->domain : null, true)
-                    ->placeholder('Sin dominio (usa /v/' . '{slug})')
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('saas_plan_tier')
-                    ->label('Plan SaaS')
-                    ->badge()
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'pay_per_pet' => '🌱 POR MASCOTA',
-                        'starter' => '🚀 STARTER ($99k)',
-                        'pro' => '⭐ PRO ($229k)',
-                        'enterprise' => '👑 ENTERPRISE ($489k)',
-                        default => strtoupper($state),
-                    })
-                    ->color(fn (string $state): string => match ($state) {
-                        'pay_per_pet' => 'info',
-                        'starter' => 'gray',
-                        'pro' => 'success',
-                        'enterprise' => 'warning',
-                        default => 'gray',
-                    })
-                    ->description(function (Tenant $record): ?string {
+                    ->description(function (Tenant $record): string {
+                        $tierName = match ($record->saas_plan_tier) {
+                            'pay_per_pet' => 'Plan Por Mascota',
+                            'starter' => 'Plan Starter',
+                            'pro' => 'Plan Pro',
+                            'enterprise' => 'Plan Enterprise',
+                            default => strtoupper((string) $record->saas_plan_tier),
+                        };
                         $fee = $record->branding['saas_monthly_fee'] ?? null;
-                        return $fee ? '$' . number_format((float) $fee, 0, ',', '.') . '/mes' : null;
+                        $feeFormatted = $fee ? '$' . number_format((float) $fee, 0, ',', '.') . '/mes' : 'Tarifa por definir';
+                        return "{$tierName} · {$feeFormatted}";
                     }),
+
+                Tables\Columns\TextColumn::make('ecosystem_metrics')
+                    ->label('Pacientes & Membresías')
+                    ->html()
+                    ->state(function (Tenant $record): string {
+                        $subsCount = $record->subscriptions()->where('status', 'active')->count();
+                        $petsCount = $record->pets()->count();
+                        $custCount = $record->customers()->count();
+
+                        return "
+                        <div class='text-xs space-y-1 min-w-[130px]'>
+                            <span class='inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'>
+                                <span class='w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse'></span>
+                                {$subsCount} membresías
+                            </span>
+                            <div class='text-[11px] text-gray-500 dark:text-gray-400 font-medium'>
+                                🐾 {$petsCount} mascotas · 👤 {$custCount} tutores
+                            </div>
+                        </div>
+                        ";
+                    }),
+
+                Tables\Columns\TextColumn::make('clinic_gmv')
+                    ->label('Facturación Clínica')
+                    ->state(function (Tenant $record): string {
+                        $gmv = $record->subscriptions()
+                            ->where('subscriptions.status', 'active')
+                            ->join('plans', 'subscriptions.plan_id', '=', 'plans.id')
+                            ->sum('plans.price_cop');
+                        return '$' . number_format($gmv, 0, ',', '.') . ' COP';
+                    })
+                    ->description('Recaudo mensual planes')
+                    ->weight('bold')
+                    ->color('gray'),
 
                 Tables\Columns\TextColumn::make('contact_phone')
-                    ->label('WhatsApp Contacto')
-                    ->state(fn (Tenant $record): string => $record->branding['phone'] ?? 'N/A')
-                    ->icon('heroicon-m-chat-bubble-left-ellipsis')
-                    ->color('success')
-                    ->url(function (Tenant $record): ?string {
+                    ->label('WhatsApp Directo')
+                    ->html()
+                    ->state(function (Tenant $record): string {
                         $phone = preg_replace('/[^0-9]/', '', $record->branding['phone'] ?? '');
-                        if (empty($phone)) return null;
+                        if (empty($phone)) {
+                            return "<span class='text-xs text-gray-400 italic'>Sin WhatsApp</span>";
+                        }
                         $prefix = str_starts_with($phone, '57') ? $phone : "57{$phone}";
-                        $fee = $record->branding['saas_monthly_fee'] ?? '229.000';
-                        return "https://wa.me/{$prefix}?text=" . urlencode("Hola Dr(a) de {$record->name}, te escribo de AVI-Plan para hacer seguimiento a tus 15 días de prueba de tu plataforma de membresías de bienestar.");
-                    }, true),
+                        $msg = urlencode("Hola Dr(a) de {$record->name}, te escribo del equipo AVI-Plan para conocer cómo va la experiencia en tu clínica veterinaria.");
+                        $waUrl = "https://wa.me/{$prefix}?text={$msg}";
 
-                Tables\Columns\TextColumn::make('customers_count')
-                    ->label('Tutores')
-                    ->counts('customers')
-                    ->badge()
-                    ->color('gray')
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('subscriptions_count')
-                    ->label('Membresías')
-                    ->counts('subscriptions')
-                    ->badge()
-                    ->color('primary')
-                    ->sortable(),
+                        return "
+                        <a href='{$waUrl}' target='_blank' class='inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors shrink-0'>
+                            <svg class='w-3.5 h-3.5 fill-current' viewBox='0 0 24 24'><path d='M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z'/></svg>
+                            <span>{$phone}</span>
+                        </a>
+                        ";
+                    }),
 
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Alta')
-                    ->dateTime('d/m/Y')
+                    ->label('Fecha Alta')
+                    ->date('d M Y')
                     ->sortable(),
             ])
             ->filters([
@@ -467,91 +473,72 @@ class TenantResource extends Resource
                     ->label('Activas / Suspendidas'),
             ])
             ->actions([
-                Tables\Actions\Action::make('extendTrial')
-                    ->label('+15 Días')
-                    ->icon('heroicon-o-clock')
-                    ->color('warning')
-                    ->button()
-                    ->size('xs')
-                    ->requiresConfirmation()
-                    ->modalHeading('¿Extender período de prueba?')
-                    ->modalDescription('Se sumarán 15 días adicionales a partir de hoy a la clínica para que continúe evaluando AVI-Plan.')
-                    ->action(function (Tenant $record) {
-                        $branding = $record->branding ?? [];
-                        $branding['trial_ends_at'] = now()->addDays(15)->toIso8601String();
-                        $branding['saas_status'] = 'trial';
-                        $record->update(['branding' => $branding, 'is_active' => true]);
-
-                        Notification::make()
-                            ->title('¡Prueba extendida con éxito!')
-                            ->body("La clínica {$record->name} tiene 15 días más de prueba activa.")
-                            ->success()
-                            ->send();
-                    }),
-
-                Tables\Actions\Action::make('activatePaid')
-                    ->label('Plan Pago')
-                    ->icon('heroicon-o-check-badge')
-                    ->color('success')
-                    ->button()
-                    ->size('xs')
-                    ->requiresConfirmation()
-                    ->modalHeading('¿Activar Suscripción Oficial de Pago?')
-                    ->modalDescription('Esta clínica pasará a estado oficial activo pagado en AVI-Plan y se sumarán 30 días de cobertura.')
-                    ->action(function (Tenant $record) {
-                        $branding = $record->branding ?? [];
-                        $branding['saas_status'] = 'paid';
-                        $branding['saas_last_payment_date'] = now()->toDateString();
-                        $branding['saas_next_payment_due'] = now()->addDays(30)->toDateString();
-                        $branding['saas_paid_until'] = now()->addDays(30)->toDateString();
-                        $branding['saas_payment_method'] = $branding['saas_payment_method'] ?? 'bold_wompi';
-                        $fee = (float) ($branding['saas_monthly_fee'] ?? 229000);
-                        $record->update(['branding' => $branding, 'is_active' => true]);
-
-                        // Registrar en Log Oficial de Pagos
-                        \App\Models\SaasPaymentLog::create([
-                            'tenant_id' => $record->id,
-                            'order_id' => "ADMIN-ACTIVATE-{$record->slug}-" . time(),
-                            'gateway' => $branding['saas_payment_method'] ?? 'manual',
-                            'amount' => $fee,
-                            'currency' => 'COP',
-                            'plan_tier' => $record->saas_plan_tier ?? 'pro',
-                            'status' => 'approved',
-                            'payer_name' => $record->name,
-                            'period_start' => now()->toDateString(),
-                            'period_end' => now()->addDays(30)->toDateString(),
-                            'notes' => 'Activación directa desde el panel de SuperAdmin.',
-                            'paid_at' => now(),
-                        ]);
-
-                        Notification::make()
-                            ->title('¡Plan de Pago Activado y Registrado!')
-                            ->body("La clínica {$record->name} quedó al día hasta el " . now()->addDays(30)->format('d/m/Y') . " y se registró en el Historial de Pagos.")
-                            ->success()
-                            ->send();
-                    }),
-
+                Tables\Actions\EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Editar datos de la clínica'),
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('openStorefront')
-                        ->label('🌐 Abrir Vitrina Pública de Tutores')
-                        ->icon('heroicon-o-globe-alt')
-                        ->color('info')
-                        ->url(fn (Tenant $record): string => $record->domain ? "https://{$record->domain}" : url("/v/{$record->slug}"), true),
-
-                    Tables\Actions\Action::make('openAdmin')
-                        ->label('⚙️ Abrir Panel Administrativo')
-                        ->icon('heroicon-o-computer-desktop')
-                        ->color('primary')
-                        ->url(fn (Tenant $record): string => $record->domain ? "https://{$record->domain}/admin" : url("/admin/{$record->slug}?preview=1"), true),
-
-                    Tables\Actions\Action::make('impersonate')
-                        ->label('🔑 Impersonar Sesión (Soporte 1-Clic)')
-                        ->icon('heroicon-o-key')
+                    Tables\Actions\Action::make('extendTrial')
+                        ->label('⏳ Extender +15 Días de Prueba')
+                        ->icon('heroicon-o-clock')
                         ->color('warning')
-                        ->url(fn (Tenant $record): string => url("/impersonate-clinic/{$record->id}")),
+                        ->requiresConfirmation()
+                        ->modalHeading('¿Extender período de prueba?')
+                        ->modalDescription('Se sumarán 15 días adicionales a partir de hoy a la clínica para que continúe evaluando AVI-Plan.')
+                        ->action(function (Tenant $record) {
+                            $branding = $record->branding ?? [];
+                            $branding['trial_ends_at'] = now()->addDays(15)->toIso8601String();
+                            $branding['saas_status'] = 'trial';
+                            $record->update(['branding' => $branding, 'is_active' => true]);
+
+                            Notification::make()
+                                ->title('¡Prueba extendida con éxito!')
+                                ->body("La clínica {$record->name} tiene 15 días más de prueba activa.")
+                                ->success()
+                                ->send();
+                        }),
+
+                    Tables\Actions\Action::make('activatePaid')
+                        ->label('⭐ Activar Suscripción Oficial de Pago')
+                        ->icon('heroicon-o-check-badge')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->modalHeading('¿Activar Suscripción Oficial de Pago?')
+                        ->modalDescription('Esta clínica pasará a estado oficial activo pagado en AVI-Plan y se sumarán 30 días de cobertura.')
+                        ->action(function (Tenant $record) {
+                            $branding = $record->branding ?? [];
+                            $branding['saas_status'] = 'paid';
+                            $branding['saas_last_payment_date'] = now()->toDateString();
+                            $branding['saas_next_payment_due'] = now()->addDays(30)->toDateString();
+                            $branding['saas_paid_until'] = now()->addDays(30)->toDateString();
+                            $branding['saas_payment_method'] = $branding['saas_payment_method'] ?? 'bold_wompi';
+                            $fee = (float) ($branding['saas_monthly_fee'] ?? 229000);
+                            $record->update(['branding' => $branding, 'is_active' => true]);
+
+                            // Registrar en Log Oficial de Pagos
+                            \App\Models\SaasPaymentLog::create([
+                                'tenant_id' => $record->id,
+                                'order_id' => "ADMIN-ACTIVATE-{$record->slug}-" . time(),
+                                'gateway' => $branding['saas_payment_method'] ?? 'manual',
+                                'amount' => $fee,
+                                'currency' => 'COP',
+                                'plan_tier' => $record->saas_plan_tier ?? 'pro',
+                                'status' => 'approved',
+                                'payer_name' => $record->name,
+                                'period_start' => now()->toDateString(),
+                                'period_end' => now()->addDays(30)->toDateString(),
+                                'notes' => 'Activación directa desde el panel de SuperAdmin.',
+                                'paid_at' => now(),
+                            ]);
+
+                            Notification::make()
+                                ->title('¡Plan de Pago Activado y Registrado!')
+                                ->body("La clínica {$record->name} quedó al día hasta el " . now()->addDays(30)->format('d/m/Y') . " y se registró en el Historial de Pagos.")
+                                ->success()
+                                ->send();
+                        }),
 
                     Tables\Actions\Action::make('registerPayment')
-                        ->label('➕ Registrar Pago Manual / Renovación')
+                        ->label('💵 Registrar Pago Manual / Renovación')
                         ->icon('heroicon-o-banknotes')
                         ->color('success')
                         ->form([
@@ -619,13 +606,13 @@ class TenantResource extends Resource
                         }),
 
                     Tables\Actions\Action::make('openSaasCheckout')
-                        ->label('💳 Abrir Pasarela de Pago Bold SaaS')
+                        ->label('💳 Pasarela Bold SaaS de la Clínica')
                         ->icon('heroicon-o-credit-card')
-                        ->color('success')
+                        ->color('info')
                         ->url(fn (Tenant $record): string => url("/admin/{$record->slug}/renovar-saas"), true),
 
                     Tables\Actions\Action::make('sendBoldLinkWhatsApp')
-                        ->label('📲 Enviar Link de Cobro Bold por WhatsApp')
+                        ->label('📲 Enviar Link Bold por WhatsApp')
                         ->icon('heroicon-m-chat-bubble-left-ellipsis')
                         ->color('success')
                         ->url(function (Tenant $record): ?string {
@@ -638,36 +625,41 @@ class TenantResource extends Resource
                             return "https://wa.me/{$prefix}?text=" . urlencode($msg);
                         }, true),
 
-                    Tables\Actions\Action::make('openAdmin')
-                        ->label('Ir al Panel Admin de la Clínica')
-                        ->icon('heroicon-o-arrow-top-right-on-square')
-                        ->color('info')
-                        ->url(fn (Tenant $record): string => url("/admin/{$record->slug}"), true),
+                    Tables\Actions\Action::make('impersonate')
+                        ->label('🔑 Acceso 1-Clic (Soporte Técnico)')
+                        ->icon('heroicon-o-key')
+                        ->color('warning')
+                        ->url(fn (Tenant $record): string => url("/impersonate-clinic/{$record->id}")),
 
                     Tables\Actions\Action::make('openStorefront')
-                        ->label('Ver Web Pacientes (/v/' . 'slug)')
+                        ->label('🌐 Abrir Vitrina Pública de Afiliación')
                         ->icon('heroicon-o-globe-alt')
-                        ->color('gray')
-                        ->url(fn (Tenant $record): string => url("/v/{$record->slug}"), true),
+                        ->color('info')
+                        ->url(fn (Tenant $record): string => $record->base_url, true),
+
+                    Tables\Actions\Action::make('openAdmin')
+                        ->label('⚙️ Abrir Panel de Gestión Clínica')
+                        ->icon('heroicon-o-computer-desktop')
+                        ->color('primary')
+                        ->url(fn (Tenant $record): string => $record->getAdminUrl(), true),
 
                     Tables\Actions\Action::make('toggleActive')
-                        ->label(fn (Tenant $record) => $record->is_active ? 'Suspender Acceso' : 'Reactivar Acceso')
+                        ->label(fn (Tenant $record) => $record->is_active ? '⛔ Suspender Acceso' : '✅ Reactivar Acceso')
                         ->icon(fn (Tenant $record) => $record->is_active ? 'heroicon-o-no-symbol' : 'heroicon-o-check-circle')
                         ->color(fn (Tenant $record) => $record->is_active ? 'danger' : 'success')
                         ->requiresConfirmation()
                         ->action(fn (Tenant $record) => $record->update(['is_active' => !$record->is_active])),
 
-                    Tables\Actions\EditAction::make(),
-
                     Tables\Actions\DeleteAction::make()
-                        ->label('Eliminar Clínica y Datos')
+                        ->label('🗑️ Eliminar Clínica y Datos')
                         ->icon('heroicon-o-trash')
                         ->color('danger')
                         ->modalHeading(fn (Tenant $record) => "⚠️ ¿Eliminar permanentemente a {$record->name}?")
                         ->modalDescription('Esta acción es irreversible: se eliminarán automáticamente todos los usuarios, tutores, mascotas, citas y configuraciones de esta clínica en cascada.')
                         ->modalSubmitActionLabel('Sí, eliminar clínica')
                         ->hidden(fn (Tenant $record) => $record->slug === 'vet-pet-patitas'),
-                ]),
+                ])
+                ->tooltip('Operaciones y Acciones'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -13,6 +13,13 @@ class SuperAdminStatsOverviewWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
 
+    protected int | string | array $columns = [
+        'default' => 1,
+        'sm' => 2,
+        'md' => 3,
+        'xl' => 5,
+    ];
+
     protected function getStats(): array
     {
         $totalTenants = Tenant::count();

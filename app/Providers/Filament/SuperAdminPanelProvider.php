@@ -28,14 +28,14 @@ class SuperAdminPanelProvider extends PanelProvider
             ->id('super-admin')
             ->path('super-admin')
             ->login()
-            ->brandName('AVI-Plan SaaS — SuperAdmin Central')
+            ->brandName('🐾 AVI-Plan · SuperAdmin Central')
             ->colors([
                 'primary' => Color::Indigo,
                 'gray' => Color::Slate,
             ])
             ->maxContentWidth(MaxWidth::Full)
-            ->sidebarWidth('17rem')
-            ->sidebarCollapsibleOnDesktop(false)
+            ->sidebarWidth('16rem')
+            ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/SuperAdmin/Resources'), for: 'App\\Filament\\SuperAdmin\\Resources')
             ->discoverPages(in: app_path('Filament/SuperAdmin/Pages'), for: 'App\\Filament\\SuperAdmin\\Pages')
             ->discoverWidgets(in: app_path('Filament/SuperAdmin/Widgets'), for: 'App\\Filament\\SuperAdmin\\Widgets')

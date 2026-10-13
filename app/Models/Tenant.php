@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Tenant extends Model
 {
@@ -203,6 +204,11 @@ class Tenant extends Model
     public function customers(): HasMany
     {
         return $this->hasMany(Customer::class);
+    }
+
+    public function pets(): HasManyThrough
+    {
+        return $this->hasManyThrough(Pet::class, Customer::class);
     }
 
     public function plans(): HasMany
