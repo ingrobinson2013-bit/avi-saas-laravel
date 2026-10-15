@@ -100,9 +100,9 @@ class ProspectosScanAndSend extends Command
                 $this->info("[$num/$totalPendientes] [ENVIADO]   -> {$email} | {$clinica}");
                 Log::info("[AVI-Outreach] Correo entregado con éxito a: {$email} ({$prospecto->razon_social})");
 
-                // Pausa prudente para proteger reputación de dominio y evitar filtros de spam
+                // Pausa prudente para proteger reputación de dominio y evitar bloqueos (10 segundos por correo)
                 if ($num < $totalPendientes) {
-                    sleep(4);
+                    sleep(10);
                 }
             } catch (\Throwable $e) {
                 $fallidos++;

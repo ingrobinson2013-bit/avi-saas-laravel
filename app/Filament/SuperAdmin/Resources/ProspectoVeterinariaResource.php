@@ -310,7 +310,7 @@ class ProspectoVeterinariaResource extends Resource
                                         'error_mensaje' => null,
                                     ]);
                                     $enviados++;
-                                    sleep(3); // Pausa segura entre envíos
+                                    sleep(10); // Pausa segura de 10 segundos entre envíos para proteger Hostinger SMTP
                                 } catch (\Throwable $e) {
                                     $record->update([
                                         'estado' => 'error',
