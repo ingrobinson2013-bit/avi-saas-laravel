@@ -276,7 +276,11 @@ class ProspectoVeterinariaResource extends Resource
                     ->color('success')
                     ->visible(fn (ProspectoVeterinaria $record) => filled($record->clean_whatsapp_number))
                     ->url(function (ProspectoVeterinaria $record) {
-                        $mensaje = urlencode("Hola equipo de {$record->razon_social}, les escribo de AVI-Plan (avipetapp.com). Les compartimos nuestra propuesta de planes preventivos de salud para mascotas.");
+                        $texto = "¡Hola, muy buenas tardes equipo de {$record->razon_social}! 👋🐾\n\n"
+                            . "Les saluda Robinson de AVI-Plan (https://avipetapp.com).\n\n"
+                            . "Les escribo porque estamos trabajando con clínicas veterinarias ayudándoles a implementar Planes de Salud Preventiva en suscripción mensual (con carnet digital y canje en mostrador), para asegurar ingresos fijos recurrentes de $3M a $6M mensuales para la clínica.\n\n"
+                            . "¿Ustedes actualmente manejan algún plan de salud o membresías para sus pacientes, o les gustaría conocer cómo funciona?";
+                        $mensaje = rawurlencode($texto);
                         return "https://wa.me/{$record->clean_whatsapp_number}?text={$mensaje}";
                     }, shouldOpenInNewTab: true),
 
