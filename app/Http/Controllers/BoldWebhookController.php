@@ -71,9 +71,13 @@ class BoldWebhookController extends Controller
 
         // 1. Caso A: Pago de Membresía de Mascota B2C (ej. Contrato VPP-2026-0001 o UUID)
         $subscription = Subscription::with(['pet.customer', 'plan', 'tenant'])
-            ->where('gateway_subscription_id', $orderId)
-            ->orWhere('gateway_subscription_id', $cleanContractId)
-            ->orWhere('id', $orderId)
+            ->where(function ($q) use ($orderId, $cleanContractId) {
+                $q->where('gateway_subscription_id', $orderId)
+                  ->orWhere('gateway_subscription_id', $cleanContractId);
+                if (\Illuminate\Support\Str::isUuid($orderId)) {
+                    $q->orWhere('id', $orderId);
+                }
+            })
             ->first();
 
         if ($subscription) {

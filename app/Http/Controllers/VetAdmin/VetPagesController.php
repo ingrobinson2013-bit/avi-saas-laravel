@@ -645,8 +645,10 @@ class VetPagesController extends Controller
         $subscription = Subscription::with(['pet.customer', 'plan'])
             ->where('tenant_id', $tenant->id)
             ->where(function ($q) use ($contractId) {
-                $q->where('gateway_subscription_id', $contractId)
-                  ->orWhere('id', $contractId);
+                $q->where('gateway_subscription_id', $contractId);
+                if (\Illuminate\Support\Str::isUuid($contractId)) {
+                    $q->orWhere('id', $contractId);
+                }
             })
             ->firstOrFail();
 
