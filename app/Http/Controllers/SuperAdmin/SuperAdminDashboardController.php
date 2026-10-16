@@ -83,7 +83,7 @@ class SuperAdminDashboardController extends Controller
         for ($i = 5; $i >= 0; $i--) {
             $date = now()->subMonths($i);
             $monthEnd = $date->copy()->endOfMonth();
-            $monthName = ucfirst($date->translatedFormat('M. Y'));
+            $monthName = ucfirst(rtrim($date->translatedFormat('M'), '.')) . ' ' . $date->format('Y');
             
             // Clínicas que existían al final de ese mes específico
             $tenantsAtMonth = Tenant::where('created_at', '<=', $monthEnd)->get();
