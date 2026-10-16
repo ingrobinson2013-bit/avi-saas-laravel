@@ -12,4 +12,12 @@ return [
         'api_version' => env('WHATSAPP_API_VERSION', 'v21.0'),
         'central_number' => env('WHATSAPP_CENTRAL_NUMBER', '573000000000'),
     ],
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'default_chat_id' => env('TELEGRAM_CHAT_ID'),
+    ],
+    'ai_service' => [
+        'url' => env('FASTAPI_AI_URL', env('AI_SERVICE_URL', 'http://avi-ai:8001')),
+        'timeout' => (float) env('AI_SERVICE_TIMEOUT', 4.0),
+    ],
 ];

@@ -351,6 +351,10 @@ class WhatsAppWebhookController extends Controller
         ]);
         $session->save();
 
+        // Obtener mascota activa asociada al tutor
+        $session->loadMissing('customer.pets');
+        $pet = $session->activePet ?: ($session->customer ? $session->customer->pets->first() : null);
+
         // 1. Guardrail de Emergencias Críticas Inmediatas
         $emergencyKeywords = ['convulsion', 'convulsión', 'sangrado', 'inconsciente', 'ahogo', 'atropellado', 'envenenado', 'veneno', 'no respira'];
         $isEmergency = false;
@@ -364,6 +368,19 @@ class WhatsAppWebhookController extends Controller
         if ($isEmergency) {
             $address = $tenant->branding['address'] ?? 'la clínica más cercana';
             $phone = $tenant->branding['phone'] ?? 'urgencias';
+
+            \App\Models\TriageCase::create([
+                'tenant_id' => $tenant->id,
+                'customer_id' => $session->customer_id,
+                'pet_id' => $pet?->id,
+                'whatsapp_session_id' => $session->id,
+                'phone_number' => $from,
+                'symptoms_raw' => $symptoms,
+                'ai_draft_response' => 'EMERGENCIA INMEDIATA: Despacho presencial mandatorio.',
+                'ai_severity_level' => 'critico',
+                'ai_confidence_score' => 0.99,
+                'status' => 'emergency_redirected',
+            ]);
             
             $waService->sendTextMessage(
                 $from,
@@ -377,13 +394,39 @@ class WhatsAppWebhookController extends Controller
             return;
         }
 
-        // 2. Respuesta de Triaje Ordinario
+        // 2. Análisis Clínico de Síntomas con FastAPI / Gemini Flash
+        $triageAi = app(\App\Services\TriageAiService::class);
+        $beeperService = app(\App\Services\TelegramBeeperService::class);
+
+        $analysis = $triageAi->analyzeSymptoms($symptoms, $tenant, $pet);
+
+        // 3. Crear Registro TriageCase para Human-in-the-Loop
+        $triageCase = \App\Models\TriageCase::create([
+            'tenant_id' => $tenant->id,
+            'customer_id' => $session->customer_id,
+            'pet_id' => $pet?->id,
+            'whatsapp_session_id' => $session->id,
+            'phone_number' => $from,
+            'symptoms_raw' => $symptoms,
+            'ai_draft_response' => $analysis['draft'] ?? '',
+            'ai_severity_level' => $analysis['severity'] ?? 'moderado',
+            'ai_confidence_score' => $analysis['confidence'] ?? 0.85,
+            'status' => 'pending_approval',
+        ]);
+
+        // 4. Notificar al Beeper de Telegram del Veterinario
+        $beeperService->sendTriageCaseAlert($triageCase);
+
+        // 5. Respuesta de Confirmación al Tutor en WhatsApp
+        $petName = $pet ? " de *{$pet->name}*" : "";
+        $caseShortId = strtoupper(substr($triageCase->id, 0, 6));
+
         $waService->sendTextMessage(
             $from,
-            "✅ *Reporte Recibido en {$tenant->name}*\n\n" .
-            "Hemos registrado los síntomas de tu mascota en el sistema clínico. Nuestro equipo y el médico veterinario de turno han sido notificados para la revisión del caso.\n\n" .
-            "⏳ *Tiempo estimado de respuesta:* 5 a 15 minutos.\n" .
-            "Si los síntomas empeoran súbitamente, acude de inmediato a la clínica."
+            "✅ *Caso [{$caseShortId}] Registrado en {$tenant->name}*\n\n" .
+            "Hemos recibido el reporte de síntomas{$petName}. Nuestro asistente clínico ha formulado un borrador preliminar y el médico veterinario de turno ha recibido la alerta en su beeper para aprobación.\n\n" .
+            "⏳ *Tiempo estimado de respuesta médica:* 5 a 15 minutos.\n" .
+            "Te notificaremos aquí tan pronto el especialista firme las recomendaciones."
         );
     }
 }

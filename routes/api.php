@@ -23,6 +23,9 @@ Route::post('/ai/recommend-plan', function (Request $request, FastApiClient $aiC
 Route::get('/webhook/whatsapp', [\App\Http\Controllers\WhatsAppWebhookController::class, 'verify']);
 Route::post('/webhook/whatsapp', [\App\Http\Controllers\WhatsAppWebhookController::class, 'handle']);
 
+// Webhook Telegram Bot (Beeper del Veterinario - Zero-Typing Doctor & HITL)
+Route::post('/webhook/telegram', [\App\Http\Controllers\TelegramWebhookController::class, 'handle']);
+
 // Webhooks Oficiales Multi-Tenant (Wompi & Bold) con validación de firmas, Health Wallet (10%) y Carnet Digital
 Route::post('/webhooks/bold', [BoldWebhookController::class, 'handle']);
 Route::post('/webhooks/wompi', [BoldWebhookController::class, 'handle']);
