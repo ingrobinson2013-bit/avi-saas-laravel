@@ -173,12 +173,17 @@ class VetPagesController extends Controller
      */
     public function updatePetPhoto(Request $request, string $slug, string $id)
     {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
+
         $request->validate([
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'photo_url' => 'nullable|string|max:1000',
         ]);
 
-        $pet = Pet::findOrFail($id);
+        $pet = Pet::query()
+            ->when($tenantId, fn ($q) => $q->whereHas('customer', fn ($c) => $c->where('tenant_id', $tenantId)))
+            ->findOrFail($id);
 
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
@@ -275,13 +280,14 @@ class VetPagesController extends Controller
     {
         $ctx = $this->getTenantContext($request, $slug);
         $tenantId = $ctx['tenantId'];
+        $isPilot = ($ctx['tenant']?->slug === 'vet-pet-patitas');
 
         $plans = Plan::query()
             ->with(['planBenefits.benefitDefinition'])
             ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
             ->orderBy('price_cop', 'asc')
             ->get()
-            ->map(function ($plan) use ($tenantId) {
+            ->map(function ($plan) use ($tenantId, $isPilot) {
                 $subscribersCount = Subscription::where('plan_id', $plan->id)
                     ->where('status', 'active')
                     ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
@@ -303,7 +309,7 @@ class VetPagesController extends Controller
                     'formatted_price' => '$' . number_format($plan->price_cop, 0, ',', '.') . ' COP',
                     'billing_interval' => $plan->billing_interval === 'yearly' ? 'Anual' : 'Mensual',
                     'is_active' => (bool) $plan->is_active,
-                    'subscribers_count' => $subscribersCount > 0 ? $subscribersCount : ($plan->name === 'Plan Patitas Básico' ? 1 : 0),
+                    'subscribers_count' => $subscribersCount > 0 ? $subscribersCount : ($isPilot && $plan->name === 'Plan Patitas Básico' ? 1 : 0),
                     'benefits' => $benefits,
                 ];
             });
@@ -589,8 +595,10 @@ class VetPagesController extends Controller
             }
         }
 
-        // Si la lista de balances está vacía, proporcionamos los beneficios del plan activo
-        if (empty($balances)) {
+        $isPilot = ($ctx['tenant']?->slug === 'vet-pet-patitas');
+
+        // Si la lista de balances está vacía y es la clínica piloto, proporcionamos los beneficios demostrativos
+        if (empty($balances) && ($subscription || $isPilot)) {
             $balances = [
                 ['id' => '1', 'name' => 'Consulta Médica General', 'category' => 'consultas', 'granted' => 2, 'used' => 0, 'available' => 2],
                 ['id' => '2', 'name' => 'Vacunación Anual Antirrábica', 'category' => 'vacunacion', 'granted' => 1, 'used' => 0, 'available' => 1],
@@ -602,24 +610,24 @@ class VetPagesController extends Controller
 
         $walletService = app(\App\Services\HealthWalletService::class);
         $wallet = $subscription ? $walletService->getOrCreateWallet($subscription) : null;
-        $walletBalance = (float) ($wallet?->balance_cop ?? 20000);
+        $walletBalance = (float) ($wallet?->balance_cop ?? ($isPilot ? 20000 : 0));
         $walletData = [
             'balance_cop' => $walletBalance,
             'formatted_balance' => '$' . number_format($walletBalance, 0, ',', '.') . ' COP',
             'reserve_percentage' => (float) ($wallet?->reserve_percentage ?? 10.0),
-            'total_accrued_cop' => (float) ($wallet?->total_accrued_cop ?? 20000),
+            'total_accrued_cop' => (float) ($wallet?->total_accrued_cop ?? ($isPilot ? 20000 : 0)),
             'total_redeemed_cop' => (float) ($wallet?->total_redeemed_cop ?? 0),
         ];
 
         $petData = [
-            'pet_id' => $subscription?->pet?->id ?? 'pet-01',
-            'name' => $subscription?->pet?->name ?? 'Max',
+            'pet_id' => $subscription?->pet?->id ?? ($isPilot ? 'pet-01' : null),
+            'name' => $subscription?->pet?->name ?? ($isPilot ? 'Max' : 'Sin pacientes afiliados'),
             'species' => $subscription?->pet?->species === 'cat' ? 'Felino' : 'Canino',
-            'breed' => $subscription?->pet?->breed ?? 'Golden Retriever',
-            'customer_name' => $subscription?->pet?->customer?->name ?? 'María Camila Rodríguez',
-            'customer_phone' => $subscription?->pet?->customer?->phone ?? '3235813942',
+            'breed' => $subscription?->pet?->breed ?? ($isPilot ? 'Golden Retriever' : 'Afilia tu primer paciente'),
+            'customer_name' => $subscription?->pet?->customer?->name ?? ($isPilot ? 'María Camila Rodríguez' : 'Sin tutor seleccionado'),
+            'customer_phone' => $subscription?->pet?->customer?->phone ?? ($isPilot ? '3235813942' : ''),
             'plan_name' => $subscription?->plan?->name ?? 'Plan Patitas Básico',
-            'status' => 'active',
+            'status' => $subscription ? 'active' : ($isPilot ? 'active' : 'inactive'),
         ];
 
         // Historial real de canjes
@@ -1378,10 +1386,14 @@ class VetPagesController extends Controller
         if (!empty($validated['pet_id']) && \Illuminate\Support\Str::isUuid($validated['pet_id'])) {
             $pet = Pet::query()
                 ->with(['customer', 'activeSubscription.plan'])
+                ->when($tenantId, fn ($q) => $q->whereHas('customer', fn ($c) => $c->where('tenant_id', $tenantId)))
                 ->find($validated['pet_id']);
         }
         if (!$pet) {
-            $pet = Pet::query()->with(['customer', 'activeSubscription.plan'])->first();
+            $pet = Pet::query()
+                ->with(['customer', 'activeSubscription.plan'])
+                ->when($tenantId, fn ($q) => $q->whereHas('customer', fn ($c) => $c->where('tenant_id', $tenantId)))
+                ->first();
         }
 
         $petContext = [

@@ -31,7 +31,14 @@ class PetResource extends Resource
                 Forms\Components\Section::make('Ficha de Identificación de la Mascota')
                     ->schema([
                         Forms\Components\Select::make('customer_id')
-                            ->relationship('customer', 'name')
+                            ->relationship(
+                                name: 'customer',
+                                titleAttribute: 'name',
+                                modifyQueryUsing: fn (\Illuminate\Database\Eloquent\Builder $query) => $query->when(
+                                    \Filament\Facades\Filament::getTenant()?->id ?? auth()->user()?->tenant_id,
+                                    fn ($q, $tenantId) => $q->where('tenant_id', $tenantId)
+                                )
+                            )
                             ->label('Tutor / Propietario')
                             ->searchable()
                             ->preload()

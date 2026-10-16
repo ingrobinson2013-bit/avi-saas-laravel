@@ -37,11 +37,15 @@ class SubscriptionResource extends Resource
                         Forms\Components\Select::make('pet_id')
                             ->label('Mascota Afiliada')
                             ->options(function () {
-                                return Pet::with('customer')->get()->mapWithKeys(function ($pet) {
-                                    $species = $pet->species === 'cat' ? '🐱' : '🐶';
-                                    $tutor = $pet->customer ? " (Tutor: {$pet->customer->name})" : '';
-                                    return [$pet->id => "{$species} {$pet->name}{$tutor}"];
-                                });
+                                $tenantId = \Filament\Facades\Filament::getTenant()?->id ?? auth()->user()?->tenant_id;
+                                return Pet::with('customer')
+                                    ->when($tenantId, fn ($q) => $q->whereHas('customer', fn ($c) => $c->where('tenant_id', $tenantId)))
+                                    ->get()
+                                    ->mapWithKeys(function ($pet) {
+                                        $species = $pet->species === 'cat' ? '🐱' : '🐶';
+                                        $tutor = $pet->customer ? " (Tutor: {$pet->customer->name})" : '';
+                                        return [$pet->id => "{$species} {$pet->name}{$tutor}"];
+                                    });
                             })
                             ->searchable()
                             ->preload()
@@ -49,7 +53,14 @@ class SubscriptionResource extends Resource
 
                         Forms\Components\Select::make('plan_id')
                             ->label('Plan de Salud Contratado')
-                            ->relationship('plan', 'name')
+                            ->relationship(
+                                name: 'plan',
+                                titleAttribute: 'name',
+                                modifyQueryUsing: fn (Builder $query) => $query->when(
+                                    \Filament\Facades\Filament::getTenant()?->id ?? auth()->user()?->tenant_id,
+                                    fn ($q, $tenantId) => $q->where('tenant_id', $tenantId)
+                                )
+                            )
                             ->searchable()
                             ->preload()
                             ->required(),

@@ -252,7 +252,9 @@ class AppointmentController extends Controller
 
         $validated = $request->validated();
 
-        $pet = Pet::with('customer')->findOrFail($validated['pet_id']);
+        $pet = Pet::with('customer')
+            ->when($tenantId, fn ($q) => $q->whereHas('customer', fn ($c) => $c->where('tenant_id', $tenantId)))
+            ->findOrFail($validated['pet_id']);
         $duration = (int) ($validated['duration_minutes'] ?? 30);
 
         $scheduledAt = Carbon::parse("{$validated['date']} {$validated['time']}");
@@ -311,11 +313,14 @@ class AppointmentController extends Controller
      */
     public function updateStatus(Request $request, string $slug, string $id): RedirectResponse
     {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
+
         $validated = $request->validate([
             'status' => 'required|string|in:scheduled,confirmed,completed,cancelled,no_show',
         ]);
 
-        $appointment = Appointment::findOrFail($id);
+        $appointment = Appointment::where('tenant_id', $tenantId)->findOrFail($id);
         $appointment->update(['status' => $validated['status']]);
 
         return back()->with('success', "Estado de la cita actualizado a: {$appointment->status_label}");

@@ -76,9 +76,13 @@ class PlanResource extends Resource
                                         Forms\Components\Select::make('benefit_definition_id')
                                             ->label('Servicio / Beneficio')
                                             ->options(function () {
-                                                return BenefitDefinition::all()->mapWithKeys(function ($benefit) {
-                                                    return [$benefit->id => "{$benefit->name} ({$benefit->category_label})"];
-                                                });
+                                                $tenantId = \Filament\Facades\Filament::getTenant()?->id ?? auth()->user()?->tenant_id;
+                                                return BenefitDefinition::query()
+                                                    ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
+                                                    ->get()
+                                                    ->mapWithKeys(function ($benefit) {
+                                                        return [$benefit->id => "{$benefit->name} ({$benefit->category_label})"];
+                                                    });
                                             })
                                             ->searchable()
                                             ->preload()
