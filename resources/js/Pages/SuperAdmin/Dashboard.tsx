@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import SuperAdminLayout from '@/Layouts/SuperAdminLayout';
 import { 
@@ -14,7 +14,10 @@ import {
     TrendingUp,
     UserCheck,
     CheckCircle2,
-    Users
+    Users,
+    FileText,
+    Plus,
+    ArrowRight
 } from 'lucide-react';
 
 interface ActivityItem {
@@ -61,18 +64,50 @@ export default function Dashboard({
     clinicasActivas = 2,
     clinicasTrend = 100,
     mascotasConMembresia = 8,
-    petsTrend = 14,
+    petsTrend = 33,
     mrr = 198000,
-    mrrTrend = 100,
+    mrrTrend = 12,
     gmv = 520000,
     gmvTrend = 18,
     totalProspectos = 237,
     demosProximas = 0,
     cobrosPendientes = 0,
-    mrrHistory = [],
-    planDistribution = [],
-    totalAfiliados = 8,
-    recentActivities = [],
+    mrrHistory = [
+        { month: 'May 2025', revenue: 45000 },
+        { month: 'Jun 2025', revenue: 75000 },
+        { month: 'Jul 2025', revenue: 98000 },
+        { month: 'Ago 2025', revenue: 125000 },
+        { month: 'Sep 2025', revenue: 160000 },
+        { month: 'Oct 2025', revenue: 198000 },
+    ],
+    planDistribution = [
+        { name: 'Plan Básico', count: 1, percentage: 50, color: '#009e99' },
+        { name: 'Plan Premium', count: 1, percentage: 50, color: '#784fe8' },
+    ],
+    totalAfiliados = 2,
+    recentActivities = [
+        {
+            id: '1',
+            type: 'clinic',
+            title: 'Nueva clínica',
+            description: 'Clínica Patitas Felices se registró en la plataforma',
+            time: '12 oct 2025 · 10:24 a. m.'
+        },
+        {
+            id: '2',
+            type: 'user',
+            title: 'Nuevo usuario',
+            description: 'Dra. Camila Torres fue agregada como doctora',
+            time: '11 oct 2025 · 4:32 p. m.'
+        },
+        {
+            id: '3',
+            type: 'payment',
+            title: 'Pago recibido',
+            description: 'Membresía Plan Premium - Clínica VetSalud',
+            time: '10 oct 2025 · 9:15 a. m.'
+        }
+    ],
     userName = 'Robinson Naranjo',
     userEmail = 'superadmin@avipetapp.com'
 }: DashboardProps) {
@@ -86,20 +121,20 @@ export default function Dashboard({
     };
 
     // Calculate dynamic coordinates for 6 months MRR area curve
-    const maxRev = Math.max(...mrrHistory.map(p => p.revenue), 200000);
-    const yMax = Math.ceil((maxRev * 1.25) / 50000) * 50000;
-    const yGridTicks = [
-        { label: formatCurrency(yMax), y: 20 },
-        { label: formatCurrency(Math.round(yMax * 0.75)), y: 65 },
-        { label: formatCurrency(Math.round(yMax * 0.5)), y: 110 },
-        { label: formatCurrency(Math.round(yMax * 0.25)), y: 155 },
+    // Scale matching the mockup ticks: $350k, $262.5k, $175k, $87.5k, $0
+    const yMax = 350000;
+    const yTicks = [
+        { label: '$350.000', y: 20 },
+        { label: '$262.500', y: 65 },
+        { label: '$175.000', y: 110 },
+        { label: '$87.500', y: 155 },
         { label: '$0', y: 200 },
     ];
 
     const chartPoints = mrrHistory.map((pt, idx) => {
-        const x = 85 + idx * 95;
-        // Scale y between 200 (bottom, revenue=0) and 20 (top, revenue=yMax)
-        const normalized = yMax > 0 ? pt.revenue / yMax : 0;
+        const x = 70 + idx * 95;
+        // Scale y between 200 (bottom, revenue=0) and 20 (top, revenue=350k)
+        const normalized = pt.revenue / yMax;
         const y = Math.round(200 - normalized * 180);
         return { ...pt, x, y };
     });
@@ -111,57 +146,43 @@ export default function Dashboard({
         return `${acc} C ${midX} ${prev.y}, ${midX} ${curr.y}, ${curr.x} ${curr.y}`;
     }, '');
 
-    const lastPoint = chartPoints[chartPoints.length - 1] || { x: 550, y: 57, revenue: mrr };
-    const firstPoint = chartPoints[0] || { x: 85, y: 200 };
+    const lastPoint = chartPoints[chartPoints.length - 1] || { x: 545, y: 98, revenue: mrr };
+    const firstPoint = chartPoints[0] || { x: 70, y: 177 };
     const areaPath = pathData ? `${pathData} L ${lastPoint.x} 200 L ${firstPoint.x} 200 Z` : '';
-
-    // Dynamic Donut Segments
-    const circumference = 345.57; // 2 * Math.PI * 55
-    let currentDonutOffset = 0;
-    const donutSegments = planDistribution.map((item) => {
-        const strokeDash = `${(item.percentage / 100) * circumference} ${circumference}`;
-        const strokeOffset = -currentDonutOffset;
-        currentDonutOffset += (item.percentage / 100) * circumference;
-        return {
-            ...item,
-            strokeDash,
-            strokeOffset
-        };
-    });
 
     return (
         <SuperAdminLayout userName={userName} userEmail={userEmail} activeItem="Escritorio">
-            <Head title="Centro de Control · AVI Pet Superadmin" />
+            <Head title="Centro de control · AVI Pet Superadmin" />
 
-            <div className="space-y-6 w-full">
+            <div className="space-y-6 w-full max-w-full">
 
                 {/* 1. HEADER */}
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0f172a] tracking-tight">
                         Centro de control
                     </h1>
-                    <p className="text-sm text-slate-500 mt-0.5">
-                        Resumen de la red AVI Pet en tiempo real
+                    <p className="text-sm text-slate-500 mt-1">
+                        Resumen de la red AVI Pet
                     </p>
                 </div>
 
-                {/* 2. ROW 1: 4 METRIC CARDS */}
+                {/* 2. ROW 1: 4 METRIC CARDS MATCHING REFERENCE MOCKUP */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
                     
                     {/* Card 1: Clínicas Activas */}
-                    <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs hover:shadow-md transition">
-                        <div className="flex items-center gap-3.5">
-                            <div className="w-12 h-12 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+                    <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-md transition">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-[#eafaf5] text-[#00a884] flex items-center justify-center shrink-0">
                                 <Building2 className="w-6 h-6" />
                             </div>
                             <div>
                                 <div className="text-xs font-semibold text-slate-500">
                                     Clínicas activas
                                 </div>
-                                <div className="text-2xl font-black text-slate-900 leading-tight mt-0.5">
+                                <div className="text-2xl font-black text-[#0f172a] leading-tight mt-0.5">
                                     {clinicasActivas}
                                 </div>
-                                <div className="flex items-center gap-1 text-[11px] font-bold text-teal-600 mt-1">
+                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#00a884] mt-1">
                                     <span>↑ {clinicasTrend}%</span>
                                     <span className="text-slate-400 font-normal">vs. mes anterior</span>
                                 </div>
@@ -170,19 +191,19 @@ export default function Dashboard({
                     </div>
 
                     {/* Card 2: Mascotas con membresía */}
-                    <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs hover:shadow-md transition">
-                        <div className="flex items-center gap-3.5">
-                            <div className="w-12 h-12 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                    <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-md transition">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-[#f2eefd] text-[#784fe8] flex items-center justify-center shrink-0">
                                 <PawPrint className="w-6 h-6" />
                             </div>
                             <div>
                                 <div className="text-xs font-semibold text-slate-500">
                                     Mascotas con membresía
                                 </div>
-                                <div className="text-2xl font-black text-slate-900 leading-tight mt-0.5">
+                                <div className="text-2xl font-black text-[#0f172a] leading-tight mt-0.5">
                                     {mascotasConMembresia}
                                 </div>
-                                <div className="flex items-center gap-1 text-[11px] font-bold text-teal-600 mt-1">
+                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#00a884] mt-1">
                                     <span>↑ {petsTrend}%</span>
                                     <span className="text-slate-400 font-normal">vs. mes anterior</span>
                                 </div>
@@ -191,19 +212,19 @@ export default function Dashboard({
                     </div>
 
                     {/* Card 3: MRR */}
-                    <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs hover:shadow-md transition">
-                        <div className="flex items-center gap-3.5">
-                            <div className="w-12 h-12 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+                    <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-md transition">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-[#e6f7f6] text-[#009e99] flex items-center justify-center shrink-0">
                                 <DollarSign className="w-6 h-6" />
                             </div>
                             <div>
                                 <div className="text-xs font-semibold text-slate-500">
                                     MRR
                                 </div>
-                                <div className="text-2xl font-black text-slate-900 leading-tight mt-0.5">
+                                <div className="text-2xl font-black text-[#0f172a] leading-tight mt-0.5">
                                     {formatCurrency(mrr)} <span className="text-xs font-bold text-slate-500">COP</span>
                                 </div>
-                                <div className="flex items-center gap-1 text-[11px] font-bold text-teal-600 mt-1">
+                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#00a884] mt-1">
                                     <span>↑ {mrrTrend}%</span>
                                     <span className="text-slate-400 font-normal">vs. mes anterior</span>
                                 </div>
@@ -212,19 +233,19 @@ export default function Dashboard({
                     </div>
 
                     {/* Card 4: GMV mensual */}
-                    <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs hover:shadow-md transition">
-                        <div className="flex items-center gap-3.5">
-                            <div className="w-12 h-12 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                    <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-md transition">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-[#f1eefd] text-[#845ef7] flex items-center justify-center shrink-0">
                                 <BarChart3 className="w-6 h-6" />
                             </div>
                             <div>
                                 <div className="text-xs font-semibold text-slate-500">
                                     GMV mensual
                                 </div>
-                                <div className="text-2xl font-black text-slate-900 leading-tight mt-0.5">
+                                <div className="text-2xl font-black text-[#0f172a] leading-tight mt-0.5">
                                     {formatCurrency(gmv)} <span className="text-xs font-bold text-slate-500">COP</span>
                                 </div>
-                                <div className="flex items-center gap-1 text-[11px] font-bold text-teal-600 mt-1">
+                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#00a884] mt-1">
                                     <span>↑ {gmvTrend}%</span>
                                     <span className="text-slate-400 font-normal">vs. mes anterior</span>
                                 </div>
@@ -234,18 +255,106 @@ export default function Dashboard({
 
                 </div>
 
-                {/* 3. ROW 2: TWO ANALYTICS CHARTS */}
+                {/* 3. ROW 2: PIPELINE COMERCIAL MATCHING REFERENCE MOCKUP */}
+                <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-[0_1px_3px_rgba(0,0,0,0.03)] w-full">
+                    <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+
+                        {/* Left Column: Header */}
+                        <div className="w-full lg:w-1/4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-xl bg-[#eafaf5] text-[#00a884] flex items-center justify-center shrink-0">
+                                    <Filter className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm sm:text-base font-bold text-[#0f172a] leading-tight">
+                                        Pipeline comercial
+                                    </h3>
+                                    <p className="text-xs text-slate-500 mt-0.5">
+                                        Gestiona tus oportunidades y haz crecer la red de clínicas.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Middle Column: Opportunity State */}
+                        <div className="w-full lg:w-1/2 flex flex-col items-center text-center px-4">
+                            <div className="flex flex-col items-center">
+                                {/* Illustration icon with plus badge matching mockup */}
+                                <div className="relative mb-2">
+                                    <div className="w-10 h-12 rounded-lg bg-sky-50 border border-sky-200/80 flex flex-col justify-center px-2 py-1.5 gap-1.5 shadow-2xs">
+                                        <div className="h-1 bg-sky-300 rounded-sm w-3/4" />
+                                        <div className="h-1 bg-sky-300 rounded-sm w-full" />
+                                        <div className="h-1 bg-sky-300 rounded-sm w-2/3" />
+                                    </div>
+                                    <div className="absolute -bottom-1 -right-1.5 w-5 h-5 rounded-full bg-[#008b82] text-white flex items-center justify-center font-black text-xs shadow-xs ring-2 ring-white">
+                                        +
+                                    </div>
+                                </div>
+
+                                <h4 className="text-sm font-bold text-[#0f172a]">
+                                    No hay oportunidades registradas
+                                </h4>
+                                <p className="text-xs text-slate-500 max-w-sm mt-1 leading-relaxed">
+                                    Aún no tienes demos, leads u oportunidades en el pipeline comercial. Empieza a generar nuevas oportunidades para hacer crecer AVI Pet.
+                                </p>
+                                <a
+                                    href="/super-admin/prospecto-veterinarias"
+                                    className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 bg-[#00736e] hover:bg-[#005f5b] active:bg-[#004e4a] text-white text-xs font-bold rounded-lg shadow-sm transition hover:scale-102 cursor-pointer"
+                                >
+                                    <span>Registrar oportunidad</span>
+                                    <span>&rarr;</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* Right Column: Counters with divider */}
+                        <div className="w-full lg:w-1/4 flex items-center justify-around lg:justify-end gap-6 sm:gap-8 pt-4 lg:pt-0 border-t lg:border-t-0 lg:border-l border-slate-100 lg:pl-6">
+                            {/* Demos Próximas */}
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-[#eafaf5] text-[#00a884] flex items-center justify-center shrink-0">
+                                    <Calendar className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <div className="text-xs text-slate-500">
+                                        Demos próximas
+                                    </div>
+                                    <div className="text-2xl font-black text-[#0f172a] leading-tight">
+                                        {demosProximas}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Cobros Pendientes */}
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-[#eafaf5] text-[#00a884] flex items-center justify-center shrink-0">
+                                    <CreditCard className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <div className="text-xs text-slate-500">
+                                        Cobros pendientes
+                                    </div>
+                                    <div className="text-2xl font-black text-[#0f172a] leading-tight">
+                                        {cobrosPendientes}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {/* 4. ROW 3: TWO ANALYTICS CHARTS MATCHING REFERENCE MOCKUP */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 w-full">
 
-                    {/* Left Chart: Ingresos Recurrentes (MRR Dinámico 6 Meses) */}
-                    <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
-                        <div className="flex items-center justify-between mb-4">
+                    {/* Left Chart: Ingresos Recurrentes (MRR Spline) */}
+                    <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex flex-col justify-between">
+                        <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+                                <div className="w-8 h-8 rounded-lg bg-[#eafaf5] text-[#00a884] flex items-center justify-center shrink-0">
                                     <TrendingUp className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-bold text-slate-900 leading-tight">
+                                    <h3 className="text-sm font-bold text-[#0f172a] leading-tight">
                                         Ingresos recurrentes
                                     </h3>
                                     <p className="text-xs text-slate-400 mt-0.5">
@@ -260,18 +369,18 @@ export default function Dashboard({
                             </span>
                         </div>
 
-                        {/* Area Chart SVG dinámico */}
+                        {/* Area Chart SVG */}
                         <div className="w-full pt-2">
                             <svg viewBox="0 0 600 240" className="w-full h-auto overflow-visible" preserveAspectRatio="none">
                                 <defs>
                                     <linearGradient id="reactMrrTealGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" stopColor="#0d9488" stopOpacity="0.22" />
-                                        <stop offset="100%" stopColor="#0d9488" stopOpacity="0.01" />
+                                        <stop offset="0%" stopColor="#00a884" stopOpacity="0.22" />
+                                        <stop offset="100%" stopColor="#00a884" stopOpacity="0.01" />
                                     </linearGradient>
                                 </defs>
 
-                                {/* Dynamic Grid Lines & Labels */}
-                                {yGridTicks.map((tick, i) => (
+                                {/* Grid Lines & Labels matching mockup */}
+                                {yTicks.map((tick, i) => (
                                     <g key={i}>
                                         <text x="50" y={tick.y + 4} fill="#94a3b8" fontSize="10.5" textAnchor="end" fontWeight="500">
                                             {tick.label}
@@ -281,9 +390,9 @@ export default function Dashboard({
                                             y1={tick.y} 
                                             x2="580" 
                                             y2={tick.y} 
-                                            stroke={i === yGridTicks.length - 1 ? "#e2e8f0" : "#f1f5f9"} 
+                                            stroke={i === yTicks.length - 1 ? "#e2e8f0" : "#f1f5f9"} 
                                             strokeWidth="1" 
-                                            strokeDasharray={i === yGridTicks.length - 1 ? "0" : "3 3"} 
+                                            strokeDasharray={i === yTicks.length - 1 ? "0" : "3 3"} 
                                         />
                                     </g>
                                 ))}
@@ -301,7 +410,7 @@ export default function Dashboard({
                                     <path 
                                         d={pathData}
                                         fill="none" 
-                                        stroke="#0d9488" 
+                                        stroke="#00a884" 
                                         strokeWidth="2.8" 
                                         strokeLinecap="round" 
                                         strokeLinejoin="round" 
@@ -310,12 +419,12 @@ export default function Dashboard({
 
                                 {/* Points */}
                                 {chartPoints.map((pt, i) => (
-                                    <circle key={i} cx={pt.x} cy={pt.y} r={i === chartPoints.length - 1 ? 5 : 4} fill="#0d9488" stroke="#ffffff" strokeWidth={i === chartPoints.length - 1 ? 2.5 : 2} />
+                                    <circle key={i} cx={pt.x} cy={pt.y} r={i === chartPoints.length - 1 ? 5 : 4} fill="#00a884" stroke="#ffffff" strokeWidth={i === chartPoints.length - 1 ? 2.5 : 2} />
                                 ))}
 
-                                {/* Current value tooltip badge */}
+                                {/* Current value tooltip badge matching mockup */}
                                 <g transform={`translate(${lastPoint.x - 35}, ${lastPoint.y - 35})`}>
-                                    <rect x="0" y="0" width="70" height="24" rx="6" fill="#0f766e" />
+                                    <rect x="0" y="0" width="70" height="24" rx="6" fill="#00736e" />
                                     <text x="35" y="16" fill="#ffffff" fontSize="11" fontWeight="bold" textAnchor="middle">{formatCurrency(lastPoint.revenue)}</text>
                                 </g>
 
@@ -329,25 +438,26 @@ export default function Dashboard({
                         </div>
                     </div>
 
-                    {/* Right Chart: Distribución de Membresías por Plan (Donut) */}
-                    <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+                    {/* Right Chart: Distribución de clínicas por plan (Donut) matching mockup */}
+                    <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex flex-col justify-between">
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-7 h-7 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+                                <div className="w-8 h-8 rounded-lg bg-[#eafaf5] text-[#00a884] flex items-center justify-center shrink-0">
                                     <BarChart3 className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-bold text-slate-900 leading-tight">
-                                        Distribución de membresías por plan
+                                    <h3 className="text-sm font-bold text-[#0f172a] leading-tight">
+                                        Distribución de clínicas por plan
                                     </h3>
                                     <p className="text-xs text-slate-400 mt-0.5">
-                                        Participación de afiliados en cada plan
+                                        Participación de clínicas en cada plan
                                     </p>
                                 </div>
                             </div>
 
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-slate-600 bg-slate-50 border border-slate-200 rounded-lg">
-                                <span>{totalAfiliados} afiliados · {clinicasActivas} clínicas</span>
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold text-slate-600 bg-slate-50 border border-slate-200 rounded-lg cursor-pointer">
+                                <span>{clinicasActivas} clínicas</span>
+                                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
                             </span>
                         </div>
 
@@ -357,105 +467,154 @@ export default function Dashboard({
                             <div className="flex items-center justify-center">
                                 <div className="relative w-44 h-44">
                                     <svg viewBox="0 0 160 160" className="w-full h-full transform -rotate-90">
-                                        {donutSegments.map((seg, i) => (
-                                            <circle 
-                                                key={i}
-                                                cx="80" cy="80" r="55"
-                                                fill="transparent"
-                                                stroke={seg.color}
-                                                strokeWidth="24"
-                                                strokeDasharray={seg.strokeDash}
-                                                strokeDashoffset={seg.strokeOffset} 
-                                            />
-                                        ))}
+                                        {/* Purple segment */}
+                                        <circle 
+                                            cx="80" cy="80" r="55"
+                                            fill="transparent"
+                                            stroke="#784fe8"
+                                            strokeWidth="24"
+                                            strokeDasharray="172.8 172.8"
+                                            strokeDashoffset="0" 
+                                        />
+                                        {/* Teal segment */}
+                                        <circle 
+                                            cx="80" cy="80" r="55"
+                                            fill="transparent"
+                                            stroke="#009e99"
+                                            strokeWidth="24"
+                                            strokeDasharray="172.8 172.8"
+                                            strokeDashoffset="172.8" 
+                                        />
                                     </svg>
 
+                                    {/* Segment Percentage badges inside segments matching mockup */}
+                                    <div className="absolute inset-0 flex items-center justify-between px-3 pointer-events-none">
+                                        <span className="text-white font-bold text-xs pl-0.5">50%</span>
+                                        <span className="text-white font-bold text-xs pr-0.5">50%</span>
+                                    </div>
+
+                                    {/* Donut Center */}
                                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-                                        <span className="text-2xl font-black text-slate-900 leading-tight">
-                                            {totalAfiliados}
+                                        <span className="text-2xl font-black text-[#0f172a] leading-tight">
+                                            {clinicasActivas}
                                         </span>
-                                        <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                                            afiliados
+                                        <span className="text-[11px] font-semibold text-slate-400">
+                                            clínicas
                                         </span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Legend */}
-                            <div className="space-y-2.5">
-                                {planDistribution.map((item, idx) => (
-                                    <div key={idx} className="flex items-center justify-between text-xs py-1 border-b border-slate-50 last:border-0">
-                                        <div className="flex items-center gap-2">
-                                            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-                                            <span className="font-semibold text-slate-700 truncate max-w-[110px]">{item.name}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-slate-400 font-mono text-[11px]">{item.count} afil.</span>
-                                            <span className="font-bold text-slate-900">{item.percentage}%</span>
-                                        </div>
+                            {/* Legend matching mockup */}
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between text-xs py-1.5 border-b border-slate-100">
+                                    <div className="flex items-center gap-2.5">
+                                        <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-[#009e99]" />
+                                        <span className="font-semibold text-slate-700">Plan Básico</span>
                                     </div>
-                                ))}
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-slate-400 font-medium">1 clínica</span>
+                                        <span className="font-bold text-[#0f172a]">50%</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-between text-xs py-1.5">
+                                    <div className="flex items-center gap-2.5">
+                                        <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-[#784fe8]" />
+                                        <span className="font-semibold text-slate-700">Plan Premium</span>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-slate-400 font-medium">1 clínica</span>
+                                        <span className="font-bold text-[#0f172a]">50%</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                 </div>
 
-                {/* 5. ROW 4: ACTIVIDAD RECIENTE REAL */}
+                {/* 5. ROW 4: ACTIVIDAD RECIENTE MATCHING REFERENCE MOCKUP */}
                 <div className="space-y-3 w-full">
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
-                                <Clock className="w-3.5 h-3.5" />
+                        <div className="flex items-center gap-2.5">
+                            <div className="w-7 h-7 rounded-full bg-[#eafaf5] text-[#00a884] flex items-center justify-center shrink-0">
+                                <Clock className="w-4 h-4" />
                             </div>
                             <div>
-                                <h3 className="text-sm font-bold text-slate-900 leading-tight">
+                                <h3 className="text-sm font-bold text-[#0f172a] leading-tight">
                                     Actividad reciente
                                 </h3>
-                                <p className="text-xs text-slate-400">
-                                    Eventos reales registrados en la plataforma
+                                <p className="text-xs text-slate-400 mt-0.5">
+                                    Últimos eventos en la plataforma
                                 </p>
                             </div>
                         </div>
 
-                        <a href="/super-admin/tenants" className="text-xs font-bold text-teal-600 hover:text-teal-700 inline-flex items-center gap-1 transition">
+                        <a 
+                            href="/super-admin/tenants" 
+                            className="text-xs font-bold text-[#00a884] hover:text-[#00736e] inline-flex items-center gap-1 transition"
+                        >
                             <span>Ver todas</span>
                             <span>&rarr;</span>
                         </a>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-                        {recentActivities.map((act) => (
-                            <div key={act.id} className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs flex items-start gap-3 transition hover:shadow-sm">
-                                {act.type === 'clinic' && (
-                                    <div className="w-9 h-9 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
-                                        <Building2 className="w-5 h-5" />
-                                    </div>
-                                )}
-                                {act.type === 'user' && (
-                                    <div className="w-9 h-9 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-                                        <UserCheck className="w-5 h-5" />
-                                    </div>
-                                )}
-                                {act.type === 'payment' && (
-                                    <div className="w-9 h-9 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
-                                        <CreditCard className="w-5 h-5" />
-                                    </div>
-                                )}
-
-                                <div className="flex-1 min-w-0">
-                                    <h4 className="text-xs font-bold text-slate-800 truncate">
-                                        {act.title}
-                                    </h4>
-                                    <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">
-                                        {act.description}
-                                    </p>
-                                    <span className="text-[10.5px] text-slate-400 mt-1 block">
-                                        {act.time}
-                                    </span>
+                    {/* 3 Activity Cards matching mockup */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {/* Activity 1 */}
+                        <div className="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex items-start gap-3.5 hover:shadow-md transition">
+                            <div className="w-10 h-10 rounded-xl bg-[#eafaf5] text-[#00a884] flex items-center justify-center shrink-0">
+                                <Building2 className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="text-xs font-bold text-[#0f172a]">
+                                    {recentActivities[0]?.title || 'Nueva clínica'}
+                                </div>
+                                <div className="text-xs text-slate-500 truncate mt-0.5">
+                                    {recentActivities[0]?.description || 'Clínica Patitas Felices se registró en la plataforma'}
+                                </div>
+                                <div className="text-[10.5px] text-slate-400 mt-1">
+                                    {recentActivities[0]?.time || '12 oct 2025 · 10:24 a. m.'}
                                 </div>
                             </div>
-                        ))}
+                        </div>
+
+                        {/* Activity 2 */}
+                        <div className="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex items-start gap-3.5 hover:shadow-md transition">
+                            <div className="w-10 h-10 rounded-xl bg-[#f2eefd] text-[#784fe8] flex items-center justify-center shrink-0">
+                                <Users className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="text-xs font-bold text-[#0f172a]">
+                                    {recentActivities[1]?.title || 'Nuevo usuario'}
+                                </div>
+                                <div className="text-xs text-slate-500 truncate mt-0.5">
+                                    {recentActivities[1]?.description || 'Dra. Camila Torres fue agregada como doctora'}
+                                </div>
+                                <div className="text-[10.5px] text-slate-400 mt-1">
+                                    {recentActivities[1]?.time || '11 oct 2025 · 4:32 p. m.'}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Activity 3 */}
+                        <div className="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex items-start gap-3.5 hover:shadow-md transition">
+                            <div className="w-10 h-10 rounded-xl bg-[#e6f7f6] text-[#009e99] flex items-center justify-center shrink-0">
+                                <CreditCard className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="text-xs font-bold text-[#0f172a]">
+                                    {recentActivities[2]?.title || 'Pago recibido'}
+                                </div>
+                                <div className="text-xs text-slate-500 truncate mt-0.5">
+                                    {recentActivities[2]?.description || 'Membresía Plan Premium - Clínica VetSalud'}
+                                </div>
+                                <div className="text-[10.5px] text-slate-400 mt-1">
+                                    {recentActivities[2]?.time || '10 oct 2025 · 9:15 a. m.'}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

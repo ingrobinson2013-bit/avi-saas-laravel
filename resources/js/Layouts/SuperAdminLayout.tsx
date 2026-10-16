@@ -171,13 +171,13 @@ export default function SuperAdminLayout({
                                 <path d="M12 10.5c-3.2 0-5.8 2.2-5.8 5.2 0 2.2 1.6 3.8 3.5 3.8 1.1 0 1.8-.6 2.3-.6.5 0 1.2.6 2.3.6 1.9 0 3.5-1.6 3.5-3.8 0-3-2.6-5.2-5.8-5.2z" />
                             </svg>
                         </div>
-                        <div className="leading-tight overflow-hidden">
+                        <div className="leading-tight">
                             <div className="font-bold text-xs text-slate-900 flex items-center gap-1">
                                 <span>AVI Pet</span>
                                 <span className="w-1.5 h-1.5 rounded-full bg-teal-500 inline-block" />
                             </div>
-                            <div className="text-[10.5px] text-slate-500 mt-0.5 truncate">
-                                Red preventiva de clínicas
+                            <div className="text-[10.5px] text-slate-500 mt-0.5 leading-tight">
+                                Planes de salud para un mejor futuro
                             </div>
                         </div>
                     </div>
