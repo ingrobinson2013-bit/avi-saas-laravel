@@ -54,8 +54,13 @@
             $currentTenant = \App\Models\Tenant::where('slug', 'vet-pet-patitas')->first() ?? \App\Models\Tenant::first();
         }
 
-        $favIcon = $currentTenant?->branding['logo_url'] ?? '/logo-app.png';
-        $clinicPageTitle = $currentTenant ? ($currentTenant->name . ' · Portal Clínico AVI') : 'AVI-Plan · Portal Veterinario';
+        if (request()->is('super-admin*')) {
+            $clinicPageTitle = 'Centro de Control · AVI Pet Superadmin';
+            $favIcon = '/logo.svg';
+        } else {
+            $favIcon = $currentTenant?->branding['logo_url'] ?? '/logo-app.png';
+            $clinicPageTitle = $currentTenant ? ($currentTenant->name . ' · Portal Clínico AVI') : 'AVI-Plan · Portal Veterinario';
+        }
     @endphp
     <title inertia>{{ $clinicPageTitle }}</title>
     <link rel="icon" type="image/webp" href="{{ $favIcon }}">

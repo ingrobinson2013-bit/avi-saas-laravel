@@ -87,7 +87,40 @@ class BoldPaymentService
             }
         }
 
-        // Fallback a Smart Link / Link de Cobro de Bold configurado
+        // 0. Si la veterinaria configuró su Llave Pública de Wompi (Multi-Tenant Wompi Web Checkout)
+        $wompiPublicKey = trim($tenant?->branding['wompi_public_key'] ?? '');
+        $wompiIntegritySecret = trim($tenant?->branding['wompi_integrity_secret'] ?? '');
+        if (!empty($wompiPublicKey) && str_starts_with($wompiPublicKey, 'pub_')) {
+            $amountInCents = $amountInt * 100;
+            $params = [
+                'public-key' => $wompiPublicKey,
+                'currency' => $currency,
+                'amount-in-cents' => $amountInCents,
+                'reference' => $orderId,
+                'redirect-url' => $redirectUrl,
+            ];
+            if (!empty($wompiIntegritySecret)) {
+                $params['signature:integrity'] = hash('sha256', "{$orderId}{$amountInCents}{$currency}{$wompiIntegritySecret}");
+            }
+            if (!empty($payer['email'])) {
+                $params['customer-data:email'] = $payer['email'];
+            }
+            if (!empty($payer['name'])) {
+                $params['customer-data:full-name'] = $payer['name'];
+            }
+            if (!empty($payer['phone'])) {
+                $params['customer-data:phone-number'] = preg_replace('/[^0-9]/', '', $payer['phone']);
+                $params['customer-data:phone-number-prefix'] = '+57';
+            }
+
+            return [
+                'success' => true,
+                'payment_url' => 'https://checkout.wompi.co/p/?' . http_build_query($params),
+                'source' => 'wompi_checkout',
+            ];
+        }
+
+        // Fallback a Smart Link / Link de Cobro de Bold o Wompi configurado
         $fallbackLink = $tenant->branding['payment_bold_link'] ?? config('bold.default_payment_link');
 
         if (!empty($fallbackLink)) {
@@ -101,7 +134,7 @@ class BoldPaymentService
         return [
             'success' => false,
             'payment_url' => null,
-            'error' => 'No se configuró link o API Key de Bold.',
+            'error' => 'No se configuró link o API Key de Bold / Wompi.',
         ];
     }
 
@@ -124,5 +157,31 @@ class BoldPaymentService
 
         $calculatedHash = self::generateSignature($orderId, $amount, $currency, $secret);
         return hash_equals($calculatedHash, $receivedHash);
+    }
+
+    /**
+     * Valida el checksum de un evento Webhook de Wompi (transaction.updated).
+     */
+    public function verifyWompiWebhook(array $payload, ?string $eventsSecret = null, ?string $headerChecksum = null): bool
+    {
+        if (empty($eventsSecret)) {
+            return true;
+        }
+
+        $tx = $payload['data']['transaction'] ?? [];
+        $txId = $tx['id'] ?? '';
+        $txStatus = $tx['status'] ?? '';
+        $txAmountInCents = $tx['amount_in_cents'] ?? '';
+        $timestamp = $payload['timestamp'] ?? ($payload['signature']['timestamp'] ?? '');
+        $receivedChecksum = $headerChecksum ?: ($payload['signature']['checksum'] ?? '');
+
+        if (empty($receivedChecksum) || empty($txId)) {
+            return true;
+        }
+
+        $raw = "{$txId}{$txStatus}{$txAmountInCents}{$timestamp}{$eventsSecret}";
+        $calculated = hash('sha256', $raw);
+
+        return hash_equals(strtolower($calculated), strtolower($receivedChecksum));
     }
 }

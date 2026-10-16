@@ -45,6 +45,9 @@ interface SettingsData {
     payment_nequi: string;
     payment_bank_info: string;
     payment_bold_link: string;
+    wompi_public_key?: string;
+    wompi_integrity_secret?: string;
+    wompi_events_secret?: string;
     auto_enrollment?: boolean;
 }
 
@@ -982,11 +985,16 @@ export default function Settings({
                                 </div>
                             </div>
 
-                            {/* Tarjeta 4: Canales de Recaudo */}
+                            {/* Tarjeta 4: Canales de Recaudo & Pasarela Automática */}
                             <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-4">
-                                <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
-                                    <CreditCard className="w-4 h-4 text-emerald-600" />
-                                    <h3 className="text-sm font-bold text-slate-900">4. Canales de Recaudo (Tutores)</h3>
+                                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                                    <div className="flex items-center gap-2">
+                                        <CreditCard className="w-4 h-4 text-emerald-600" />
+                                        <h3 className="text-sm font-bold text-slate-900">4. Canales de Recaudo & Pasarela Automática</h3>
+                                    </div>
+                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        Wompi / Bold
+                                    </span>
                                 </div>
 
                                 <div className="space-y-3">
@@ -1013,7 +1021,7 @@ export default function Settings({
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-bold text-slate-700 mb-1">Enlace Bold / Wompi (Opcional)</label>
+                                        <label className="block text-xs font-bold text-slate-700 mb-1">Enlace Directo Bold / Wompi (Opcional)</label>
                                         <input
                                             type="url"
                                             value={form.payment_bold_link}
@@ -1021,6 +1029,67 @@ export default function Settings({
                                             placeholder="https://checkout.bold.co/payment/LNK_..."
                                             className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                                         />
+                                    </div>
+
+                                    {/* Bloque Autogestión Llaves Wompi Multi-Tenant */}
+                                    <div className="pt-3 border-t border-slate-100 space-y-2.5">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700">
+                                                Autogestión Pasarela Wompi (PSE / Tarjetas)
+                                            </span>
+                                            <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700">
+                                                100% Directo a tu Cuenta
+                                            </span>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                                                Llave Pública Wompi (Public Key)
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={form.wompi_public_key || ''}
+                                                onChange={(e) => setForm({ ...form, wompi_public_key: e.target.value })}
+                                                placeholder="pub_prod_... ó pub_test_..."
+                                                className="w-full px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                                                Secreto de Integridad Wompi (Integrity Secret)
+                                            </label>
+                                            <input
+                                                type="password"
+                                                value={form.wompi_integrity_secret || ''}
+                                                onChange={(e) => setForm({ ...form, wompi_integrity_secret: e.target.value })}
+                                                placeholder="prod_integrity_..."
+                                                className="w-full px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                                                Secreto de Eventos Webhook (Events Secret - Opcional)
+                                            </label>
+                                            <input
+                                                type="password"
+                                                value={form.wompi_events_secret || ''}
+                                                onChange={(e) => setForm({ ...form, wompi_events_secret: e.target.value })}
+                                                placeholder="prod_events_..."
+                                                className="w-full px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                                            />
+                                        </div>
+
+                                        <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 text-[10.5px] text-slate-600 space-y-1">
+                                            <div className="font-bold text-slate-800">🔗 URL de Eventos (Webhook Conciliación Automática):</div>
+                                            <div className="font-mono text-[10px] text-blue-700 bg-white px-2 py-1 rounded border border-slate-200 select-all break-all">
+                                                https://avipetapp.com/api/webhooks/wompi
+                                            </div>
+                                            <p className="text-[10px] text-slate-500">
+                                                Pega esta URL en tu comercio Wompi o Bold. Cada pago aprobado activará la membresía de la mascota, abonará el 10% al Fondo de Reserva y enviará el Carnet QR automáticamente.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

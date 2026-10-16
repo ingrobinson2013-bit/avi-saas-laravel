@@ -471,13 +471,40 @@ class VetPagesController extends Controller
     {
         $ctx = $this->getTenantContext($request, $slug);
         $tenantId = $ctx['tenantId'];
+        $tenant = $ctx['tenant'];
 
         $subs = Subscription::query()
             ->with(['pet.customer', 'plan', 'wallet'])
             ->when($tenantId, fn ($q) => $q->where('subscriptions.tenant_id', $tenantId))
             ->get()
-            ->map(function ($s) use ($ctx) {
+            ->map(function ($s) use ($ctx, $tenant) {
                 $walletBalance = (float) ($s->wallet?->balance_cop ?? 0);
+                $contractRef = $s->gateway_subscription_id ?? $s->id;
+                $carnetUrl = $tenant ? $tenant->getCarnetUrl($contractRef) : "/carnet/{$s->id}";
+                $paymentUrl = url("/v/" . ($tenant?->slug ?? $ctx['tenantSlug']) . "/pagar/{$contractRef}");
+                $priceFormatted = '$' . number_format($s->plan?->price_cop ?? 0, 0, ',', '.') . ' COP';
+                $nequi = $tenant?->branding['payment_nequi'] ?? $tenant?->branding['phone'] ?? '';
+                $bankInfo = $tenant?->branding['payment_bank_info'] ?? '';
+
+                $customerPhone = preg_replace('/[^0-9]/', '', $s->pet?->customer?->phone ?? '');
+                if (strlen($customerPhone) === 10) {
+                    $customerPhone = '57' . $customerPhone;
+                }
+
+                $waText = "¡Hola {$s->pet?->customer?->name}! 👋 Te escribimos de *{$ctx['brandName']}*.\n\n" .
+                    "Te compartimos el enlace de tu membresía veterinaria para *{$s->pet?->name}*:\n" .
+                    "📋 *Plan:* {$s->plan?->name}\n" .
+                    "🏷️ *Contrato:* {$contractRef}\n" .
+                    "💳 *Cuota:* {$priceFormatted}\n" .
+                    (!empty($nequi) ? "📱 *Nequi / Daviplata:* {$nequi}\n" : "") .
+                    (!empty($bankInfo) ? "🏦 *Cuenta:* {$bankInfo}\n" : "") .
+                    "\n🔗 *Pagar en línea (PSE / Tarjeta / Wompi / Bold):*\n{$paymentUrl}\n\n" .
+                    "🪪 *Tu Carnet Digital QR:*\n{$carnetUrl}";
+
+                $whatsappReminderUrl = !empty($customerPhone)
+                    ? "https://wa.me/{$customerPhone}?text=" . urlencode($waText)
+                    : null;
+
                 return [
                     'id' => $s->id,
                     'pet_name' => $s->pet?->name ?? 'Mascota',
@@ -488,15 +515,17 @@ class VetPagesController extends Controller
                     'customer_phone' => $s->pet?->customer?->phone ?? '',
                     'plan_name' => $s->plan?->name ?? 'Plan de Salud',
                     'price_cop' => (float) ($s->plan?->price_cop ?? 0),
-                    'formatted_price' => '$' . number_format($s->plan?->price_cop ?? 0, 0, ',', '.') . ' COP',
+                    'formatted_price' => $priceFormatted,
                     'wallet_balance' => $walletBalance,
                     'formatted_wallet' => '$' . number_format($walletBalance, 0, ',', '.') . ' COP',
                     'status' => $s->status ?? 'active',
-                    'status_label' => ($s->status === 'active') ? 'Activo · Al día' : 'Pendiente',
+                    'status_label' => ($s->status === 'active') ? 'Activo · Al día' : 'Pendiente Pago',
                     'start_date' => $s->current_period_start ? \Carbon\Carbon::parse($s->current_period_start)->format('d/m/Y') : now()->format('d/m/Y'),
                     'end_date' => $s->current_period_end ? \Carbon\Carbon::parse($s->current_period_end)->format('d/m/Y') : now()->addMonth()->format('d/m/Y'),
-                    'gateway_subscription_id' => $s->gateway_subscription_id,
-                    'carnet_url' => $ctx['tenant'] ? $ctx['tenant']->getCarnetUrl($s->gateway_subscription_id ?? $s->id) : "/carnet/{$s->id}",
+                    'gateway_subscription_id' => $contractRef,
+                    'carnet_url' => $carnetUrl,
+                    'payment_url' => $paymentUrl,
+                    'whatsapp_reminder_url' => $whatsappReminderUrl,
                 ];
             });
 
@@ -517,6 +546,133 @@ class VetPagesController extends Controller
             'formattedWallet' => '$' . number_format($totalWallet, 0, ',', '.') . ' COP',
             'expiringSoonCount' => $expiringSoonCount,
         ]));
+    }
+
+    /**
+     * Aprobar Pago / Renovar Ciclo en 1-Click desde el Panel de Membresías
+     */
+    public function approveSubscriptionPayment(Request $request, string $slug, string $id)
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
+        $tenant = $ctx['tenant'];
+
+        $subscription = Subscription::with(['pet.customer', 'plan'])
+            ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
+            ->where('id', $id)
+            ->firstOrFail();
+
+        $planPrice = (float) ($subscription->plan?->price_cop ?? 50000);
+        $startDate = now();
+        $endDate = now()->addMonth();
+
+        $subscription->update([
+            'status' => 'active',
+            'current_period_start' => $startDate,
+            'current_period_end' => $endDate,
+        ]);
+
+        // Acumular 10% en el Fondo de Reserva en Custodia (Health Wallet)
+        $reserveAmount = round($planPrice * 0.10, 2);
+        try {
+            app(\App\Services\HealthWalletService::class)->accrueMonthlyFund(
+                $subscription,
+                $reserveAmount,
+                'Aporte 10% cuota aprobada en recepción · ' . now()->format('d/m/Y')
+            );
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Error acumulando Health Wallet en aprobación manual: ' . $e->getMessage());
+        }
+
+        // Registrar en el Log de Pagos
+        try {
+            \App\Models\SaasPaymentLog::create([
+                'tenant_id' => $subscription->tenant_id,
+                'order_id' => ($subscription->gateway_subscription_id ?? $subscription->id) . '-' . time(),
+                'gateway' => 'reception_verified',
+                'amount' => $planPrice,
+                'currency' => 'COP',
+                'plan_tier' => 'b2c_' . ($subscription->plan?->name ?? 'plan'),
+                'status' => 'approved',
+                'transaction_id' => 'MAN-' . strtoupper(substr(md5(uniqid()), 0, 8)),
+                'payer_name' => $subscription->pet?->customer?->name ?? 'Tutor B2C',
+                'payer_email' => $subscription->pet?->customer?->email ?? null,
+                'payer_phone' => $subscription->pet?->customer?->phone ?? null,
+                'period_start' => $startDate->toDateString(),
+                'period_end' => $endDate->toDateString(),
+                'notes' => "Pago B2C verificado y activado en 1-Click para {$subscription->pet?->name}.",
+                'paid_at' => now(),
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Error registrando SaasPaymentLog B2C: ' . $e->getMessage());
+        }
+
+        // Enviar correo de confirmación con Carnet Digital QR al tutor
+        try {
+            $tutorEmail = trim($subscription->pet?->customer?->email ?? '');
+            if ($tenant && !empty($tutorEmail) && filter_var($tutorEmail, FILTER_VALIDATE_EMAIL)) {
+                $carnetUrl = $tenant->getCarnetUrl($subscription->gateway_subscription_id ?? $subscription->id);
+                \Illuminate\Support\Facades\Mail::to($tutorEmail)->send(new \App\Mail\TutorWelcomeCarnetMail(
+                    $tenant,
+                    $subscription,
+                    $subscription->pet->customer,
+                    $subscription->pet,
+                    $subscription->plan,
+                    $carnetUrl,
+                    'Pago Verificado en Clínica · Membresía Activa'
+                ));
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Error enviando correo tras aprobar pago B2C: ' . $e->getMessage());
+        }
+
+        $formattedReserve = number_format($reserveAmount, 0, ',', '.');
+        $msg = "✓ Pago registrado para {$subscription->pet?->name}. Vigencia renovada hasta {$endDate->format('d/m/Y')} y +\${$formattedReserve} COP abonados al Fondo de Reserva (10%).";
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => $msg]);
+        }
+
+        return back()->with('success', $msg);
+    }
+
+    /**
+     * Redirección limpia a Pasarela Wompi / Bold para pago en línea de un Contrato B2C
+     */
+    public function redirectToB2CPayment(Request $request, string $slug, string $contractId)
+    {
+        $tenant = Tenant::where('slug', $slug)->firstOrFail();
+        $subscription = Subscription::with(['pet.customer', 'plan'])
+            ->where('tenant_id', $tenant->id)
+            ->where(function ($q) use ($contractId) {
+                $q->where('gateway_subscription_id', $contractId)
+                  ->orWhere('id', $contractId);
+            })
+            ->firstOrFail();
+
+        $amountToCharge = (float) ($subscription->plan?->price_cop ?? 50000);
+        $ref = ($subscription->gateway_subscription_id ?? $subscription->id) . '-' . time();
+        $carnetUrl = $tenant->getCarnetUrl($subscription->gateway_subscription_id ?? $subscription->id);
+
+        $boldService = app(\App\Services\BoldPaymentService::class);
+        $res = $boldService->createPaymentLink(
+            $ref,
+            $amountToCharge,
+            "{$tenant->name} - {$subscription->plan?->name} ({$subscription->pet?->name})",
+            [
+                'email' => $subscription->pet?->customer?->email ?? 'tutor@avipetapp.com',
+                'name' => $subscription->pet?->customer?->name ?? 'Tutor',
+                'phone' => $subscription->pet?->customer?->phone ?? '',
+            ],
+            "{$carnetUrl}?paid=1",
+            $tenant
+        );
+
+        if (!empty($res['payment_url'])) {
+            return redirect()->away($res['payment_url']);
+        }
+
+        return redirect($carnetUrl);
     }
 
     /**
@@ -1145,6 +1301,9 @@ class VetPagesController extends Controller
             'payment_nequi' => $branding['payment_nequi'] ?? ($branding['phone'] ?? ''),
             'payment_bank_info' => $branding['payment_bank_info'] ?? ($isPilot ? 'Bancolombia Ahorros # 123-456789-01 (Titular: Vet-Pet Patitas)' : ''),
             'payment_bold_link' => $branding['payment_bold_link'] ?? ($isPilot ? 'https://checkout.bold.co/payment/LNK_VET_PATITAS' : ''),
+            'wompi_public_key' => $branding['wompi_public_key'] ?? '',
+            'wompi_integrity_secret' => $branding['wompi_integrity_secret'] ?? '',
+            'wompi_events_secret' => $branding['wompi_events_secret'] ?? '',
             'doctor_name' => $branding['doctor_name'] ?? ($isPilot ? 'Dra. Vicky Naranjo' : ($tenant->users()->where('role', 'clinic_admin')->first()?->name ?? '')),
             'doctor_title' => $branding['doctor_title'] ?? ($isPilot ? 'Médica Veterinaria Directora' : 'Médica Veterinaria Directora'),
             'storefront_theme' => $branding['storefront_theme'] ?? 'classic',
@@ -1228,6 +1387,9 @@ class VetPagesController extends Controller
             'payment_nequi' => 'nullable|string|max:50',
             'payment_bank_info' => 'nullable|string|max:255',
             'payment_bold_link' => 'nullable|string|max:500',
+            'wompi_public_key' => 'nullable|string|max:255',
+            'wompi_integrity_secret' => 'nullable|string|max:255',
+            'wompi_events_secret' => 'nullable|string|max:255',
             'doctor_name' => 'nullable|string|max:255',
             'doctor_title' => 'nullable|string|max:255',
             'logo_base64' => 'nullable|string',
@@ -1291,6 +1453,9 @@ class VetPagesController extends Controller
         $branding['payment_nequi'] = $validated['payment_nequi'] ?? null;
         $branding['payment_bank_info'] = $validated['payment_bank_info'] ?? null;
         $branding['payment_bold_link'] = $validated['payment_bold_link'] ?? null;
+        $branding['wompi_public_key'] = isset($validated['wompi_public_key']) ? trim($validated['wompi_public_key']) : ($branding['wompi_public_key'] ?? '');
+        $branding['wompi_integrity_secret'] = isset($validated['wompi_integrity_secret']) ? trim($validated['wompi_integrity_secret']) : ($branding['wompi_integrity_secret'] ?? '');
+        $branding['wompi_events_secret'] = isset($validated['wompi_events_secret']) ? trim($validated['wompi_events_secret']) : ($branding['wompi_events_secret'] ?? '');
         $branding['doctor_name'] = isset($validated['doctor_name']) ? trim($validated['doctor_name']) : ($branding['doctor_name'] ?? '');
         $branding['doctor_title'] = isset($validated['doctor_title']) ? trim($validated['doctor_title']) : ($branding['doctor_title'] ?? 'Médica Veterinaria Directora');
 

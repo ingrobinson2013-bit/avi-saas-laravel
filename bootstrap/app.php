@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin/*/pets/*/photo',
             'admin/*/pets/*',
             'admin/*/benefit-definitions*',
+            'admin/*/subscriptions/*/approve-payment',
             'api/*',
         ]);
         $middleware->web(append: [

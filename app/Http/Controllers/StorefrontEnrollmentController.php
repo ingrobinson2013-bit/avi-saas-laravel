@@ -146,26 +146,25 @@ class StorefrontEnrollmentController extends Controller
         $planPrice = ($billingCycle === 'annual') ? '$' . number_format($plan->price_annual ?? ($plan->price_cop * 12 * 0.9), 0, ',', '.') . ' COP/año' : '$' . number_format($plan->price_cop ?? 50000, 0, ',', '.') . ' COP/mes';
         $carnetUrl = $tenant->getCarnetUrl($contractId);
         
-        // Generar Link dinámico de Bold
+        // Generar Link dinámico de Wompi / Bold con referencia única por intento
         $boldPaymentUrl = null;
-        if (in_array($paymentMethod, ['bold', 'card', 'card_pse'])) {
-            $amountToCharge = ($billingCycle === 'annual') ? ($plan->price_annual ?? ($plan->price_cop * 12 * 0.9)) : $plan->price_cop;
-            $boldService = app(\App\Services\BoldPaymentService::class);
-            $boldRes = $boldService->createPaymentLink(
-                $contractId,
-                $amountToCharge,
-                "{$tenant->name} - {$plan->name} ({$validated['pet_name']})",
-                [
-                    'email' => $validated['tutor_email'],
-                    'name' => $validated['tutor_name'],
-                    'phone' => $validated['tutor_phone'],
-                ],
-                "{$tenant->getCarnetUrl($contractId)}?paid=1",
-                $tenant
-            );
-            if ($boldRes['success']) {
-                $boldPaymentUrl = $boldRes['payment_url'];
-            }
+        $amountToCharge = ($billingCycle === 'annual') ? ($plan->price_annual ?? ($plan->price_cop * 12 * 0.9)) : $plan->price_cop;
+        $uniqueOrderRef = $contractId . '-' . time();
+        $boldService = app(\App\Services\BoldPaymentService::class);
+        $boldRes = $boldService->createPaymentLink(
+            $uniqueOrderRef,
+            $amountToCharge,
+            "{$tenant->name} - {$plan->name} ({$validated['pet_name']})",
+            [
+                'email' => $validated['tutor_email'],
+                'name' => $validated['tutor_name'],
+                'phone' => $validated['tutor_phone'],
+            ],
+            "{$tenant->getCarnetUrl($contractId)}?paid=1",
+            $tenant
+        );
+        if ($boldRes['success']) {
+            $boldPaymentUrl = $boldRes['payment_url'];
         }
         if (!$boldPaymentUrl) {
             $boldPaymentUrl = $tenant->branding['payment_bold_link'] ?? config('bold.default_payment_link');

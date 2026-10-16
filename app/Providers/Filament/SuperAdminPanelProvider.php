@@ -59,7 +59,6 @@ class SuperAdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/SuperAdmin/Pages'), for: 'App\\Filament\\SuperAdmin\\Pages')
             ->discoverWidgets(in: app_path('Filament/SuperAdmin/Widgets'), for: 'App\\Filament\\SuperAdmin\\Widgets')
             ->pages([
-                \App\Filament\SuperAdmin\Pages\Dashboard::class,
             ])
             ->widgets([
             ])

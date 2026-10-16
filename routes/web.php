@@ -255,6 +255,21 @@ Route::get('/admin/{slug}/subscriptions', function (string $slug) use ($checkAdm
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->subscriptions(request(), $slug);
 });
 
+Route::post('/admin/{slug}/subscriptions/{id}/approve-payment', function (string $slug, string $id) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return response()->json(['error' => 'Unauthorized'], 401);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->approveSubscriptionPayment(request(), $slug, $id);
+});
+
+Route::get('/v/{slug}/pagar/{contract_id}', function (string $slug, string $contract_id) {
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->redirectToB2CPayment(request(), $slug, $contract_id);
+});
+
+Route::get('/pagar/{contract_id}', function (string $contract_id) use ($resolveTenantFromHost) {
+    $tenant = $resolveTenantFromHost();
+    if (!$tenant) abort(404);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->redirectToB2CPayment(request(), $tenant->slug, $contract_id);
+});
+
 Route::get('/admin/{slug}/subscriptions/create', function (string $slug) {
     return redirect("/admin/{$slug}/plans");
 });
@@ -470,6 +485,7 @@ Route::get('/v/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentController
 // 10. Impersonation de Clínicas y Accesos Directos (SuperAdmin Central)
 Route::redirect('/superadmin', '/super-admin');
 Route::redirect('/superadmin/login', '/super-admin/login');
+Route::get('/super-admin', [App\Http\Controllers\SuperAdmin\SuperAdminDashboardController::class, 'index'])->name('superadmin.dashboard');
 Route::get('/impersonate-clinic/{tenant_id}', [App\Http\Controllers\ImpersonationController::class, 'impersonateTenant'])->name('superadmin.impersonate');
 Route::get('/impersonate-clinic-stop', [App\Http\Controllers\ImpersonationController::class, 'stopImpersonating'])->name('superadmin.stop-impersonating');
 
