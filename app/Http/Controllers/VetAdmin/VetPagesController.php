@@ -699,6 +699,90 @@ class VetPagesController extends Controller
     }
 
     /**
+     * Enviar Invitación de Control Preventivo (Vacunación / Desparasitación) por Correo
+     */
+    public function sendPreventiveReminder(Request $request, string $slug, string $id)
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
+        $tenant = $ctx['tenant'];
+
+        $subscription = Subscription::with(['pet.customer', 'plan', 'benefitBalances.benefitDefinition'])
+            ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
+            ->where('id', $id)
+            ->firstOrFail();
+
+        $customer = $subscription->pet?->customer;
+        $tutorEmail = trim($customer?->email ?? '');
+
+        if (!$tenant || !$customer || empty($tutorEmail) || !filter_var($tutorEmail, FILTER_VALIDATE_EMAIL)) {
+            $errMsg = 'El tutor de esta mascota no tiene un correo electrónico válido registrado.';
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $errMsg], 422);
+            }
+            return back()->with('error', $errMsg);
+        }
+
+        $availableBenefits = [];
+        foreach ($subscription->benefitBalances as $b) {
+            if ((int) $b->remaining_count > 0) {
+                $availableBenefits[] = [
+                    'name' => $b->benefitDefinition?->name ?? 'Control Preventivo',
+                    'remaining' => (int) $b->remaining_count,
+                    'granted' => (int) $b->total_granted,
+                    'category' => $b->benefitDefinition?->category ?? 'prevencion',
+                ];
+            }
+        }
+
+        if (empty($availableBenefits)) {
+            $availableBenefits[] = [
+                'name' => 'Consulta Médica de Control Preventivo',
+                'remaining' => 1,
+                'granted' => 1,
+                'category' => 'consultas',
+            ];
+        }
+
+        $contractRef = $subscription->gateway_subscription_id ?? $subscription->id;
+        $carnetUrl = $tenant->getCarnetUrl($contractRef);
+        $clinicPhone = preg_replace('/[^0-9]/', '', $tenant->branding['phone'] ?? '3235813942');
+        if (strlen($clinicPhone) === 10) {
+            $clinicPhone = '57' . $clinicPhone;
+        }
+
+        $waScheduleMsg = "¡Hola {$tenant->name}! 👋 Quiero agendar una cita preventiva para mi mascota *{$subscription->pet?->name}* (Contrato *{$contractRef}*) para aplicar su beneficio incluido: *{$availableBenefits[0]['name']}*.";
+        $scheduleWhatsappUrl = "https://wa.me/{$clinicPhone}?text=" . urlencode($waScheduleMsg);
+
+        try {
+            $mailPending = \Illuminate\Support\Facades\Mail::to($tutorEmail);
+            $clinicEmail = trim($tenant->branding['email'] ?? '');
+            if (!empty($clinicEmail) && filter_var($clinicEmail, FILTER_VALIDATE_EMAIL) && strtolower($clinicEmail) !== strtolower($tutorEmail)) {
+                $mailPending->bcc($clinicEmail);
+            }
+
+            $mailPending->send(new \App\Mail\TutorPreventiveReminderMail(
+                $tenant,
+                $subscription,
+                $customer,
+                $subscription->pet,
+                $subscription->plan,
+                $availableBenefits,
+                $carnetUrl,
+                $scheduleWhatsappUrl
+            ));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Error enviando invitación preventiva B2C: ' . $e->getMessage());
+        }
+
+        $msg = "💉 Invitación de control preventivo enviada a {$tutorEmail} ({$subscription->pet?->name}).";
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => $msg]);
+        }
+        return back()->with('success', $msg);
+    }
+
+    /**
      * Redirección limpia a Pasarela Wompi / Bold para pago en línea de un Contrato B2C
      */
     public function redirectToB2CPayment(Request $request, string $slug, string $contractId)
