@@ -19,6 +19,10 @@ Route::post('/ai/recommend-plan', function (Request $request, FastApiClient $aiC
     return response()->json($aiClient->recommendPlan($species, $ageMonths, $conditions, $budget));
 });
 
+// Webhook Oficial Meta WhatsApp Cloud API (Multi-Tenant Router & Triage)
+Route::get('/webhook/whatsapp', [\App\Http\Controllers\WhatsAppWebhookController::class, 'verify']);
+Route::post('/webhook/whatsapp', [\App\Http\Controllers\WhatsAppWebhookController::class, 'handle']);
+
 // Webhooks Oficiales Multi-Tenant (Wompi & Bold) con validación de firmas, Health Wallet (10%) y Carnet Digital
 Route::post('/webhooks/bold', [BoldWebhookController::class, 'handle']);
 Route::post('/webhooks/wompi', [BoldWebhookController::class, 'handle']);

@@ -37,6 +37,10 @@ class ClinicFlyerController extends Controller
 
         $qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=" . urlencode($enrollmentUrl);
 
+        $whatsappNumber = config('services.whatsapp.central_number', '573000000000');
+        $whatsappUrl = "https://wa.me/{$whatsappNumber}?text=" . urlencode("Hola_{$tenant->slug}");
+        $whatsappQrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=" . urlencode($whatsappUrl);
+
         return view('clinic_flyer', compact(
             'tenant',
             'plans',
@@ -47,7 +51,9 @@ class ClinicFlyerController extends Controller
             'address',
             'phone',
             'enrollmentUrl',
-            'qrCodeUrl'
+            'qrCodeUrl',
+            'whatsappUrl',
+            'whatsappQrUrl'
         ));
     }
 
@@ -80,6 +86,10 @@ class ClinicFlyerController extends Controller
 
             $qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=" . urlencode($enrollmentUrl);
 
+            $whatsappNumber = config('services.whatsapp.central_number', '573000000000');
+            $whatsappUrl = "https://wa.me/{$whatsappNumber}?text=" . urlencode("Hola_{$tenant->slug}");
+            $whatsappQrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=" . urlencode($whatsappUrl);
+
             $pdf = Pdf::loadView('clinic_flyer', compact(
                 'tenant',
                 'plans',
@@ -90,7 +100,9 @@ class ClinicFlyerController extends Controller
                 'address',
                 'phone',
                 'enrollmentUrl',
-                'qrCodeUrl'
+                'qrCodeUrl',
+                'whatsappUrl',
+                'whatsappQrUrl'
             ))->setPaper('letter', 'portrait');
 
             return $pdf->download("Afiche-Mostrador-{$tenant->slug}.pdf");
