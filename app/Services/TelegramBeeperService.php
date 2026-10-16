@@ -155,4 +155,28 @@ class TelegramBeeperService
             return false;
         }
     }
+
+    /**
+     * Envía un mensaje directo a un chat de Telegram.
+     */
+    public function sendMessage(string $chatId, string $text): bool
+    {
+        if (empty($this->botToken)) {
+            Log::info("[Telegram Beeper] Mensaje simulado a {$chatId}: {$text}");
+            return true;
+        }
+
+        try {
+            $response = Http::timeout(5.0)->post("https://api.telegram.org/bot{$this->botToken}/sendMessage", [
+                'chat_id' => $chatId,
+                'text' => $text,
+                'parse_mode' => 'Markdown',
+            ]);
+
+            return $response->successful();
+        } catch (\Throwable $e) {
+            Log::error("[Telegram Beeper] Error enviando mensaje a Telegram: " . $e->getMessage());
+            return false;
+        }
+    }
 }

@@ -127,6 +127,62 @@ class TelegramWebhookController extends Controller
             return response()->json(['status' => 'callback_processed']);
         }
 
+        // 2. Manejo de Mensajes Directos / Comandos (Auto-vinculación de Clínicas)
+        if (isset($payload['message'])) {
+            $msg = $payload['message'];
+            $chatId = (string) ($msg['chat']['id'] ?? '');
+            $text = trim($msg['text'] ?? '');
+            $senderName = $msg['from']['first_name'] ?? 'Doctor(a)';
+
+            // Detectar /start <slug>, /vincular <slug> o /conectar <slug>
+            if (preg_match('/^\/(?:start|vincular|conectar)(?:@\w+)?(?:\s+([a-zA-Z0-9_-]+))?$/i', $text, $matches)) {
+                $slug = isset($matches[1]) ? strtolower(trim($matches[1])) : null;
+
+                if ($slug) {
+                    $tenant = \App\Models\Tenant::where('slug', $slug)
+                        ->orWhere('domain', 'like', "%{$slug}%")
+                        ->first();
+
+                    if ($tenant) {
+                        $branding = (array) $tenant->branding;
+                        $branding['telegram_chat_id'] = $chatId;
+                        $tenant->branding = $branding;
+                        $tenant->save();
+
+                        $beeperService->sendMessage($chatId,
+                            "🎉 *¡Beeper Vinculado con Éxito!*\n\n" .
+                            "Hola Dr(a). *{$senderName}*, este chat ha quedado configurado como el *Beeper Oficial* de:\n" .
+                            "🏥 *{$tenant->name}*\n\n" .
+                            "📲 *ID de Chat:* `{$chatId}`\n\n" .
+                            "A partir de este momento, cuando un tutor consulte síntomas en WhatsApp, recibirás aquí la tarjeta con el pre-diagnóstico clínico para que lo apruebes con un solo toque."
+                        );
+                        return response()->json(['status' => 'tenant_linked', 'tenant' => $tenant->slug]);
+                    } else {
+                        $beeperService->sendMessage($chatId,
+                            "⚠️ No encontramos ninguna veterinaria registrada con el identificador: `{$slug}`.\n\n" .
+                            "Verifica el slug de tu clínica en el panel de administración."
+                        );
+                        return response()->json(['status' => 'tenant_not_found']);
+                    }
+                } else {
+                    $beeperService->sendMessage($chatId,
+                        "👋 *¡Hola Dr(a). {$senderName}!* Bienvenido al *Beeper Clínico de AVI*.\n\n" .
+                        "Para vincular este chat a tu clínica veterinaria y recibir los casos de WhatsApp, escribe:\n" .
+                        "`/vincular nombre-de-tu-clinica`\n\n" .
+                        "_(Ejemplo: `/vincular vet-pet-patitas`)_\n\n" .
+                        "📌 *Tu Telegram Chat ID:* `{$chatId}`"
+                    );
+                    return response()->json(['status' => 'welcome_sent']);
+                }
+            }
+
+            // Comando rápido para conocer su Chat ID
+            if (stripos($text, '/id') === 0) {
+                $beeperService->sendMessage($chatId, "📌 *Tu Telegram Chat ID es:* `{$chatId}`");
+                return response()->json(['status' => 'id_sent']);
+            }
+        }
+
         return response()->json(['status' => 'ok']);
     }
 }
