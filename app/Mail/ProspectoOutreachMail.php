@@ -20,10 +20,13 @@ class ProspectoOutreachMail extends Mailable
 
     public function envelope(): Envelope
     {
+        $fromAddress = config('mail.from.address', 'contacto@avipetapp.com');
+        $fromName = config('mail.from.name', 'AVI-Plan — Membresías Veterinarias');
+
         return new Envelope(
-            from: new Address('contacto@avipetapp.com', 'AVI-Plan — Membresías Veterinarias'),
+            from: new Address($fromAddress, $fromName),
             replyTo: [new Address('contacto@avipetapp.com', 'Atención Oficial AVI-Plan')],
-            bcc: [new Address('contacto@avipetapp.com', 'Copia Auditoría AVI-Plan')],
+            bcc: [new Address(env('MAIL_BCC_ADDRESS', 'ingrobinson2013@gmail.com'), 'Auditoría AVI-Plan')],
             subject: "¿Cómo generar ingresos fijos en {$this->prospecto->razon_social} sin depender solo de urgencias?"
         );
     }

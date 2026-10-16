@@ -26,8 +26,11 @@ class NewClinicLeadAlertMail extends Mailable
 
     public function envelope(): Envelope
     {
+        $fromAddress = config('mail.from.address', 'contacto@avipetapp.com');
+        $fromName = config('mail.from.name', 'Sistema Central AVI-Plan');
+
         return new Envelope(
-            from: new Address('contacto@avipetapp.com', 'Sistema Central AVI-Plan'),
+            from: new Address($fromAddress, $fromName),
             replyTo: [new Address($this->user->email, $this->data['clinic_name'])],
             subject: "🚨 ¡Nueva Veterinaria Registrada!: {$this->data['clinic_name']} ({$this->data['city']})"
         );

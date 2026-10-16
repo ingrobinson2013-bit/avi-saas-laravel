@@ -150,13 +150,15 @@ class SuperAdminProspectoController extends Controller
             $prospecto->estado = 'enviado';
             $prospecto->intentos_envio = ($prospecto->intentos_envio ?? 0) + 1;
             $prospecto->ultimo_envio_at = now();
+            $prospecto->error_mensaje = null;
             $prospecto->save();
 
             return redirect()->back()->with('success', "Correo de outreach enviado correctamente a {$prospecto->razon_social}.");
         } catch (\Throwable $e) {
             Log::error("Error enviando outreach a prospecto {$prospecto->id}: " . $e->getMessage());
             
-            // Mark attempt anyway for tracking
+            // Mark attempt and record error for tracking
+            $prospecto->estado = 'error';
             $prospecto->intentos_envio = ($prospecto->intentos_envio ?? 0) + 1;
             $prospecto->error_mensaje = $e->getMessage();
             $prospecto->save();

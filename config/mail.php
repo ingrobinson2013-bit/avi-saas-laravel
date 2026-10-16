@@ -1,9 +1,12 @@
 <?php
 
-// Autocorrección para caracteres especiales (#) que el parser .env o Docker truncan como comentarios
 $mailPassword = env('MAIL_PASSWORD');
-if (empty($mailPassword) || $mailPassword === 'Ashley2023' || $mailPassword === 'your-email-password') {
-    $mailPassword = 'Ashley2023##';
+if (empty($mailPassword) || $mailPassword === 'your-email-password' || $mailPassword === 'Ashley2023') {
+    if (env('MAIL_HOST') === 'smtp.gmail.com' || env('MAIL_USERNAME') === 'ingrobinson2013@gmail.com') {
+        $mailPassword = 'zdnbzmsmqbmxavuj';
+    } else {
+        $mailPassword = 'Ashley2023##';
+    }
 }
 
 return [
