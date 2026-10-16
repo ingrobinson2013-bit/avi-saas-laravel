@@ -5,7 +5,7 @@ if (empty($mailPassword) || $mailPassword === 'your-email-password' || $mailPass
     if (env('MAIL_HOST') === 'smtp.gmail.com' || env('MAIL_USERNAME') === 'ingrobinson2013@gmail.com') {
         $mailPassword = 'zdnbzmsmqbmxavuj';
     } else {
-        $mailPassword = 'Ashley2023##';
+        $mailPassword = '3g9TWH?j7bcPTAQ';
     }
 }
 
