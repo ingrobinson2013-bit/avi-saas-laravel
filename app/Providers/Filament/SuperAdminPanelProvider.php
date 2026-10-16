@@ -28,16 +28,30 @@ class SuperAdminPanelProvider extends PanelProvider
             ->id('super-admin')
             ->path('super-admin')
             ->login()
-            ->brandName('🐾 AVI-Plan · SuperAdmin Central')
+            ->brandName('AVI Pet')
+            ->brandLogo(fn () => view('filament.super-admin.components.brand-logo'))
+            ->brandLogoHeight('2.5rem')
             ->font('Plus Jakarta Sans')
             ->colors([
-                'primary' => Color::Indigo,
+                'primary' => Color::Teal,
                 'success' => Color::Emerald,
                 'warning' => Color::Amber,
                 'danger' => Color::Rose,
                 'info' => Color::Sky,
                 'gray' => Color::Slate,
             ])
+            ->renderHook(
+                'panels::topbar.start',
+                fn () => view('filament.super-admin.components.topbar-start')
+            )
+            ->renderHook(
+                'panels::user-menu.before',
+                fn () => view('filament.super-admin.components.topbar-end')
+            )
+            ->renderHook(
+                'panels::sidebar.footer',
+                fn () => view('filament.super-admin.components.sidebar-footer')
+            )
             ->maxContentWidth(MaxWidth::Full)
             ->sidebarWidth('19.5rem')
             ->sidebarCollapsibleOnDesktop()
@@ -45,13 +59,9 @@ class SuperAdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/SuperAdmin/Pages'), for: 'App\\Filament\\SuperAdmin\\Pages')
             ->discoverWidgets(in: app_path('Filament/SuperAdmin/Widgets'), for: 'App\\Filament\\SuperAdmin\\Widgets')
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\SuperAdmin\Pages\Dashboard::class,
             ])
             ->widgets([
-                SuperAdminStatsOverviewWidget::class,
-                \App\Filament\SuperAdmin\Widgets\ExpiringTrialsWidget::class,
-                \App\Filament\SuperAdmin\Widgets\SaasRevenueChartWidget::class,
-                \App\Filament\SuperAdmin\Widgets\SaasPlanDistributionWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -28,6 +28,10 @@ interface BalanceItem {
     granted: number;
     used: number;
     available: number;
+    waiting_days?: number;
+    in_waiting_period?: boolean;
+    days_until_unlock?: number;
+    unlock_date?: string;
 }
 
 interface PetDetails {
@@ -143,6 +147,7 @@ export default function CounterRedeem({
     const [selectedBenefit, setSelectedBenefit] = useState<BalanceItem | null>(null);
     const [redeemNotes, setRedeemNotes] = useState('');
     const [redeemAttendedBy, setRedeemAttendedBy] = useState(userName);
+    const [overrideCarencia, setOverrideCarencia] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Modal de Crédito Clínico de Emergencia
@@ -177,11 +182,13 @@ export default function CounterRedeem({
         setSelectedBenefit(item);
         setRedeemNotes('');
         setRedeemAttendedBy(userName);
+        setOverrideCarencia(false);
         setIsRedeemModalOpen(true);
     };
 
     const confirmRedeemBenefit = () => {
         if (!selectedBenefit) return;
+        if (selectedBenefit.in_waiting_period && !overrideCarencia) return;
         setIsSubmitting(true);
 
         router.post(`/admin/${tenantSlug}/counter-redeem`, {
@@ -191,12 +198,13 @@ export default function CounterRedeem({
             quantity: 1,
             notes: redeemNotes.trim(),
             attended_by: redeemAttendedBy.trim() || userName,
+            override_carencia: overrideCarencia,
         }, {
             preserveScroll: true,
             onSuccess: () => {
                 setIsRedeemModalOpen(false);
                 setSelectedBenefit(null);
-                setToastMessage(`✓ ¡1x ${selectedBenefit.name} canjeado y guardado en la base de datos!`);
+                setToastMessage(`✓ ¡1x ${selectedBenefit.name} canjeado en BD y comprobante enviado al correo del tutor!`);
                 setTimeout(() => setToastMessage(null), 5000);
             },
             onError: (err) => {
@@ -552,12 +560,15 @@ export default function CounterRedeem({
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
                             {filtered.map((item) => {
                                 const hasAvailable = item.available > 0;
+                                const inCarencia = Boolean(item.in_waiting_period);
                                 return (
                                     <div
                                         key={item.id}
                                         className={`rounded-2xl p-4 border transition flex flex-col justify-between ${
                                             hasAvailable
-                                                ? 'bg-white border-slate-200/90 shadow-2xs hover:border-blue-300'
+                                                ? inCarencia
+                                                    ? 'bg-amber-50/30 border-amber-200/90 shadow-2xs hover:border-amber-400'
+                                                    : 'bg-white border-slate-200/90 shadow-2xs hover:border-blue-300'
                                                 : 'bg-slate-50 border-slate-200 opacity-60'
                                         }`}
                                     >
@@ -566,15 +577,23 @@ export default function CounterRedeem({
                                                 <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold">
                                                     🏷️
                                                 </div>
-                                                <span
-                                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                                                        hasAvailable
-                                                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                                                            : 'bg-slate-200 text-slate-600'
-                                                    }`}
-                                                >
-                                                    {hasAvailable ? `${item.available} Disponible(s)` : 'Agotado este ciclo'}
-                                                </span>
+                                                <div className="flex flex-col items-end gap-1">
+                                                    <span
+                                                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                                            hasAvailable
+                                                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                                                : 'bg-slate-200 text-slate-600'
+                                                        }`}
+                                                    >
+                                                        {hasAvailable ? `${item.available >= 500 ? 'Ilimitado' : item.available + ' Disponible(s)'}` : 'Agotado este ciclo'}
+                                                    </span>
+                                                    {inCarencia && (
+                                                        <span className="text-[9.5px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1">
+                                                            <Clock className="w-2.5 h-2.5 text-amber-700" />
+                                                            <span>Carencia: libera {item.unlock_date}</span>
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
 
                                             <h4 className="text-sm font-bold text-slate-900 leading-tight">
@@ -582,16 +601,16 @@ export default function CounterRedeem({
                                             </h4>
 
                                             <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-                                                <span>Concedidas: {item.granted}</span>
+                                                <span>Concedidas: {item.granted >= 500 ? 'Ilimitadas' : item.granted}</span>
                                                 <span>Canjeadas: {item.used}</span>
                                             </div>
 
                                             {/* Progress Bar */}
                                             <div className="w-full bg-slate-100 rounded-full h-1.5 mt-1.5 overflow-hidden">
                                                 <div
-                                                    className="bg-[#0080ff] h-1.5 rounded-full"
+                                                    className={`${inCarencia ? 'bg-amber-500' : 'bg-[#0080ff]'} h-1.5 rounded-full`}
                                                     style={{
-                                                        width: `${item.granted > 0 ? (item.available / item.granted) * 100 : 0}%`,
+                                                        width: `${item.granted > 0 ? Math.min(100, (item.available / item.granted) * 100) : 0}%`,
                                                     }}
                                                 />
                                             </div>
@@ -604,12 +623,20 @@ export default function CounterRedeem({
                                                 onClick={() => openRedeemModal(item)}
                                                 className={`w-full py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${
                                                     hasAvailable
-                                                        ? 'bg-[#0080ff] hover:bg-blue-600 text-white shadow-2xs'
+                                                        ? inCarencia
+                                                            ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-2xs'
+                                                            : 'bg-[#0080ff] hover:bg-blue-600 text-white shadow-2xs'
                                                         : 'bg-slate-200 text-slate-400 cursor-not-allowed'
                                                 }`}
                                             >
                                                 <Zap className="w-3.5 h-3.5" />
-                                                <span>{hasAvailable ? 'Canjear en Mostrador' : 'Sin saldo'}</span>
+                                                <span>
+                                                    {!hasAvailable
+                                                        ? 'Sin saldo'
+                                                        : inCarencia
+                                                        ? `En Carencia (${item.days_until_unlock}d) · Revisar`
+                                                        : 'Canjear en Mostrador'}
+                                                </span>
                                             </button>
                                         </div>
                                     </div>
@@ -712,7 +739,7 @@ export default function CounterRedeem({
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-black tracking-tight">Confirmar Canje en Mostrador</h3>
-                                    <span className="text-[10px] text-blue-200">Registro oficial en Base de Datos & Carnet Digital</span>
+                                    <span className="text-[10px] text-blue-200">Registro oficial en BD, Carnet QR y Correo al Tutor</span>
                                 </div>
                             </div>
                             <button
@@ -744,9 +771,35 @@ export default function CounterRedeem({
                                 </div>
                                 <div className="flex items-center justify-between text-[11px]">
                                     <span className="text-slate-500">Saldo restante tras canje:</span>
-                                    <strong className="text-emerald-700">{selectedBenefit.available - 1} disponible(s)</strong>
+                                    <strong className="text-emerald-700">
+                                        {selectedBenefit.available >= 500 ? 'Ilimitado' : `${selectedBenefit.available - 1} disponible(s)`}
+                                    </strong>
                                 </div>
                             </div>
+
+                            {/* Alerta de Carencia si el beneficio requiere antigüedad */}
+                            {selectedBenefit.in_waiting_period && (
+                                <div className="p-3.5 rounded-2xl bg-amber-50 border-2 border-amber-300 space-y-2.5">
+                                    <div className="flex items-start gap-2">
+                                        <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                                        <div className="text-[11.5px] text-amber-900 leading-relaxed">
+                                            <strong className="font-black block">🔒 Beneficio en Período de Carencia ({selectedBenefit.waiting_days} días)</strong>
+                                            Este servicio se libera automáticamente el <strong>{selectedBenefit.unlock_date}</strong> (faltan {selectedBenefit.days_until_unlock} días) para proteger la rentabilidad de la clínica.
+                                        </div>
+                                    </div>
+                                    <label className="flex items-start gap-2 pt-2 border-t border-amber-200/80 cursor-pointer select-none">
+                                        <input
+                                            type="checkbox"
+                                            checked={overrideCarencia}
+                                            onChange={(e) => setOverrideCarencia(e.target.checked)}
+                                            className="mt-0.5 rounded border-amber-400 text-amber-600 focus:ring-amber-500"
+                                        />
+                                        <span className="text-[11px] font-bold text-amber-950">
+                                            Autorizar excepción médica / liberación anticipada de carencia bajo criterio del veterinario.
+                                        </span>
+                                    </label>
+                                </div>
+                            )}
 
                             {/* Profesional que atiende */}
                             <div>
@@ -790,9 +843,9 @@ export default function CounterRedeem({
                             </button>
                             <button
                                 type="button"
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || (Boolean(selectedBenefit.in_waiting_period) && !overrideCarencia)}
                                 onClick={confirmRedeemBenefit}
-                                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md transition flex items-center gap-1.5 disabled:opacity-50"
+                                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md transition flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isSubmitting ? (
                                     <>

@@ -17,11 +17,11 @@ class ProspectoVeterinariaResource extends Resource
 {
     protected static ?string $model = ProspectoVeterinaria::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-up';
     protected static ?string $navigationLabel = 'Prospección B2B';
     protected static ?string $modelLabel = 'Prospecto';
     protected static ?string $pluralModelLabel = 'Prospección B2B & Campañas';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
     public static function getNavigationBadge(): ?string
     {

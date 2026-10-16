@@ -579,10 +579,18 @@ class VetPagesController extends Controller
                 }
             }
 
+            $startDate = $subscription->current_period_start ?? $subscription->created_at ?? now();
+            $daysActive = (int) max(0, $startDate->diffInDays(now(), false));
+
             foreach ($subscription->benefitBalances as $b) {
                 $granted = (int) $b->total_granted;
                 $used = (int) $b->used_count;
                 $available = max(0, (int) $b->remaining_count);
+                $waitingDays = (int) ($b->benefitDefinition?->waiting_period_days ?? 0);
+                $inWaitingPeriod = ($daysActive < $waitingDays);
+                $daysUntilUnlock = max(0, $waitingDays - $daysActive);
+                $unlockDate = $startDate->copy()->addDays($waitingDays)->format('d/m/Y');
+
                 $balances[] = [
                     'id' => (string) $b->id,
                     'benefit_definition_id' => (string) $b->benefit_definition_id,
@@ -591,6 +599,10 @@ class VetPagesController extends Controller
                     'granted' => $granted,
                     'used' => $used,
                     'available' => $available,
+                    'waiting_days' => $waitingDays,
+                    'in_waiting_period' => $inWaitingPeriod,
+                    'days_until_unlock' => $daysUntilUnlock,
+                    'unlock_date' => $unlockDate,
                 ];
             }
         }
@@ -600,11 +612,11 @@ class VetPagesController extends Controller
         // Si la lista de balances está vacía y es la clínica piloto, proporcionamos los beneficios demostrativos
         if (empty($balances) && ($subscription || $isPilot)) {
             $balances = [
-                ['id' => '1', 'name' => 'Consulta Médica General', 'category' => 'consultas', 'granted' => 2, 'used' => 0, 'available' => 2],
-                ['id' => '2', 'name' => 'Vacunación Anual Antirrábica', 'category' => 'vacunacion', 'granted' => 1, 'used' => 0, 'available' => 1],
-                ['id' => '3', 'name' => 'Desparasitación Interna Trimestral', 'category' => 'prevencion', 'granted' => 4, 'used' => 0, 'available' => 4],
-                ['id' => '4', 'name' => 'Desparasitación Externa Trimestral', 'category' => 'prevencion', 'granted' => 4, 'used' => 0, 'available' => 4],
-                ['id' => '5', 'name' => 'Kit de Bienvenida (Placa + Carnet Digital)', 'category' => 'identificacion', 'granted' => 1, 'used' => 0, 'available' => 1],
+                ['id' => '1', 'name' => 'Consulta Médica General', 'category' => 'consultas', 'granted' => 2, 'used' => 0, 'available' => 2, 'waiting_days' => 0, 'in_waiting_period' => false, 'days_until_unlock' => 0, 'unlock_date' => now()->format('d/m/Y')],
+                ['id' => '2', 'name' => 'Vacunación Anual Antirrábica', 'category' => 'vacunacion', 'granted' => 1, 'used' => 0, 'available' => 1, 'waiting_days' => 30, 'in_waiting_period' => false, 'days_until_unlock' => 0, 'unlock_date' => now()->format('d/m/Y')],
+                ['id' => '3', 'name' => 'Desparasitación Interna Trimestral', 'category' => 'prevencion', 'granted' => 4, 'used' => 0, 'available' => 4, 'waiting_days' => 15, 'in_waiting_period' => false, 'days_until_unlock' => 0, 'unlock_date' => now()->format('d/m/Y')],
+                ['id' => '4', 'name' => 'Desparasitación Externa Trimestral', 'category' => 'prevencion', 'granted' => 4, 'used' => 0, 'available' => 4, 'waiting_days' => 15, 'in_waiting_period' => false, 'days_until_unlock' => 0, 'unlock_date' => now()->format('d/m/Y')],
+                ['id' => '5', 'name' => 'Kit de Bienvenida (Placa + Carnet Digital)', 'category' => 'identificacion', 'granted' => 1, 'used' => 0, 'available' => 1, 'waiting_days' => 0, 'in_waiting_period' => false, 'days_until_unlock' => 0, 'unlock_date' => now()->format('d/m/Y')],
             ];
         }
 
@@ -699,6 +711,7 @@ class VetPagesController extends Controller
     {
         $ctx = $this->getTenantContext($request, $slug);
         $tenantId = $ctx['tenantId'];
+        $tenant = $ctx['tenant'];
 
         $validated = $request->validate([
             'pet_id' => 'nullable|string',
@@ -708,11 +721,13 @@ class VetPagesController extends Controller
             'quantity' => 'nullable|integer|min:1|max:10',
             'notes' => 'nullable|string|max:500',
             'attended_by' => 'nullable|string|max:120',
+            'override_carencia' => 'nullable|boolean',
         ]);
 
         $quantity = (int) ($validated['quantity'] ?? 1);
         $notes = $validated['notes'] ?? null;
         $attendedByName = !empty($validated['attended_by']) ? trim($validated['attended_by']) : ($ctx['userName'] ?? 'Recepción Médica');
+        $overrideCarencia = (bool) ($validated['override_carencia'] ?? false);
 
         if ($validated['action_type'] === 'benefit') {
             $balanceId = $validated['balance_id'];
@@ -760,14 +775,33 @@ class VetPagesController extends Controller
                 return redirect()->back()->with('error', $msg);
             }
 
+            // Validar Período de Carencia (Vesting) si no fue autorizada excepción médica
+            $subRecord = $balance->subscription;
+            $startDate = $subRecord?->current_period_start ?? $subRecord?->created_at ?? now();
+            $daysActive = (int) max(0, $startDate->diffInDays(now(), false));
+            $waitingDays = (int) ($balance->benefitDefinition?->waiting_period_days ?? 0);
+            $inWaitingPeriod = ($daysActive < $waitingDays);
+
+            if ($inWaitingPeriod && !$overrideCarencia) {
+                $unlockDate = $startDate->copy()->addDays($waitingDays)->format('d/m/Y');
+                $msg = "🔒 Este beneficio se encuentra en período de carencia ({$waitingDays} días requeridos; se habilita el {$unlockDate}). Marca la casilla de Autorización Médica si deseas redimirlo hoy.";
+                if ($request->wantsJson()) {
+                    return response()->json(['error' => $msg], 422);
+                }
+                return redirect()->back()->withErrors(['carencia' => $msg]);
+            }
+
+            $redemptionRecord = null;
+
             // Canje atómico en Base de Datos
-            \DB::transaction(function () use ($balance, $quantity, $notes, $tenantId, $attendedByName) {
+            \DB::transaction(function () use ($balance, $quantity, $notes, $tenantId, $attendedByName, $inWaitingPeriod, $overrideCarencia, &$redemptionRecord) {
                 $balance->decrement('remaining_count', $quantity);
                 $balance->increment('used_count', $quantity);
 
-                $fullNotes = $notes ? "{$notes} [Atendido por: {$attendedByName}]" : "Atendido por: {$attendedByName}";
+                $prefixCarencia = ($inWaitingPeriod && $overrideCarencia) ? '[Excepción Carencia Autorizada] ' : '';
+                $fullNotes = $notes ? "{$prefixCarencia}{$notes} [Atendido por: {$attendedByName}]" : "{$prefixCarencia}Atendido por: {$attendedByName}";
 
-                $redemption = BenefitRedemption::create([
+                $redemptionRecord = BenefitRedemption::create([
                     'tenant_id' => $tenantId,
                     'balance_id' => $balance->id,
                     'redeemed_at' => now(),
@@ -777,11 +811,44 @@ class VetPagesController extends Controller
                 ]);
 
                 // Evento de auditoría forense
-                \App\Events\BenefitRedeemedEvent::dispatch($redemption);
+                \App\Events\BenefitRedeemedEvent::dispatch($redemptionRecord);
             });
 
             $petName = $balance->subscription?->pet?->name ?? 'la mascota';
             $benefitName = $balance->benefitDefinition?->name ?? 'el servicio';
+
+            // Enviar Comprobante de Canje por Correo al Tutor B2C
+            try {
+                $customer = $balance->subscription?->pet?->customer;
+                $tutorEmail = trim($customer?->email ?? '');
+                if ($redemptionRecord && $tenant && !empty($tutorEmail) && filter_var($tutorEmail, FILTER_VALIDATE_EMAIL)) {
+                    $freshBalance = $balance->fresh();
+                    $contractId = $balance->subscription?->gateway_subscription_id ?? $balance->subscription_id;
+                    $carnetUrl = $tenant->getCarnetUrl($contractId);
+
+                    $mailPending = \Illuminate\Support\Facades\Mail::to($tutorEmail);
+                    $clinicEmail = trim($tenant->branding['email'] ?? '');
+                    if (!empty($clinicEmail) && filter_var($clinicEmail, FILTER_VALIDATE_EMAIL) && strtolower($clinicEmail) !== strtolower($tutorEmail)) {
+                        $mailPending->bcc($clinicEmail);
+                    }
+                    $mailPending->send(new \App\Mail\TutorRedemptionReceiptMail(
+                        $redemptionRecord,
+                        $tenant,
+                        $petName,
+                        $customer->name ?? 'Tutor',
+                        $benefitName,
+                        $quantity,
+                        (int) ($freshBalance?->remaining_count ?? 0),
+                        (int) ($freshBalance?->total_granted ?? 1),
+                        $attendedByName,
+                        $notes,
+                        $carnetUrl
+                    ));
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('No se pudo enviar comprobante de canje al tutor: ' . $e->getMessage());
+            }
+
             $successMsg = "✓ ¡{$quantity}x {$benefitName} canjeado exitosamente para {$petName}!";
 
             if ($request->wantsJson()) {

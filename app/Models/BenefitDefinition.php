@@ -51,4 +51,19 @@ class BenefitDefinition extends Model
             default => '🐾 ' . ucfirst($this->category ?? 'Servicio'),
         };
     }
+
+    /**
+     * Días de carencia requeridos desde el inicio de la suscripción antes de habilitar el canje sin excepción médica.
+     */
+    public function getWaitingPeriodDaysAttribute(): int
+    {
+        return match (strtolower($this->category ?? 'consulta')) {
+            'bienvenida', 'identificacion', 'consulta', 'consultas', 'urgencia', 'descuento' => 0,
+            'desparasitacion', 'prevencion', 'bano' => 15,
+            'vacuna', 'vacunacion' => 30,
+            'laboratorio' => 45,
+            'funerario' => 60,
+            default => 0,
+        };
+    }
 }

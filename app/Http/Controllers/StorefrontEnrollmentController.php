@@ -178,6 +178,29 @@ class StorefrontEnrollmentController extends Controller
             default => '📱 Nequi / Daviplata',
         };
 
+        // 6. Enviar Correo Automático al Tutor con su Carnet Digital y Copia a la Clínica
+        try {
+            $tutorEmail = trim($validated['tutor_email'] ?? '');
+            if (!empty($tutorEmail) && filter_var($tutorEmail, FILTER_VALIDATE_EMAIL)) {
+                $mailPending = \Illuminate\Support\Facades\Mail::to($tutorEmail);
+                $clinicEmail = trim($tenant->branding['email'] ?? '');
+                if (!empty($clinicEmail) && filter_var($clinicEmail, FILTER_VALIDATE_EMAIL) && strtolower($clinicEmail) !== strtolower($tutorEmail)) {
+                    $mailPending->bcc($clinicEmail);
+                }
+                $mailPending->send(new \App\Mail\TutorWelcomeCarnetMail(
+                    $tenant,
+                    $subscription,
+                    $subscription->pet->customer,
+                    $subscription->pet,
+                    $plan,
+                    $carnetUrl,
+                    $paymentText
+                ));
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('No se pudo enviar correo de Carnet Digital al tutor: ' . $e->getMessage());
+        }
+
         $waMessage = "¡Hola {$tenant->name}! 👋 Acabo de afiliar a mi mascota en su plataforma digital:\n\n" .
             "🐾 *Mascota:* {$validated['pet_name']} ({$species} - {$validated['pet_breed']})\n" .
             "👤 *Tutor:* {$validated['tutor_name']}\n" .

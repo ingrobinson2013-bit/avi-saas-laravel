@@ -16,10 +16,10 @@ class SaasPaymentLogResource extends Resource
 {
     protected static ?string $model = SaasPaymentLog::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?string $navigationLabel = 'Historial de Pagos SaaS';
+    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+    protected static ?string $navigationLabel = 'Suscripciones y pagos';
     protected static ?string $modelLabel = 'Pago de Clínica';
-    protected static ?string $pluralModelLabel = 'Historial de Pagos SaaS';
+    protected static ?string $pluralModelLabel = 'Suscripciones y pagos';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form

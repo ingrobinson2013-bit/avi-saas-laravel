@@ -16,7 +16,7 @@ class TenantResource extends Resource
     protected static ?string $model = Tenant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
-    protected static ?string $navigationLabel = 'Clínicas Veterinarias';
+    protected static ?string $navigationLabel = 'Clínicas veterinarias';
     protected static ?string $modelLabel = 'Clínica Veterinaria';
     protected static ?string $pluralModelLabel = 'Clínicas Veterinarias';
     protected static ?int $navigationSort = 1;
