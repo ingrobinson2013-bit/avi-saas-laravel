@@ -24,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin/*/pets/*',
             'admin/*/benefit-definitions*',
             'admin/*/subscriptions/*/approve-payment',
+            'admin/*/subscriptions/*/send-reminder',
             'api/*',
         ]);
         $middleware->web(append: [

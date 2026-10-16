@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
 import VetAdminLayout from '@/Layouts/VetAdminLayout';
-import { Search, CheckCircle2, ArrowUpRight, DollarSign, MessageCircle, RefreshCw, Sparkles } from 'lucide-react';
+import { Search, CheckCircle2, ArrowUpRight, DollarSign, MessageCircle, RefreshCw, Sparkles, Mail } from 'lucide-react';
 
 interface SubItem {
     id: string;
@@ -63,6 +63,7 @@ export default function Subscriptions({
 }: SubscriptionsProps) {
     const [search, setSearch] = useState('');
     const [approvingId, setApprovingId] = useState<string | null>(null);
+    const [remindingId, setRemindingId] = useState<string | null>(null);
     const [toastMsg, setToastMsg] = useState<string | null>(null);
 
     const handleApprovePayment = (sub: SubItem) => {
@@ -83,6 +84,29 @@ export default function Subscriptions({
                 },
                 onError: () => {
                     setApprovingId(null);
+                },
+            }
+        );
+    };
+
+    const handleSendReminder = (sub: SubItem) => {
+        if (remindingId) return;
+        setRemindingId(sub.id);
+
+        router.post(
+            `/admin/${tenantSlug}/subscriptions/${sub.id}/send-reminder`,
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setRemindingId(null);
+                    setToastMsg(
+                        `✉️ Recordatorio de renovación con botón de pago Wompi/Bold enviado al correo del tutor de ${sub.pet_name}.`
+                    );
+                    setTimeout(() => setToastMsg(null), 6000);
+                },
+                onError: () => {
+                    setRemindingId(null);
                 },
             }
         );
@@ -292,6 +316,21 @@ export default function Subscriptions({
                                                         <DollarSign className="w-3 h-3" />
                                                     )}
                                                     <span>{s.status === 'active' ? 'Renovar Cuota' : 'Aprobar Pago'}</span>
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    disabled={remindingId === s.id}
+                                                    onClick={() => handleSendReminder(s)}
+                                                    title="Enviar correo de recordatorio de renovación con link de pago en línea (Wompi / Bold)"
+                                                    className="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 text-[11px] font-bold transition inline-flex items-center gap-1 disabled:opacity-50 cursor-pointer"
+                                                >
+                                                    {remindingId === s.id ? (
+                                                        <RefreshCw className="w-3 h-3 animate-spin" />
+                                                    ) : (
+                                                        <Mail className="w-3 h-3" />
+                                                    )}
+                                                    <span>Email Cobro</span>
                                                 </button>
 
                                                 {s.whatsapp_reminder_url && (

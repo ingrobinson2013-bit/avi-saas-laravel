@@ -260,6 +260,11 @@ Route::post('/admin/{slug}/subscriptions/{id}/approve-payment', function (string
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->approveSubscriptionPayment(request(), $slug, $id);
 });
 
+Route::post('/admin/{slug}/subscriptions/{id}/send-reminder', function (string $slug, string $id) use ($checkAdminAccess) {
+    if (!$checkAdminAccess($slug)) return response()->json(['error' => 'Unauthorized'], 401);
+    return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->sendRenewalReminder(request(), $slug, $id);
+});
+
 Route::get('/v/{slug}/pagar/{contract_id}', function (string $slug, string $contract_id) {
     return app(App\Http\Controllers\VetAdmin\VetPagesController::class)->redirectToB2CPayment(request(), $slug, $contract_id);
 });

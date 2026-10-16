@@ -637,6 +637,68 @@ class VetPagesController extends Controller
     }
 
     /**
+     * Enviar Recordatorio de Renovación por Correo (con Link de Pago Wompi / Bold en 1-Click)
+     */
+    public function sendRenewalReminder(Request $request, string $slug, string $id)
+    {
+        $ctx = $this->getTenantContext($request, $slug);
+        $tenantId = $ctx['tenantId'];
+        $tenant = $ctx['tenant'];
+
+        $subscription = Subscription::with(['pet.customer', 'plan', 'wallet'])
+            ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
+            ->where('id', $id)
+            ->firstOrFail();
+
+        $customer = $subscription->pet?->customer;
+        $tutorEmail = trim($customer?->email ?? '');
+
+        if (!$tenant || !$customer || empty($tutorEmail) || !filter_var($tutorEmail, FILTER_VALIDATE_EMAIL)) {
+            $errMsg = 'El tutor de esta mascota no tiene un correo electrónico válido registrado.';
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $errMsg], 422);
+            }
+            return back()->with('error', $errMsg);
+        }
+
+        $contractRef = $subscription->gateway_subscription_id ?? $subscription->id;
+        $paymentUrl = url("/v/{$tenant->slug}/pagar/{$contractRef}");
+        $carnetUrl = $tenant->getCarnetUrl($contractRef);
+        $walletBalance = (float) ($subscription->wallet?->balance_cop ?? 0);
+        $daysLeft = $subscription->current_period_end
+            ? (int) \Carbon\Carbon::today()->diffInDays(\Carbon\Carbon::parse($subscription->current_period_end)->startOfDay(), false)
+            : 5;
+
+        try {
+            $mailPending = \Illuminate\Support\Facades\Mail::to($tutorEmail);
+            $clinicEmail = trim($tenant->branding['email'] ?? '');
+            if (!empty($clinicEmail) && filter_var($clinicEmail, FILTER_VALIDATE_EMAIL) && strtolower($clinicEmail) !== strtolower($tutorEmail)) {
+                $mailPending->bcc($clinicEmail);
+            }
+
+            $mailPending->send(new \App\Mail\TutorRenewalReminderMail(
+                $tenant,
+                $subscription,
+                $customer,
+                $subscription->pet,
+                $subscription->plan,
+                $paymentUrl,
+                $carnetUrl,
+                $daysLeft,
+                $walletBalance
+            ));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Error enviando recordatorio de renovación B2C: ' . $e->getMessage());
+        }
+
+        $msg = "✉️ Recordatorio de renovación con link de pago enviado a {$tutorEmail} ({$subscription->pet?->name}).";
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => $msg]);
+        }
+        return back()->with('success', $msg);
+    }
+
+    /**
      * Redirección limpia a Pasarela Wompi / Bold para pago en línea de un Contrato B2C
      */
     public function redirectToB2CPayment(Request $request, string $slug, string $contractId)
