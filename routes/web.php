@@ -482,10 +482,39 @@ Route::get('/onboarding', fn() => redirect('https://' . env('APP_BASE_DOMAIN', '
 Route::get('/admin/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentController::class, 'showCheckout'])->name('saas.checkout');
 Route::get('/v/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentController::class, 'showCheckout']);
 
-// 10. Impersonation de Clínicas y Accesos Directos (SuperAdmin Central)
+// 10. Panel SuperAdmin Central (React + Inertia + Tailwind) & Impersonation
 Route::redirect('/superadmin', '/super-admin');
 Route::redirect('/superadmin/login', '/super-admin/login');
-Route::get('/super-admin', [App\Http\Controllers\SuperAdmin\SuperAdminDashboardController::class, 'index'])->name('superadmin.dashboard');
+
+Route::prefix('super-admin')->group(function () {
+    // 1. Escritorio / Dashboard
+    Route::get('/', [App\Http\Controllers\SuperAdmin\SuperAdminDashboardController::class, 'index'])->name('superadmin.dashboard');
+
+    // 2. Clínicas Veterinarias (Tenants)
+    Route::get('/tenants', [App\Http\Controllers\SuperAdmin\SuperAdminTenantController::class, 'index'])->name('superadmin.tenants');
+    Route::post('/tenants', [App\Http\Controllers\SuperAdmin\SuperAdminTenantController::class, 'store'])->name('superadmin.tenants.store');
+
+    // 3. Suscripciones y Pagos SaaS
+    Route::get('/saas-payment-logs', [App\Http\Controllers\SuperAdmin\SuperAdminPaymentController::class, 'index'])->name('superadmin.payments');
+    Route::post('/saas-payment-logs', [App\Http\Controllers\SuperAdmin\SuperAdminPaymentController::class, 'store'])->name('superadmin.payments.store');
+
+    // 4. Usuarios y Doctores
+    Route::get('/users', [App\Http\Controllers\SuperAdmin\SuperAdminUserController::class, 'index'])->name('superadmin.users');
+    Route::post('/users', [App\Http\Controllers\SuperAdmin\SuperAdminUserController::class, 'store'])->name('superadmin.users.store');
+    Route::post('/users/{id}/update', [App\Http\Controllers\SuperAdmin\SuperAdminUserController::class, 'update'])->name('superadmin.users.update');
+    Route::post('/users/{id}/delete', [App\Http\Controllers\SuperAdmin\SuperAdminUserController::class, 'destroy'])->name('superadmin.users.destroy');
+
+    // 5. Prospección B2B & Campañas
+    Route::get('/prospecto-veterinarias', [App\Http\Controllers\SuperAdmin\SuperAdminProspectoController::class, 'index'])->name('superadmin.prospectos');
+    Route::post('/prospecto-veterinarias', [App\Http\Controllers\SuperAdmin\SuperAdminProspectoController::class, 'store'])->name('superadmin.prospectos.store');
+    Route::post('/prospecto-veterinarias/{id}/send-outreach', [App\Http\Controllers\SuperAdmin\SuperAdminProspectoController::class, 'sendOutreach'])->name('superadmin.prospectos.send');
+    Route::post('/prospecto-veterinarias/{id}/update-estado', [App\Http\Controllers\SuperAdmin\SuperAdminProspectoController::class, 'updateEstado'])->name('superadmin.prospectos.update-estado');
+
+    // 6. Configuración Global SaaS
+    Route::get('/configuracion', [App\Http\Controllers\SuperAdmin\SuperAdminConfiguracionController::class, 'index'])->name('superadmin.configuracion');
+    Route::post('/configuracion', [App\Http\Controllers\SuperAdmin\SuperAdminConfiguracionController::class, 'update'])->name('superadmin.configuracion.update');
+});
+
 Route::get('/impersonate-clinic/{tenant_id}', [App\Http\Controllers\ImpersonationController::class, 'impersonateTenant'])->name('superadmin.impersonate');
 Route::get('/impersonate-clinic-stop', [App\Http\Controllers\ImpersonationController::class, 'stopImpersonating'])->name('superadmin.stop-impersonating');
 

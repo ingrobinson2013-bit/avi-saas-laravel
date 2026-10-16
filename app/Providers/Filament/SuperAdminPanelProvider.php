@@ -55,9 +55,10 @@ class SuperAdminPanelProvider extends PanelProvider
             ->maxContentWidth(MaxWidth::Full)
             ->sidebarWidth('19.5rem')
             ->sidebarCollapsibleOnDesktop()
-            ->discoverResources(in: app_path('Filament/SuperAdmin/Resources'), for: 'App\\Filament\\SuperAdmin\\Resources')
-            ->discoverPages(in: app_path('Filament/SuperAdmin/Pages'), for: 'App\\Filament\\SuperAdmin\\Pages')
-            ->discoverWidgets(in: app_path('Filament/SuperAdmin/Widgets'), for: 'App\\Filament\\SuperAdmin\\Widgets')
+            // Disable Filament resource & page auto-discovery so full React + Inertia routes handle the panel
+            // ->discoverResources(in: app_path('Filament/SuperAdmin/Resources'), for: 'App\\Filament\\SuperAdmin\\Resources')
+            // ->discoverPages(in: app_path('Filament/SuperAdmin/Pages'), for: 'App\\Filament\\SuperAdmin\\Pages')
+            // ->discoverWidgets(in: app_path('Filament/SuperAdmin/Widgets'), for: 'App\\Filament\\SuperAdmin\\Widgets')
             ->pages([
             ])
             ->widgets([

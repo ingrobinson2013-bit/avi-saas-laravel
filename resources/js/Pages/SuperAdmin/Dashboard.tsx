@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import SuperAdminLayout from '@/Layouts/SuperAdminLayout';
 import { 
     Building2, 
@@ -12,7 +12,9 @@ import {
     Clock, 
     ChevronDown, 
     TrendingUp,
-    UserCheck
+    UserCheck,
+    CheckCircle2,
+    Users
 } from 'lucide-react';
 
 interface ActivityItem {
@@ -23,13 +25,32 @@ interface ActivityItem {
     time: string;
 }
 
+interface PlanDistItem {
+    name: string;
+    count: number;
+    percentage: number;
+    color: string;
+}
+
+interface MrrPoint {
+    month: string;
+    revenue: number;
+}
+
 interface DashboardProps {
     clinicasActivas?: number;
+    clinicasTrend?: number;
     mascotasConMembresia?: number;
+    petsTrend?: number;
     mrr?: number;
+    mrrTrend?: number;
     gmv?: number;
+    gmvTrend?: number;
+    totalProspectos?: number;
     demosProximas?: number;
     cobrosPendientes?: number;
+    mrrHistory?: MrrPoint[];
+    planDistribution?: PlanDistItem[];
     recentActivities?: ActivityItem[];
     userName?: string;
     userEmail?: string;
@@ -37,34 +58,29 @@ interface DashboardProps {
 
 export default function Dashboard({
     clinicasActivas = 2,
+    clinicasTrend = 100,
     mascotasConMembresia = 8,
+    petsTrend = 33,
     mrr = 198000,
+    mrrTrend = 12,
     gmv = 520000,
+    gmvTrend = 18,
+    totalProspectos = 237,
     demosProximas = 0,
     cobrosPendientes = 0,
-    recentActivities = [
-        {
-            id: '1',
-            type: 'clinic',
-            title: 'Nueva clínica',
-            description: 'Clínica Vet Pet Patitas se registró en la plataforma',
-            time: '12 oct 2025 · 10:24 a. m.'
-        },
-        {
-            id: '2',
-            type: 'user',
-            title: 'Nuevo usuario',
-            description: 'Dra. Camila Torres fue agregada como doctora',
-            time: '11 oct 2025 · 4:32 p. m.'
-        },
-        {
-            id: '3',
-            type: 'payment',
-            title: 'Pago recibido',
-            description: 'Membresía Plan Premium - Clínica VetSalud',
-            time: '10 oct 2025 · 9:15 a. m.'
-        }
+    mrrHistory = [
+        { month: 'May 2025', revenue: 45000 },
+        { month: 'Jun 2025', revenue: 75000 },
+        { month: 'Jul 2025', revenue: 98000 },
+        { month: 'Ago 2025', revenue: 125000 },
+        { month: 'Sep 2025', revenue: 160000 },
+        { month: 'Oct 2025', revenue: 198000 },
     ],
+    planDistribution = [
+        { name: 'Plan Básico', count: 4, percentage: 50, color: '#0d9488' },
+        { name: 'Plan Premium', count: 4, percentage: 50, color: '#7c3aed' },
+    ],
+    recentActivities = [],
     userName = 'Robinson Naranjo',
     userEmail = 'superadmin@avipetapp.com'
 }: DashboardProps) {
@@ -77,11 +93,32 @@ export default function Dashboard({
         }).format(val);
     };
 
+    // Calculate dynamic coordinates for 6 months MRR area curve
+    const maxRev = Math.max(...mrrHistory.map(p => p.revenue), 200000);
+    const chartPoints = mrrHistory.map((pt, idx) => {
+        const x = 85 + idx * 95;
+        // Scale y between 200 (bottom) and 60 (top)
+        const normalized = pt.revenue / (maxRev * 1.25);
+        const y = Math.round(200 - normalized * 140);
+        return { ...pt, x, y };
+    });
+
+    const pathData = chartPoints.reduce((acc, curr, idx, arr) => {
+        if (idx === 0) return `M ${curr.x} ${curr.y}`;
+        const prev = arr[idx - 1];
+        const midX = (prev.x + curr.x) / 2;
+        return `${acc} C ${midX} ${prev.y}, ${midX} ${curr.y}, ${curr.x} ${curr.y}`;
+    }, '');
+
+    const lastPoint = chartPoints[chartPoints.length - 1] || { x: 550, y: 95, revenue: mrr };
+    const firstPoint = chartPoints[0] || { x: 85, y: 190 };
+    const areaPath = `${pathData} L ${lastPoint.x} 200 L ${firstPoint.x} 200 Z`;
+
     return (
         <SuperAdminLayout userName={userName} userEmail={userEmail} activeItem="Escritorio">
             <Head title="Centro de Control · AVI Pet Superadmin" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 w-full">
 
                 {/* 1. HEADER */}
                 <div>
@@ -89,12 +126,12 @@ export default function Dashboard({
                         Centro de control
                     </h1>
                     <p className="text-sm text-slate-500 mt-0.5">
-                        Resumen de la red AVI Pet
+                        Resumen de la red AVI Pet en tiempo real
                     </p>
                 </div>
 
                 {/* 2. ROW 1: 4 METRIC CARDS */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
                     
                     {/* Card 1: Clínicas Activas */}
                     <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs hover:shadow-md transition">
@@ -110,7 +147,7 @@ export default function Dashboard({
                                     {clinicasActivas}
                                 </div>
                                 <div className="flex items-center gap-1 text-[11px] font-bold text-teal-600 mt-1">
-                                    <span>↑ 100%</span>
+                                    <span>↑ {clinicasTrend}%</span>
                                     <span className="text-slate-400 font-normal">vs. mes anterior</span>
                                 </div>
                             </div>
@@ -131,7 +168,7 @@ export default function Dashboard({
                                     {mascotasConMembresia}
                                 </div>
                                 <div className="flex items-center gap-1 text-[11px] font-bold text-teal-600 mt-1">
-                                    <span>↑ 33%</span>
+                                    <span>↑ {petsTrend}%</span>
                                     <span className="text-slate-400 font-normal">vs. mes anterior</span>
                                 </div>
                             </div>
@@ -152,7 +189,7 @@ export default function Dashboard({
                                     {formatCurrency(mrr)} <span className="text-xs font-bold text-slate-500">COP</span>
                                 </div>
                                 <div className="flex items-center gap-1 text-[11px] font-bold text-teal-600 mt-1">
-                                    <span>↑ 12%</span>
+                                    <span>↑ {mrrTrend}%</span>
                                     <span className="text-slate-400 font-normal">vs. mes anterior</span>
                                 </div>
                             </div>
@@ -173,7 +210,7 @@ export default function Dashboard({
                                     {formatCurrency(gmv)} <span className="text-xs font-bold text-slate-500">COP</span>
                                 </div>
                                 <div className="flex items-center gap-1 text-[11px] font-bold text-teal-600 mt-1">
-                                    <span>↑ 18%</span>
+                                    <span>↑ {gmvTrend}%</span>
                                     <span className="text-slate-400 font-normal">vs. mes anterior</span>
                                 </div>
                             </div>
@@ -183,7 +220,7 @@ export default function Dashboard({
                 </div>
 
                 {/* 3. ROW 2: PIPELINE COMERCIAL CARD */}
-                <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs">
+                <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs w-full">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
 
                         {/* Left Column: Header */}
@@ -203,33 +240,55 @@ export default function Dashboard({
                             </div>
                         </div>
 
-                        {/* Middle Column: Empty State & Action */}
+                        {/* Middle Column: State & Action */}
                         <div className="w-full lg:w-1/2 flex flex-col items-center text-center px-4">
-                            <div className="relative w-14 h-14 flex items-center justify-center mb-1">
-                                <div className="w-11 h-13 rounded-lg bg-slate-100 border border-slate-200 flex flex-col justify-center px-2 py-2 gap-1.5 shadow-2xs">
-                                    <div className="h-1 bg-slate-300 rounded-sm w-3/4" />
-                                    <div className="h-1 bg-slate-300 rounded-sm w-full" />
-                                    <div className="h-1 bg-slate-300 rounded-sm w-2/3" />
+                            {totalProspectos > 0 ? (
+                                <div className="flex flex-col items-center">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-bold mb-2">
+                                        <CheckCircle2 className="w-4 h-4 text-teal-600" />
+                                        <span>{totalProspectos} veterinarias identificadas en base de datos</span>
+                                    </div>
+                                    <h4 className="text-sm font-bold text-slate-800">
+                                        Base de prospección activa y lista para contacto
+                                    </h4>
+                                    <p className="text-xs text-slate-500 max-w-md mt-1 leading-relaxed">
+                                        Tienes {totalProspectos} clínicas prospectadas en Colombia. Continúa gestionando llamadas, demos y cierres comerciales.
+                                    </p>
+                                    <a
+                                        href="/super-admin/prospecto-veterinarias"
+                                        className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-lg shadow-sm transition hover:scale-102"
+                                    >
+                                        <span>Gestionar prospección B2B</span>
+                                        <span>&rarr;</span>
+                                    </a>
                                 </div>
-                                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-sm shadow-xs ring-2 ring-white">
-                                    +
+                            ) : (
+                                <div className="flex flex-col items-center">
+                                    <div className="relative w-14 h-14 flex items-center justify-center mb-1">
+                                        <div className="w-11 h-13 rounded-lg bg-slate-100 border border-slate-200 flex flex-col justify-center px-2 py-2 gap-1.5 shadow-2xs">
+                                            <div className="h-1 bg-slate-300 rounded-sm w-3/4" />
+                                            <div className="h-1 bg-slate-300 rounded-sm w-full" />
+                                            <div className="h-1 bg-slate-300 rounded-sm w-2/3" />
+                                        </div>
+                                        <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-sm shadow-xs ring-2 ring-white">
+                                            +
+                                        </div>
+                                    </div>
+                                    <h4 className="text-sm font-bold text-slate-800 mt-2">
+                                        No hay oportunidades registradas
+                                    </h4>
+                                    <p className="text-xs text-slate-500 max-w-sm mt-1 leading-relaxed">
+                                        Aún no tienes demos, leads u oportunidades en el pipeline comercial. Empieza a generar nuevas oportunidades para hacer crecer AVI Pet.
+                                    </p>
+                                    <a
+                                        href="/super-admin/prospecto-veterinarias/create"
+                                        className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-lg shadow-sm transition hover:scale-102"
+                                    >
+                                        <span>Registrar oportunidad</span>
+                                        <span>&rarr;</span>
+                                    </a>
                                 </div>
-                            </div>
-
-                            <h4 className="text-sm font-bold text-slate-800 mt-2">
-                                No hay oportunidades registradas
-                            </h4>
-                            <p className="text-xs text-slate-500 max-w-sm mt-1 leading-relaxed">
-                                Aún no tienes demos, leads u oportunidades en el pipeline comercial. Empieza a generar nuevas oportunidades para hacer crecer AVI Pet.
-                            </p>
-
-                            <a
-                                href="/super-admin/prospecto-veterinarias/create"
-                                className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-lg shadow-sm transition hover:scale-102"
-                            >
-                                <span>Registrar oportunidad</span>
-                                <span>&rarr;</span>
-                            </a>
+                            )}
                         </div>
 
                         {/* Right Column: Counters */}
@@ -269,9 +328,9 @@ export default function Dashboard({
                 </div>
 
                 {/* 4. ROW 3: TWO ANALYTICS CHARTS */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 w-full">
 
-                    {/* Left Chart: Ingresos Recurrentes (MRR 6 Meses) */}
+                    {/* Left Chart: Ingresos Recurrentes (MRR Dinámico 6 Meses) */}
                     <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2.5">
@@ -294,7 +353,7 @@ export default function Dashboard({
                             </span>
                         </div>
 
-                        {/* Area Chart SVG matching mockup */}
+                        {/* Area Chart SVG dinámico */}
                         <div className="w-full pt-2">
                             <svg viewBox="0 0 600 240" className="w-full h-auto overflow-visible" preserveAspectRatio="none">
                                 <defs>
@@ -322,13 +381,13 @@ export default function Dashboard({
 
                                 {/* Area Curve */}
                                 <path 
-                                    d="M 85 190 Q 185 180 285 170 T 385 150 T 485 130 T 550 95 L 550 200 L 85 200 Z"
+                                    d={areaPath}
                                     fill="url(#reactMrrTealGradient)" 
                                 />
 
                                 {/* Spline Line */}
                                 <path 
-                                    d="M 85 190 Q 185 180 285 170 T 385 150 T 485 130 T 550 95"
+                                    d={pathData}
                                     fill="none" 
                                     stroke="#0d9488" 
                                     strokeWidth="2.8" 
@@ -337,26 +396,22 @@ export default function Dashboard({
                                 />
 
                                 {/* Points */}
-                                <circle cx="85" cy="190" r="4" fill="#0d9488" stroke="#ffffff" strokeWidth="2" />
-                                <circle cx="185" cy="180" r="4" fill="#0d9488" stroke="#ffffff" strokeWidth="2" />
-                                <circle cx="285" cy="170" r="4" fill="#0d9488" stroke="#ffffff" strokeWidth="2" />
-                                <circle cx="385" cy="150" r="4" fill="#0d9488" stroke="#ffffff" strokeWidth="2" />
-                                <circle cx="485" cy="130" r="4" fill="#0d9488" stroke="#ffffff" strokeWidth="2" />
-                                <circle cx="550" cy="95" r="5" fill="#0d9488" stroke="#ffffff" strokeWidth="2.5" />
+                                {chartPoints.map((pt, i) => (
+                                    <circle key={i} cx={pt.x} cy={pt.y} r={i === chartPoints.length - 1 ? 5 : 4} fill="#0d9488" stroke="#ffffff" strokeWidth={i === chartPoints.length - 1 ? 2.5 : 2} />
+                                ))}
 
                                 {/* Current value tooltip badge */}
-                                <g transform="translate(515, 60)">
+                                <g transform={`translate(${lastPoint.x - 35}, ${lastPoint.y - 35})`}>
                                     <rect x="0" y="0" width="70" height="24" rx="6" fill="#0f766e" />
-                                    <text x="35" y="16" fill="#ffffff" fontSize="11" fontWeight="bold" textAnchor="middle">$198.000</text>
+                                    <text x="35" y="16" fill="#ffffff" fontSize="11" fontWeight="bold" textAnchor="middle">{formatCurrency(lastPoint.revenue)}</text>
                                 </g>
 
                                 {/* Month labels */}
-                                <text x="85" y="222" fill="#94a3b8" fontSize="10.5" textAnchor="middle" fontWeight="500">May 2025</text>
-                                <text x="185" y="222" fill="#94a3b8" fontSize="10.5" textAnchor="middle" fontWeight="500">Jun 2025</text>
-                                <text x="285" y="222" fill="#94a3b8" fontSize="10.5" textAnchor="middle" fontWeight="500">Jul 2025</text>
-                                <text x="385" y="222" fill="#94a3b8" fontSize="10.5" textAnchor="middle" fontWeight="500">Ago 2025</text>
-                                <text x="485" y="222" fill="#94a3b8" fontSize="10.5" textAnchor="middle" fontWeight="500">Sep 2025</text>
-                                <text x="550" y="222" fill="#94a3b8" fontSize="10.5" textAnchor="middle" fontWeight="500">Oct 2025</text>
+                                {chartPoints.map((pt, i) => (
+                                    <text key={i} x={pt.x} y="222" fill="#94a3b8" fontSize="10.5" textAnchor="middle" fontWeight="500">
+                                        {pt.month}
+                                    </text>
+                                ))}
                             </svg>
                         </div>
                     </div>
@@ -370,16 +425,16 @@ export default function Dashboard({
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-bold text-slate-900 leading-tight">
-                                        Distribución de clínicas por plan
+                                        Distribución de membresías por plan
                                     </h3>
                                     <p className="text-xs text-slate-400 mt-0.5">
-                                        Participación de clínicas en cada plan
+                                        Participación de afiliados en cada plan
                                     </p>
                                 </div>
                             </div>
 
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold text-slate-600 bg-slate-50 border border-slate-200 rounded-lg cursor-pointer">
-                                <span>2 clínicas</span>
+                                <span>{clinicasActivas} clínicas</span>
                                 <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
                             </span>
                         </div>
@@ -424,37 +479,28 @@ export default function Dashboard({
                                 </div>
                             </div>
 
-                            {/* Legend */}
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between text-xs py-1.5 border-b border-slate-100">
-                                    <div className="flex items-center gap-2.5">
-                                        <span className="w-2.5 h-2.5 rounded-full bg-teal-600 shrink-0" />
-                                        <span className="font-semibold text-slate-800">Plan Básico</span>
+                            {/* Dynamic Legend */}
+                            <div className="space-y-3">
+                                {planDistribution.map((item, idx) => (
+                                    <div key={idx} className="flex items-center justify-between text-xs py-1.5 border-b border-slate-100 last:border-0">
+                                        <div className="flex items-center gap-2.5">
+                                            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                                            <span className="font-semibold text-slate-800">{item.name}</span>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <span className="text-slate-500">{item.count} afs.</span>
+                                            <span className="font-bold text-slate-900">{item.percentage}%</span>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-6">
-                                        <span className="text-slate-500">1 clínica</span>
-                                        <span className="font-bold text-slate-900">50%</span>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center justify-between text-xs py-1.5 border-b border-slate-100">
-                                    <div className="flex items-center gap-2.5">
-                                        <span className="w-2.5 h-2.5 rounded-full bg-purple-600 shrink-0" />
-                                        <span className="font-semibold text-slate-800">Plan Premium</span>
-                                    </div>
-                                    <div className="flex items-center gap-6">
-                                        <span className="text-slate-500">1 clínica</span>
-                                        <span className="font-bold text-slate-900">50%</span>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                     </div>
 
                 </div>
 
-                {/* 5. ROW 4: ACTIVIDAD RECIENTE */}
-                <div className="space-y-3">
+                {/* 5. ROW 4: ACTIVIDAD RECIENTE REAL */}
+                <div className="space-y-3 w-full">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <div className="w-6 h-6 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
@@ -465,7 +511,7 @@ export default function Dashboard({
                                     Actividad reciente
                                 </h3>
                                 <p className="text-xs text-slate-400">
-                                    Últimos eventos en la plataforma
+                                    Eventos reales registrados en la plataforma
                                 </p>
                             </div>
                         </div>
@@ -476,7 +522,7 @@ export default function Dashboard({
                         </a>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
                         {recentActivities.map((act) => (
                             <div key={act.id} className="bg-white rounded-xl border border-slate-200/90 p-4 shadow-xs flex items-start gap-3 transition hover:shadow-sm">
                                 {act.type === 'clinic' && (

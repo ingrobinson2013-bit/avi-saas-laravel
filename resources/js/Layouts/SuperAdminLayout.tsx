@@ -262,8 +262,8 @@ export default function SuperAdminLayout({
                     </div>
                 </header>
 
-                {/* PAGE BODY */}
-                <main className="flex-1 p-6 sm:p-8 max-w-7xl w-full mx-auto">
+                {/* PAGE BODY - FULL WIDTH */}
+                <main className="flex-1 p-6 sm:p-8 w-full">
                     {children}
                 </main>
             </div>
