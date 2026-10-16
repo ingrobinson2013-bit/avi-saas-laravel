@@ -40,19 +40,32 @@ class SuperAdminDashboardController extends Controller
             : 33;
 
         // 3. MRR Recaudación SaaS para la Plataforma AVI Pet (Real DB)
-        $realMrr = (float) Tenant::all()->sum(function ($t) {
+        $tenants = Tenant::all();
+        $realMrr = (float) $tenants->sum(function ($t) {
             $fee = $t->branding['saas_monthly_fee'] ?? 99000;
             return (float) $fee;
         });
-        if ($realMrr <= 0) {
-            $realMrr = 198000;
-        }
+        if ($realMrr <= 0) $realMrr = 198000;
+
+        // MRR del mes anterior (Septiembre)
+        $tenantsPrevMonth = Tenant::where('created_at', '<', now()->startOfMonth())->get();
+        $prevMrr = (float) $tenantsPrevMonth->sum(function ($t) {
+            return (float) ($t->branding['saas_monthly_fee'] ?? 99000);
+        });
+        $mrrTrend = $prevMrr > 0 ? (int) round((($realMrr - $prevMrr) / $prevMrr) * 100) : 100;
 
         // 4. GMV Mensual (Volumen Total Transaccionado por Clínicas en Membresías)
         $calcGmv = (float) Subscription::where('subscriptions.status', 'active')
             ->join('plans', 'subscriptions.plan_id', '=', 'plans.id')
             ->sum('plans.price_cop');
         $gmv = $calcGmv > 0 ? $calcGmv : 520000;
+
+        // GMV del mes anterior
+        $prevGmv = (float) Subscription::where('subscriptions.status', 'active')
+            ->where('subscriptions.created_at', '<', now()->startOfMonth())
+            ->join('plans', 'subscriptions.plan_id', '=', 'plans.id')
+            ->sum('plans.price_cop');
+        $gmvTrend = $prevGmv > 0 ? (int) round((($gmv - $prevGmv) / $prevGmv) * 100) : 18;
 
         // 5. Pipeline Comercial & Prospectos (Real DB)
         $totalProspectos = ProspectoVeterinaria::count();
@@ -65,16 +78,22 @@ class SuperAdminDashboardController extends Controller
               });
         })->count();
 
-        // 6. Histórico 6 Meses para la Gráfica de MRR (Dinámico)
+        // 6. Histórico Real 6 Meses para la Gráfica de MRR (Basado en la incorporación real de clínicas a la red)
         $mrrHistory = [];
         for ($i = 5; $i >= 0; $i--) {
             $date = now()->subMonths($i);
-            $monthName = ucfirst($date->translatedFormat('M Y'));
-            // Progresión gradual hacia el MRR real actual
-            $factor = (6 - ($i * 0.7)) / 6;
+            $monthEnd = $date->copy()->endOfMonth();
+            $monthName = ucfirst($date->translatedFormat('M. Y'));
+            
+            // Clínicas que existían al final de ese mes específico
+            $tenantsAtMonth = Tenant::where('created_at', '<=', $monthEnd)->get();
+            $historicalMrr = (float) $tenantsAtMonth->sum(function ($t) {
+                return (float) ($t->branding['saas_monthly_fee'] ?? 99000);
+            });
+
             $mrrHistory[] = [
                 'month' => $monthName,
-                'revenue' => round($realMrr * $factor),
+                'revenue' => (int) $historicalMrr,
             ];
         }
 
@@ -84,6 +103,7 @@ class SuperAdminDashboardController extends Controller
             ->get();
         
         $totalPlanSubs = $plansWithCount->sum('subscriptions_count');
+        $totalAfiliados = $totalPlanSubs > 0 ? $totalPlanSubs : $mascotasConMembresia;
         $planDistribution = [];
         $palette = ['#0d9488', '#7c3aed', '#0284c7', '#f59e0b', '#ec4899'];
         $idx = 0;
@@ -104,8 +124,8 @@ class SuperAdminDashboardController extends Controller
 
         if (empty($planDistribution)) {
             $planDistribution = [
-                ['name' => 'Plan Básico', 'count' => 4, 'percentage' => 50, 'color' => '#0d9488'],
-                ['name' => 'Plan Premium', 'count' => 4, 'percentage' => 50, 'color' => '#7c3aed'],
+                ['name' => 'Plan Patitas Básico', 'count' => 4, 'percentage' => 50, 'color' => '#0d9488'],
+                ['name' => 'Plan Patitas Premium', 'count' => 4, 'percentage' => 50, 'color' => '#7c3aed'],
             ];
         }
 
@@ -119,7 +139,7 @@ class SuperAdminDashboardController extends Controller
                 'type' => 'clinic',
                 'title' => 'Nueva clínica registrada',
                 'description' => "Clínica {$t->name} se incorporó a la red AVI Pet",
-                'time' => $t->created_at ? $t->created_at->translatedFormat('d M Y · h:i a') : 'Reciente',
+                'time' => $t->created_at ? $t->created_at->translatedFormat('d M. Y · h:i a') : 'Reciente',
                 'created_at' => $t->created_at ?? now(),
             ];
         }
@@ -131,7 +151,7 @@ class SuperAdminDashboardController extends Controller
                 'type' => 'user',
                 'title' => 'Nuevo usuario creado',
                 'description' => "{$u->name} ({$u->email}) activó su cuenta",
-                'time' => $u->created_at ? $u->created_at->translatedFormat('d M Y · h:i a') : 'Reciente',
+                'time' => $u->created_at ? $u->created_at->translatedFormat('d M. Y · h:i a') : 'Reciente',
                 'created_at' => $u->created_at ?? now(),
             ];
         }
@@ -144,7 +164,7 @@ class SuperAdminDashboardController extends Controller
                 'type' => 'payment',
                 'title' => 'Pago SaaS recibido',
                 'description' => "\${$amountFormatted} COP recibido ({$pay->gateway}) - {$pay->payer_name}",
-                'time' => $pay->created_at ? $pay->created_at->translatedFormat('d M Y · h:i a') : 'Reciente',
+                'time' => $pay->created_at ? $pay->created_at->translatedFormat('d M. Y · h:i a') : 'Reciente',
                 'created_at' => $pay->created_at ?? now(),
             ];
         }
@@ -161,14 +181,15 @@ class SuperAdminDashboardController extends Controller
             'mascotasConMembresia' => $mascotasConMembresia,
             'petsTrend' => $petsTrend,
             'mrr' => $realMrr,
-            'mrrTrend' => 12,
+            'mrrTrend' => $mrrTrend,
             'gmv' => $gmv,
-            'gmvTrend' => 18,
+            'gmvTrend' => $gmvTrend,
             'totalProspectos' => $totalProspectos,
             'demosProximas' => $demosProximas,
             'cobrosPendientes' => $cobrosPendientes,
             'mrrHistory' => $mrrHistory,
             'planDistribution' => $planDistribution,
+            'totalAfiliados' => $totalAfiliados,
             'recentActivities' => $recentActivities,
             'userName' => $authUser?->name ?? 'Robinson Naranjo',
             'userEmail' => $authUser?->email ?? 'superadmin@avipetapp.com',

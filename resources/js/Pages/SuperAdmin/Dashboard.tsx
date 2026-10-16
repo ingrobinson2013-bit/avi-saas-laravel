@@ -51,6 +51,7 @@ interface DashboardProps {
     cobrosPendientes?: number;
     mrrHistory?: MrrPoint[];
     planDistribution?: PlanDistItem[];
+    totalAfiliados?: number;
     recentActivities?: ActivityItem[];
     userName?: string;
     userEmail?: string;
@@ -60,26 +61,17 @@ export default function Dashboard({
     clinicasActivas = 2,
     clinicasTrend = 100,
     mascotasConMembresia = 8,
-    petsTrend = 33,
+    petsTrend = 14,
     mrr = 198000,
-    mrrTrend = 12,
+    mrrTrend = 100,
     gmv = 520000,
     gmvTrend = 18,
     totalProspectos = 237,
     demosProximas = 0,
     cobrosPendientes = 0,
-    mrrHistory = [
-        { month: 'May 2025', revenue: 45000 },
-        { month: 'Jun 2025', revenue: 75000 },
-        { month: 'Jul 2025', revenue: 98000 },
-        { month: 'Ago 2025', revenue: 125000 },
-        { month: 'Sep 2025', revenue: 160000 },
-        { month: 'Oct 2025', revenue: 198000 },
-    ],
-    planDistribution = [
-        { name: 'Plan Básico', count: 4, percentage: 50, color: '#0d9488' },
-        { name: 'Plan Premium', count: 4, percentage: 50, color: '#7c3aed' },
-    ],
+    mrrHistory = [],
+    planDistribution = [],
+    totalAfiliados = 8,
     recentActivities = [],
     userName = 'Robinson Naranjo',
     userEmail = 'superadmin@avipetapp.com'
@@ -95,11 +87,20 @@ export default function Dashboard({
 
     // Calculate dynamic coordinates for 6 months MRR area curve
     const maxRev = Math.max(...mrrHistory.map(p => p.revenue), 200000);
+    const yMax = Math.ceil((maxRev * 1.25) / 50000) * 50000;
+    const yGridTicks = [
+        { label: formatCurrency(yMax), y: 20 },
+        { label: formatCurrency(Math.round(yMax * 0.75)), y: 65 },
+        { label: formatCurrency(Math.round(yMax * 0.5)), y: 110 },
+        { label: formatCurrency(Math.round(yMax * 0.25)), y: 155 },
+        { label: '$0', y: 200 },
+    ];
+
     const chartPoints = mrrHistory.map((pt, idx) => {
         const x = 85 + idx * 95;
-        // Scale y between 200 (bottom) and 60 (top)
-        const normalized = pt.revenue / (maxRev * 1.25);
-        const y = Math.round(200 - normalized * 140);
+        // Scale y between 200 (bottom, revenue=0) and 20 (top, revenue=yMax)
+        const normalized = yMax > 0 ? pt.revenue / yMax : 0;
+        const y = Math.round(200 - normalized * 180);
         return { ...pt, x, y };
     });
 
@@ -110,9 +111,23 @@ export default function Dashboard({
         return `${acc} C ${midX} ${prev.y}, ${midX} ${curr.y}, ${curr.x} ${curr.y}`;
     }, '');
 
-    const lastPoint = chartPoints[chartPoints.length - 1] || { x: 550, y: 95, revenue: mrr };
-    const firstPoint = chartPoints[0] || { x: 85, y: 190 };
-    const areaPath = `${pathData} L ${lastPoint.x} 200 L ${firstPoint.x} 200 Z`;
+    const lastPoint = chartPoints[chartPoints.length - 1] || { x: 550, y: 57, revenue: mrr };
+    const firstPoint = chartPoints[0] || { x: 85, y: 200 };
+    const areaPath = pathData ? `${pathData} L ${lastPoint.x} 200 L ${firstPoint.x} 200 Z` : '';
+
+    // Dynamic Donut Segments
+    const circumference = 345.57; // 2 * Math.PI * 55
+    let currentDonutOffset = 0;
+    const donutSegments = planDistribution.map((item) => {
+        const strokeDash = `${(item.percentage / 100) * circumference} ${circumference}`;
+        const strokeOffset = -currentDonutOffset;
+        currentDonutOffset += (item.percentage / 100) * circumference;
+        return {
+            ...item,
+            strokeDash,
+            strokeOffset
+        };
+    });
 
     return (
         <SuperAdminLayout userName={userName} userEmail={userEmail} activeItem="Escritorio">
@@ -363,37 +378,43 @@ export default function Dashboard({
                                     </linearGradient>
                                 </defs>
 
-                                {/* Grid Lines & Labels */}
-                                <text x="50" y="24" fill="#94a3b8" fontSize="10.5" textAnchor="end" fontWeight="500">$350.000</text>
-                                <line x1="60" y1="20" x2="580" y2="20" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-
-                                <text x="50" y="69" fill="#94a3b8" fontSize="10.5" textAnchor="end" fontWeight="500">$262.500</text>
-                                <line x1="60" y1="65" x2="580" y2="65" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-
-                                <text x="50" y="114" fill="#94a3b8" fontSize="10.5" textAnchor="end" fontWeight="500">$175.000</text>
-                                <line x1="60" y1="110" x2="580" y2="110" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-
-                                <text x="50" y="159" fill="#94a3b8" fontSize="10.5" textAnchor="end" fontWeight="500">$87.500</text>
-                                <line x1="60" y1="155" x2="580" y2="155" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
-
-                                <text x="50" y="204" fill="#94a3b8" fontSize="10.5" textAnchor="end" fontWeight="500">$0</text>
-                                <line x1="60" y1="200" x2="580" y2="200" stroke="#e2e8f0" strokeWidth="1" />
+                                {/* Dynamic Grid Lines & Labels */}
+                                {yGridTicks.map((tick, i) => (
+                                    <g key={i}>
+                                        <text x="50" y={tick.y + 4} fill="#94a3b8" fontSize="10.5" textAnchor="end" fontWeight="500">
+                                            {tick.label}
+                                        </text>
+                                        <line 
+                                            x1="60" 
+                                            y1={tick.y} 
+                                            x2="580" 
+                                            y2={tick.y} 
+                                            stroke={i === yGridTicks.length - 1 ? "#e2e8f0" : "#f1f5f9"} 
+                                            strokeWidth="1" 
+                                            strokeDasharray={i === yGridTicks.length - 1 ? "0" : "3 3"} 
+                                        />
+                                    </g>
+                                ))}
 
                                 {/* Area Curve */}
-                                <path 
-                                    d={areaPath}
-                                    fill="url(#reactMrrTealGradient)" 
-                                />
+                                {areaPath && (
+                                    <path 
+                                        d={areaPath}
+                                        fill="url(#reactMrrTealGradient)" 
+                                    />
+                                )}
 
                                 {/* Spline Line */}
-                                <path 
-                                    d={pathData}
-                                    fill="none" 
-                                    stroke="#0d9488" 
-                                    strokeWidth="2.8" 
-                                    strokeLinecap="round" 
-                                    strokeLinejoin="round" 
-                                />
+                                {pathData && (
+                                    <path 
+                                        d={pathData}
+                                        fill="none" 
+                                        stroke="#0d9488" 
+                                        strokeWidth="2.8" 
+                                        strokeLinecap="round" 
+                                        strokeLinejoin="round" 
+                                    />
+                                )}
 
                                 {/* Points */}
                                 {chartPoints.map((pt, i) => (
@@ -416,7 +437,7 @@ export default function Dashboard({
                         </div>
                     </div>
 
-                    {/* Right Chart: Distribución de Clínicas por Plan (Donut) */}
+                    {/* Right Chart: Distribución de Membresías por Plan (Donut) */}
                     <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs flex flex-col justify-between">
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-2.5">
@@ -433,9 +454,8 @@ export default function Dashboard({
                                 </div>
                             </div>
 
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold text-slate-600 bg-slate-50 border border-slate-200 rounded-lg cursor-pointer">
-                                <span>{clinicasActivas} clínicas</span>
-                                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-slate-600 bg-slate-50 border border-slate-200 rounded-lg">
+                                <span>{totalAfiliados} afiliados · {clinicasActivas} clínicas</span>
                             </span>
                         </div>
 
@@ -445,50 +465,40 @@ export default function Dashboard({
                             <div className="flex items-center justify-center">
                                 <div className="relative w-44 h-44">
                                     <svg viewBox="0 0 160 160" className="w-full h-full transform -rotate-90">
-                                        <circle 
-                                            cx="80" cy="80" r="55"
-                                            fill="transparent"
-                                            stroke="#7c3aed"
-                                            strokeWidth="24"
-                                            strokeDasharray="172.8 172.8"
-                                            strokeDashoffset="0" 
-                                        />
-                                        <circle 
-                                            cx="80" cy="80" r="55"
-                                            fill="transparent"
-                                            stroke="#0d9488"
-                                            strokeWidth="24"
-                                            strokeDasharray="172.8 172.8"
-                                            strokeDashoffset="172.8" 
-                                        />
+                                        {donutSegments.map((seg, i) => (
+                                            <circle 
+                                                key={i}
+                                                cx="80" cy="80" r="55"
+                                                fill="transparent"
+                                                stroke={seg.color}
+                                                strokeWidth="24"
+                                                strokeDasharray={seg.strokeDash}
+                                                strokeDashoffset={seg.strokeOffset} 
+                                            />
+                                        ))}
                                     </svg>
-
-                                    <div className="absolute inset-0 flex items-center justify-between px-3 pointer-events-none">
-                                        <span className="text-white font-bold text-xs pl-0.5">50%</span>
-                                        <span className="text-white font-bold text-xs pr-0.5">50%</span>
-                                    </div>
 
                                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
                                         <span className="text-2xl font-black text-slate-900 leading-tight">
-                                            {clinicasActivas}
+                                            {totalAfiliados}
                                         </span>
-                                        <span className="text-[11px] font-semibold text-slate-400">
-                                            clínicas
+                                        <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                                            afiliados
                                         </span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Dynamic Legend */}
-                            <div className="space-y-3">
+                            {/* Legend */}
+                            <div className="space-y-2.5">
                                 {planDistribution.map((item, idx) => (
-                                    <div key={idx} className="flex items-center justify-between text-xs py-1.5 border-b border-slate-100 last:border-0">
-                                        <div className="flex items-center gap-2.5">
+                                    <div key={idx} className="flex items-center justify-between text-xs py-1 border-b border-slate-50 last:border-0">
+                                        <div className="flex items-center gap-2">
                                             <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-                                            <span className="font-semibold text-slate-800">{item.name}</span>
+                                            <span className="font-semibold text-slate-700 truncate max-w-[110px]">{item.name}</span>
                                         </div>
-                                        <div className="flex items-center gap-4">
-                                            <span className="text-slate-500">{item.count} afs.</span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-slate-400 font-mono text-[11px]">{item.count} afil.</span>
                                             <span className="font-bold text-slate-900">{item.percentage}%</span>
                                         </div>
                                     </div>
