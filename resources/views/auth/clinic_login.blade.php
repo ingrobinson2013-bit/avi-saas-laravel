@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Iniciar Sesión — Panel Administrativo | {{ $tenant->name ?? 'Clínica Veterinaria' }} · AviPetApp</title>
-    <link rel="icon" type="image/svg+xml" href="/brand/favicons/favicon.svg">
-    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32.png">
+    <link rel="icon" type="image/svg+xml" href="/brand/favicons/favicon.svg?v=20261017">
+    <link rel="icon" type="image/png" sizes="48x48" href="/brand/favicons/favicon-48.png?v=20261017">
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32.png?v=20261017">
+    <link rel="shortcut icon" href="/favicon.ico?v=20261017">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

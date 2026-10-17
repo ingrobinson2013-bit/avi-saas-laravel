@@ -274,15 +274,15 @@
     <title inertia>{{ $clinicPageTitle }}</title>
     @if(!$currentTenant)
     <!-- Favicons Oficiales AviPetApp Optimizados para Google Search (Google-Favicon múltiplos de 48px) -->
-    <link rel="icon" href="/favicon.ico" sizes="48x48">
-    <link rel="icon" type="image/svg+xml" href="/brand/favicons/favicon.svg">
-    <link rel="icon" type="image/png" sizes="48x48" href="/brand/favicons/favicon-48.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/brand/favicons/favicon-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/brand/favicons/favicon-512.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/brand/favicons/favicon-16.png">
-    <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/brand/favicons/favicon-180.png">
+    <link rel="icon" href="/favicon.ico?v=20261017" sizes="48x48">
+    <link rel="icon" type="image/svg+xml" href="/brand/favicons/favicon.svg?v=20261017">
+    <link rel="icon" type="image/png" sizes="48x48" href="/brand/favicons/favicon-48.png?v=20261017">
+    <link rel="icon" type="image/png" sizes="192x192" href="/brand/favicons/favicon-192.png?v=20261017">
+    <link rel="icon" type="image/png" sizes="512x512" href="/brand/favicons/favicon-512.png?v=20261017">
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32.png?v=20261017">
+    <link rel="icon" type="image/png" sizes="16x16" href="/brand/favicons/favicon-16.png?v=20261017">
+    <link rel="shortcut icon" href="/favicon.ico?v=20261017">
+    <link rel="apple-touch-icon" sizes="180x180" href="/brand/favicons/favicon-180.png?v=20261017">
     <link rel="manifest" href="/site.webmanifest">
     @else
     <link rel="icon" href="{{ $favIcon }}">

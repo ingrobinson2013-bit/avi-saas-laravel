@@ -31,6 +31,7 @@ class SuperAdminPanelProvider extends PanelProvider
             ->brandName('AviPetApp')
             ->brandLogo(fn () => view('filament.super-admin.components.brand-logo'))
             ->brandLogoHeight('2.5rem')
+            ->favicon('/brand/favicons/favicon.svg?v=20261017')
             ->font('Inter')
             ->colors([
                 'primary' => Color::Violet,
