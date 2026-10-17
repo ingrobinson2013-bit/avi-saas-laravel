@@ -17,6 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'registro-clinica',
             'afiliar',
             'v/*/afiliar',
+            'logout',
+            'admin/logout',
+            'admin/*/logout',
+            'super-admin/logout',
+            'super-admin/*',
             'admin/*/ai/chat',
             'admin/*/ai/triage',
             'admin/*/ai/*',
@@ -33,5 +38,15 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, \Illuminate\Http\Request $request) {
+            if ($e->getStatusCode() === 419) {
+                if (str_contains($request->path(), 'logout')) {
+                    \Illuminate\Support\Facades\Auth::logout();
+                    $request->session()->invalidate();
+                    $request->session()->regenerateToken();
+                    return redirect(str_contains($request->path(), 'super-admin') ? '/super-admin/login' : '/admin/login');
+                }
+                return redirect()->back()->with('error', 'Tu sesión se actualizó. Por favor intenta de nuevo.');
+            }
+        });
     })->create();

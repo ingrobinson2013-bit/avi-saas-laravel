@@ -563,6 +563,17 @@ Route::prefix('super-admin')->group(function () {
     // 6. Configuración Global SaaS
     Route::get('/configuracion', [App\Http\Controllers\SuperAdmin\SuperAdminConfiguracionController::class, 'index'])->name('superadmin.configuracion');
     Route::post('/configuracion', [App\Http\Controllers\SuperAdmin\SuperAdminConfiguracionController::class, 'update'])->name('superadmin.configuracion.update');
+
+    // 7. Cerrar Sesión SuperAdmin (Soporta GET y POST sin bloqueo 419 y preserva nombre de ruta Filament)
+    $superAdminLogoutHandler = function (\Illuminate\Http\Request $request) {
+        \Illuminate\Support\Facades\Auth::logout();
+        session()->forget(['admin_preview', 'admin_demo', 'url.intended', 'impersonated_by']);
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/super-admin/login');
+    };
+    Route::get('/logout', $superAdminLogoutHandler)->name('superadmin.logout');
+    Route::post('/logout', $superAdminLogoutHandler)->name('filament.super-admin.auth.logout');
 });
 
 Route::get('/impersonate-clinic/{tenant_id}', [App\Http\Controllers\ImpersonationController::class, 'impersonateTenant'])->name('superadmin.impersonate');

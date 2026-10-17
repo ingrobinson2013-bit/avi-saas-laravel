@@ -247,12 +247,10 @@ export default function SuperAdminLayout({
                                         <Settings className="w-3.5 h-3.5 text-slate-400" />
                                         <span>Configuración</span>
                                     </a>
-                                    <form method="POST" action="/super-admin/logout" className="border-t border-slate-100">
-                                        <button type="submit" className="w-full text-left flex items-center gap-2 px-3 py-2 text-rose-600 hover:bg-rose-50">
-                                            <LogOut className="w-3.5 h-3.5" />
-                                            <span>Cerrar sesión</span>
-                                        </button>
-                                    </form>
+                                    <a href="/super-admin/logout" className="w-full text-left flex items-center gap-2 px-3 py-2 text-rose-600 hover:bg-rose-50 border-t border-slate-100">
+                                        <LogOut className="w-3.5 h-3.5" />
+                                        <span>Cerrar sesión</span>
+                                    </a>
                                 </div>
                             )}
                         </div>
