@@ -1740,20 +1740,47 @@
         </section>
     </main>
 
-    <!-- FOOTER B2B CLÍNICO -->
-    <footer class="border-t border-slate-200 py-10 bg-white text-slate-500 text-xs">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center space-x-3">
-                <img src="/images/dashboard/brand_logo.png" alt="AVI-Plan Logo" class="w-8 h-8 object-contain">
-                <div>
-                    <span class="font-extrabold text-slate-900">AVI<span class="text-blue-600">Plan</span></span>
-                    <span class="text-xs text-slate-500"> — Plataforma de Planes de Bienestar para Veterinarias.</span>
+    <!-- FOOTER B2B CLÍNICO CON ENLAZADO INTERNO SEO -->
+    <footer class="border-t border-slate-200 py-12 bg-white text-slate-500 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-slate-100">
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <img src="/images/dashboard/brand_logo.png" alt="AVI-Plan Logo" class="w-8 h-8 object-contain">
+                        <div>
+                            <span class="font-extrabold text-slate-900 text-sm">AVI<span class="text-blue-600">Plan</span></span>
+                            <span class="text-xs text-slate-500 block">Software de Planes de Salud para Clínicas Veterinarias</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        Convierte pacientes ocasionales en ingresos mensuales recurrentes fijos con tu propia marca, carnet digital en WhatsApp y terminal de canje en mostrador.
+                    </p>
+                </div>
+
+                <div class="space-y-2.5">
+                    <h4 class="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Guías de Rentabilidad Veterinaria</h4>
+                    <ul class="space-y-2 font-medium text-slate-600">
+                        <li><a href="/blog/planes-de-salud-preventiva-veterinaria-ingresos-recurrentes" class="hover:text-blue-600 transition-colors">→ Cómo crear Planes de Salud Preventiva en tu Veterinaria</a></li>
+                        <li><a href="/blog/fidelizacion-clientes-veterinaria-retencion-mascotas" class="hover:text-blue-600 transition-colors">→ Retención de Clientes en Clínica Veterinaria (+80% Fidelidad)</a></li>
+                        <li><a href="/blog/como-calcular-precio-planes-salud-veterinaria-plantilla-costos" class="hover:text-blue-600 transition-colors">→ Calculadora y Plantilla de Costos para Planes de Mascotas</a></li>
+                        <li><a href="/blog/mejores-software-veterinarios-colombia-comparativa-2026" class="hover:text-blue-600 transition-colors">→ Comparativa de Software Veterinario en Colombia (2026)</a></li>
+                    </ul>
+                </div>
+
+                <div class="space-y-2.5">
+                    <h4 class="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Accesos Directos</h4>
+                    <ul class="space-y-2 font-semibold text-slate-600">
+                        <li><a href="/blog" class="hover:text-blue-600 transition-colors">📚 Blog para Clínicas Veterinarias</a></li>
+                        <li><a href="/admin" class="hover:text-blue-600 transition-colors">🔐 Iniciar Sesión / Acceso Mostrador</a></li>
+                        <li><a href="https://vet-pet-patitas.avipetapp.com/" target="_blank" class="hover:text-blue-600 transition-colors">🐾 Ver Clínica Piloto (Vet-Pet Patitas Cajicá)</a></li>
+                        <li><a href="https://wa.me/573235813942" target="_blank" class="hover:text-blue-600 transition-colors">💬 Soporte WhatsApp (+57 323 581 3942)</a></li>
+                    </ul>
                 </div>
             </div>
-            <div class="flex space-x-6 font-semibold">
-                <a href="/admin" class="hover:text-blue-600 transition-colors">Acceso Mostrador</a>
-                <a href="/v/vet-pet-patitas" class="hover:text-blue-600 transition-colors">Clínica Piloto</a>
-                <a href="https://wa.me/573235813942" target="_blank" class="hover:text-blue-600 transition-colors">Contacto WhatsApp</a>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
+                <p>© {{ date('Y') }} AVI-Plan by AviPetApp · Todos los derechos reservados · Colombia & LATAM.</p>
+                <a href="/sitemap.xml" class="hover:text-slate-600 transition-colors">Mapa del Sitio (XML)</a>
             </div>
         </div>
     </footer>

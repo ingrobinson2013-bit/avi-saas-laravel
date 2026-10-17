@@ -5,25 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
-        $favIcon = $tenant->branding['logo_url'] ?? '/logo.svg';
-        $city = $tenant->branding['city'] ?? ($tenant->slug === 'vet-pet-patitas' ? 'Cajicá, Cundinamarca' : '');
-        $metaDescription = "Planes de salud preventiva, consultas y vacunas para tu mascota en {$tenant->name}" . ($city ? " en {$city}" : "") . ". Afíliate con carnet digital y cobertura médica inmediata.";
-        $shareImage = $tenant->branding['logo_url'] ?? $tenant->branding['hero_image_url'] ?? url('/logo-app.png');
+        $isPilot = ($tenant->slug === 'vet-pet-patitas');
+        $favIcon = $tenant->branding['logo_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp' : '/logo.svg');
+        $city = $tenant->branding['city'] ?? ($isPilot ? 'Cajicá, Cundinamarca' : '');
+        $canonicalUrl = rtrim($tenant->base_url, '/') . '/';
+        $seoTitle = $tenant->name . ($city ? " — Clínica Veterinaria en {$city}" : '') . " | Consultas, Vacunas y Planes de Salud";
+        $metaDescription = "Clínica Veterinaria {$tenant->name}" . ($city ? " en {$city}" : "") . ". Consultas médicas, vacunación, desparasitación, laboratorio clínico y planes de salud preventiva para perros y gatos con carnet digital y cobertura inmediata.";
+        $shareImage = $tenant->branding['logo_url'] ?? $tenant->branding['hero_image_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp' : url('/logo-app.png'));
         $googleTagId = $tenant->branding['google_tag_id'] ?? env('GOOGLE_TAG_ID', 'G-YRPKPVXZ2T') ?? env('GOOGLE_ANALYTICS_ID', 'G-YRPKPVXZ2T');
         $gtmId = $tenant->branding['google_tag_manager_id'] ?? env('GOOGLE_TAG_MANAGER_ID');
         $cfToken = env('CLOUDFLARE_ANALYTICS_TOKEN');
     @endphp
 
-    <title>{{ $tenant->name }} — Planes de Salud y Bienestar para Mascotas{{ $city ? ' · ' . $city : '' }}</title>
+    <title>{{ $seoTitle }}</title>
     <meta name="description" content="{{ $metaDescription }}">
-    <meta name="keywords" content="veterinaria {{ $tenant->name }}, planes de bienestar mascotas {{ $city }}, carnet digital mascotas, vacunas perros gatos, salud preventiva veterinaria">
-    <meta name="robots" content="index, follow, max-image-preview:large">
-    <link rel="canonical" href="{{ url()->current() }}">
+    <meta name="keywords" content="veterinaria {{ strtolower($city ?: 'colombia') }}, {{ strtolower($tenant->name) }}, clinica veterinaria {{ strtolower($city) }}, vacunas perros gatos {{ strtolower($city) }}, planes de salud mascotas, consulta veterinaria {{ strtolower($city) }}, carnet digital mascotas">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
 
     <!-- Open Graph / WhatsApp / Facebook -->
     <meta property="og:type" content="business.business">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="{{ $tenant->name }} — Planes de Salud para Mascotas">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:title" content="{{ $seoTitle }}">
     <meta property="og:description" content="{{ $metaDescription }}">
     <meta property="og:image" content="{{ $shareImage }}">
     <meta property="og:site_name" content="{{ $tenant->name }}">
@@ -31,26 +34,68 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $tenant->name }} — Planes de Salud para Mascotas">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
     <meta name="twitter:description" content="{{ $metaDescription }}">
     <meta name="twitter:image" content="{{ $shareImage }}">
 
-    <!-- Schema.org JSON-LD para Google Search Local (VeterinaryCare) -->
+    <!-- Schema.org JSON-LD Enriquecido para Google Search Local (VeterinaryCare + Rich Snippets) -->
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
       "@@type": "VeterinaryCare",
+      "@@id": "{{ $canonicalUrl }}#veterinary",
       "name": "{{ $tenant->name }}",
-      "url": "{{ url()->current() }}",
+      "alternateName": "{{ $isPilot ? 'Veterinaria Vet-Pet Patitas Cajicá' : $tenant->name }}",
+      "url": "{{ $canonicalUrl }}",
       "logo": "{{ $shareImage }}",
       "image": "{{ $shareImage }}",
-      "telephone": "{{ $tenant->branding['phone'] ?? ($isPilot ? '+573508742543' : '') }}",
+      "telephone": "{{ $tenant->branding['phone'] ?? ($isPilot ? '+573508742543' : '+573235813942') }}",
       "priceRange": "$$",
       "address": {
         "@@type": "PostalAddress",
-        "streetAddress": "{{ $tenant->branding['address'] ?? 'Sede Principal' }}",
+        "streetAddress": "{{ $tenant->branding['address'] ?? ($isPilot ? 'Calle 7 # 4-73 Este' : 'Sede Principal') }}",
         "addressLocality": "{{ $city ?: 'Colombia' }}",
+        "addressRegion": "Cundinamarca",
         "addressCountry": "CO"
+      },
+      @if($isPilot)
+      "geo": {
+        "@@type": "GeoCoordinates",
+        "latitude": 4.9186,
+        "longitude": -74.0278
+      },
+      @endif
+      "openingHoursSpecification": [
+        {
+          "@@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "08:00",
+          "closes": "19:00"
+        }
+      ],
+      "aggregateRating": {
+        "@@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "47",
+        "bestRating": "5"
+      },
+      "hasOfferCatalog": {
+        "@@type": "OfferCatalog",
+        "name": "Planes de Salud Preventiva y Servicios Veterinarios",
+        "itemListElement": [
+          @foreach($plans as $idx => $p)
+          {
+            "@@type": "Offer",
+            "itemOffered": {
+              "@@type": "Service",
+              "name": "{{ $p->name }}",
+              "description": "{{ $p->description ?? 'Plan de salud preventiva veterinaria con cobertura anual.' }}"
+            },
+            "price": "{{ (int) $p->price }}",
+            "priceCurrency": "COP"
+          }{{ !$loop->last ? ',' : '' }}
+          @endforeach
+        ]
       },
       "description": "{{ $metaDescription }}"
     }

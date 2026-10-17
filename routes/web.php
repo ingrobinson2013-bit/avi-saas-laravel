@@ -533,6 +533,7 @@ Route::get('/sitemap.xml', function () {
     $baseUrl = 'https://avipetapp.com';
 
     $tenants = Tenant::query()
+        ->where('is_active', true)
         ->whereNotNull('slug')
         ->orderBy('updated_at', 'desc')
         ->get();
@@ -548,37 +549,35 @@ Route::get('/sitemap.xml', function () {
     $xml .= "    <priority>1.0</priority>\n";
     $xml .= "  </url>\n";
 
-    // 2. Vitrinas B2C de cada Clínica Veterinaria activa (Subdominio de marca + URL central)
+    // 2. Portada del Blog B2B
+    $xml .= "  <url>\n";
+    $xml .= "    <loc>{$baseUrl}/blog</loc>\n";
+    $xml .= "    <lastmod>" . now()->toDateString() . "</lastmod>\n";
+    $xml .= "    <changefreq>weekly</changefreq>\n";
+    $xml .= "    <priority>0.90</priority>\n";
+    $xml .= "  </url>\n";
+
+    // 3. Vitrinas B2C Canónicas de cada Clínica Veterinaria activa (Sin duplicar /v/{slug})
     foreach ($tenants as $tenant) {
         $lastmod = $tenant->updated_at ? $tenant->updated_at->toDateString() : now()->toDateString();
-        $subdomainUrl = "https://{$tenant->slug}.avipetapp.com/";
-        $pathUrl = "{$baseUrl}/v/{$tenant->slug}";
-        
-        // 2.1 Subdominio Oficial de la Clínica (ej: https://vet-pet-patitas.avipetapp.com/)
+        $canonicalTenantUrl = rtrim($tenant->base_url, '/') . '/';
+
         $xml .= "  <url>\n";
-        $xml .= "    <loc>{$subdomainUrl}</loc>\n";
+        $xml .= "    <loc>{$canonicalTenantUrl}</loc>\n";
         $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
         $xml .= "    <changefreq>weekly</changefreq>\n";
         $xml .= "    <priority>0.90</priority>\n";
         $xml .= "  </url>\n";
-
-        // 2.2 Ruta Alternativa en Catálogo Central (ej: https://avipetapp.com/v/vet-pet-patitas)
-        $xml .= "  <url>\n";
-        $xml .= "    <loc>{$pathUrl}</loc>\n";
-        $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
-        $xml .= "    <changefreq>weekly</changefreq>\n";
-        $xml .= "    <priority>0.85</priority>\n";
-        $xml .= "  </url>\n";
     }
 
-    // 3. Artículos Estratégicos del Blog de AVI-Plan (SEO B2B)
+    // 4. Artículos Estratégicos del Blog de AVI-Plan (SEO B2B)
     $blogPosts = \App\Services\BlogService::getAllPosts();
     foreach ($blogPosts as $post) {
         $xml .= "  <url>\n";
         $xml .= "    <loc>{$baseUrl}/blog/{$post['slug']}</loc>\n";
         $xml .= "    <lastmod>{$post['updated_at']}</lastmod>\n";
-        $xml .= "    <changefreq>monthly</changefreq>\n";
-        $xml .= "    <priority>0.80</priority>\n";
+        $xml .= "    <changefreq>weekly</changefreq>\n";
+        $xml .= "    <priority>0.85</priority>\n";
         $xml .= "  </url>\n";
     }
 

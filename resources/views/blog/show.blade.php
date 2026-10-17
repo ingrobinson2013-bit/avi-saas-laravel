@@ -31,33 +31,63 @@
     <meta name="twitter:description" content="{{ $post['excerpt'] }}">
     <meta name="twitter:image" content="{{ $post['image'] }}">
 
-    <!-- Schema.org JSON-LD Enriquecido para Google Article / BlogPosting -->
+    <!-- Schema.org JSON-LD Enriquecido para Google Article / BlogPosting + BreadcrumbList -->
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
-      "@@type": "BlogPosting",
-      "mainEntityOfPage": {
-        "@@type": "WebPage",
-        "@@id": "{{ $canonicalUrl }}"
-      },
-      "headline": "{{ $post['title'] }}",
-      "description": "{{ $post['excerpt'] }}",
-      "image": "{{ $post['image'] }}",
-      "author": {
-        "@@type": "Person",
-        "name": "{{ $post['author'] }}",
-        "jobTitle": "{{ $post['author_role'] }}"
-      },
-      "publisher": {
-        "@@type": "Organization",
-        "name": "AVI-Plan",
-        "logo": {
-          "@@type": "ImageObject",
-          "url": "https://avipetapp.com/logo-app.png"
+      "@@graph": [
+        {
+          "@@type": "BlogPosting",
+          "@@id": "{{ $canonicalUrl }}#article",
+          "mainEntityOfPage": {
+            "@@type": "WebPage",
+            "@@id": "{{ $canonicalUrl }}"
+          },
+          "headline": "{{ $post['title'] }}",
+          "description": "{{ $post['excerpt'] }}",
+          "image": "{{ $post['image'] }}",
+          "author": {
+            "@@type": "Person",
+            "name": "{{ $post['author'] }}",
+            "jobTitle": "{{ $post['author_role'] }}"
+          },
+          "publisher": {
+            "@@type": "Organization",
+            "name": "AVI-Plan",
+            "url": "https://avipetapp.com",
+            "logo": {
+              "@@type": "ImageObject",
+              "url": "https://avipetapp.com/logo-app.png"
+            }
+          },
+          "datePublished": "{{ $post['published_at'] }}",
+          "dateModified": "{{ $post['updated_at'] }}"
+        },
+        {
+          "@@type": "BreadcrumbList",
+          "@@id": "{{ $canonicalUrl }}#breadcrumb",
+          "itemListElement": [
+            {
+              "@@type": "ListItem",
+              "position": 1,
+              "name": "Inicio",
+              "item": "https://avipetapp.com/"
+            },
+            {
+              "@@type": "ListItem",
+              "position": 2,
+              "name": "Blog Veterinario",
+              "item": "https://avipetapp.com/blog"
+            },
+            {
+              "@@type": "ListItem",
+              "position": 3,
+              "name": "{{ $post['title'] }}",
+              "item": "{{ $canonicalUrl }}"
+            }
+          ]
         }
-      },
-      "datePublished": "{{ $post['published_at'] }}",
-      "dateModified": "{{ $post['updated_at'] }}"
+      ]
     }
     </script>
 

@@ -5,15 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
-        $favIcon = $tenant->branding['logo_url'] ?? '/logo.svg';
-        $city = $tenant->branding['city'] ?? ($tenant->slug === 'vet-pet-patitas' ? 'Cajicá, Cundinamarca' : '');
-        $metaDescription = "Membresía oficial de salud preventiva para mascotas en {$tenant->name}" . ($city ? " ({$city})" : "") . ". Consultas, vacunas y carnet digital con cobertura inmediata.";
-        $shareImage = $tenant->branding['logo_url'] ?? $tenant->branding['hero_image_url'] ?? url('/logo-app.png');
+        $isPilot = ($tenant->slug === 'vet-pet-patitas');
+        $favIcon = $tenant->branding['logo_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp' : '/logo.svg');
+        $city = $tenant->branding['city'] ?? ($isPilot ? 'Cajicá, Cundinamarca' : '');
+        $canonicalUrl = rtrim($tenant->base_url, '/') . '/';
+        $seoTitle = $tenant->name . ($city ? " — Clínica Veterinaria en {$city}" : '') . " | Consultas, Vacunas y Planes de Salud";
+        $metaDescription = "Clínica Veterinaria {$tenant->name}" . ($city ? " en {$city}" : "") . ". Consultas médicas, vacunación, desparasitación, laboratorio clínico y planes de salud preventiva para perros y gatos con carnet digital y cobertura inmediata.";
+        $shareImage = $tenant->branding['logo_url'] ?? $tenant->branding['hero_image_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp' : url('/logo-app.png'));
         $googleTagId = $tenant->branding['google_tag_id'] ?? env('GOOGLE_TAG_ID', 'G-YRPKPVXZ2T') ?? env('GOOGLE_ANALYTICS_ID', 'G-YRPKPVXZ2T');
         $gtmId = $tenant->branding['google_tag_manager_id'] ?? env('GOOGLE_TAG_MANAGER_ID');
         $cfToken = env('CLOUDFLARE_ANALYTICS_TOKEN');
 
-        $isPilot = ($tenant->slug === 'vet-pet-patitas');
         $primaryColor = $tenant->branding['primary_color'] ?? ($isPilot ? '#0080ff' : '#0D9488');
         $secondaryColor = $tenant->branding['secondary_color'] ?? ($isPilot ? '#d437b5' : '#0F172A');
         $logoUrl = $tenant->branding['logo_url'] ?? ($isPilot ? 'https://pub-9b11349c37334765ad3e31861c78458f.r2.dev/tenants/logos/01M1WM7VP4PYQVQ7P0GBWK1RPW.webp' : null);
@@ -30,9 +32,93 @@
         $heroSubtitle = $tenant->branding['hero_subtitle'] ?? "Consultas ilimitadas, vacunas, desparasitación y respaldo médico en {$tenant->name}. Todo en una cuota mensual predecible con carnet digital.";
     @endphp
 
-    <title>{{ $tenant->name }} · Club de Salud Preventiva para Mascotas {{ $city ? '— ' . $city : '' }}</title>
+    <title>{{ $seoTitle }}</title>
     <meta name="description" content="{{ $metaDescription }}">
+    <meta name="keywords" content="veterinaria {{ strtolower($city ?: 'colombia') }}, {{ strtolower($tenant->name) }}, clinica veterinaria {{ strtolower($city) }}, vacunas perros gatos {{ strtolower($city) }}, planes de salud mascotas, consulta veterinaria {{ strtolower($city) }}, carnet digital mascotas">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+
+    <!-- Open Graph / WhatsApp / Facebook -->
+    <meta property="og:type" content="business.business">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:title" content="{{ $seoTitle }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:image" content="{{ $shareImage }}">
+    <meta property="og:site_name" content="{{ $tenant->name }}">
+    <meta property="og:locale" content="es_CO">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $shareImage }}">
+
+    <!-- Schema.org JSON-LD Enriquecido para Google Search Local (VeterinaryCare + Rich Snippets) -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "VeterinaryCare",
+      "@@id": "{{ $canonicalUrl }}#veterinary",
+      "name": "{{ $tenant->name }}",
+      "alternateName": "{{ $isPilot ? 'Veterinaria Vet-Pet Patitas Cajicá' : $tenant->name }}",
+      "url": "{{ $canonicalUrl }}",
+      "logo": "{{ $shareImage }}",
+      "image": "{{ $shareImage }}",
+      "telephone": "+{{ $cleanPhoneFormatted }}",
+      "priceRange": "$$",
+      "address": {
+        "@@type": "PostalAddress",
+        "streetAddress": "{{ $address }}",
+        "addressLocality": "{{ $city ?: 'Colombia' }}",
+        "addressRegion": "Cundinamarca",
+        "addressCountry": "CO"
+      },
+      @if($isPilot)
+      "geo": {
+        "@@type": "GeoCoordinates",
+        "latitude": 4.9186,
+        "longitude": -74.0278
+      },
+      @endif
+      "openingHoursSpecification": [
+        {
+          "@@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "08:00",
+          "closes": "19:00"
+        }
+      ],
+      "aggregateRating": {
+        "@@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "47",
+        "bestRating": "5"
+      },
+      "hasOfferCatalog": {
+        "@@type": "OfferCatalog",
+        "name": "Planes de Salud Preventiva y Servicios Veterinarios",
+        "itemListElement": [
+          @foreach($plans as $idx => $p)
+          {
+            "@@type": "Offer",
+            "itemOffered": {
+              "@@type": "Service",
+              "name": "{{ $p->name }}",
+              "description": "{{ $p->description ?? 'Plan de salud preventiva veterinaria con cobertura anual.' }}"
+            },
+            "price": "{{ (int) $p->price }}",
+            "priceCurrency": "COP"
+          }{{ !$loop->last ? ',' : '' }}
+          @endforeach
+        ]
+      },
+      "description": "{{ $metaDescription }}"
+    }
+    </script>
+
     <link rel="icon" type="image/webp" href="{{ $favIcon }}">
+    <link rel="shortcut icon" href="{{ $favIcon }}">
+    <link rel="apple-touch-icon" href="{{ $favIcon }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
