@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\ProspectoOutreachMail;
 use App\Models\ProspectoVeterinaria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
@@ -110,6 +111,7 @@ class SuperAdminProspectoController extends Controller
             'municipiosList' => $municipiosList,
             'userName' => $authUser?->name ?? 'Robinson Naranjo',
             'userEmail' => $authUser?->email ?? 'superadmin@avipetapp.com',
+            'initialCampaign' => Cache::get('avi_campaign_progress', ['status' => 'idle']),
         ]);
     }
 
@@ -213,12 +215,42 @@ class SuperAdminProspectoController extends Controller
             return redirect()->back()->with('warning', 'No hay prospectos pendientes listos para enviar en este momento.');
         }
 
-        // Para evitar cortes de conexión HTTP o timeout 502 de Cloudflare en lotes de 50+:
-        // Ejecutamos el despachador artisan en segundo plano
-        $artisan = base_path('artisan');
-        exec("php {$artisan} avi:prospectos-scan-and-send --limit={$limit} > /dev/null 2>&1 &");
+        // Inicializar estado de progreso en caché para el banner en vivo
+        Cache::put('avi_campaign_progress', [
+            'status' => 'running',
+            'total' => $prospectos->count(),
+            'enviados' => 0,
+            'fallidos' => 0,
+            'current_lead' => 'Iniciando conexión con Resend SMTP...',
+            'percent' => 2,
+            'started_at' => now()->format('H:i:s'),
+        ], 600);
 
-        return redirect()->back()->with('success', "🚀 Campaña iniciada para {$prospectos->count()} prospectos en segundo plano vía Resend SMTP. Los correos se están enviando de forma continua. Puedes recargar la página en un momento para ver el progreso.");
+        // Despachador artisan en segundo plano con credenciales leídas dinámicamente
+        $artisan = base_path('artisan');
+        $mailHost = config('mail.mailers.smtp.host', 'smtp.resend.com');
+        $mailPort = config('mail.mailers.smtp.port', 587);
+        $mailUser = config('mail.mailers.smtp.username', 'resend');
+        $mailPass = escapeshellarg(config('mail.mailers.smtp.password') ?: (env('MAIL_PASSWORD') ?: ''));
+        $mailEnc = config('mail.mailers.smtp.encryption', 'tls');
+
+        exec("MAIL_HOST={$mailHost} MAIL_PORT={$mailPort} MAIL_USERNAME={$mailUser} MAIL_PASSWORD={$mailPass} MAIL_ENCRYPTION={$mailEnc} php {$artisan} avi:prospectos-scan-and-send --limit={$limit} > /dev/null 2>&1 &");
+
+        return redirect()->back()->with('success', "🚀 Campaña iniciada para {$prospectos->count()} prospectos en segundo plano vía Resend SMTP. El banner superior te mostrará el avance en vivo.");
+    }
+
+    public function campaignStatus(): \Illuminate\Http\JsonResponse
+    {
+        $data = Cache::get('avi_campaign_progress', [
+            'status' => 'idle',
+            'total' => 0,
+            'enviados' => 0,
+            'fallidos' => 0,
+            'current_lead' => null,
+            'percent' => 0,
+        ]);
+
+        return response()->json($data);
     }
 
     public function scanRegion(Request $request)

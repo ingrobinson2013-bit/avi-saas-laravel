@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Mail\ProspectoOutreachMail;
 use App\Models\ProspectoVeterinaria;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -75,6 +76,16 @@ class ProspectosScanAndSend extends Command
         $enviados = 0;
         $fallidos = 0;
 
+        Cache::put('avi_campaign_progress', [
+            'status' => 'running',
+            'total' => $totalPendientes,
+            'enviados' => 0,
+            'fallidos' => 0,
+            'current_lead' => 'Iniciando conexión con Resend SMTP...',
+            'percent' => 2,
+            'started_at' => now()->format('H:i:s'),
+        ], 600);
+
         foreach ($prospectos as $idx => $prospecto) {
             $num = $idx + 1;
             $email = trim($prospecto->correo_comercial ?? '');
@@ -88,6 +99,15 @@ class ProspectosScanAndSend extends Command
                 ]);
                 $fallidos++;
                 $this->warn("[$num/$totalPendientes] [SKIPPED]   -> {$email} (Sintaxis inválida)");
+                Cache::put('avi_campaign_progress', [
+                    'status' => 'running',
+                    'total' => $totalPendientes,
+                    'enviados' => $enviados,
+                    'fallidos' => $fallidos,
+                    'current_lead' => "{$clinica} (Email inválido)",
+                    'percent' => (int) round(($num / max($totalPendientes, 1)) * 100),
+                    'started_at' => now()->format('H:i:s'),
+                ], 600);
                 continue;
             }
 
@@ -100,12 +120,30 @@ class ProspectosScanAndSend extends Command
                 ]);
                 $fallidos++;
                 $this->warn("[$num/$totalPendientes] [SKIPPED]   -> {$email} (Dominio @{$domain} inactivo)");
+                Cache::put('avi_campaign_progress', [
+                    'status' => 'running',
+                    'total' => $totalPendientes,
+                    'enviados' => $enviados,
+                    'fallidos' => $fallidos,
+                    'current_lead' => "{$clinica} (Dominio @{$domain} inactivo)",
+                    'percent' => (int) round(($num / max($totalPendientes, 1)) * 100),
+                    'started_at' => now()->format('H:i:s'),
+                ], 600);
                 continue;
             }
 
             if ($dryRun) {
                 $this->line("[$num/$totalPendientes] [SIMULADO] -> {$email} | {$clinica}");
                 $enviados++;
+                Cache::put('avi_campaign_progress', [
+                    'status' => 'running',
+                    'total' => $totalPendientes,
+                    'enviados' => $enviados,
+                    'fallidos' => $fallidos,
+                    'current_lead' => "[Simulación] {$clinica}",
+                    'percent' => (int) round(($num / max($totalPendientes, 1)) * 100),
+                    'started_at' => now()->format('H:i:s'),
+                ], 600);
                 continue;
             }
 
@@ -123,6 +161,16 @@ class ProspectosScanAndSend extends Command
                 $this->info("[$num/$totalPendientes] [ENVIADO]   -> {$email} | {$clinica}");
                 Log::info("[AVI-Outreach] Correo entregado con éxito a: {$email} ({$prospecto->razon_social})");
 
+                Cache::put('avi_campaign_progress', [
+                    'status' => 'running',
+                    'total' => $totalPendientes,
+                    'enviados' => $enviados,
+                    'fallidos' => $fallidos,
+                    'current_lead' => $prospecto->razon_social . " (" . ($prospecto->municipio ?? 'Colombia') . ")",
+                    'percent' => (int) round(($num / max($totalPendientes, 1)) * 100),
+                    'started_at' => now()->format('H:i:s'),
+                ], 600);
+
                 // Pausa prudente de 1 segundo para entrega fluida en Resend SMTP
                 if ($num < $totalPendientes) {
                     sleep(1);
@@ -138,8 +186,28 @@ class ProspectosScanAndSend extends Command
 
                 $this->error("[$num/$totalPendientes] [ERROR]     -> {$email} | {$errorMsg}");
                 Log::error("[AVI-Outreach] Error enviando a {$email}: {$errorMsg}");
+
+                Cache::put('avi_campaign_progress', [
+                    'status' => 'running',
+                    'total' => $totalPendientes,
+                    'enviados' => $enviados,
+                    'fallidos' => $fallidos,
+                    'current_lead' => "{$clinica} (Error en envío)",
+                    'percent' => (int) round(($num / max($totalPendientes, 1)) * 100),
+                    'started_at' => now()->format('H:i:s'),
+                ], 600);
             }
         }
+
+        Cache::put('avi_campaign_progress', [
+            'status' => 'completed',
+            'total' => $totalPendientes,
+            'enviados' => $enviados,
+            'fallidos' => $fallidos,
+            'current_lead' => 'Campaña completada exitosamente',
+            'percent' => 100,
+            'finished_at' => now()->format('H:i:s'),
+        ], 300);
 
         $this->info("\n============================================================");
         $this->info("RESUMEN DE EJECUCIÓN:");

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, router } from '@inertiajs/react';
 import SuperAdminLayout from '@/Layouts/SuperAdminLayout';
 import { 
@@ -69,6 +69,27 @@ interface ProspectosProps {
     municipiosList: string[];
     userName?: string;
     userEmail?: string;
+    initialCampaign?: {
+        status: 'idle' | 'running' | 'completed' | 'error';
+        total: number;
+        enviados: number;
+        fallidos: number;
+        current_lead?: string | null;
+        percent: number;
+        started_at?: string;
+        finished_at?: string;
+    };
+}
+
+export interface CampaignProgress {
+    status: 'idle' | 'running' | 'completed' | 'error';
+    total: number;
+    enviados: number;
+    fallidos: number;
+    current_lead?: string | null;
+    percent: number;
+    started_at?: string;
+    finished_at?: string;
 }
 
 export default function Prospectos({
@@ -77,7 +98,8 @@ export default function Prospectos({
     stats,
     municipiosList = [],
     userName = 'Robinson Naranjo',
-    userEmail = 'superadmin@avipetapp.com'
+    userEmail = 'superadmin@avipetapp.com',
+    initialCampaign
 }: ProspectosProps) {
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [selectedEstado, setSelectedEstado] = useState(filters.estado || 'all');
@@ -86,6 +108,35 @@ export default function Prospectos({
     const [statusModalProspecto, setStatusModalProspecto] = useState<ProspectoItem | null>(null);
     const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
     const [sendingEmailId, setSendingEmailId] = useState<number | null>(null);
+
+    // Live Campaign Banner & Polling State
+    const [campaign, setCampaign] = useState<CampaignProgress | null>(
+        initialCampaign && (initialCampaign.status === 'running' || initialCampaign.status === 'completed') ? initialCampaign : null
+    );
+
+    // Polling effect: queries server every 2 seconds while campaign is running
+    useEffect(() => {
+        if (!campaign || campaign.status !== 'running') return;
+
+        const interval = setInterval(async () => {
+            try {
+                const res = await fetch('/super-admin/prospecto-veterinarias/campaign-status');
+                if (res.ok) {
+                    const data: CampaignProgress = await res.json();
+                    setCampaign(data);
+
+                    if (data.status === 'completed') {
+                        // Automatically refresh prospect rows and counters
+                        router.reload({ only: ['prospectos', 'stats'] });
+                    }
+                }
+            } catch (err) {
+                console.error("Error consultando estado de campaña:", err);
+            }
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }, [campaign?.status]);
 
     // Batch Campaign State
     const [isBatchModalOpen, setIsBatchModalOpen] = useState(false);
@@ -115,10 +166,23 @@ export default function Prospectos({
 
     const handleDispatchBatch = () => {
         setIsDispatchingBatch(true);
+        // Desplegar de inmediato el banner de progreso visual reactivo
+        setCampaign({
+            status: 'running',
+            total: batchLimit,
+            enviados: 0,
+            fallidos: 0,
+            current_lead: 'Iniciando conexión con Resend SMTP...',
+            percent: 2,
+        });
+        setIsBatchModalOpen(false);
+
         router.post('/super-admin/prospecto-veterinarias/dispatch-batch', { limit: batchLimit }, {
             onFinish: () => {
                 setIsDispatchingBatch(false);
-                setIsBatchModalOpen(false);
+            },
+            onError: () => {
+                setCampaign(null);
             }
         });
     };
@@ -282,11 +346,20 @@ export default function Prospectos({
                         <button
                             type="button"
                             onClick={() => setIsBatchModalOpen(true)}
-                            disabled={isDispatchingBatch}
+                            disabled={isDispatchingBatch || (campaign?.status === 'running')}
                             className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-xs sm:text-sm shadow-sm transition-all shadow-indigo-600/20 hover:shadow-indigo-600/30 cursor-pointer disabled:opacity-50"
                         >
-                            <Send className="w-4 h-4" />
-                            <span>Despachar Campaña (50)</span>
+                            {campaign?.status === 'running' ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    <span>Enviando ({campaign.enviados}/{campaign.total})...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Send className="w-4 h-4" />
+                                    <span>Despachar Campaña (50)</span>
+                                </>
+                            )}
                         </button>
 
                         <button
@@ -318,6 +391,72 @@ export default function Prospectos({
                         </button>
                     </div>
                 </div>
+
+                {/* LIVE CAMPAIGN DISPATCH PROGRESS BANNER */}
+                {campaign && campaign.status === 'running' && (
+                    <div className="relative overflow-hidden bg-gradient-to-r from-indigo-900 via-indigo-800 to-teal-900 rounded-2xl p-5 text-white shadow-xl border border-indigo-500/40 animate-in fade-in slide-in-from-top-4 duration-300">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <div className="flex items-start sm:items-center gap-3.5">
+                                <div className="w-11 h-11 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shrink-0">
+                                    <Loader2 className="w-6 h-6 animate-spin text-teal-300" />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-teal-400 text-teal-950">
+                                            En Ejecución
+                                        </span>
+                                        <h3 className="text-base font-black text-white">Despachando Campaña en Vivo</h3>
+                                    </div>
+                                    <p className="text-xs text-indigo-100 mt-1 flex items-center gap-1.5 flex-wrap">
+                                        <span>Enviando ahora a:</span>
+                                        <strong className="text-white truncate max-w-sm">{campaign.current_lead || 'Conectando con Resend SMTP...'}</strong>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-6 self-end md:self-center">
+                                <div className="text-right">
+                                    <div className="text-2xl font-black text-white tracking-tight">
+                                        {campaign.enviados} <span className="text-sm font-semibold text-indigo-200">/ {campaign.total}</span>
+                                    </div>
+                                    <p className="text-[11px] font-medium text-teal-200">
+                                        {campaign.percent}% completado {campaign.fallidos > 0 ? `(${campaign.fallidos} omitidos/error)` : ''}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Animated Progress Bar */}
+                        <div className="w-full bg-black/30 rounded-full h-2.5 mt-4 overflow-hidden p-0.5 border border-white/10">
+                            <div 
+                                className="bg-gradient-to-r from-teal-400 to-emerald-300 h-1.5 rounded-full transition-all duration-700 ease-out shadow-[0_0_12px_rgba(45,212,191,0.6)]"
+                                style={{ width: `${Math.max(campaign.percent || 0, 4)}%` }}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {campaign && campaign.status === 'completed' && (
+                    <div className="bg-emerald-50 border border-emerald-300 rounded-2xl p-4 text-emerald-900 flex items-center justify-between shadow-sm animate-in fade-in duration-300">
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                                <CheckCircle2 className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h4 className="text-sm font-black text-emerald-900">¡Campaña Completada Exitosamente!</h4>
+                                <p className="text-xs text-emerald-700">
+                                    Se despacharon {campaign.enviados} de {campaign.total} correos vía Resend SMTP {campaign.fallidos > 0 ? `(${campaign.fallidos} omitidos por dominio inactivo).` : '.'}
+                                </p>
+                            </div>
+                        </div>
+                        <button 
+                            onClick={() => setCampaign(null)}
+                            className="text-xs font-bold text-emerald-800 hover:text-emerald-950 px-3 py-1.5 rounded-lg hover:bg-emerald-100 cursor-pointer transition-colors"
+                        >
+                            Cerrar
+                        </button>
+                    </div>
+                )}
 
                 {/* 5 KPI CARDS */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
