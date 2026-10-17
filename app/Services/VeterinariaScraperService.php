@@ -429,11 +429,18 @@ class VeterinariaScraperService
             ['razon_social' => 'Clínica Veterinaria Duitama', 'correo_comercial' => 'duitamaveterinaria@gmail.com', 'telefono' => '3182345678', 'municipio' => 'Duitama', 'departamento' => 'Boyacá', 'direccion' => 'Calle 15 # 16-20', 'tipo' => 'Clínica Veterinaria', 'fuente' => 'Directorio Nacional'],
         ];
 
+        // Integrar el Banco Maestro Extendido con más de 800 clínicas colombianas auténticas
+        $catalogoExtendido = class_exists(\App\Services\Data\ColombianVeterinariasCatalog::class)
+            ? \App\Services\Data\ColombianVeterinariasCatalog::getCatalog()
+            : [];
+
+        $catalogoCompleto = array_merge($catalogoMaestro, $catalogoExtendido);
+
         // Filtrar las que aún no están en la base de datos
         $disponibles = [];
-        foreach ($catalogoMaestro as $item) {
-            $e = strtolower(trim($item['correo_comercial']));
-            if (!isset($excludedMap[$e])) {
+        foreach ($catalogoCompleto as $item) {
+            $e = strtolower(trim($item['correo_comercial'] ?? ''));
+            if ($e && !isset($excludedMap[$e])) {
                 $disponibles[] = $item;
             }
         }
@@ -443,18 +450,19 @@ class VeterinariaScraperService
             $prioritarias = [];
             $resto = [];
             foreach ($disponibles as $d) {
+                $regKey = $d['region_key'] ?? '';
                 $dep = strtolower($d['departamento'] ?? '');
                 $mun = strtolower($d['municipio'] ?? '');
 
-                $matchesRegion = match ($region) {
-                    'zipaquira', 'sabana' => str_contains($dep, 'cundinamarca') || in_array($mun, ['zipaquirá', 'chía', 'cajicá', 'cota', 'tenjo', 'tabio', 'sopó', 'tocancipá', 'funza', 'mosquera', 'madrid', 'facatativá']),
+                $matchesRegion = ($regKey === $region) || match ($region) {
+                    'zipaquira', 'sabana' => str_contains($dep, 'cundinamarca') || in_array($mun, ['zipaquirá', 'chía', 'cajicá', 'cota', 'tenjo', 'tabio', 'sopó', 'tocancipá', 'funza', 'mosquera', 'madrid', 'facatativá', 'soacha', 'fusagasugá', 'girardot']),
                     'bogota' => str_contains($dep, 'bogotá') || str_contains($mun, 'bogotá'),
                     'antioquia' => str_contains($dep, 'antioquia'),
                     'valle' => str_contains($dep, 'valle'),
                     'santander' => str_contains($dep, 'santander'),
                     'ejecafetero' => in_array($dep, ['risaralda', 'caldas', 'quindío']),
                     'caribe' => in_array($dep, ['atlántico', 'bolívar', 'magdalena', 'cesar', 'córdoba', 'sucre']),
-                    'cundinamarca_tolima' => str_contains($dep, 'cundinamarca') || str_contains($dep, 'tolima'),
+                    'cundinamarca_tolima' => str_contains($dep, 'cundinamarca') || str_contains($dep, 'tolima') || str_contains($dep, 'huila') || str_contains($dep, 'meta') || str_contains($dep, 'boyacá') || str_contains($dep, 'nariño') || str_contains($dep, 'cauca'),
                     default => false,
                 };
 
@@ -465,6 +473,9 @@ class VeterinariaScraperService
                 }
             }
             $disponibles = array_merge($prioritarias, $resto);
+        } else {
+            // Para todo el país, mezclar aleatoriamente para garantizar variedad de ciudades
+            shuffle($disponibles);
         }
 
         return array_slice($disponibles, 0, $needed);
@@ -740,17 +751,21 @@ class VeterinariaScraperService
             default => '4.0,-75.5,5.5,-73.0',
         };
 
-        $query = "[out:json][timeout:8];(node[\"amenity\"=\"veterinary\"]({$bbox});way[\"amenity\"=\"veterinary\"]({$bbox}););out tags 25;";
+        $query = "[out:json][timeout:3];(node[\"amenity\"=\"veterinary\"]({$bbox});way[\"amenity\"=\"veterinary\"]({$bbox}););out tags 25;";
         
-        $response = Http::asForm()
-            ->timeout(6)
-            ->connectTimeout(3)
-            ->withUserAgent('AVISaasBot/1.0 (contacto@avipetapp.com)')
-            ->post('https://overpass-api.de/api/interpreter', [
-                'data' => $query,
-            ]);
+        try {
+            $response = Http::asForm()
+                ->timeout(2)
+                ->connectTimeout(1)
+                ->withUserAgent('AVISaasBot/1.0 (contacto@avipetapp.com)')
+                ->post('https://overpass-api.de/api/interpreter', [
+                    'data' => $query,
+                ]);
 
-        if (!$response->successful()) {
+            if (!$response->successful()) {
+                return [];
+            }
+        } catch (\Throwable $e) {
             return [];
         }
 

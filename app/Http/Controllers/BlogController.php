@@ -24,7 +24,7 @@ class BlogController extends Controller
         $post = BlogService::getPostBySlug($slug);
 
         if (!$post) {
-            abort(404, 'Artículo no encontrado en el blog de AVI-Plan');
+            abort(404, 'Artículo no encontrado en el blog de AviPetApp');
         }
 
         $relatedPosts = BlogService::getRelatedPosts($slug, 2);

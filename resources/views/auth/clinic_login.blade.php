@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Iniciar Sesión — Panel Administrativo | {{ $tenant->name ?? 'Clínica Veterinaria' }}</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
+    <title>Iniciar Sesión — Panel Administrativo | {{ $tenant->name ?? 'Clínica Veterinaria' }} · AviPetApp</title>
+    <link rel="icon" type="image/svg+xml" href="/brand/favicons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     @php
         $logoUrl = $tenant->branding['logo_url'] ?? null;
-        $primaryColor = $tenant->branding['primary_color'] ?? '#0080ff';
-        $secondaryColor = $tenant->branding['secondary_color'] ?? '#0B1120';
+        $primaryColor = $tenant->branding['primary_color'] ?? '#6D28D9';
+        $secondaryColor = $tenant->branding['secondary_color'] ?? '#080B20';
         $city = $tenant->branding['city'] ?? '';
         $slug = $tenant->slug ?? 'vet-pet-patitas';
     @endphp
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Inter', Arial, sans-serif; }
     </style>
 </head>
-<body class="min-h-full flex flex-col justify-between bg-gradient-to-b from-slate-950 via-[#0A1120] to-slate-950 py-8 px-4 sm:px-6 lg:px-8 relative overflow-x-hidden">
+<body class="min-h-full flex flex-col justify-between bg-gradient-to-b from-[#080B20] via-[#111936] to-[#080B20] py-8 px-4 sm:px-6 lg:px-8 relative overflow-x-hidden">
 
     <!-- Orbes de luz decorativos -->
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -159,8 +160,8 @@
     </main>
 
     <!-- Footer -->
-    <footer class="max-w-md w-full mx-auto text-center text-[11px] text-slate-500 mt-6 relative z-10">
-        <p>© {{ date('Y') }} {{ $tenant->name }}. Tecnología segura por <a href="https://avipetapp.com" target="_blank" class="text-blue-400 font-bold hover:underline">AVI-Plan</a></p>
+    <footer class="max-w-md w-full mx-auto text-center text-[11px] text-slate-400 mt-6 relative z-10">
+        <p>© {{ date('Y') }} {{ $tenant->name }} · Tecnología por <a href="https://avipetapp.com" target="_blank" class="text-[#35DDF5] font-bold hover:underline">AviPetApp</a></p>
     </footer>
 
     <script>

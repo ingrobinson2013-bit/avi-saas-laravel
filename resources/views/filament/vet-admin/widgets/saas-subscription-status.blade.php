@@ -7,7 +7,7 @@
                     <span class="text-2xl">🎉</span>
                     <div>
                         <h4 class="font-bold text-sm">¡Pago Exitoso con Bold!</h4>
-                        <p class="text-xs text-emerald-700 dark:text-emerald-300">Tu suscripción ha sido activada y tu clínica está al día en AVI-Plan.</p>
+                        <p class="text-xs text-emerald-700 dark:text-emerald-300">Tu suscripción ha sido activada y tu clínica está al día en AviPetApp.</p>
                     </div>
                 </div>
                 <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200">
@@ -45,7 +45,7 @@
                         <div class="min-w-0 flex-1">
                             <div class="flex flex-wrap items-center gap-2 mb-1">
                                 <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                                    Licencia AVI-Plan SaaS
+                                    Licencia AviPetApp SaaS
                                 </span>
 
                                 @if($status === 'paid')
@@ -72,7 +72,7 @@
 
                             <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight mb-0.5">
                                 @if($status === 'paid')
-                                    Tu clínica tiene acceso total a AVI-Plan SaaS
+                                    Tu clínica tiene acceso total a AviPetApp SaaS
                                 @elseif($status === 'trial_active')
                                     Estás en tu período de prueba de 15 días
                                 @else
@@ -117,7 +117,7 @@
 
                         <x-filament::button
                             tag="a"
-                            href="https://wa.me/573235813942?text={{ urlencode('Hola Robinson, tengo una consulta sobre el pago y suscripción de AVI-Plan para mi clínica ' . $tenantName) }}"
+                            href="https://wa.me/573235813942?text={{ urlencode('Hola Robinson, tengo una consulta sobre el pago y suscripción de AviPetApp para mi clínica ' . $tenantName) }}"
                             target="_blank"
                             color="gray"
                             icon="heroicon-m-chat-bubble-left-ellipsis"

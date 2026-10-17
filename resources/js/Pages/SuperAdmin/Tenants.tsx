@@ -100,7 +100,7 @@ export default function Tenants({
 
     return (
         <SuperAdminLayout userName={userName} userEmail={userEmail} activeItem="Clínicas veterinarias">
-            <Head title="Clínicas Veterinarias · AVI Pet Superadmin" />
+            <Head title="Clínicas Veterinarias · AviPetApp Superadmin" />
 
             <div className="space-y-6 w-full">
 
@@ -111,7 +111,7 @@ export default function Tenants({
                             Clínicas veterinarias
                         </h1>
                         <p className="text-sm text-slate-500 mt-0.5">
-                            Red de consultorios y hospitales veterinarios en la plataforma AVI Pet
+                            Red de consultorios y hospitales veterinarios en la plataforma AviPetApp
                         </p>
                     </div>
 

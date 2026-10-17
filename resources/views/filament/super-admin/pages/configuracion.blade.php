@@ -5,7 +5,7 @@
                 Configuración del Sistema
             </h1>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Ajustes globales de la plataforma AVI Pet, pasarelas de pago y parámetros SaaS.
+                Ajustes globales de la plataforma AviPetApp, pasarelas de pago y parámetros SaaS.
             </p>
         </div>
 

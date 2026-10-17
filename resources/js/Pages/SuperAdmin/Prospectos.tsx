@@ -69,16 +69,8 @@ interface ProspectosProps {
     municipiosList: string[];
     userName?: string;
     userEmail?: string;
-    initialCampaign?: {
-        status: 'idle' | 'running' | 'completed' | 'error';
-        total: number;
-        enviados: number;
-        fallidos: number;
-        current_lead?: string | null;
-        percent: number;
-        started_at?: string;
-        finished_at?: string;
-    };
+    initialCampaign?: CampaignProgress;
+    initialScan?: ScanProgress;
 }
 
 export interface CampaignProgress {
@@ -92,6 +84,17 @@ export interface CampaignProgress {
     finished_at?: string;
 }
 
+export interface ScanProgress {
+    status: 'idle' | 'running' | 'completed' | 'error';
+    total: number;
+    encontrados: number;
+    percent: number;
+    region?: string | null;
+    current_step?: string | null;
+    started_at?: string;
+    finished_at?: string;
+}
+
 export default function Prospectos({
     prospectos,
     filters,
@@ -99,7 +102,8 @@ export default function Prospectos({
     municipiosList = [],
     userName = 'Robinson Naranjo',
     userEmail = 'superadmin@avipetapp.com',
-    initialCampaign
+    initialCampaign,
+    initialScan
 }: ProspectosProps) {
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [selectedEstado, setSelectedEstado] = useState(filters.estado || 'all');
@@ -114,6 +118,11 @@ export default function Prospectos({
         initialCampaign && (initialCampaign.status === 'running' || initialCampaign.status === 'completed') ? initialCampaign : null
     );
 
+    // Live Scan Banner & Polling State
+    const [scanProgress, setScanProgress] = useState<ScanProgress | null>(
+        initialScan && (initialScan.status === 'running' || initialScan.status === 'completed') ? initialScan : null
+    );
+
     // Polling effect: queries server every 2 seconds while campaign is running
     useEffect(() => {
         if (!campaign || campaign.status !== 'running') return;
@@ -126,7 +135,6 @@ export default function Prospectos({
                     setCampaign(data);
 
                     if (data.status === 'completed') {
-                        // Automatically refresh prospect rows and counters
                         router.reload({ only: ['prospectos', 'stats'] });
                     }
                 }
@@ -137,6 +145,29 @@ export default function Prospectos({
 
         return () => clearInterval(interval);
     }, [campaign?.status]);
+
+    // Polling effect: queries server every 1.5 seconds while lead scan is running
+    useEffect(() => {
+        if (!scanProgress || scanProgress.status !== 'running') return;
+
+        const interval = setInterval(async () => {
+            try {
+                const res = await fetch('/super-admin/prospecto-veterinarias/scan-status');
+                if (res.ok) {
+                    const data: ScanProgress = await res.json();
+                    setScanProgress(data);
+
+                    if (data.status === 'completed' || data.status === 'error') {
+                        router.reload({ only: ['prospectos', 'stats'] });
+                    }
+                }
+            } catch (err) {
+                console.error("Error consultando estado de escaneo:", err);
+            }
+        }, 1500);
+
+        return () => clearInterval(interval);
+    }, [scanProgress?.status]);
 
     // Batch Campaign State
     const [isBatchModalOpen, setIsBatchModalOpen] = useState(false);
@@ -189,10 +220,23 @@ export default function Prospectos({
 
     const handleScanRegion = () => {
         setIsScanning(true);
+        // Desplegar de inmediato el banner de progreso reactivo de escaneo
+        setScanProgress({
+            status: 'running',
+            total: scanLimit,
+            encontrados: 0,
+            percent: 10,
+            region: scanRegion,
+            current_step: 'Iniciando rastreador inteligente en Colombia...',
+        });
+        setIsScanModalOpen(false);
+
         router.post('/super-admin/prospecto-veterinarias/scan-region', { region: scanRegion, limit: scanLimit }, {
             onFinish: () => {
                 setIsScanning(false);
-                setIsScanModalOpen(false);
+            },
+            onError: () => {
+                setScanProgress(null);
             }
         });
     };
@@ -368,11 +412,20 @@ export default function Prospectos({
                         <button
                             type="button"
                             onClick={() => setIsScanModalOpen(true)}
-                            disabled={isScanning}
+                            disabled={isScanning || (scanProgress?.status === 'running')}
                             className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-bold text-xs sm:text-sm shadow-sm transition-all shadow-teal-600/20 hover:shadow-teal-600/30 cursor-pointer disabled:opacity-50"
                         >
-                            <Search className="w-4 h-4" />
-                            <span>Escanear Nuevas (50+)</span>
+                            {scanProgress?.status === 'running' ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    <span>Escaneando ({scanProgress.encontrados}/{scanProgress.total})...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Search className="w-4 h-4" />
+                                    <span>Escanear Nuevas (50+)</span>
+                                </>
+                            )}
                         </button>
 
                         <button
@@ -455,6 +508,73 @@ export default function Prospectos({
                         <button 
                             onClick={() => setCampaign(null)}
                             className="text-xs font-bold text-emerald-800 hover:text-emerald-950 px-3 py-1.5 rounded-lg hover:bg-emerald-100 cursor-pointer transition-colors"
+                        >
+                            Cerrar
+                        </button>
+                    </div>
+                )}
+
+                {/* LIVE SCAN PROGRESS BANNER */}
+                {scanProgress && scanProgress.status === 'running' && (
+                    <div className="relative overflow-hidden bg-gradient-to-r from-teal-950 via-emerald-900 to-teal-900 rounded-2xl p-5 text-white shadow-xl border border-teal-500/40 animate-in fade-in slide-in-from-top-4 duration-300">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <div className="flex items-start sm:items-center gap-3.5">
+                                <div className="w-11 h-11 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shrink-0">
+                                    <Loader2 className="w-6 h-6 animate-spin text-teal-300" />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-teal-400 text-teal-950">
+                                            Rastreo en Vivo
+                                        </span>
+                                        <h3 className="text-base font-black text-white">Descubriendo Nuevas Clínicas en Colombia</h3>
+                                    </div>
+                                    <p className="text-xs text-teal-100 mt-1 flex items-center gap-1.5 flex-wrap">
+                                        <span>Estado:</span>
+                                        <strong className="text-white truncate max-w-sm">{scanProgress.current_step || 'Consultando directorios y extrayendo contactos...'}</strong>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-6 self-end md:self-center">
+                                <div className="text-right">
+                                    <div className="text-2xl font-black text-white tracking-tight">
+                                        {scanProgress.encontrados} <span className="text-sm font-semibold text-teal-200">/ {scanProgress.total}</span>
+                                    </div>
+                                    <p className="text-[11px] font-medium text-emerald-200">
+                                        {scanProgress.percent}% completado
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Animated Progress Bar */}
+                        <div className="w-full bg-black/30 rounded-full h-2.5 mt-4 overflow-hidden p-0.5 border border-white/10">
+                            <div 
+                                className="bg-gradient-to-r from-teal-400 to-emerald-300 h-1.5 rounded-full transition-all duration-700 ease-out shadow-[0_0_12px_rgba(45,212,191,0.6)]"
+                                style={{ width: `${Math.max(scanProgress.percent || 0, 8)}%` }}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {scanProgress && scanProgress.status === 'completed' && (
+                    <div className="bg-teal-50 border border-teal-300 rounded-2xl p-4 text-teal-900 flex items-center justify-between shadow-sm animate-in fade-in duration-300">
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0">
+                                <CheckCircle2 className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h4 className="text-sm font-black text-teal-900">¡Escaneo Completado con Éxito!</h4>
+                                <p className="text-xs text-teal-700">
+                                    {scanProgress.current_step || `Se descubrieron y agregaron ${scanProgress.encontrados} nuevas clínicas a la cola de pendientes.`}
+                                </p>
+                            </div>
+                        </div>
+                        <button 
+                            type="button"
+                            onClick={() => setScanProgress(null)}
+                            className="text-xs font-bold text-teal-800 hover:text-teal-950 px-3 py-1.5 rounded-lg hover:bg-teal-100 cursor-pointer transition-colors"
                         >
                             Cerrar
                         </button>
@@ -935,7 +1055,7 @@ export default function Prospectos({
                                     <span>Motor Anti-Rebote con Verificación DNS MX</span>
                                 </div>
                                 <p className="text-indigo-800 leading-relaxed">
-                                    El sistema tomará las siguientes clínicas en estado <strong>Pendiente</strong> con correo comercial válido y les enviará la propuesta oficial de membresías de AVI-Plan firmada por <strong>@avipetapp.com</strong>.
+                                    El sistema tomará las siguientes clínicas en estado <strong>Pendiente</strong> con correo comercial válido y les enviará la propuesta oficial de membresías de AviPetApp firmada por <strong>@avipetapp.com</strong>.
                                 </p>
                             </div>
 

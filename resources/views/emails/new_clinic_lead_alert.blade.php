@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚨 Nueva Veterinaria Registrada en AVI-Plan</title>
+    <title>🚨 Nueva Veterinaria Registrada en AviPetApp</title>
     <style>
         body {
             margin: 0;
@@ -147,7 +147,7 @@
         <!-- Header -->
         <div class="header">
             <h1>🚨 ¡Nueva Veterinaria Registrada!</h1>
-            <p>Alerta de Lead Calificado en Tiempo Real — AVI-Plan SaaS</p>
+            <p>Alerta de Lead Calificado en Tiempo Real — AviPetApp SaaS</p>
         </div>
 
         <!-- Content -->
@@ -221,7 +221,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p style="margin: 0;">Notificación automática del Sistema Central AVI-Plan SaaS.</p>
+            <p style="margin: 0;">Notificación automática del Sistema Central AviPetApp SaaS.</p>
             <p style="margin: 6px 0 0; color: #475569;">NODIA Enterprise Tech &bull; Remitente: contacto@avipetapp.com</p>
         </div>
     </div>

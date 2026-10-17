@@ -14,7 +14,7 @@ class Configuracion extends Page
 
     public string $boldIdentityKey = 'IbjyaOSv3SnqfctP4GD76HIMxgud5dGkKisprmvthoQ';
     public string $boldSecretKey = 'PvBaAHlwotfgJvuaS923gQ';
-    public string $platformName = 'AVI Pet';
+    public string $platformName = 'AviPetApp';
     public string $supportEmail = 'contacto@avipetapp.com';
     public string $supportPhone = '+57 300 000 0000';
     public int $trialDays = 15;

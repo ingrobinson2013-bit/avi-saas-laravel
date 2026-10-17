@@ -43,7 +43,7 @@ class TutorRenewalReminderMail extends Mailable
                 : "🐾 Recordatorio: El Plan de Salud de {$this->pet->name} renueva en {$this->daysLeft} día(s)");
 
         return new Envelope(
-            from: new Address($fromAddress, "{$clinicName} · AVI-Plan"),
+            from: new Address($fromAddress, "{$clinicName} · AviPetApp"),
             replyTo: [new Address($replyTo, $clinicName)],
             subject: "{$subjectPrefix} · {$clinicName}",
         );

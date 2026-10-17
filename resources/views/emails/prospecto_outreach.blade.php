@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Membresías Preventivas para Clínicas Veterinarias | AVI-Plan</title>
+  <title>Membresías Preventivas para Clínicas Veterinarias | AviPetApp</title>
   <style>
     body {
       margin: 0;
@@ -167,7 +167,7 @@
       
       <!-- HEADER -->
       <div class="header">
-        <div class="badge">🐾 AVI-Plan · Membresías Veterinarias</div>
+        <div class="badge">🐾 AviPetApp · Software con IA para veterinarias</div>
         <h1>Ingresos Fijos y Fidelización Mensual para tu Clínica</h1>
         <p>Modelo exclusivo para clínicas y centros veterinarios en {{ $municipio }}</p>
       </div>
@@ -187,7 +187,7 @@
         </div>
 
         <p>
-          Hemos lanzado <strong>AVI-Plan</strong> (<a href="https://avipetapp.com" style="color: #2563eb; font-weight: 600; text-decoration: none;">avipetapp.com</a>), la plataforma para que tu clínica ofrezca a los propietarios <strong>Planes de Salud Preventiva en Suscripción Mensual</strong> ($45.000 a $85.000 COP/mes) con tu propia marca:
+          Hemos lanzado <strong>AviPetApp</strong> (<a href="https://avipetapp.com" style="color: #2563eb; font-weight: 600; text-decoration: none;">avipetapp.com</a>), la plataforma para que tu clínica ofrezca a los propietarios <strong>Planes de Salud Preventiva en Suscripción Mensual</strong> ($45.000 a $85.000 COP/mes) con tu propia marca:
         </p>
 
         <ul class="feature-list">
@@ -244,7 +244,7 @@
           Mensaje enviado a <strong>{{ $correoComercial }}</strong> · {{ $municipio }}, Colombia.
         </p>
         <p style="margin: 0 0 6px 0;">
-          AVI-Plan by AviPetApp · Contacto oficial: <a href="mailto:contacto@avipetapp.com">contacto@avipetapp.com</a> · WhatsApp: +57 323 581 3942
+          AviPetApp · Software con IA para veterinarias · Contacto oficial: <a href="mailto:contacto@avipetapp.com">contacto@avipetapp.com</a> · WhatsApp: +57 323 581 3942
         </p>
         <p style="margin: 0;">
           Si no deseas recibir más información sobre este programa piloto para veterinarias, responde este correo con la palabra <strong>"Baja"</strong>.

@@ -41,7 +41,7 @@ class SuperAdminUserController extends Controller
                 'email' => $u->email,
                 'role' => $u->role,
                 'tenant_id' => $u->tenant_id,
-                'tenant_name' => $u->tenant?->name ?? '👑 Central AVI Pet',
+                'tenant_name' => $u->tenant?->name ?? '👑 Central AviPetApp',
                 'tenant_slug' => $u->tenant?->slug ?? '',
                 'created_at' => $u->created_at ? $u->created_at->format('d/m/Y') : null,
             ];

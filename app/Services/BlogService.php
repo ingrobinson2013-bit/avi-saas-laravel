@@ -54,7 +54,7 @@ A diferencia de un seguro médico para mascotas (que cubre imprevistos quirúrgi
 
 <h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">2. Cómo Estructurar tus Niveles de Planes (Básico vs Premium)</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
-El error más común de los médicos veterinarios es crear una lista interminable de planes que confunde al tutor. La mejor práctica de negocio probada en AVI-Plan es estructurar únicamente <strong>dos o máximo tres planes claros</strong>:
+El error más común de los médicos veterinarios es crear una lista interminable de planes que confunde al tutor. La mejor práctica de negocio probada en AviPetApp es estructurar únicamente <strong>dos o máximo tres planes claros</strong>:
 </p>
 
 <div class="grid md:grid-cols-2 gap-4 my-6">
@@ -104,13 +104,13 @@ Muchos veterinarios intentan vender membresías cobrando por Nequi o transferenc
     <li>No hay forma de validar si una vacuna ya fue aplicada o sigue disponible en el saldo.</li>
 </ol>
 <p class="text-slate-700 leading-relaxed mb-6">
-Por esta razón, la tecnología SaaS como <strong>AVI-Plan</strong> automatiza el débito bancario recurrente (vía pasarelas como Bold o tarjetas de crédito), genera un <strong>Carnet Digital interactivo</strong> con código QR y actualiza en tiempo real el saldo de servicios en mostrador con un solo clic.
+Por esta razón, la tecnología SaaS como <strong>AviPetApp</strong> automatiza el débito bancario recurrente (vía pasarelas como Bold o tarjetas de crédito), genera un <strong>Carnet Digital interactivo</strong> con código QR y actualiza en tiempo real el saldo de servicios en mostrador con un solo clic.
 </p>
 
 <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-8 my-8 text-center shadow-xl">
     <h3 class="text-2xl font-extrabold mb-3">Empieza a Cobrar Planes de Salud en tu Veterinaria</h3>
     <p class="text-blue-200 text-sm max-w-xl mx-auto mb-6">
-        Configura tus planes de salud con tu propio logo y marca en menos de 10 minutos. Prueba AVI-Plan completamente gratis durante 15 días sin ingresar tarjeta de crédito.
+        Configura tus planes de salud con tu propio logo y marca en menos de 10 minutos. Prueba AviPetApp completamente gratis durante 15 días sin ingresar tarjeta de crédito.
     </p>
     <a href="/registro-clinica" class="inline-flex items-center px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
         Crear mi Cuenta Gratis (15 Días) →
@@ -182,7 +182,7 @@ Tener una <strong>Terminal de Canje Digital</strong> en la recepción de tu clí
         Cuando los clientes tienen un plan activo en tu veterinaria, asisten entre 4 y 6 veces al año a tus instalaciones, en lugar de 1 vez cada dos años. Cada visita adicional genera ventas cruzadas de alimentación medicada, juguetes y aseo.
     </p>
     <a href="/registro-clinica" class="text-blue-700 hover:text-blue-900 font-bold text-sm underline">
-        Activa tu Terminal de Canje con AVI-Plan hoy mismo →
+        Activa tu Terminal de Canje con AviPetApp hoy mismo →
     </a>
 </div>
 HTML,
@@ -214,7 +214,7 @@ Elegir el software adecuado para tu clínica veterinaria en Colombia es una de l
 En esta comparativa analizamos las opciones líderes del mercado colombiano en 2026 según su enfoque: <strong>Historias Clínicas, Facturación Electrónica DIAN y Planes de Salud Preventiva Recurrente</strong>.
 </p>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">1. AVI-Plan: El Especialista en Ingresos Recurrentes y Planes Preventivos</h2>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">1. AviPetApp: El Especialista en Ingresos Recurrentes y Planes Preventivos</h2>
 <div class="border border-blue-200 bg-blue-50/40 rounded-xl p-5 mb-6">
     <p class="text-sm text-slate-700 mb-2"><strong>Lo mejor:</strong> Diseñado específicamente para convertir clientes ocasionales en ingresos mensuales fijos automáticos.</p>
     <p class="text-sm text-slate-700 mb-2"><strong>Funciones estrella:</strong> Motor actuarial de planes de salud, cobro recurrente con Bold / tarjetas, carnet digital con QR para tutores, terminal de canje en mostrador y triage con Inteligencia Artificial.</p>
@@ -238,7 +238,7 @@ Una de las plataformas en la nube más avanzadas a nivel global. Ideal para hosp
         <thead>
             <tr class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
                 <th class="p-3 border-r border-slate-200">Criterio / Software</th>
-                <th class="p-3 border-r border-slate-200 text-blue-700 font-extrabold">AVI-Plan</th>
+                <th class="p-3 border-r border-slate-200 text-blue-700 font-extrabold">AviPetApp</th>
                 <th class="p-3 border-r border-slate-200">Software Tradicional</th>
                 <th class="p-3">Excel / Libretas</th>
             </tr>
@@ -274,7 +274,7 @@ Una de las plataformas en la nube más avanzadas a nivel global. Ideal para hosp
 
 <h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">¿Cuál es la Mejor Opción para tu Clínica?</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
-Si tu prioridad exclusiva es archivar historias clínicas de urgencias, un software clínico clásico te servirá. Pero <strong>si tu objetivo es hacer crecer tu negocio, garantizar que todos los meses tengas un ingreso fijo garantizado y fidelizar a tus clientes para que nunca vayan a otra clínica</strong>, la arquitectura de planes preventivos de <strong>AVI-Plan</strong> es el complemento perfecto para tu operación médica.
+Si tu prioridad exclusiva es archivar historias clínicas de urgencias, un software clínico clásico te servirá. Pero <strong>si tu objetivo es hacer crecer tu negocio, garantizar que todos los meses tengas un ingreso fijo garantizado y fidelizar a tus clientes para que nunca vayan a otra clínica</strong>, la arquitectura de planes preventivos de <strong>AviPetApp</strong> es el complemento perfecto para tu operación médica.
 </p>
 
 <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-8 my-8 text-center shadow-lg">
@@ -327,7 +327,7 @@ Uno de los mayores temores de un director médico veterinario al lanzar planes d
 </div>
 
 <div class="bg-emerald-50 border-l-4 border-emerald-600 p-5 rounded-r-xl my-6">
-    <p class="text-emerald-950 font-bold mb-1">Regla de Oro Actuarial en AVI-Plan:</p>
+    <p class="text-emerald-950 font-bold mb-1">Regla de Oro Actuarial en AviPetApp:</p>
     <p class="text-emerald-900 text-sm">
         Un plan de salud preventiva bien estructurado debe arrojar entre un <strong>60% y un 70% de margen bruto sobre insumos</strong>, asumiendo una tasa de redención (uso real) del 75% al 85% a lo largo de los 12 meses del año.
     </p>
@@ -387,7 +387,7 @@ Calculemos el costo de adquisición de insumos al por mayor (precios de distribu
     </table>
 </div>
 
-<h2 id="formula-precio" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">2. Fijando la Cuota Mensual con la Fórmula AVI-Plan</h2>
+<h2 id="formula-precio" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">2. Fijando la Cuota Mensual con la Fórmula AviPetApp</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
 Si el costo anual directo de biológicos es de <strong>$95.000 COP</strong>, significa que el costo mensual de insumos es de apenas:
 <br>
@@ -466,7 +466,7 @@ Ahora aplicamos la fórmula de precio con un <strong>margen bruto objetivo del 6
             <div class="font-bold text-white text-sm">¿Quieres la Plantilla de Excel con todas las fórmulas?</div>
             <div class="text-xs text-slate-300">Incluye listas de precios de biológicos en Colombia y calculadora de punto de equilibrio.</div>
         </div>
-        <a id="sim-whatsapp-lead" href="https://wa.me/573235813942?text=Hola%20Robinson,%20calcul%C3%A9%20mis%20costos%20con%20el%20simulador%20de%20AVI-Plan%20para%20100%20mascotas%20y%20quiero%20la%20Plantilla%20de%20Excel%20gratuita." target="_blank" class="w-full sm:w-auto px-5 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition transform hover:-translate-y-0.5 shrink-0 text-center flex items-center justify-center gap-2">
+        <a id="sim-whatsapp-lead" href="https://wa.me/573235813942?text=Hola%20Robinson,%20calcul%C3%A9%20mis%20costos%20con%20el%20simulador%20de%20AviPetApp%20para%20100%20mascotas%20y%20quiero%20la%20Plantilla%20de%20Excel%20gratuita." target="_blank" class="w-full sm:w-auto px-5 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition transform hover:-translate-y-0.5 shrink-0 text-center flex items-center justify-center gap-2">
             <span>📊 Descargar Plantilla Excel (Gratis)</span>
         </a>
     </div>
@@ -490,7 +490,7 @@ Ahora aplicamos la fórmula de precio con un <strong>margen bruto objetivo del 6
         document.getElementById('sim-margin').innerText = marginPct + '%';
         document.getElementById('sim-net-annual').innerText = '+$' + netAnnual.toLocaleString('es-CO');
 
-        const waText = encodeURIComponent(`Hola Robinson, calculé mis costos con el simulador de AVI-Plan para ${pets} mascotas a $${fee.toLocaleString('es-CO')} y quiero recibir la Plantilla de Excel de Costos.`);
+        const waText = encodeURIComponent(`Hola Robinson, calculé mis costos con el simulador de AviPetApp para ${pets} mascotas a $${fee.toLocaleString('es-CO')} y quiero recibir la Plantilla de Excel de Costos.`);
         document.getElementById('sim-whatsapp-lead').href = `https://wa.me/573235813942?text=${waText}`;
       }
     </script>
@@ -517,7 +517,7 @@ Con solo 100 pacientes afiliados a este plan de $49.000 COP:
 <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-8 my-8 text-center shadow-xl">
     <h3 class="text-2xl font-extrabold mb-3">Calcula y Activa los Planes de tu Veterinaria</h3>
     <p class="text-blue-200 text-sm max-w-xl mx-auto mb-6">
-        No dejes el dinero sobre la mesa. Con AVI-Plan puedes personalizar tus servicios, precios y emitir carnets con código QR en minutos. 15 días gratis.
+        No dejes el dinero sobre la mesa. Con AviPetApp puedes personalizar tus servicios, precios y emitir carnets con código QR en minutos. 15 días gratis.
     </p>
     <a href="/registro-clinica" class="inline-flex items-center px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
         Crear mi Cuenta Gratis (15 Días) →

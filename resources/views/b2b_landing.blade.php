@@ -10,27 +10,27 @@
         $cfToken = env('CLOUDFLARE_ANALYTICS_TOKEN');
         $canonicalUrl = 'https://avipetapp.com';
     @endphp
-    <title>AviPetApp (AVI-Plan) — Software de Planes de Salud Preventiva para Clínicas Veterinarias | Red de Veterinarias Socias</title>
-    <meta name="description" content="AviPetApp (AVI-Plan) es la plataforma SaaS en Colombia para clínicas veterinarias socias. Crea planes de salud preventiva para mascotas con tu marca, carnet digital QR en WhatsApp, posicionamiento en Google y cobros recurrentes. 15 días gratis.">
-    <meta name="keywords" content="avipetapp, avi-plan, software veterinaria colombia, veterinarias socias colombia, software para clinicas veterinarias, planes de bienestar mascotas, membresias veterinarias, facturacion recurrente veterinaria, carnet digital mascotas, retencion de clientes en clinica veterinaria, saas veterinario bogota medellin cali barranquilla cajica">
-    <meta name="application-name" content="AviPetApp (AVI-Plan)">
+    <title>AviPetApp — Software con IA para veterinarias | Planes de salud para mascotas</title>
+    <meta name="description" content="AviPetApp ayuda a tu clínica a gestionar planes de salud para mascotas, organizar la relación con tus clientes y aprovechar herramientas inteligentes desde una sola plataforma. 15 días gratis.">
+    <meta name="keywords" content="avipetapp, software con ia para veterinarias, software veterinaria colombia, veterinarias socias colombia, software para clinicas veterinarias, planes de salud para mascotas, membresias veterinarias, facturacion recurrente veterinaria, carnet digital mascotas, saas veterinario">
+    <meta name="application-name" content="AviPetApp">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="{{ $canonicalUrl }}">
 
     <!-- Open Graph / WhatsApp / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ $canonicalUrl }}">
-    <meta property="og:title" content="AviPetApp (AVI-Plan) — Software de Planes de Salud para Clínicas Veterinarias Socias">
-    <meta property="og:description" content="Únete a la red de clínicas veterinarias socias de AviPetApp en Colombia. Crea planes de salud preventiva con tu propia marca y genera ingresos fijos mes a mes.">
-    <meta property="og:image" content="{{ url('/logo-app.png') }}">
-    <meta property="og:site_name" content="AviPetApp · AVI-Plan">
+    <meta property="og:title" content="AviPetApp — Software con IA para veterinarias">
+    <meta property="og:description" content="Planes de salud, clientes e IA en una sola plataforma. Organiza los planes de salud de tu clínica veterinaria en un solo lugar.">
+    <meta property="og:image" content="{{ url('/brand/favicons/og-image-1200x630.png') }}">
+    <meta property="og:site_name" content="AviPetApp">
     <meta property="og:locale" content="es_CO">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AviPetApp (AVI-Plan) — Planes de Salud para Mascotas | Software Veterinario">
-    <meta name="twitter:description" content="Crea planes de salud para mascotas con tu propia marca y recibe pagos mensuales recurrentes en tu clínica veterinaria.">
-    <meta name="twitter:image" content="{{ url('/logo-app.png') }}">
+    <meta name="twitter:title" content="AviPetApp — Software con IA para veterinarias">
+    <meta name="twitter:description" content="Planes de salud, clientes e IA en una sola plataforma para clínicas veterinarias.">
+    <meta name="twitter:image" content="{{ url('/brand/favicons/og-image-1200x630.png') }}">
 
     <!-- Schema.org JSON-LD Enriquecido para Google Search & Google AI Overview (GEO) -->
     <script type="application/ld+json">
@@ -40,20 +40,20 @@
         {
           "@@type": "WebSite",
           "@@id": "https://avipetapp.com/#website",
-          "name": "AviPetApp · AVI-Plan",
-          "alternateName": ["AviPetApp", "AVI-Plan", "AVI-Plan by AviPetApp", "avipetapp.com"],
+          "name": "AviPetApp",
+          "alternateName": ["AviPetApp", "Software con IA para veterinarias", "avipetapp.com"],
           "url": "https://avipetapp.com/"
         },
         {
           "@@type": "Organization",
           "@@id": "https://avipetapp.com/#organization",
-          "name": "AviPetApp (AVI-Plan)",
-          "alternateName": ["AviPetApp", "AVI-Plan", "Red de Clínicas Veterinarias Socias AviPetApp"],
+          "name": "AviPetApp",
+          "alternateName": ["AviPetApp", "Red de Clínicas Veterinarias Socias AviPetApp"],
           "url": "https://avipetapp.com",
-          "description": "AviPetApp (AVI-Plan) es la plataforma tecnológica SaaS en Colombia especializada en que clínicas veterinarias socias creen, cobren y administren planes de salud preventiva y membresías mensuales para mascotas bajo su propia marca.",
+          "description": "AviPetApp es una plataforma tecnológica para clínicas veterinarias que buscan digitalizar servicios, comercializar planes de salud para mascotas y mejorar la relación con sus clientes mediante software, automatización e inteligencia artificial.",
           "logo": {
             "@@type": "ImageObject",
-            "url": "{{ url('/logo-app.png') }}"
+            "url": "{{ url('/brand/png/avipetapp-icono-app.png') }}"
           },
           "contactPoint": {
             "@@type": "ContactPoint",
@@ -66,7 +66,7 @@
         {
           "@@type": "SoftwareApplication",
           "@@id": "https://avipetapp.com/#software",
-          "name": "AviPetApp — AVI-Plan SaaS Veterinario",
+          "name": "AviPetApp — Software con IA para veterinarias",
           "alternateName": "AviPetApp",
           "operatingSystem": "All, Web, Cloud",
           "applicationCategory": "BusinessApplication, HealthApplication",
@@ -81,9 +81,9 @@
             "ratingValue": "4.9",
             "reviewCount": "38"
           },
-          "description": "Software especializado en Colombia (avipetapp.com) para que clínicas veterinarias socias creen, cobren y gestionen planes de bienestar, membresías y salud preventiva para mascotas con carnet digital QR.",
+          "description": "Software con IA para veterinarias en Colombia (avipetapp.com): planes de salud para mascotas, clientes e IA en una sola plataforma.",
           "url": "https://avipetapp.com",
-          "image": "{{ url('/logo-app.png') }}"
+          "image": "{{ url('/brand/favicons/og-image-1200x630.png') }}"
         },
         {
           "@@type": "FAQPage",
@@ -91,15 +91,15 @@
           "mainEntity": [
             {
               "@@type": "Question",
-              "name": "¿Qué es AviPetApp (AVI-Plan) y cómo funciona para las clínicas veterinarias socias?",
+              "name": "¿Qué es AviPetApp y cómo funciona para las clínicas veterinarias?",
               "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "AviPetApp (AVI-Plan, en avipetapp.com) es la plataforma de software en la nube en Colombia que permite a clínicas veterinarias socias lanzar su propio programa de planes de salud preventiva y membresías mensuales para mascotas en 60 segundos. Incluye vitrina web con marca propia, posicionamiento SEO local en Google, carnet digital con código QR en WhatsApp y terminal de canje en mostrador."
+                "text": "AviPetApp (en avipetapp.com) es una plataforma tecnológica con IA para clínicas veterinarias que permite digitalizar servicios, comercializar planes de salud para mascotas y organizar la relación con los clientes desde una sola plataforma."
               }
             },
             {
               "@@type": "Question",
-              "name": "¿En qué momento se paga el servicio de AVI-Plan?",
+              "name": "¿En qué momento se paga el servicio de AviPetApp?",
               "acceptedAnswer": {
                 "@@type": "Answer",
                 "text": "Siempre es mes anticipado (prepago), garantizando cero deudas acumuladas. Tienes 15 días gratis para probar la plataforma sin tarjeta de crédito. Luego puedes recargar paquetes prepago de 10 mascotas por $50.000 COP o activar mensualidad plana."
@@ -110,12 +110,12 @@
               "name": "¿Tengo que reemplazar mi software actual de historia clínica veterinaria?",
               "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "No. AVI-Plan no compite con tu software de historia clínica tradicional. Es una plataforma especializada en planes de bienestar, membresías y facturación recurrente para mascotas que convive perfectamente con cualquier sistema."
+                "text": "No. AviPetApp no compite con tu software de historia clínica tradicional. Es una plataforma especializada en planes de salud para mascotas, membresías y comunicación que convive perfectamente con cualquier sistema."
               }
             },
             {
               "@@type": "Question",
-              "name": "¿AVI-Plan cobra comisión por cada plan de salud vendido en la clínica?",
+              "name": "¿AviPetApp cobra comisión por cada plan de salud vendido en la clínica?",
               "acceptedAnswer": {
                 "@@type": "Answer",
                 "text": "No. El 100% del dinero cobrado a tus clientes va directo a tus cuentas o pasarelas de pago. No retenemos comisiones por transacción."
@@ -123,10 +123,10 @@
             },
             {
               "@@type": "Question",
-              "name": "¿Puedo crear mis propios planes de salud veterinaria con precios y servicios personalizados?",
+              "name": "¿Puedo crear mis propios planes de salud para mascotas con precios y servicios personalizados?",
               "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "Sí, con total libertad. Puedes definir el nombre de tus planes, qué servicios incluye cada uno (vacunas, desparasitación, consultas, profilaxis o baños) y la cuota mensual en pesos colombianos."
+                "text": "Sí, con total libertad. Puedes definir el nombre de tus planes de salud para mascotas, qué servicios incluye cada uno (vacunas, desparasitación, consultas, profilaxis o baños) y la cuota mensual en pesos colombianos."
               }
             },
             {
@@ -134,7 +134,7 @@
               "name": "¿Cómo beneficia el Carnet Digital para mascotas a la clínica?",
               "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "El carnet digital con código QR se envía directamente por WhatsApp al tutor, permitiendo validar vigencias, coberturas y realizar canjes en recepción en 2 segundos sin papeleos ni carnets de cartón."
+                "text": "El carnet digital con código QR se envía directamente por WhatsApp al tutor, permitiendo validar vigencias, coberturas y realizar canjes en recepción en segundos sin papeleos ni carnets de cartón."
               }
             }
           ]
@@ -171,23 +171,24 @@
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "{{ $cfToken }}"}'></script>
     @endif
 
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="shortcut icon" href="/favicon.png">
-    <link rel="apple-touch-icon" href="/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="/brand/favicons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32.png">
+    <link rel="shortcut icon" href="/brand/favicons/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/brand/favicons/favicon-180.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Inter', Arial, sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .glass-nav { background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226, 232, 240, 0.9); }
-        .clinic-card { background: #FFFFFF; border: 1px solid #E2E8F0; box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .clinic-card:hover { border-color: #CBD5E1; box-shadow: 0 16px 32px -6px rgba(15, 23, 42, 0.08); transform: translateY(-3px); }
+        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226, 232, 240, 0.9); }
+        .clinic-card { background: #FFFFFF; border: 1px solid #E2E8F0; box-shadow: 0 4px 20px -2px rgba(21, 33, 59, 0.04); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .clinic-card:hover { border-color: #CBD5E1; box-shadow: 0 16px 32px -6px rgba(21, 33, 59, 0.08); transform: translateY(-3px); }
         
-        /* DEGRADADO AZUL CLÍNICO MODERNO (Royal Blue a Sky/Cyan) */
+        /* DEGRADADO DE MARCA AVIPETAPP (Violet Deep #6D28D9 a Cyan Deep #0E7490) */
         .gradient-headline { 
-            background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 35%, #0284C7 75%, #06B6D4 100%); 
+            background: linear-gradient(135deg, #6D28D9 0%, #7C3AED 45%, #0E7490 100%); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
         }
@@ -247,26 +248,20 @@
         }
     </style>
 </head>
-<body class="min-h-full flex flex-col justify-between overflow-x-hidden bg-[#FAFAF9] text-slate-900">
+<body class="min-h-full flex flex-col justify-between overflow-x-hidden bg-[#F4F7FC] text-[#15213B]">
 
-    <!-- 1. HEADER / NAVBAR CLÍNICO -->
+    <!-- 1. HEADER / NAVBAR OFICIAL AVIPETAPP (Logo Horizontal min 140px + Descriptor) -->
     <header class="sticky top-0 z-50 glass-nav transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between">
-            <a href="/" class="flex items-center space-x-3 group">
-                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl shadow-md shadow-blue-900/10 group-hover:scale-105 group-hover:rotate-2 transition-all duration-300 shrink-0 flex items-center justify-center bg-white border border-slate-200/90 p-1.5">
-                    <img src="/images/dashboard/brand_logo.png" alt="AVI-Plan Logo" class="w-full h-full object-contain">
-                </div>
-                <div class="flex flex-col">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 leading-tight">AVI<span class="text-blue-600">Plan</span></span>
-                        <span class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-bold uppercase bg-blue-50 text-blue-800 rounded-md border border-blue-200 animate-pulse">
-                            by AviPetApp
-                        </span>
-                    </div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 -mt-0.5">
-                        Planes de Bienestar para Veterinarias
-                    </span>
-                </div>
+            <a href="/" class="flex flex-col justify-center py-2 group">
+                <img
+                    src="/brand/svg/avipetapp-horizontal-fondo-claro.svg"
+                    alt="AviPetApp"
+                    class="h-8 sm:h-9 w-auto min-w-[145px] object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+                >
+                <span class="text-[10px] font-semibold text-[#5C6B85] tracking-tight mt-0.5 pl-0.5">
+                    Software con IA para veterinarias
+                </span>
             </a>
             
             <nav class="hidden lg:flex items-center space-x-6 text-xs sm:text-sm font-semibold text-slate-600">
@@ -295,7 +290,7 @@
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-300 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
                     </span>
-                    <span>Probar <span class="hidden sm:inline">AVI-Plan </span>Gratis</span>
+                    <span>Probar <span class="hidden sm:inline">AviPetApp </span>Gratis</span>
                 </button>
                 <!-- BOTÓN HAMBURGUESA MÓVIL (VISIBLE EN < LG) -->
                 <button type="button" onclick="toggleMobileMenu()" id="mobile-menu-btn" class="lg:hidden p-2 rounded-xl text-slate-700 hover:text-blue-600 hover:bg-slate-100 transition focus:outline-none" aria-label="Abrir menú de navegación">
@@ -358,7 +353,7 @@
                 <a href="/admin" class="w-full py-2.5 px-4 text-center rounded-xl border border-slate-300 text-slate-800 font-bold text-xs hover:bg-slate-50 transition flex items-center justify-center gap-1.5">
                     <span>🔐 Iniciar Sesión en tu Clínica</span>
                 </a>
-                <a href="https://wa.me/573235813942?text=Hola%20Robinson,%20quiero%20conocer%20m%C3%A1s%20sobre%20AVI-Plan" target="_blank" class="w-full py-2.5 px-4 text-center rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
+                <a href="https://wa.me/573235813942?text=Hola%20Robinson,%20quiero%20conocer%20m%C3%A1s%20sobre%20AviPetApp" target="_blank" class="w-full py-2.5 px-4 text-center rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
                     <span>💬 Contacto por WhatsApp (323 581 3942)</span>
                 </a>
             </div>
@@ -391,7 +386,7 @@
                         </h1>
 
                         <p class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal max-w-2xl">
-                            Crea planes de bienestar para mascotas, recibe cobros mensuales y deja que tus tutores consulten y canjeen sus beneficios desde su celular.
+                            Planes de salud, clientes e IA en una sola plataforma. Crea planes de bienestar para mascotas, recibe cobros mensuales y deja que tus tutores consulten y canjeen sus beneficios desde su celular.
                         </p>
 
                         <!-- POSICIONAMIENTO MARCA BLANCA -->
@@ -403,7 +398,7 @@
                         <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
                             <button type="button" onclick="openRegisterModal('pro')" class="px-7 py-4 rounded-2xl bg-blue-600 text-white font-bold text-base hover:bg-blue-700 shadow-lg shadow-blue-600/25 transition-all transform hover:-translate-y-1 hover:shadow-xl active:translate-y-0 flex items-center justify-center space-x-2 text-center group">
                                 <span class="group-hover:rotate-12 transition-transform">🚀</span>
-                                <span>Probar AVI-Plan gratis</span>
+                                <span>Probar AviPetApp gratis</span>
                             </button>
                             <a href="#como-funciona" class="px-6 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm sm:text-base border border-slate-300 shadow-xs transition-all flex items-center justify-center space-x-2 text-center hover:border-blue-500">
                                 <span>Ver cómo funciona →</span>
@@ -557,10 +552,10 @@
                         </div>
                         <div class="space-y-1">
                             <h3 class="text-base sm:text-lg font-bold text-slate-900">
-                                Tranquilo: AVI-Plan no reemplaza tu software veterinario actual
+                                Tranquilo: AviPetApp no reemplaza tu software veterinario actual
                             </h3>
                             <p class="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
-                                Si ya utilizas <strong>Vetlogy, SoftVet, Gesvet o Excel</strong> para fichas médicas e inventario, ¡sigue usándolos! AVI-Plan es la capa especializada en <strong>planes de bienestar, membresías de salud y cobro recurrente</strong> que se suma a tu mostrador sin interrumpir tu clínica.
+                                Si ya utilizas <strong>Vetlogy, SoftVet, Gesvet o Excel</strong> para fichas médicas e inventario, ¡sigue usándolos! AviPetApp es la capa especializada en <strong>planes de bienestar, membresías de salud y cobro recurrente</strong> que se suma a tu mostrador sin interrumpir tu clínica.
                             </p>
                         </div>
                     </div>
@@ -584,7 +579,7 @@
                         Buscamos <span class="text-emerald-400">Clínicas Veterinarias Socias</span> en cada ciudad de Colombia
                     </h2>
                     <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
-                        Conviértete en la veterinaria pionera de planes de salud preventiva en tu municipio o sector. En <strong>AviPetApp (AVI-Plan)</strong> te damos la tecnología, el posicionamiento local en Google y el modelo actuarial listo para facturar desde el primer día.
+                        Conviértete en la veterinaria pionera de planes de salud preventiva en tu municipio o sector. En <strong>AviPetApp</strong> te damos la tecnología, el posicionamiento local en Google y el modelo actuarial listo para facturar desde el primer día.
                     </p>
                 </div>
 
@@ -1524,12 +1519,12 @@
                         </ul>
                     </div>
 
-                    <!-- CON AVI-PLAN EN AZUL CLÍNICO -->
+                    <!-- CON AVIPETAPP EN AZUL CLÍNICO -->
                     <div class="clinic-card p-6 sm:p-8 rounded-3xl border-2 border-blue-600 bg-blue-50/20 space-y-4 shadow-md reveal-on-scroll">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-xl">✓</div>
                             <div>
-                                <h3 class="text-lg font-bold text-slate-900">Con AVI-Plan</h3>
+                                <h3 class="text-lg font-bold text-slate-900">Con AviPetApp</h3>
                                 <p class="text-xs text-blue-800 font-bold">Un programa para mantener la relación todo el año</p>
                             </div>
                         </div>
@@ -1583,7 +1578,7 @@
                             <div class="text-2xl">🚫</div>
                             <h4 class="text-sm font-bold text-slate-900">Cero Comisión por Venta</h4>
                             <p class="text-xs text-slate-600">
-                                AVI-Plan no retiene tu dinero ni cobra porcentajes sobre tus ingresos. Solo pagas $5.000 por mascota activa o una suscripción mensual fija.
+                                AviPetApp no retiene tu dinero ni cobra porcentajes sobre tus ingresos. Solo pagas $5.000 por mascota activa o una suscripción mensual fija.
                             </p>
                         </div>
 
@@ -1728,7 +1723,7 @@
                                 <li class="flex items-center space-x-2"><span class="text-blue-600 font-bold">✓</span> <span>Integración WhatsApp</span></li>
                             </ul>
                         </div>
-                        <a href="https://wa.me/573235813942?text=Hola%20Robinson,%20me%20interesa%20el%20plan%20Enterprise%20de%20AVI-Plan" target="_blank" class="mt-6 w-full py-3 text-center rounded-xl bg-white hover:bg-slate-50 text-slate-900 font-bold text-xs border border-slate-300 transition">
+                        <a href="https://wa.me/573235813942?text=Hola%20Robinson,%20me%20interesa%20el%20plan%20Enterprise%20de%20AviPetApp" target="_blank" class="mt-6 w-full py-3 text-center rounded-xl bg-white hover:bg-slate-50 text-slate-900 font-bold text-xs border border-slate-300 transition">
                             Contactar Asesor
                         </a>
                     </div>
@@ -1767,13 +1762,13 @@
                             <span class="text-blue-600 font-bold text-lg group-open:rotate-45 transition-transform duration-200">+</span>
                         </summary>
                         <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
-                            <strong>No.</strong> AVI-Plan no busca competir con tu software de historia médica o inventarios (SoftVet, Gesvet, Vetlogy, etc.). AVI-Plan es una <strong>plataforma especializada en planes de bienestar, membresías y facturación recurrente</strong>. Convive perfectamente con cualquier sistema que uses hoy.
+                            <strong>No.</strong> AviPetApp no busca competir con tu software de historia médica o inventarios (SoftVet, Gesvet, Vetlogy, etc.). AviPetApp es una <strong>plataforma especializada en planes de bienestar, membresías y facturación recurrente</strong>. Convive perfectamente con cualquier sistema que uses hoy.
                         </p>
                     </details>
 
                     <details class="clinic-card p-5 rounded-2xl group cursor-pointer reveal-on-scroll">
                         <summary class="font-bold text-sm sm:text-base text-slate-900 flex justify-between items-center list-none">
-                            <span>¿AVI-Plan cobra comisión por cada plan vendido?</span>
+                            <span>¿AviPetApp cobra comisión por cada plan vendido?</span>
                             <span class="text-blue-600 font-bold text-lg group-open:rotate-45 transition-transform duration-200">+</span>
                         </summary>
                         <p class="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
@@ -1849,7 +1844,7 @@
                     </p>
                     <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
                         <button type="button" onclick="openRegisterModal('pro')" class="w-full sm:w-auto px-9 py-4 rounded-2xl bg-blue-600 text-white font-bold text-base hover:bg-blue-700 shadow-lg shadow-blue-600/25 transition transform hover:-translate-y-1 hover:shadow-xl active:translate-y-0 flex items-center justify-center space-x-2">
-                            <span>🟢 Probar AVI-Plan gratis</span>
+                            <span>🟢 Probar AviPetApp gratis</span>
                         </button>
                     </div>
                 </div>
@@ -1857,47 +1852,53 @@
         </section>
     </main>
 
-    <!-- FOOTER B2B CLÍNICO CON ENLAZADO INTERNO SEO -->
-    <footer class="border-t border-slate-200 py-12 bg-white text-slate-500 text-xs">
+    <!-- FOOTER B2B OFICIAL AVIPETAPP (Midnight #080B20 · Manual Maestro de Marca v1.1) -->
+    <footer class="border-t border-[#111936] py-14 bg-[#080B20] text-slate-300 text-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-slate-100">
-                <div class="space-y-3">
-                    <div class="flex items-center space-x-3">
-                        <img src="/images/dashboard/brand_logo.png" alt="AVI-Plan Logo" class="w-8 h-8 object-contain">
-                        <div>
-                            <span class="font-extrabold text-slate-900 text-sm">AVI<span class="text-blue-600">Plan</span></span>
-                            <span class="text-xs text-slate-500 block">Software de Planes de Salud para Clínicas Veterinarias</span>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-[#111936]">
+                <div class="space-y-3.5">
+                    <div class="flex flex-col items-start gap-1.5">
+                        <img
+                            src="/brand/svg/avipetapp-horizontal-fondo-oscuro.svg"
+                            alt="AviPetApp"
+                            class="h-9 w-auto min-w-[148px] object-contain"
+                        >
+                        <span class="text-[11px] font-semibold text-[#35DDF5] tracking-wide">
+                            Software con IA para veterinarias
+                        </span>
                     </div>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        Convierte pacientes ocasionales en ingresos mensuales recurrentes fijos con tu propia marca, carnet digital en WhatsApp y terminal de canje en mostrador.
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        AviPetApp ayuda a tu clínica a gestionar planes de salud para mascotas, organizar la relación con tus clientes y aprovechar herramientas inteligentes desde una sola plataforma.
+                    </p>
+                    <p class="text-xs font-semibold text-[#A855F7]">
+                        Más inteligencia. Más bienestar. Más futuro.
                     </p>
                 </div>
 
                 <div class="space-y-2.5">
-                    <h4 class="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Guías de Rentabilidad Veterinaria</h4>
-                    <ul class="space-y-2 font-medium text-slate-600">
-                        <li><a href="/blog/planes-de-salud-preventiva-veterinaria-ingresos-recurrentes" class="hover:text-blue-600 transition-colors">→ Cómo crear Planes de Salud Preventiva en tu Veterinaria</a></li>
-                        <li><a href="/blog/fidelizacion-clientes-veterinaria-retencion-mascotas" class="hover:text-blue-600 transition-colors">→ Retención de Clientes en Clínica Veterinaria (+80% Fidelidad)</a></li>
-                        <li><a href="/blog/como-calcular-precio-planes-salud-veterinaria-plantilla-costos" class="hover:text-blue-600 transition-colors">→ Calculadora y Plantilla de Costos para Planes de Mascotas</a></li>
-                        <li><a href="/blog/mejores-software-veterinarios-colombia-comparativa-2026" class="hover:text-blue-600 transition-colors">→ Comparativa de Software Veterinario en Colombia (2026)</a></li>
+                    <h4 class="font-bold text-white uppercase tracking-wider text-[11px]">Guías de Rentabilidad Veterinaria</h4>
+                    <ul class="space-y-2 font-medium text-slate-300">
+                        <li><a href="/blog/planes-de-salud-preventiva-veterinaria-ingresos-recurrentes" class="hover:text-[#35DDF5] transition-colors">→ Cómo crear Planes de Salud Preventiva en tu Veterinaria</a></li>
+                        <li><a href="/blog/fidelizacion-clientes-veterinaria-retencion-mascotas" class="hover:text-[#35DDF5] transition-colors">→ Retención de Clientes en Clínica Veterinaria (+80% Fidelidad)</a></li>
+                        <li><a href="/blog/como-calcular-precio-planes-salud-veterinaria-plantilla-costos" class="hover:text-[#35DDF5] transition-colors">→ Calculadora y Plantilla de Costos para Planes de Mascotas</a></li>
+                        <li><a href="/blog/mejores-software-veterinarios-colombia-comparativa-2026" class="hover:text-[#35DDF5] transition-colors">→ Comparativa de Software Veterinario en Colombia (2026)</a></li>
                     </ul>
                 </div>
 
                 <div class="space-y-2.5">
-                    <h4 class="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Accesos Directos</h4>
-                    <ul class="space-y-2 font-semibold text-slate-600">
-                        <li><a href="/blog" class="hover:text-blue-600 transition-colors">📚 Blog para Clínicas Veterinarias</a></li>
-                        <li><a href="/admin" class="hover:text-blue-600 transition-colors">🔐 Iniciar Sesión / Acceso Mostrador</a></li>
-                        <li><a href="https://vet-pet-patitas.avipetapp.com/" target="_blank" class="hover:text-blue-600 transition-colors">🐾 Ver Clínica Piloto (Vet-Pet Patitas Cajicá)</a></li>
-                        <li><a href="https://wa.me/573235813942" target="_blank" class="hover:text-blue-600 transition-colors">💬 Soporte WhatsApp (+57 323 581 3942)</a></li>
+                    <h4 class="font-bold text-white uppercase tracking-wider text-[11px]">Accesos Directos</h4>
+                    <ul class="space-y-2 font-semibold text-slate-300">
+                        <li><a href="/blog" class="hover:text-[#35DDF5] transition-colors">📚 Blog para Clínicas Veterinarias</a></li>
+                        <li><a href="/admin" class="hover:text-[#35DDF5] transition-colors">🔐 Iniciar Sesión / Acceso Mostrador</a></li>
+                        <li><a href="https://vet-pet-patitas.avipetapp.com/" target="_blank" class="hover:text-[#35DDF5] transition-colors">🐾 Ver Clínica Piloto (Vet-Pet Patitas Cajicá)</a></li>
+                        <li><a href="https://wa.me/573235813942" target="_blank" class="hover:text-[#35DDF5] transition-colors">💬 Soporte WhatsApp (+57 323 581 3942)</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
-                <p>© {{ date('Y') }} AVI-Plan by AviPetApp · Todos los derechos reservados · Colombia & LATAM.</p>
-                <a href="/sitemap.xml" class="hover:text-slate-600 transition-colors">Mapa del Sitio (XML)</a>
+                <p>© {{ date('Y') }} AviPetApp · Software con IA para veterinarias · Todos los derechos reservados · Colombia & LATAM.</p>
+                <a href="/sitemap.xml" class="hover:text-[#35DDF5] transition-colors">Mapa del Sitio (XML)</a>
             </div>
         </div>
     </footer>
@@ -1981,7 +1982,7 @@
                 <div class="p-2.5 rounded-xl bg-blue-50/70 border border-blue-100 text-slate-700 text-[11px] flex items-start space-x-2">
                     <span class="text-sm shrink-0">💬</span>
                     <p class="leading-relaxed">
-                        ¿Olvidaste tu contraseña o necesitas ayuda? Escríbenos a WhatsApp al <a href="https://wa.me/573235813942?text=Hola,%20necesito%20ayuda%20o%20soporte%20con%20mi%20cuenta%20de%20AVI-Plan" target="_blank" class="font-black text-blue-700 hover:underline">3235813942</a> o a <a href="mailto:contacto@avipetapp.com" class="font-black text-blue-700 hover:underline">contacto@avipetapp.com</a>.
+                        ¿Olvidaste tu contraseña o necesitas ayuda? Escríbenos a WhatsApp al <a href="https://wa.me/573235813942?text=Hola,%20necesito%20ayuda%20o%20soporte%20con%20mi%20cuenta%20de%20AviPetApp" target="_blank" class="font-black text-blue-700 hover:underline">3235813942</a> o a <a href="mailto:contacto@avipetapp.com" class="font-black text-blue-700 hover:underline">contacto@avipetapp.com</a>.
                     </p>
                 </div>
 

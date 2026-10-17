@@ -55,7 +55,7 @@ class SuperAdminProspectoController extends Controller
                 $waPhone = null;
             }
 
-            $waMessage = urlencode("Hola buen día, equipo de {$p->razon_social} ({$p->municipio}). Les escribe Robinson de AVI Pet (https://avipetapp.com). Queremos mostrarles cómo activar planes de salud preventivos y carnet digital para fidelizar pacientes.");
+            $waMessage = urlencode("Hola buen día, equipo de {$p->razon_social} ({$p->municipio}). Les escribe Robinson de AviPetApp (https://avipetapp.com). Queremos mostrarles cómo activar planes de salud preventivos y carnet digital para fidelizar pacientes.");
             $waLink = $waPhone ? "https://wa.me/{$waPhone}?text={$waMessage}" : null;
 
             return [
@@ -112,6 +112,7 @@ class SuperAdminProspectoController extends Controller
             'userName' => $authUser?->name ?? 'Robinson Naranjo',
             'userEmail' => $authUser?->email ?? 'superadmin@avipetapp.com',
             'initialCampaign' => Cache::get('avi_campaign_progress', ['status' => 'idle']),
+            'initialScan' => Cache::get('avi_scan_progress', ['status' => 'idle']),
         ]);
     }
 
@@ -255,22 +256,40 @@ class SuperAdminProspectoController extends Controller
 
     public function scanRegion(Request $request)
     {
-        set_time_limit(180);
-        $region = $request->input('region', 'todo_el_pais');
-        $limit = min((int) $request->input('limit', 50), 100);
+        $region = (string) $request->input('region', 'todo_el_pais');
+        $limit = min(max((int) $request->input('limit', 50), 1), 100);
 
-        try {
-            $scraper = app(\App\Services\VeterinariaScraperService::class);
-            $res = $scraper->scanRegion($region, null, null, null, $limit);
+        // Inicializar estado de progreso en caché para el banner de escaneo en vivo
+        Cache::put('avi_scan_progress', [
+            'status' => 'running',
+            'total' => $limit,
+            'encontrados' => 0,
+            'percent' => 10,
+            'region' => $region,
+            'current_step' => 'Iniciando conexión con registros y directorios veterinarios...',
+            'started_at' => now()->format('H:i:s'),
+        ], 600);
 
-            $guardados = $res['guardados_o_actualizados'] ?? count($res['encontrados'] ?? []);
-            $totalPendientes = $res['pendientes_en_cola'] ?? ProspectoVeterinaria::where('estado', 'pendiente')->count();
+        $artisan = base_path('artisan');
+        $escapedRegion = escapeshellarg($region);
 
-            return redirect()->back()->with('success', "🔍 Escaneo completado: Se descubrieron y sincronizaron {$guardados} clínicas en {$region}. Total pendientes en base: {$totalPendientes}.");
-        } catch (\Throwable $e) {
-            Log::error("Error en escaneo de veterinarias: " . $e->getMessage());
-            return redirect()->back()->with('error', "No se pudo completar el escaneo: " . $e->getMessage());
-        }
+        exec("php {$artisan} avi:prospectos-scan --region={$escapedRegion} --limit={$limit} > /dev/null 2>&1 &");
+
+        return redirect()->back()->with('success', "🔍 Rastreador iniciado para {$limit} nuevas clínicas en segundo plano. El banner superior te mostrará el avance en vivo.");
+    }
+
+    public function scanStatus(): \Illuminate\Http\JsonResponse
+    {
+        $data = Cache::get('avi_scan_progress', [
+            'status' => 'idle',
+            'total' => 0,
+            'encontrados' => 0,
+            'percent' => 0,
+            'region' => null,
+            'current_step' => null,
+        ]);
+
+        return response()->json($data);
     }
 
     public function importCsv(Request $request)

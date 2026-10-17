@@ -545,7 +545,7 @@ export default function Intelligence({
                 const botMsg: ChatMessage = {
                     id: `bot-${Date.now()}`,
                     sender: 'assistant',
-                    text: 'Hubo una breve demora en el servicio de IA. Por favor intenta de nuevo.',
+                    text: 'No pudimos generar la sugerencia. Intenta de nuevo o continúa de forma manual.',
                     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 };
                 setChatMessages(prev => [...prev, botMsg]);
@@ -613,6 +613,19 @@ export default function Intelligence({
                             <span>Gemini 2.5 Flash Live Operativo</span>
                         </span>
                     </div>
+                </div>
+
+                {/* Aviso Oficial de IA (Manual Maestro de Marca v1.1 - Sección 02) */}
+                <div className="bg-purple-50/80 border border-purple-200/80 rounded-2xl px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#15213B]">
+                    <div className="flex items-center gap-2">
+                        <Info className="w-4 h-4 text-[#6D28D9] shrink-0" />
+                        <span className="font-semibold">
+                            Sugerencia generada con IA. Revísala antes de usarla en una decisión clínica.
+                        </span>
+                    </div>
+                    <span className="text-[11px] text-[#5C6B85] font-medium">
+                        La IA organiza información; el criterio clínico es de tu equipo veterinario.
+                    </span>
                 </div>
 
                 {/* 2. Top KPI Cards de Inteligencia de Negocio & Retención */}
@@ -933,7 +946,7 @@ export default function Intelligence({
                                         {isTriaging ? (
                                             <>
                                                 <Loader2 className="w-4 h-4 animate-spin" />
-                                                <span>Analizando con Gemini...</span>
+                                                <span>Preparando sugerencia…</span>
                                             </>
                                         ) : (
                                             <>
@@ -1403,7 +1416,7 @@ export default function Intelligence({
                                     </div>
                                     <div className="bg-white border border-slate-200 p-3 rounded-2xl rounded-bl-xs text-xs text-slate-500 flex items-center gap-2">
                                         <div className="w-3.5 h-3.5 border-2 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
-                                        <span>Gemini 2.5 Flash está procesando la respuesta...</span>
+                                        <span>Preparando sugerencia…</span>
                                     </div>
                                 </div>
                             )}

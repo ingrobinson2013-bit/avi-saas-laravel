@@ -17,11 +17,11 @@
       gtag('config', '{{ $gaId }}');
     </script>
     @endif
-    <title inertia>{{ config('app.name', 'Vet-Pet Patitas · Portal Veterinario') }}</title>
+    <title inertia>{{ config('app.name', 'AviPetApp · Software con IA para veterinarias') }}</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     @php
         $host = request()->getHost();
         $cleanHost = strtolower(trim($host));
@@ -55,23 +55,24 @@
         }
 
         if (request()->is('super-admin*')) {
-            $clinicPageTitle = 'Centro de Control · AVI Pet Superadmin';
-            $favIcon = '/logo.svg';
+            $clinicPageTitle = 'Centro de control · AviPetApp Superadmin';
+            $favIcon = '/brand/favicons/favicon.svg';
         } else {
-            $favIcon = $currentTenant?->branding['logo_url'] ?? '/logo-app.png';
-            $clinicPageTitle = $currentTenant ? ($currentTenant->name . ' · Portal Clínico AVI') : 'AVI-Plan · Portal Veterinario';
+            $favIcon = $currentTenant?->branding['logo_url'] ?? '/brand/favicons/favicon.svg';
+            $clinicPageTitle = $currentTenant ? ($currentTenant->name . ' · AviPetApp') : 'AviPetApp · Software con IA para veterinarias';
         }
     @endphp
     <title inertia>{{ $clinicPageTitle }}</title>
-    <link rel="icon" type="image/webp" href="{{ $favIcon }}">
+    <link rel="icon" type="image/svg+xml" href="{{ $favIcon }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32.png">
     <link rel="shortcut icon" href="{{ $favIcon }}">
-    <link rel="apple-touch-icon" href="{{ $favIcon }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="/brand/favicons/favicon-180.png">
 
     @viteReactRefresh
     @vite(['resources/js/app.tsx'])
     @inertiaHead
 </head>
-<body class="h-full font-sans antialiased bg-[#edf0f7] text-slate-900 selection:bg-cyan-500 selection:text-white">
+<body class="h-full font-sans antialiased bg-[#F4F7FC] text-[#15213B] selection:bg-[#6D28D9] selection:text-white">
     @inertia
 </body>
 </html>

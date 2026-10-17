@@ -313,14 +313,14 @@ class SaasPaymentLogResource extends Resource
                         $until = $record->period_end?->format('d/m/Y') ?? date('d/m/Y', strtotime('+30 days'));
                         $clinic = $record->tenant?->name ?? 'Clínica';
                         
-                        $text = "🧾 *COMPROBANTE OFICIAL AVI-PLAN SAAS*\n\n"
+                        $text = "🧾 *COMPROBANTE OFICIAL AVIPETAPP SAAS*\n\n"
                               . "Hola Dr(a) de *{$clinic}*,\n"
-                              . "Confirmamos el registro de tu pago de suscripción mensual a la plataforma AVI-Plan.\n\n"
+                              . "Confirmamos el registro de tu pago de suscripción mensual a la plataforma AviPetApp.\n\n"
                               . "💰 *Monto:* {$amount}\n"
                               . "📅 *Fecha de Pago:* {$date}\n"
                               . "🛡️ *Vigencia de Cobertura:* Hasta el {$until}\n"
                               . "💳 *Medio:* " . strtoupper($record->gateway) . "\n\n"
-                              . "Tu plataforma y portal de clientes se encuentran 100% activos y al día. ¡Gracias por confiar en AVI-Plan!";
+                              . "Tu plataforma y portal de clientes se encuentran 100% activos y al día. ¡Gracias por confiar en AviPetApp!";
                               
                         return "https://wa.me/{$prefix}?text=" . urlencode($text);
                     }, true),

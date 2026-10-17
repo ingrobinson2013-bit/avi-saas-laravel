@@ -35,7 +35,7 @@ class ClinicOnboardingController extends Controller
             'city.required' => 'La ciudad es requerida.',
             'phone.required' => 'El número de WhatsApp es necesario para enviarte alertas.',
             'email.required' => 'El correo electrónico es obligatorio.',
-            'email.unique' => 'Este correo ya tiene una cuenta registrada en AVI-Plan.',
+            'email.unique' => 'Este correo ya tiene una cuenta registrada en AviPetApp.',
             'password.min' => 'La contraseña debe tener mínimo 6 caracteres.',
         ]);
 
@@ -128,7 +128,7 @@ class ClinicOnboardingController extends Controller
                 $destinatarios = array_filter(array_map('trim', explode(',', env('ADMIN_NOTIFY_EMAILS', 'contacto@avipetapp.com,ingrobinson2013@gmail.com,petmovilveterinario@gmail.com'))));
                 $waDigits = preg_replace('/[^0-9]/', '', $validated['phone']);
                 $waPrefix = str_starts_with($waDigits, '57') ? $waDigits : "57{$waDigits}";
-                $waLink = "https://wa.me/{$waPrefix}?text=" . urlencode("Hola Dr(a) de {$validated['clinic_name']}, soy Robinson Naranjo de AVI-Plan. Vi que te acabas de registrar para tu prueba de 15 días gratis. Te escribo para asesorarte y ayudarte a dejar listo tu primer plan y tu afiche de mostrador.");
+                $waLink = "https://wa.me/{$waPrefix}?text=" . urlencode("Hola Dr(a) de {$validated['clinic_name']}, soy Robinson Naranjo de AviPetApp. Vi que te acabas de registrar para tu prueba de 15 días gratis. Te escribo para asesorarte y ayudarte a dejar listo tu primer plan y tu afiche de mostrador.");
 
                 Mail::to($destinatarios)->send(new NewClinicLeadAlertMail(
                     $tenant,

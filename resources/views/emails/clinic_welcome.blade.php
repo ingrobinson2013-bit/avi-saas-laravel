@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¡Bienvenido a AVI-Plan!</title>
+    <title>¡Bienvenido a AviPetApp!</title>
     <style>
         body { margin: 0; padding: 0; background-color: #0b1120; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
         .wrapper { width: 100%; background-color: #0b1120; padding: 30px 10px; }
@@ -37,9 +37,9 @@
         <div class="main">
             <!-- Header -->
             <div class="header">
-                <span class="badge">🐾 Software SaaS Veterinario</span>
-                <h1 class="title">¡Bienvenido(a) a AVI-Plan!</h1>
-                <p class="subtitle">Plataforma Oficial de Planes Preventivos para Mascotas</p>
+                <span class="badge">🐾 Software con IA para veterinarias</span>
+                <h1 class="title">¡Bienvenido(a) a AviPetApp!</h1>
+                <p class="subtitle">Planes de salud, clientes e IA en una sola plataforma</p>
             </div>
 
             <!-- Content -->
@@ -107,9 +107,9 @@
                         👨‍💼 Asesoría Personalizada y Acompañamiento VIP
                     </div>
                     <p style="margin: 0; font-size: 13px; color: #94a3b8; line-height: 1.5;">
-                        Tu asesor de cuenta asignado es <strong>Robinson Naranjo</strong>, CEO y Especialista en Arquitectura de AVI-Plan. Te ayudaremos a diseñar tu primer plan para que comiences a generar ingresos predecibles desde la primera semana.
+                        Tu asesor de cuenta asignado es <strong>Robinson Naranjo</strong>, CEO y Especialista en Arquitectura de AviPetApp. Te ayudaremos a diseñar tu primer plan para que comiences a generar ingresos predecibles desde la primera semana.
                     </p>
-                    <a href="https://wa.me/573235813942?text={{ urlencode('Hola Robinson, me acabo de registrar en AVI-Plan con mi clínica ' . $clinicName . '. Quisiera asesoría para configurar mis planes.') }}" target="_blank" class="wa-btn">
+                    <a href="https://wa.me/573235813942?text={{ urlencode('Hola Robinson, me acabo de registrar en AviPetApp con mi clínica ' . $clinicName . '. Quisiera asesoría para configurar mis planes.') }}" target="_blank" class="wa-btn">
                         💬 Escribir al WhatsApp de Robinson (323 581 3942)
                     </a>
                 </div>
@@ -117,8 +117,8 @@
 
             <!-- Footer -->
             <div class="footer">
-                <p style="margin: 0 0 6px 0;">© {{ date('Y') }} AVI-Plan. Todos los derechos reservados.</p>
-                <p style="margin: 0;">Tecnología en Planes Preventivos de Salud para Mascotas | <a href="https://avipetapp.com" target="_blank">avipetapp.com</a></p>
+                <p style="margin: 0 0 6px 0;">© {{ date('Y') }} AviPetApp. Todos los derechos reservados.</p>
+                <p style="margin: 0;">Software con IA para veterinarias · Más inteligencia. Más bienestar. Más futuro. | <a href="https://avipetapp.com" target="_blank">avipetapp.com</a></p>
             </div>
         </div>
     </div>

@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nokia DEC Portal Pro — Arquitectura C4</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        nokia: {
+                            blue: '#0047AB',
+                            lightBlue: '#1e60db',
+                            dark: '#031430',
+                            accent: '#00d2ff',
+                        },
+                        brand: {
+                            success: '#10b981',
+                            error: '#ef4444',
+                            warning: '#f59e0b',
+                            info: '#3b82f6',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/css">
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(3, 20, 48, 0.5) 0px, transparent 50%),
+                radial-gradient(at 50% 0%, rgba(0, 71, 171, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(3, 20, 48, 0.4) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-panel-glow {
+            box-shadow: 0 0 25px -5px rgba(0, 71, 171, 0.25);
+        }
+
+        /* SVG styles & Animations */
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -40;
+            }
+        }
+
+        .flow-line {
+            stroke-dasharray: 6, 6;
+            animation: dash 2.5s linear infinite;
+        }
+
+        .flow-line-fast {
+            stroke-dasharray: 6, 4;
+            animation: dash 1.2s linear infinite;
+        }
+
+        /* Node hover styles */
+        .node-group {
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .node-group:hover rect, .node-group.active rect {
+            fill-opacity: 0.95;
+            stroke-width: 2.5px;
+            filter: drop-shadow(0 4px 12px rgba(0, 71, 171, 0.4));
+        }
+
+        .node-group.nokia-core:hover rect, .node-group.nokia-core.active rect {
+            stroke: #00d2ff;
+            filter: drop-shadow(0 4px 15px rgba(0, 210, 255, 0.5));
+        }
+
+        .node-group.ext-system:hover rect, .node-group.ext-system.active rect {
+            stroke: #f59e0b;
+            filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.35));
+        }
+
+        /* Connection lines hover highlights */
+        .connector-group {
+            transition: all 0.2s ease;
+        }
+        .connector-group:hover path.main-line {
+            stroke: #00d2ff !important;
+            stroke-width: 3px !important;
+            filter: drop-shadow(0 0 6px rgba(0, 210, 255, 0.8));
+        }
+        .connector-group:hover text {
+            fill: #00d2ff !important;
+            font-weight: 600;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0047AB;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col overflow-hidden">
+
+    <!-- Header Principal -->
+    <header class="glass-panel border-b border-white/5 px-6 py-4 flex flex-shrink-0 items-center justify-between z-10">
+        <div class="flex items-center space-x-3">
+            <div class="h-9 w-9 rounded-lg bg-gradient-to-tr from-nokia-blue to-nokia-accent flex items-center justify-center shadow-lg shadow-nokia-blue/30">
+                <span class="font-outfit font-extrabold text-white text-lg">N</span>
+            </div>
+            <div>
+                <h1 class="font-outfit font-bold text-lg tracking-wide text-white flex items-center gap-2">
+                    Nokia DEC Portal Pro
+                    <span class="text-xs bg-nokia-blue/30 text-nokia-accent font-sans font-medium px-2 py-0.5 rounded border border-nokia-accent/20">C4 MODEL</span>
+                </h1>
+                <p class="text-xs text-slate-400">Mapa Arquitectónico Interactivo · Claro Conecta RPA</p>
+            </div>
+        </div>
+
+        <!-- Navegación de Niveles -->
+        <nav class="flex space-x-1 bg-slate-900/60 p-1 rounded-xl border border-white/5">
+            <button onclick="switchTab('context')" id="btn-context" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all font-outfit uppercase bg-nokia-blue text-white shadow shadow-nokia-blue/30">
+                Nivel 1: Contexto
+            </button>
+            <button onclick="switchTab('container')" id="btn-container" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all font-outfit uppercase text-slate-400 hover:text-white">
+                Nivel 2: Contenedores
+            </button>
+            <button onclick="switchTab('component')" id="btn-component" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all font-outfit uppercase text-slate-400 hover:text-white">
+                Nivel 3: Componentes RPA
+            </button>
+            <button onclick="switchTab('flows')" id="btn-flows" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all font-outfit uppercase text-slate-400 hover:text-white">
+                Nivel 4: Flujos Código
+            </button>
+            <button onclick="switchTab('adrs')" id="btn-adrs" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all font-outfit uppercase text-slate-400 hover:text-white">
+                Decisiones (ADRs)
+            </button>
+            <button onclick="switchTab('roadmap')" id="btn-roadmap" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition-all font-outfit uppercase text-slate-400 hover:text-white">
+                Plan de Calidad & Roadmap
+            </button>
+        </nav>
+
+        <!-- Información de Robinson / NODIA -->
+        <div class="flex items-center space-x-3 text-right">
+            <div class="hidden sm:block">
+                <p class="text-xs font-semibold text-slate-200">Robinson Naranjo</p>
+                <p class="text-[10px] text-nokia-accent font-mono uppercase tracking-widest">CEO & Master Architect</p>
+            </div>
+            <div class="h-8 w-8 rounded-full border border-white/10 overflow-hidden bg-slate-800 flex items-center justify-center text-xs font-bold text-nokia-accent">
+                RN
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-grow flex overflow-hidden relative">
+
+        <!-- Panel Izquierdo: Diagrama Interactivo (70%) -->
+        <div class="w-full lg:w-3/4 flex flex-col p-6 overflow-auto">
+            
+            <!-- CONTENIDO TABS -->
+
+            <!-- TAB 1: CONTEXTO -->
+            <div id="tab-context" class="tab-content w-full h-full flex flex-col justify-between">
+                <div class="mb-4">
+                    <h2 class="text-2xl font-outfit font-bold text-white flex items-center gap-2">
+                        <span>Nivel 1: Contexto de Sistema</span>
+                        <span class="text-sm font-sans font-normal text-slate-400">| Visión general del ecosistema Claro Conecta RPA</span>
+                    </h2>
+                    <p class="text-sm text-slate-400 mt-1">Muestra los usuarios operacionales, el sistema principal Nokia DEC Portal Pro y las integraciones de infraestructura externa.</p>
+                </div>
+                
+                <div class="flex-grow flex items-center justify-center glass-panel rounded-2xl p-4 overflow-hidden border border-white/5 relative glass-panel-glow">
+                    <!-- Leyenda del C4 -->
+                    <div class="absolute bottom-4 left-4 bg-slate-950/80 px-3 py-2 rounded-lg border border-white/10 text-[10px] space-y-1.5 z-10">
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 bg-sky-600 rounded"></span><span class="text-slate-300">Persona / Usuario</span></div>
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 bg-indigo-700 rounded border border-nokia-accent/50"></span><span class="text-slate-300">Sistema Core (Nokia Portal)</span></div>
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 bg-slate-700 rounded border border-amber-500/50"></span><span class="text-slate-300">Sistema Externo</span></div>
+                    </div>
+
+                    <!-- SVG Contexto -->
+                    <svg viewBox="0 0 1000 600" class="w-full h-full max-h-[500px]" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#00d2ff" />
+                            </marker>
+                            <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f59e0b" />
+                            </marker>
+                            <!-- Gradients -->
+                            <linearGradient id="userGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#0284c7" />
+                                <stop offset="100%" stop-color="#0369a1" />
+                            </linearGradient>
+                            <linearGradient id="coreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#0b4295" />
+                                <stop offset="100%" stop-color="#021430" />
+                            </linearGradient>
+                            <linearGradient id="extGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#374151" />
+                                <stop offset="100%" stop-color="#1f2937" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Conectores (Líneas de relación) -->
+                        <g class="connector-group" onclick="selectConnector('L1_DEC_PORTAL')">
+                            <path class="main-line flow-line" d="M 230,170 C 310,170 310,270 395,270" stroke="#0284c7" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="310" y="200" fill="#94a3b8" font-size="11" text-anchor="middle" font-family="Inter">Abre/Cierra VMs</text>
+                            <text x="310" y="215" fill="#64748b" font-size="9" text-anchor="middle" font-family="Inter">(HTTPS)</text>
+                        </g>
+
+                        <g class="connector-group" onclick="selectConnector('L1_SUP_TG')">
+                            <path class="main-line" d="M 230,430 C 500,430 500,280 755,280" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4,4" fill="none" marker-end="url(#arrow)" />
+                            <text x="490" y="380" fill="#94a3b8" font-size="11" text-anchor="middle" font-family="Inter">Recibe evidencias</text>
+                            <text x="490" y="395" fill="#64748b" font-size="9" text-anchor="middle" font-family="Inter">(Telegram app)</text>
+                        </g>
+
+                        <g class="connector-group" onclick="selectConnector('L1_PORTAL_CONECTA')">
+                            <path class="main-line flow-line" d="M 640,260 C 700,260 700,110 755,110" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrow-amber)" />
+                            <text x="695" y="160" fill="#f59e0b" font-size="11" text-anchor="middle" font-family="Inter">RPA API directa</text>
+                            <text x="695" y="175" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">(LDAP + REST :8443)</text>
+                        </g>
+
+                        <g class="connector-group" onclick="selectConnector('L1_PORTAL_TG')">
+                            <path class="main-line flow-line" d="M 640,290 L 755,260" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="695" y="265" fill="#94a3b8" font-size="11" text-anchor="middle" font-family="Inter">Envía fotos</text>
+                            <text x="695" y="280" fill="#64748b" font-size="9" text-anchor="middle" font-family="Inter">(Bot API HTTPS)</text>
+                        </g>
+
+                        <g class="connector-group" onclick="selectConnector('L1_PORTAL_SUPABASE')">
+                            <path class="main-line flow-line-fast" d="M 640,320 C 700,320 700,390 755,390" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="695" y="360" fill="#94a3b8" font-size="11" text-anchor="middle" font-family="Inter">Persiste logs, creds, imgs</text>
+                            <text x="695" y="375" fill="#64748b" font-size="9" text-anchor="middle" font-family="Inter">(Postgres SDK / Storage)</text>
+                        </g>
+
+                        <g class="connector-group" onclick="selectConnector('L1_PORTAL_SKYTOOL')">
+                            <path class="main-line" d="M 640,345 C 700,345 700,530 755,530" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+                            <text x="695" y="460" fill="#94a3b8" font-size="11" text-anchor="middle" font-family="Inter">ETL planificación</text>
+                            <text x="695" y="475" fill="#64748b" font-size="9" text-anchor="middle" font-family="Inter">(Descarga CSV manual/auto)</text>
+                        </g>
+
+
+                        <!-- NODOS -->
+
+                        <!-- DEC -->
+                        <g class="node-group" id="node-ctx-dec" onclick="selectNode('ctx-dec')">
+                            <rect x="50" y="120" width="180" height="100" rx="12" fill="url(#userGrad)" stroke="#38bdf8" stroke-width="1.5" />
+                            <text x="140" y="155" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle" font-family="Outfit">DEC</text>
+                            <text x="140" y="175" fill="#e0f2fe" font-size="10" text-anchor="middle" font-family="Inter">Ingeniero de Campo</text>
+                            <text x="140" y="195" fill="#bae6fd" font-size="9" text-anchor="middle" font-family="Inter">Abre/Cierra VMs</text>
+                        </g>
+
+                        <!-- Supervisor / FM -->
+                        <g class="node-group" id="node-ctx-sup" onclick="selectNode('ctx-sup')">
+                            <rect x="50" y="380" width="180" height="100" rx="12" fill="url(#userGrad)" stroke="#38bdf8" stroke-width="1.5" />
+                            <text x="140" y="415" fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle" font-family="Outfit">Supervisor / FM</text>
+                            <text x="140" y="435" fill="#e0f2fe" font-size="10" text-anchor="middle" font-family="Inter">Coordinación Nokia</text>
+                            <text x="140" y="455" fill="#bae6fd" font-size="9" text-anchor="middle" font-family="Inter">Monitorea en tiempo real</text>
+                        </g>
+
+                        <!-- Nokia DEC Portal Pro (Core) -->
+                        <g class="node-group nokia-core active" id="node-ctx-portal" onclick="selectNode('ctx-portal')">
+                            <rect x="400" y="220" width="240" height="130" rx="16" fill="url(#coreGrad)" stroke="#0047AB" stroke-width="2" />
+                            <!-- Glow internal border -->
+                            <rect x="404" y="224" width="232" height="122" rx="12" fill="none" stroke="#00d2ff" stroke-opacity="0.3" stroke-width="1" />
+                            <text x="520" y="260" fill="#ffffff" font-size="15" font-weight="800" text-anchor="middle" font-family="Outfit">Nokia DEC Portal Pro</text>
+                            <text x="520" y="280" fill="#00d2ff" font-size="11" font-weight="600" text-anchor="middle" font-family="Inter">SaaS Centralizador</text>
+                            <text x="520" y="305" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">Control de VMs, equipos, KPIs,</text>
+                            <text x="520" y="320" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">y motor de automatización RPA</text>
+                        </g>
+
+                        <!-- Claro Conecta API (External) -->
+                        <g class="node-group ext-system" id="node-ctx-conecta" onclick="selectNode('ctx-conecta')">
+                            <rect x="760" y="60" width="200" height="100" rx="12" fill="url(#extGrad)" stroke="#f59e0b" stroke-width="1.5" />
+                            <text x="860" y="95" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Claro Conecta API</text>
+                            <text x="860" y="115" fill="#fef3c7" font-size="9.5" text-anchor="middle" font-family="Inter">Gestión de Ventanas (Claro)</text>
+                            <text x="860" y="135" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">IP: 190.144.218.215</text>
+                        </g>
+
+                        <!-- Telegram Bot API (External) -->
+                        <g class="node-group ext-system" id="node-ctx-tg" onclick="selectNode('ctx-tg')">
+                            <rect x="760" y="200" width="200" height="100" rx="12" fill="url(#extGrad)" stroke="#f59e0b" stroke-width="1.5" />
+                            <text x="860" y="235" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Telegram Bot API</text>
+                            <text x="860" y="255" fill="#fef3c7" font-size="10" text-anchor="middle" font-family="Inter">Notificaciones instantáneas</text>
+                            <text x="860" y="275" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">Envía imagen y menciones @FM</text>
+                        </g>
+
+                        <!-- Supabase Cloud (External) -->
+                        <g class="node-group ext-system" id="node-ctx-supabase" onclick="selectNode('ctx-supabase')">
+                            <rect x="760" y="340" width="200" height="100" rx="12" fill="url(#extGrad)" stroke="#f59e0b" stroke-width="1.5" />
+                            <text x="860" y="375" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Supabase Cloud</text>
+                            <text x="860" y="395" fill="#fef3c7" font-size="10" text-anchor="middle" font-family="Inter">DB, Storage & Auth</text>
+                            <text x="860" y="415" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">Infraestructura multi-tenant</text>
+                        </g>
+
+                        <!-- Nokia Skytool (External) -->
+                        <g class="node-group ext-system" id="node-ctx-skytool" onclick="selectNode('ctx-skytool')">
+                            <rect x="760" y="480" width="200" height="100" rx="12" fill="url(#extGrad)" stroke="#f59e0b" stroke-width="1.5" />
+                            <text x="860" y="515" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Nokia Skytool</text>
+                            <text x="860" y="535" fill="#fef3c7" font-size="10" text-anchor="middle" font-family="Inter">ETL de Planificación Diaria</text>
+                            <text x="860" y="555" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">Descarga de reportes CSV</text>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- TAB 2: CONTENEDORES -->
+            <div id="tab-container" class="tab-content w-full h-full flex flex-col justify-between hidden">
+                <div class="mb-4">
+                    <h2 class="text-2xl font-outfit font-bold text-white flex items-center gap-2">
+                        <span>Nivel 2: Contenedores</span>
+                        <span class="text-sm font-sans font-normal text-slate-400">| Tecnologías y límites de infraestructura</span>
+                    </h2>
+                    <p class="text-sm text-slate-400 mt-1">Muestra la descomposición del SaaS y cómo el Servidor RPA se enruta mediante OpenVPN Windscribe para simular IP de Colombia.</p>
+                </div>
+                
+                <div class="flex-grow flex items-center justify-center glass-panel rounded-2xl p-4 overflow-hidden border border-white/5 relative glass-panel-glow">
+                    <!-- SVG Contenedores -->
+                    <svg viewBox="0 0 1100 700" class="w-full h-full max-h-[530px]" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="containerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1e3a8a" />
+                                <stop offset="100%" stop-color="#172554" />
+                            </linearGradient>
+                            <linearGradient id="dbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#064e3b" />
+                                <stop offset="100%" stop-color="#022c22" />
+                            </linearGradient>
+                            <linearGradient id="vpnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#6b21a8" />
+                                <stop offset="100%" stop-color="#3b0764" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- LÍMITE DEL SISTEMA: NOKIA DEC PORTAL PRO -->
+                        <rect x="180" y="40" width="640" height="620" rx="20" fill="#0f172a" fill-opacity="0.25" stroke="#00d2ff" stroke-width="1.5" stroke-dasharray="8,6" />
+                        <text x="195" y="65" fill="#00d2ff" font-size="12" font-weight="800" font-family="Outfit" letter-spacing="1">LIMITE DEL SISTEMA: NOKIA DEC PORTAL PRO</text>
+
+                        <!-- CONECTORES -->
+                        <!-- Usuario -> Next.js -->
+                        <g class="connector-group" onclick="selectConnector('L2_USER_NEXT')">
+                            <path class="main-line flow-line" d="M 140,150 L 220,150" stroke="#0284c7" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="180" y="135" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">HTTPS</text>
+                        </g>
+
+                        <!-- Next.js -> Supabase DB -->
+                        <g class="connector-group" onclick="selectConnector('L2_NEXT_DB')">
+                            <path class="main-line flow-line-fast" d="M 330,200 L 330,475" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="280" y="325" fill="#10b981" font-size="9" text-anchor="middle" font-family="Inter">Encola jobs / Lee logs</text>
+                            <text x="280" y="340" fill="#64748b" font-size="8" text-anchor="middle" font-family="Inter">(JS SDK REST)</text>
+                        </g>
+
+                        <!-- Next.js -> RPA Server (Proxy) -->
+                        <g class="connector-group" onclick="selectConnector('L2_NEXT_RPA')">
+                            <path class="main-line flow-line" d="M 440,150 C 580,150 540,220 540,220" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="510" y="170" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">Proxy REST /api/rpa/*</text>
+                            <text x="510" y="185" fill="#64748b" font-size="8" text-anchor="middle" font-family="Inter">(HTTP Post :80)</text>
+                        </g>
+
+                        <!-- RPA Server -> DB -->
+                        <g class="connector-group" onclick="selectConnector('L2_RPA_DB')">
+                            <path class="main-line flow-line-fast" d="M 600,330 C 600,410 440,410 440,475" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="530" y="405" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">Polling logs / Credenciales</text>
+                            <text x="530" y="420" fill="#64748b" font-size="8" text-anchor="middle" font-family="Inter">(supabase-py)</text>
+                        </g>
+
+                        <!-- RPA Server -> Storage -->
+                        <g class="connector-group" onclick="selectConnector('L2_RPA_STORAGE')">
+                            <path class="main-line flow-line" d="M 650,330 L 650,475" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="695" y="415" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">Upload PNG Evidencias</text>
+                        </g>
+
+                        <!-- RPA Server -> VPN -->
+                        <g class="connector-group" onclick="selectConnector('L2_RPA_VPN')">
+                            <path class="main-line flow-line-fast" d="M 760,270 C 820,270 820,530 855,530" stroke="#a855f7" stroke-width="2.5" fill="none" marker-end="url(#arrow)" />
+                            <text x="815" y="400" fill="#a855f7" font-size="9" text-anchor="middle" font-family="Inter">Ruta estática</text>
+                            <text x="815" y="415" fill="#94a3b8" font-size="8" text-anchor="middle" font-family="Inter">(Windscribe tun0)</text>
+                        </g>
+
+                        <!-- VPN -> Claro Conecta -->
+                        <g class="connector-group" onclick="selectConnector('L2_VPN_CONECTA')">
+                            <path class="main-line flow-line" d="M 960,530 C 1020,530 1020,150 960,150" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrow-amber)" />
+                            <text x="1015" y="325" fill="#f59e0b" font-size="9" text-anchor="middle" font-family="Inter">HTTP API Directa</text>
+                            <text x="1015" y="340" fill="#94a3b8" font-size="8" text-anchor="middle" font-family="Inter">(REST :8443)</text>
+                        </g>
+
+                        <!-- RPA Server -> Telegram -->
+                        <g class="connector-group" onclick="selectConnector('L2_RPA_TG')">
+                            <path class="main-line flow-line" d="M 760,240 L 855,245" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="805" y="230" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">send_photo</text>
+                        </g>
+
+                        <!-- n8n Connections -->
+                        <g class="connector-group" onclick="selectConnector('L2_N8N_DB')">
+                            <path class="main-line" d="M 480,350 L 440,475" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3,3" fill="none" marker-end="url(#arrow)" />
+                            <text x="440" y="435" fill="#64748b" font-size="8" text-anchor="middle" font-family="Inter">Lee/escribe</text>
+                        </g>
+
+                        <g class="connector-group" onclick="selectConnector('L2_N8N_TG')">
+                            <path class="main-line" d="M 580,380 L 855,275" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3,3" fill="none" marker-end="url(#arrow)" />
+                            <text x="735" y="355" fill="#64748b" font-size="8" text-anchor="middle" font-family="Inter">Alertas programadas</text>
+                        </g>
+
+                        <!-- Next.js -> Skytool -->
+                        <g class="connector-group" onclick="selectConnector('L2_NEXT_SKY')">
+                            <path class="main-line" d="M 330,100 C 330,20 890,20 890,95" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+                            <text x="610" y="35" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">Importación CSV ETL</text>
+                        </g>
+
+
+                        <!-- CONTENEDORES INTERNOS -->
+
+                        <!-- Next.js Portal Web -->
+                        <g class="node-group active" id="node-con-nextjs" onclick="selectNode('con-nextjs')">
+                            <rect x="220" y="100" width="220" height="100" rx="12" fill="url(#containerGrad)" stroke="#0047AB" stroke-width="1.5" />
+                            <text x="330" y="130" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Portal Web Frontend</text>
+                            <text x="330" y="148" fill="#94a3b8" font-size="9.5" text-anchor="middle" font-family="Inter">Next.js 15 · Tailwind · Vercel</text>
+                            <text x="330" y="172" fill="#00d2ff" font-size="8.5" font-weight="500" text-anchor="middle" font-family="Inter">Dashboard DEC, KPIs y proxy API</text>
+                        </g>
+
+                        <!-- RPA Server -->
+                        <g class="node-group" id="node-con-rpaserver" onclick="selectNode('con-rpaserver')">
+                            <rect x="540" y="220" width="220" height="110" rx="12" fill="url(#containerGrad)" stroke="#00d2ff" stroke-width="1.5" />
+                            <text x="650" y="250" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">RPA Server (Motor)</text>
+                            <text x="650" y="268" fill="#94a3b8" font-size="9.5" text-anchor="middle" font-family="Inter">FastAPI · Python 3.11 · asyncio</text>
+                            <text x="650" y="292" fill="#00d2ff" font-size="8.5" font-weight="500" text-anchor="middle" font-family="Inter">Worker de colas (5s), Semáforo(8),</text>
+                            <text x="650" y="306" fill="#00d2ff" font-size="8.5" font-weight="500" text-anchor="middle" font-family="Inter">Generador Evidencias Pillow</text>
+                        </g>
+
+                        <!-- Supabase DB -->
+                        <g class="node-group" id="node-con-db" onclick="selectNode('con-db')">
+                            <rect x="220" y="480" width="220" height="100" rx="12" fill="url(#dbGrad)" stroke="#10b981" stroke-width="1.5" />
+                            <text x="330" y="510" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Supabase DB</text>
+                            <text x="330" y="528" fill="#a7f3d0" font-size="9.5" text-anchor="middle" font-family="Inter">PostgreSQL 15 + RLS</text>
+                            <text x="330" y="552" fill="#34d399" font-size="8.5" font-weight="500" text-anchor="middle" font-family="Inter">vm_open_log · credentials · planeacion</text>
+                        </g>
+
+                        <!-- Supabase Storage -->
+                        <g class="node-group" id="node-con-storage" onclick="selectNode('con-storage')">
+                            <rect x="540" y="480" width="220" height="100" rx="12" fill="url(#dbGrad)" stroke="#10b981" stroke-width="1.5" />
+                            <text x="650" y="510" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Supabase Storage</text>
+                            <text x="650" y="528" fill="#a7f3d0" font-size="9.5" text-anchor="middle" font-family="Inter">Bucket S3-compatible</text>
+                            <text x="650" y="552" fill="#34d399" font-size="8.5" font-weight="500" text-anchor="middle" font-family="Inter">Bucket: vm-screenshots (PNGs)</text>
+                        </g>
+
+                        <!-- n8n Automations -->
+                        <g class="node-group" id="node-con-n8n" onclick="selectNode('con-n8n')">
+                            <rect x="380" y="350" width="200" height="90" rx="12" fill="url(#containerGrad)" stroke="#475569" stroke-width="1.2" />
+                            <text x="480" y="380" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">n8n Automations</text>
+                            <text x="480" y="398" fill="#94a3b8" font-size="9.5" text-anchor="middle" font-family="Inter">Orquestador de workflows</text>
+                            <text x="480" y="415" fill="#64748b" font-size="8.5" text-anchor="middle" font-family="Inter">Notificaciones secundarias y triggers ETL</text>
+                        </g>
+
+
+                        <!-- EXTERNOS -->
+
+                        <!-- User -->
+                        <g class="node-group" id="node-con-user" onclick="selectNode('con-user')">
+                            <rect x="20" y="110" width="120" height="80" rx="10" fill="url(#userGrad)" stroke="#0284c7" stroke-width="1.5" />
+                            <text x="80" y="145" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Operador</text>
+                            <text x="80" y="165" fill="#bae6fd" font-size="9" text-anchor="middle" font-family="Inter">DEC / Supervisor</text>
+                        </g>
+
+                        <!-- Claro Conecta API -->
+                        <g class="node-group ext-system" id="node-con-conecta" onclick="selectNode('con-conecta')">
+                            <rect x="860" y="100" width="200" height="90" rx="12" fill="url(#extGrad)" stroke="#f59e0b" stroke-width="1.2" />
+                            <text x="960" y="135" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Claro Conecta API</text>
+                            <text x="960" y="153" fill="#fef3c7" font-size="9" text-anchor="middle" font-family="Inter">APIs REST :8443 / LDAP :443</text>
+                        </g>
+
+                        <!-- Telegram Bot API -->
+                        <g class="node-group ext-system" id="node-con-tg" onclick="selectNode('con-tg')">
+                            <rect x="860" y="220" width="200" height="90" rx="12" fill="url(#extGrad)" stroke="#f59e0b" stroke-width="1.2" />
+                            <text x="960" y="255" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Telegram Bot API</text>
+                            <text x="960" y="273" fill="#fef3c7" font-size="9" text-anchor="middle" font-family="Inter">Chat de operaciones grupal</text>
+                        </g>
+
+                        <!-- Nokia Skytool -->
+                        <g class="node-group ext-system" id="node-con-skytool" onclick="selectNode('con-skytool')">
+                            <rect x="860" y="360" width="200" height="90" rx="12" fill="url(#extGrad)" stroke="#f59e0b" stroke-width="1.2" />
+                            <text x="960" y="395" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Nokia Skytool</text>
+                            <text x="960" y="413" fill="#fef3c7" font-size="9" text-anchor="middle" font-family="Inter">Exportaciones CSV planificación</text>
+                        </g>
+
+                        <!-- OpenVPN Windscribe -->
+                        <g class="node-group" id="node-con-vpn" onclick="selectNode('con-vpn')">
+                            <rect x="860" y="500" width="200" height="90" rx="12" fill="url(#vpnGrad)" stroke="#a855f7" stroke-width="1.5" />
+                            <text x="960" y="535" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Windscribe VPN</text>
+                            <text x="960" y="553" fill="#f3e8ff" font-size="9" text-anchor="middle" font-family="Inter">OpenVPN tun0 IP Colombia</text>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- TAB 3: COMPONENTES RPA -->
+            <div id="tab-component" class="tab-content w-full h-full flex flex-col justify-between hidden">
+                <div class="mb-4">
+                    <h2 class="text-2xl font-outfit font-bold text-white flex items-center gap-2">
+                        <span>Nivel 3: Componentes del Servidor RPA</span>
+                        <span class="text-sm font-sans font-normal text-slate-400">| Arquitectura Interna del VPS Python</span>
+                    </h2>
+                    <p class="text-sm text-slate-400 mt-1">Detalle de cómo el Polling Worker en rpa_server.py orquesta las tareas de apertura y cierre usando sub-módulos dedicados.</p>
+                </div>
+                
+                <div class="flex-grow flex items-center justify-center glass-panel rounded-2xl p-4 overflow-hidden border border-white/5 relative glass-panel-glow">
+                    <!-- SVG Componentes -->
+                    <svg viewBox="0 0 1100 750" class="w-full h-full max-h-[530px]" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="compGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1e293b" />
+                                <stop offset="100%" stop-color="#0f172a" />
+                            </linearGradient>
+                            <linearGradient id="subcompGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#1e40af" />
+                                <stop offset="100%" stop-color="#1e3a8a" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- BOUNDARY RPA SERVER -->
+                        <rect x="50" y="40" width="760" height="660" rx="20" fill="#020617" fill-opacity="0.3" stroke="#00d2ff" stroke-width="1.5" stroke-dasharray="6,4" />
+                        <text x="65" y="65" fill="#00d2ff" font-size="12" font-weight="800" font-family="Outfit" letter-spacing="1">CONTENEDOR: RPA SERVER (FASTAPI + ASYNCIO)</text>
+
+                        <!-- CONECTORES INTERNOS -->
+                        <!-- API -> Worker -->
+                        <g class="connector-group" onclick="selectConnector('L3_API_WORKER')">
+                            <path class="main-line flow-line" d="M 230,135 L 310,135" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="270" y="125" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">Trigger async</text>
+                        </g>
+
+                        <!-- Worker -> Semaphore -->
+                        <g class="connector-group" onclick="selectConnector('L3_WORKER_SEM')">
+                            <path class="main-line flow-line" d="M 490,135 L 590,135" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="540" y="125" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">Control limite</text>
+                        </g>
+
+                        <!-- Semaphore -> Open Task -->
+                        <g class="connector-group" onclick="selectConnector('L3_SEM_OPEN')">
+                            <path class="main-line flow-line" d="M 665,180 C 665,220 500,220 500,240" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                        </g>
+
+                        <!-- Semaphore -> Close Task -->
+                        <g class="connector-group" onclick="selectConnector('L3_SEM_CLOSE')">
+                            <path class="main-line flow-line" d="M 665,180 C 665,220 670,220 670,240" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                        </g>
+
+                        <!-- Open/Close Tasks -> Client -->
+                        <g class="connector-group" onclick="selectConnector('L3_TASKS_CLIENT')">
+                            <path class="main-line flow-line" d="M 440,330 L 440,540" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrow-amber)" />
+                            <path class="main-line flow-line" d="M 670,330 L 670,540" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrow-amber)" />
+                            <text x="555" y="470" fill="#f59e0b" font-size="9" text-anchor="middle" font-family="Inter">Comandos Claro Conecta</text>
+                        </g>
+
+                        <!-- Tasks -> Image Gen -->
+                        <g class="connector-group" onclick="selectConnector('L3_TASKS_IMAGE')">
+                            <path class="main-line" d="M 440,330 L 440,390" stroke="#00d2ff" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+                            <path class="main-line" d="M 670,330 C 670,360 480,360 480,390" stroke="#00d2ff" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+                            <text x="555" y="375" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">Crea evidencia PNG</text>
+                        </g>
+
+                        <!-- Tasks -> Credential Mgr -->
+                        <g class="connector-group" onclick="selectConnector('L3_TASKS_CREDS')">
+                            <path class="main-line" d="M 350,285 L 270,285" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+                            <path class="main-line" d="M 580,285 C 500,285 300,285 270,285" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+                            <text x="310" y="275" fill="#10b981" font-size="8.5" text-anchor="middle" font-family="Inter">Obtiene creds DEC</text>
+                        </g>
+
+                        <!-- Tasks -> Telegram Sender -->
+                        <g class="connector-group" onclick="selectConnector('L3_TASKS_TG')">
+                            <path class="main-line flow-line" d="M 440,330 C 440,460 580,460 580,540" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <path class="main-line flow-line" d="M 670,330 L 670,540" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="675" y="460" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">Envía imagen + texto</text>
+                        </g>
+
+                        <!-- EXTERNOS CONEXIONES -->
+                        <!-- Portal -> API -->
+                        <g class="connector-group" onclick="selectConnector('L3_NEXT_API')">
+                            <path class="main-line flow-line" d="M 140,540 C 140,400 140,250 140,180" stroke="#0284c7" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                            <text x="140" y="360" fill="#94a3b8" font-size="9" text-anchor="middle" font-family="Inter">Encola Job</text>
+                        </g>
+
+                        <!-- Client -> Claro Conecta (External) -->
+                        <g class="connector-group" onclick="selectConnector('L3_CLIENT_CONECTA')">
+                            <path class="main-line flow-line-fast" d="M 760,590 L 860,590" stroke="#f59e0b" stroke-width="2.5" fill="none" marker-end="url(#arrow-amber)" />
+                            <text x="810" y="580" fill="#f59e0b" font-size="9" text-anchor="middle" font-family="Inter">REST Https</text>
+                        </g>
+
+                        <!-- Telegram Sender -> Telegram API (External) -->
+                        <g class="connector-group" onclick="selectConnector('L3_TG_TGAPI')">
+                            <path class="main-line flow-line" d="M 760,435 L 860,435" stroke="#00d2ff" stroke-width="2" fill="none" marker-end="url(#arrow)" />
+                        </g>
+
+                        <!-- Credential Mgr -> Supabase (External) -->
+                        <g class="connector-group" onclick="selectConnector('L3_CREDS_DB')">
+                            <path class="main-line" d="M 180,240 C 180,180 870,180 870,240" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+                            <text x="510" y="195" fill="#10b981" font-size="9" text-anchor="middle" font-family="Inter">SELECT credentials WHERE responsable_dec</text>
+                        </g>
+
+
+                        <!-- COMPONENTES INTERNOS -->
+
+                        <!-- API Layer -->
+                        <g class="node-group active" id="node-comp-apilayer" onclick="selectNode('comp-apilayer')">
+                            <rect x="90" y="90" width="180" height="90" rx="10" fill="url(#subcompGrad)" stroke="#00d2ff" stroke-width="1.5" />
+                            <text x="180" y="125" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle" font-family="Outfit">API Layer</text>
+                            <text x="180" y="142" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">FastAPI (rpa_server.py)</text>
+                            <text x="180" y="160" fill="#60a5fa" font-size="8" font-weight="600" text-anchor="middle" font-family="Inter">Routes: /abrir-vm, /cerrar-vm</text>
+                        </g>
+
+                        <!-- Polling Worker -->
+                        <g class="node-group" id="node-comp-polling" onclick="selectNode('comp-polling')">
+                            <rect x="310" y="90" width="200" height="90" rx="10" fill="url(#subcompGrad)" stroke="#00d2ff" stroke-width="1.5" />
+                            <text x="410" y="125" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle" font-family="Outfit">Polling Worker</text>
+                            <text x="410" y="142" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">asyncio loop (5 segundos)</text>
+                            <text x="410" y="160" fill="#60a5fa" font-size="8" font-weight="600" text-anchor="middle" font-family="Inter">Busca status='pendiente'</text>
+                        </g>
+
+                        <!-- Semaphore -->
+                        <g class="node-group" id="node-comp-semaphore" onclick="selectNode('comp-semaphore')">
+                            <rect x="590" y="90" width="150" height="90" rx="10" fill="url(#compGrad)" stroke="#475569" stroke-width="1.2" />
+                            <text x="665" y="125" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle" font-family="Outfit">Semáforo(8)</text>
+                            <text x="665" y="142" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">asyncio.Semaphore</text>
+                            <text x="665" y="160" fill="#e2e8f0" font-size="8" font-weight="600" text-anchor="middle" font-family="Inter">Limita concurrencia Claro</text>
+                        </g>
+
+                        <!-- Open VM Task -->
+                        <g class="node-group" id="node-comp-opentask" onclick="selectNode('comp-opentask')">
+                            <rect x="350" y="240" width="180" height="90" rx="10" fill="url(#subcompGrad)" stroke="#00d2ff" stroke-width="1.5" />
+                            <text x="440" y="275" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle" font-family="Outfit">Open VM Task</text>
+                            <text x="440" y="292" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">process_api_abrir_task()</text>
+                            <text x="440" y="310" fill="#60a5fa" font-size="8" font-weight="600" text-anchor="middle" font-family="Inter">Login → Ventana → Evidencia</text>
+                        </g>
+
+                        <!-- Close VM Task -->
+                        <g class="node-group" id="node-comp-closetask" onclick="selectNode('comp-closetask')">
+                            <rect x="580" y="240" width="180" height="90" rx="10" fill="url(#subcompGrad)" stroke="#00d2ff" stroke-width="1.5" />
+                            <text x="670" y="275" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle" font-family="Outfit">Close VM Task</text>
+                            <text x="670" y="292" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">process_api_cerrar_task()</text>
+                            <text x="670" y="310" fill="#60a5fa" font-size="8" font-weight="600" text-anchor="middle" font-family="Inter">Evidencia en Exito / Error</text>
+                        </g>
+
+                        <!-- Credential Manager -->
+                        <g class="node-group" id="node-comp-credential" onclick="selectNode('comp-credential')">
+                            <rect x="90" y="240" width="180" height="90" rx="10" fill="url(#compGrad)" stroke="#475569" stroke-width="1.2" />
+                            <text x="180" y="275" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle" font-family="Outfit">Credential Manager</text>
+                            <text x="180" y="292" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">get_dec_credentials()</text>
+                            <text x="180" y="310" fill="#e2e8f0" font-size="8" font-weight="600" text-anchor="middle" font-family="Inter">Aislamiento por DEC</text>
+                        </g>
+
+                        <!-- Image Generator -->
+                        <g class="node-group" id="node-comp-imagegen" onclick="selectNode('comp-imagegen')">
+                            <rect x="350" y="390" width="180" height="90" rx="10" fill="url(#compGrad)" stroke="#475569" stroke-width="1.2" />
+                            <text x="440" y="425" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle" font-family="Outfit">Image Generator</text>
+                            <text x="440" y="442" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">conecta_imagen.py (Pillow)</text>
+                            <text x="440" y="460" fill="#e2e8f0" font-size="8" font-weight="600" text-anchor="middle" font-family="Inter">Crea PNGs sintéticos Claro</text>
+                        </g>
+
+                        <!-- Telegram Sender -->
+                        <g class="node-group" id="node-comp-tgsender" onclick="selectNode('comp-tgsender')">
+                            <rect x="580" y="390" width="180" height="90" rx="10" fill="url(#compGrad)" stroke="#475569" stroke-width="1.2" />
+                            <text x="670" y="425" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle" font-family="Outfit">Telegram Sender</text>
+                            <text x="670" y="442" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">telegram_sender.py</text>
+                            <text x="670" y="460" fill="#e2e8f0" font-size="8" font-weight="600" text-anchor="middle" font-family="Inter">Envía imagen y menciones</text>
+                        </g>
+
+                        <!-- Claro Conecta Client -->
+                        <g class="node-group" id="node-comp-conectaclient" onclick="selectNode('comp-conectaclient')">
+                            <rect x="350" y="540" width="410" height="100" rx="10" fill="url(#compGrad)" stroke="#475569" stroke-width="1.2" />
+                            <text x="555" y="575" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Claro Conecta Client</text>
+                            <text x="555" y="595" fill="#94a3b8" font-size="10" text-anchor="middle" font-family="Inter">claro_conecta_api.py (Requests + SSL Bypass)</text>
+                            <text x="555" y="618" fill="#e2e8f0" font-size="8.5" font-weight="600" text-anchor="middle" font-family="Inter">login() · iniciarVentana() · cerrarVentana() · logout()</text>
+                        </g>
+
+
+                        <!-- COMPONENTES EXTERNOS -->
+                        <!-- Portal Web (Left) -->
+                        <g class="node-group" id="node-comp-nextjs-ext" onclick="selectNode('con-nextjs')">
+                            <rect x="90" y="540" width="180" height="90" rx="10" fill="url(#subcompGrad)" stroke="#0047AB" stroke-width="1.2" />
+                            <text x="180" y="575" fill="#ffffff" font-size="12" font-weight="700" text-anchor="middle" font-family="Outfit">Portal Web UI</text>
+                            <text x="180" y="592" fill="#94a3b8" font-size="8.5" text-anchor="middle" font-family="Inter">Frontend Next.js 15</text>
+                        </g>
+
+                        <!-- Claro Conecta API (Right) -->
+                        <g class="node-group ext-system" id="node-comp-conecta-ext" onclick="selectNode('ctx-conecta')">
+                            <rect x="860" y="540" width="200" height="100" rx="12" fill="url(#extGrad)" stroke="#f59e0b" stroke-width="1.2" />
+                            <text x="960" y="580" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Claro Conecta API</text>
+                            <text x="960" y="600" fill="#fef3c7" font-size="9" text-anchor="middle" font-family="Inter">API Claro Colombia</text>
+                        </g>
+
+                        <!-- Telegram Bot (Right) -->
+                        <g class="node-group ext-system" id="node-comp-tg-ext" onclick="selectNode('ctx-tg')">
+                            <rect x="860" y="390" width="200" height="90" rx="12" fill="url(#extGrad)" stroke="#f59e0b" stroke-width="1.2" />
+                            <text x="960" y="425" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Telegram Bot API</text>
+                            <text x="960" y="445" fill="#fef3c7" font-size="9" text-anchor="middle" font-family="Inter">api.telegram.org</text>
+                        </g>
+
+                        <!-- Supabase Database (Right) -->
+                        <g class="node-group ext-system" id="node-comp-db-ext" onclick="selectNode('con-db')">
+                            <rect x="860" y="240" width="200" height="90" rx="12" fill="url(#extGrad)" stroke="#f59e0b" stroke-width="1.2" />
+                            <text x="960" y="275" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Supabase DB</text>
+                            <text x="960" y="295" fill="#fef3c7" font-size="9" text-anchor="middle" font-family="Inter">Postgres multi-tenant</text>
+                        </g>
+
+                        <!-- Supabase Storage (Right) -->
+                        <g class="node-group ext-system" id="node-comp-storage-ext" onclick="selectNode('con-storage')">
+                            <rect x="860" y="90" width="200" height="90" rx="12" fill="url(#extGrad)" stroke="#f59e0b" stroke-width="1.2" />
+                            <text x="960" y="125" fill="#ffffff" font-size="13" font-weight="700" text-anchor="middle" font-family="Outfit">Supabase Storage</text>
+                            <text x="960" y="145" fill="#fef3c7" font-size="9" text-anchor="middle" font-family="Inter">Bucket S3 screenshots</text>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- TAB 4: FLUJOS DE CÓDIGO -->
+            <div id="tab-flows" class="tab-content w-full h-full flex flex-col justify-between hidden">
+                <div class="mb-4">
+                    <h2 class="text-2xl font-outfit font-bold text-white flex items-center gap-2">
+                        <span>Nivel 4: Flujos de Código Clave (Secuencias)</span>
+                        <span class="text-sm font-sans font-normal text-slate-400">| Interacción paso a paso en tiempo real</span>
+                    </h2>
+                    <p class="text-sm text-slate-400 mt-1">Selecciona un flujo y avanza paso a paso para ver cómo interactúan los contenedores en los procesos críticos.</p>
+                </div>
+
+                <div class="flex-grow flex flex-col lg:flex-row gap-6">
+                    <!-- Selector de Flujo e Indice de Pasos -->
+                    <div class="w-full lg:w-1/3 flex flex-col gap-4">
+                        <div class="glass-panel p-4 rounded-xl border border-white/5">
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Seleccionar Proceso</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="selectFlow('apertura')" id="flow-btn-apertura" class="px-3 py-2 rounded-lg text-xs font-bold font-outfit border border-nokia-accent bg-nokia-blue text-white transition-all shadow shadow-nokia-blue/30">
+                                    Apertura de VM
+                                </button>
+                                <button onclick="selectFlow('cierre')" id="flow-btn-cierre" class="px-3 py-2 rounded-lg text-xs font-bold font-outfit border border-white/10 bg-slate-900 text-slate-300 hover:text-white transition-all">
+                                    Cierre de VM
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Lista de Pasos -->
+                        <div class="glass-panel flex-grow p-4 rounded-xl border border-white/5 overflow-y-auto max-h-[350px]" id="flow-steps-list">
+                            <!-- Inyectado dinámicamente -->
+                        </div>
+                    </div>
+
+                    <!-- Representación Visual y Explicación -->
+                    <div class="w-full lg:w-2/3 glass-panel rounded-xl p-6 border border-white/5 flex flex-col justify-between relative min-h-[350px]">
+                        <!-- Glow de fondo decorativo -->
+                        <div class="absolute inset-0 bg-gradient-to-tr from-nokia-blue/10 to-transparent pointer-events-none rounded-xl"></div>
+                        
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-[10px] uppercase font-mono tracking-widest text-nokia-accent font-bold" id="active-flow-name">Apertura de VM</span>
+                                <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-mono" id="active-flow-step-num">Paso 1 de 10</span>
+                            </div>
+                            
+                            <!-- Explicación del Paso -->
+                            <div class="space-y-3 z-10 relative">
+                                <h3 class="text-lg font-outfit font-bold text-white" id="active-flow-step-title">Usuario hace Click</h3>
+                                <p class="text-sm text-slate-300 leading-relaxed" id="active-flow-step-desc">El DEC hace click en "Abrir VM" en el dashboard.</p>
+                                
+                                <div class="bg-slate-950/60 p-3 rounded-lg border border-white/5 font-mono text-xs text-nokia-accent/90" id="active-flow-step-technical">
+                                    Llamada frontend a API Route proxy.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Control de Secuencia -->
+                        <div class="flex justify-between items-center mt-6 pt-4 border-t border-white/5 z-10">
+                            <button onclick="prevStep()" class="px-4 py-2 rounded-lg text-xs font-bold bg-slate-900 border border-white/10 text-slate-300 hover:text-white transition-all disabled:opacity-50" id="btn-prev-step">
+                                Anterior
+                            </button>
+                            <div class="flex space-x-1" id="step-dots">
+                                <!-- Dots inyectados -->
+                            </div>
+                            <button onclick="nextStep()" class="px-4 py-2 rounded-lg text-xs font-bold bg-nokia-blue border border-nokia-accent/40 text-white hover:bg-nokia-lightBlue transition-all disabled:opacity-50" id="btn-next-step">
+                                Siguiente
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: ADRS -->
+            <div id="tab-adrs" class="tab-content w-full h-full flex flex-col justify-between hidden">
+                <div class="mb-4">
+                    <h2 class="text-2xl font-outfit font-bold text-white flex items-center gap-2">
+                        <span>Decisiones de Diseño de Arquitectura (ADRs)</span>
+                        <span class="text-sm font-sans font-normal text-slate-400">| Fundamentos estratégicos del sistema</span>
+                    </h2>
+                    <p class="text-sm text-slate-400 mt-1">Registro de decisiones técnicas clave que determinan la velocidad, estabilidad y seguridad del sistema.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto max-h-[500px] pr-2 pb-6">
+                    
+                    <!-- ADR 1 -->
+                    <div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-nokia-accent/30 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-[9px] bg-nokia-blue/30 text-nokia-accent px-2 py-0.5 rounded font-mono font-bold">ADR-01</span>
+                                <span class="text-[10px] text-brand-success font-semibold flex items-center gap-1">✓ Aceptado</span>
+                            </div>
+                            <h3 class="text-md font-outfit font-bold text-white mb-2">API Directa vs. BlueStacks</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                <strong>Contexto:</strong> Claro Conecta no expone APIs públicas; solo existe una app móvil Android.
+                                <br><br>
+                                <strong>Decisión:</strong> Hacer ingeniería inversa a la app móvil para extraer endpoints LDAP/REST y llamarlos directamente por Python.
+                                <br><br>
+                                <strong>Impacto:</strong> Operación reducida de 90s (BlueStacks UI click) a solo 5s por VM. Sin dependencias gráficas.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-white/5 flex justify-between items-center text-[10px]">
+                            <span class="text-slate-400">ROI Técnico:</span>
+                            <span class="text-nokia-accent font-semibold">Velocidad & Concurrencia</span>
+                        </div>
+                    </div>
+
+                    <!-- ADR 2 -->
+                    <div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-nokia-accent/30 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-[9px] bg-nokia-blue/30 text-nokia-accent px-2 py-0.5 rounded font-mono font-bold">ADR-02</span>
+                                <span class="text-[10px] text-brand-success font-semibold flex items-center gap-1">✓ Aceptado</span>
+                            </div>
+                            <h3 class="text-md font-outfit font-bold text-white mb-2">Evidencia Sintética via Pillow</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                <strong>Contexto:</strong> Al operar headless (sin pantalla física), es imposible tomar screenshots reales de la app Claro Conecta.
+                                <br><br>
+                                <strong>Decisión:</strong> Generar una imagen de evidencia estructurada (PNG de 580x600px) usando Pillow (PIL) en Python, replicando los datos y layout oficial de Claro.
+                                <br><br>
+                                <strong>Impacto:</strong> Imágenes limpias, sin fallos por lag de red o carga de interfaz. Formato estandarizado para auditoría.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-white/5 flex justify-between items-center text-[10px]">
+                            <span class="text-slate-400">ROI Técnico:</span>
+                            <span class="text-nokia-accent font-semibold">Cero fallos de captura</span>
+                        </div>
+                    </div>
+
+                    <!-- ADR 3 -->
+                    <div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-nokia-accent/30 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-[9px] bg-nokia-blue/30 text-nokia-accent px-2 py-0.5 rounded font-mono font-bold">ADR-03</span>
+                                <span class="text-[10px] text-brand-success font-semibold flex items-center gap-1">✓ Aceptado</span>
+                            </div>
+                            <h3 class="text-md font-outfit font-bold text-white mb-2">Aislamiento Estricto por DEC</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                <strong>Contexto:</strong> Si una VM no se encontraba, el RPA probaba con credenciales de otros DECs para buscarla.
+                                <br><br>
+                                <strong>Decisión:</strong> Prohibir el login cruzado. Cada DEC opera estrictamente con su cuenta de Claro Conecta. Si no se encuentra, se asume cerrada.
+                                <br><br>
+                                <strong>Impacto:</strong> Evita bloqueos de cuentas LDAP por logins concurrentes concurrentes de la misma IP. Seguridad y privacidad garantizada.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-white/5 flex justify-between items-center text-[10px]">
+                            <span class="text-slate-400">ROI Técnico:</span>
+                            <span class="text-nokia-accent font-semibold">Prevención de Bloqueos</span>
+                        </div>
+                    </div>
+
+                    <!-- ADR 4 -->
+                    <div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-nokia-accent/30 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-[9px] bg-nokia-blue/30 text-nokia-accent px-2 py-0.5 rounded font-mono font-bold">ADR-04</span>
+                                <span class="text-[10px] text-brand-success font-semibold flex items-center gap-1">✓ Aceptado</span>
+                            </div>
+                            <h3 class="text-md font-outfit font-bold text-white mb-2">vm_open_log como Fuente de Verdad</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                <strong>Contexto:</strong> La tabla principal control_vm se sobrescribe en cada sincronización diaria de Nokia Skytool.
+                                <br><br>
+                                <strong>Decisión:</strong> Utilizar una tabla de log dedicada (vm_open_log) para registrar todas las solicitudes RPA, urls de screenshots, y mensajes de error.
+                                <br><br>
+                                <strong>Impacto:</strong> Aislamiento de datos operativos de la lógica de sincronización masiva de Skytool. Evita pérdida de URLs al sincronizar.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-white/5 flex justify-between items-center text-[10px]">
+                            <span class="text-slate-400">ROI Técnico:</span>
+                            <span class="text-nokia-accent font-semibold">Integridad de Datos</span>
+                        </div>
+                    </div>
+
+                    <!-- ADR 5 -->
+                    <div class="glass-panel p-5 rounded-xl border border-white/5 hover:border-nokia-accent/30 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-[9px] bg-nokia-blue/30 text-nokia-accent px-2 py-0.5 rounded font-mono font-bold">ADR-05</span>
+                                <span class="text-[10px] text-brand-success font-semibold flex items-center gap-1">✓ Aceptado</span>
+                            </div>
+                            <h3 class="text-md font-outfit font-bold text-white mb-2">Guardado de Evidencia por Doble Vía</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                <strong>Contexto:</strong> Fallas ocasionales en red o pérdida del job_id durante ejecuciones asíncronas largas causaban pérdida de URLs de imágenes.
+                                <br><br>
+                                <strong>Decisión:</strong> Implementar guardado en doble vía: Vía 1 (usando req.job_id directamente) y Vía 2 (fallback buscando la fila mediante chg_id + tipo_accion en estado pendiente).
+                                <br><br>
+                                <strong>Impacto:</strong> Garantía del 100% de persistencia del print de cierre o apertura, sin importar micro-cortes o problemas de contexto en hilos.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-white/5 flex justify-between items-center text-[10px]">
+                            <span class="text-slate-400">ROI Técnico:</span>
+                            <span class="text-nokia-accent font-semibold">Resiliencia del Storage</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: PLAN DE CALIDAD & ROADMAP -->
+            <div id="tab-roadmap" class="tab-content w-full h-full flex flex-col justify-between hidden">
+                <div class="mb-4">
+                    <h2 class="text-2xl font-outfit font-bold text-white flex items-center gap-2">
+                        <span>Plan de Atributos de Calidad y Roadmap SaaS</span>
+                        <span class="text-sm font-sans font-normal text-slate-400">| Estándares y evolución comercial</span>
+                    </h2>
+                    <p class="text-sm text-slate-400 mt-1">Visión de Robinson Naranjo (NODIA) para escalar la solución a nivel multi-tenant regional durante el 2026.</p>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-6 overflow-y-auto max-h-[500px] pr-2 pb-6">
+                    
+                    <!-- Atributos de Calidad (Izquierda) -->
+                    <div class="w-full lg:w-1/2 space-y-4">
+                        <h3 class="text-lg font-outfit font-bold text-white flex items-center gap-2">
+                            <span class="h-2 w-2 rounded-full bg-nokia-accent"></span>
+                            Atributos de Calidad
+                        </h3>
+
+                        <div class="space-y-3">
+                            <!-- Item 1: Concurrencia -->
+                            <div class="glass-panel p-3 rounded-lg border border-white/5 space-y-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-slate-200">Escalabilidad (Concurrencia)</span>
+                                    <span class="text-nokia-accent">🟢 Alto (Semáforo 8 hilos)</span>
+                                </div>
+                                <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                                    <div class="bg-gradient-to-r from-nokia-blue to-nokia-accent h-full w-[90%]"></div>
+                                </div>
+                            </div>
+
+                            <!-- Item 2: Disponibilidad -->
+                            <div class="glass-panel p-3 rounded-lg border border-white/5 space-y-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-slate-200">Disponibilidad (Red / VPN)</span>
+                                    <span class="text-nokia-accent">🟢 Alto (Windscribe systemd reload)</span>
+                                </div>
+                                <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                                    <div class="bg-gradient-to-r from-nokia-blue to-nokia-accent h-full w-[85%]"></div>
+                                </div>
+                            </div>
+
+                            <!-- Item 3: Seguridad -->
+                            <div class="glass-panel p-3 rounded-lg border border-white/5 space-y-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-slate-200">Seguridad & RLS (Aislamiento DEC)</span>
+                                    <span class="text-nokia-accent">🟢 Alto (Supabase RLS activo)</span>
+                                </div>
+                                <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                                    <div class="bg-gradient-to-r from-nokia-blue to-nokia-accent h-full w-[95%]"></div>
+                                </div>
+                            </div>
+
+                            <!-- Item 4: Trazabilidad -->
+                            <div class="glass-panel p-3 rounded-lg border border-white/5 space-y-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-slate-200">Trazabilidad de Evidencia</span>
+                                    <span class="text-nokia-accent">🟢 Crítico (DB + Storage + Telegram)</span>
+                                </div>
+                                <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                                    <div class="bg-gradient-to-r from-nokia-blue to-nokia-accent h-full w-[100%]"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Roadmap (Derecha) -->
+                    <div class="w-full lg:w-1/2 space-y-4">
+                        <h3 class="text-lg font-outfit font-bold text-white flex items-center gap-2">
+                            <span class="h-2 w-2 rounded-full bg-brand-warning"></span>
+                            Roadmap de Implementación Q2-Q4 2026
+                        </h3>
+
+                        <div class="relative border-l-2 border-white/10 ml-3 pl-6 space-y-6">
+                            
+                            <!-- Hito 1 -->
+                            <div class="relative">
+                                <span class="absolute -left-[31px] top-1.5 h-4 w-4 rounded-full border-4 border-slate-950 bg-nokia-accent"></span>
+                                <h4 class="text-sm font-bold font-outfit text-white">Q2 2026: Fase Operacional Completa (HOY)</h4>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    API Directa Claro Conecta operativa. Evidencia visual completa de éxito y fallo en Storage. Aislamiento estricto de logins.
+                                </p>
+                            </div>
+
+                            <!-- Hito 2 -->
+                            <div class="relative">
+                                <span class="absolute -left-[31px] top-1.5 h-4 w-4 rounded-full border-4 border-slate-950 bg-slate-800"></span>
+                                <h4 class="text-sm font-bold font-outfit text-slate-300">Q3 2026: Programación & Alertas Proactivas</h4>
+                                <p class="text-xs text-slate-400 mt-1 font-sans">
+                                    <strong>Junio:</strong> Auto-apertura programada (DEC programa el job sin tener que estar en la web a las 2 AM).
+                                    <br>
+                                    <strong>Julio:</strong> Dashboard visual de KPIs del RPA e historial de ejecuciones/evidencias en Next.js.
+                                </p>
+                            </div>
+
+                            <!-- Hito 3 -->
+                            <div class="relative">
+                                <span class="absolute -left-[31px] top-1.5 h-4 w-4 rounded-full border-4 border-slate-950 bg-slate-800"></span>
+                                <h4 class="text-sm font-bold font-outfit text-slate-300">Q4 2026: Multi-Tenant Regional & Monetización</h4>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    <strong>Septiembre:</strong> Aislamiento de tenants por país (Nokia Perú / Ecuador) con base en schema PostgreSQL.
+                                    <br>
+                                    <strong>Octubre:</strong> Módulo de auditoría automática SLA y reportes ejecutivos exportables para el corporativo.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Panel Derecho: Detalle de Caja seleccionada (30%) -->
+        <div class="hidden lg:flex w-1/4 glass-panel border-l border-white/5 p-6 flex-col justify-between overflow-y-auto">
+            <div class="space-y-6">
+                <!-- Título Panel -->
+                <div class="flex items-center space-x-2 pb-4 border-b border-white/5">
+                    <svg class="h-5 w-5 text-nokia-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 class="font-outfit font-bold text-white text-md">Ficha del Componente</h3>
+                </div>
+
+                <!-- Info Detallada -->
+                <div id="details-placeholder" class="py-12 text-center space-y-3">
+                    <div class="inline-flex h-12 w-12 rounded-full bg-slate-900 border border-white/5 items-center justify-center text-slate-500">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                        </svg>
+                    </div>
+                    <p class="text-xs text-slate-500 max-w-[200px] mx-auto">Selecciona o haz click sobre un elemento en el diagrama para ver sus especificaciones arquitectónicas.</p>
+                </div>
+
+                <div id="details-content" class="space-y-4 hidden">
+                    <!-- Nombre y Badge -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-mono tracking-widest text-nokia-accent font-bold uppercase" id="comp-type-badge">CONTAINER</span>
+                            <span class="text-[9px] bg-slate-800 text-slate-300 font-mono px-2 py-0.5 rounded" id="comp-tech-badge">Python</span>
+                        </div>
+                        <h4 class="text-xl font-outfit font-extrabold text-white leading-tight" id="comp-name">RPA Server</h4>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="space-y-1">
+                        <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Propósito & Rol</label>
+                        <p class="text-xs text-slate-300 leading-relaxed font-sans" id="comp-desc">Descripción del componente.</p>
+                    </div>
+
+                    <!-- Archivos Relacionados -->
+                    <div class="space-y-1" id="comp-files-section">
+                        <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Archivos de Código</label>
+                        <div class="bg-slate-950 p-2 rounded border border-white/5 text-[11px] font-mono text-slate-300 space-y-1" id="comp-files">
+                            <code>/scripts/rpa_server.py</code>
+                        </div>
+                    </div>
+
+                    <!-- Decisiones de Negocio -->
+                    <div class="space-y-1">
+                        <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Consideración Técnica</label>
+                        <p class="text-xs text-slate-400 leading-relaxed italic" id="comp-rationale">Consideración.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Panel con copyright -->
+            <div class="pt-4 border-t border-white/5 flex justify-between items-center text-[9px] text-slate-500 font-mono">
+                <span>NODIA © 2026</span>
+                <span>v1.2.0</span>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Script de Datos C4 e Interactividad -->
+    <script>
+        // Datos de Nodos
+        const nodeData = {
+            // Context Level
+            'ctx-dec': {
+                name: 'DEC (Ingeniero de Campo)',
+                type: 'Persona (Usuario)',
+                tech: 'Browser / Móvil',
+                desc: 'Ingeniero de campo subcontratado o directo de Nokia. Es el actor operacional principal que solicita aperturas y cierres de Ventanas de Mantenimiento (VMs) desde su celular o PC en sitio.',
+                files: 'src/app/dec/page.tsx',
+                rationale: 'Necesita una UI rápida, de baja latencia y con confirmaciones claras para evitar esperas bajo el sol de la torre celular.'
+            },
+            'ctx-sup': {
+                name: 'Supervisor / FM (Field Manager)',
+                type: 'Persona (Usuario)',
+                tech: 'Telegram App',
+                desc: 'Supervisor técnico encargado de validar que los trabajos se ejecuten en el horario asignado. Recibe los prints de evidencia directamente en un grupo de Telegram para auditorías rápidas.',
+                files: 'Canal de comunicación externa',
+                rationale: 'No requiere interactuar con el portal web constantemente; prefiere notificaciones push con imágenes claras del estado de la ventana.'
+            },
+            'ctx-portal': {
+                name: 'Nokia DEC Portal Pro',
+                type: 'Sistema Principal (SaaS)',
+                tech: 'Next.js + Python VPS',
+                desc: 'Es el centro de control del portal. Integra la planificación de Skytool con la ejecución directa del RPA Server para eliminar los tiempos muertos de los ingenieros de campo en Claro Conecta.',
+                files: 'Código en repositorio principal',
+                rationale: 'Desacopla la lógica de presentación (frontend Next.js) del motor síncrono del RPA (VPS FastAPI + asyncio) para asegurar la resiliencia.'
+            },
+            'ctx-conecta': {
+                name: 'Claro Conecta API',
+                type: 'Sistema Externo',
+                tech: 'LDAP + REST (Port 8443)',
+                desc: 'Plataforma oficial de Claro Colombia para habilitar trabajos de mantenimiento. El RPA simula el flujo de login y solicitudes mediante el protocolo interno de llamadas REST de la app oficial.',
+                files: 'IP: 190.144.218.215',
+                rationale: 'Es un sistema legado y propenso a caídas; el Portal Pro actúa como buffer de reintentos y asegura que no se pierdan transacciones.'
+            },
+            'ctx-tg': {
+                name: 'Telegram Bot API',
+                type: 'Sistema Externo',
+                tech: 'HTTPS REST API',
+                desc: 'Servicio de notificaciones operacionales. Envía fotos de los prints de cierre y apertura con menciones al FM/DEC respectivo apenas finaliza el proceso.',
+                files: 'api.telegram.org/bot...',
+                rationale: 'Se usa como canal principal de alerta y entrega de soporte síncrono debido a su alta confiabilidad e inmediatez.'
+            },
+            'ctx-supabase': {
+                name: 'Supabase Cloud Services',
+                type: 'Sistema Externo (Infra)',
+                tech: 'Postgres 15 + S3 Storage',
+                desc: 'Base de datos y Storage serverless. Mantiene la tabla de logs de ejecución, las credenciales aisladas de los DECs y guarda los PNGs generados por el motor de imagen.',
+                files: 'Supabase Cloud SaaS',
+                rationale: 'El uso de RLS (Row Level Security) garantiza que ningún DEC pueda ver las solicitudes ni credenciales de otro operador.'
+            },
+            'ctx-skytool': {
+                name: 'Nokia Skytool ETL',
+                type: 'Sistema Externo',
+                tech: 'Descarga CSV',
+                desc: 'Fuente de datos oficial de la planificación del día. Contiene la lista de CHGs autorizados y sitios asignados a cada cuadrilla.',
+                files: 'lib/nokia-etl.ts',
+                rationale: 'Sincroniza periódicamente para poblar la tabla "control_vm". Si Skytool falla, el portal opera localmente sin bloquearse.'
+            },
+
+            // Container Level
+            'con-nextjs': {
+                name: 'Portal Web Frontend (Next.js)',
+                type: 'Contenedor',
+                tech: 'Next.js 15 + Tailwind CSS',
+                desc: 'Interfaz interactiva de usuario. Permite ver el dashboard, buscar las VMs del día por DEC y gatillar la apertura/cierre inmediato.',
+                files: 'src/app/dec/page.tsx, src/app/layout.tsx',
+                rationale: 'Usa Server Actions y proxies internos para no exponer claves y mantener la lógica de negocio desacoplada.'
+            },
+            'con-rpaserver': {
+                name: 'RPA Server (Motor FastAPI)',
+                type: 'Contenedor',
+                tech: 'Python 3.11 + FastAPI + asyncio',
+                desc: 'Servidor dedicado a procesar las transacciones con Claro Conecta. Implementa un polling worker asíncrono y gestiona el semáforo de concurrencia.',
+                files: 'scripts/rpa_server.py, scripts/conecta_api_task.py',
+                rationale: 'Se implementa en FastAPI + asyncio para manejar de manera no bloqueante múltiples tareas de scraping sin congelar el hilo principal.'
+            },
+            'con-db': {
+                name: 'Supabase PostgreSQL DB',
+                type: 'Contenedor (Base de Datos)',
+                tech: 'PostgreSQL 15',
+                desc: 'Base de datos relacional de la solución. Almacena las tablas de log, cuadrillas y credenciales con políticas de seguridad a nivel de fila (RLS).',
+                files: 'supabase/migrations/*',
+                rationale: 'Las claves de Claro Conecta de los DECs se encriptan y aíslan con RLS usando el identificador "responsable_dec".'
+            },
+            'con-storage': {
+                name: 'Supabase Storage Bucket',
+                type: 'Contenedor (Almacenamiento)',
+                tech: 'S3-Compatible Bucket',
+                desc: 'Bucket privado "vm-screenshots". Almacena todas las evidencias fotográficas de aperturas (exitosas) y cierres (tanto exitosas como fallidas).',
+                files: 'Bucket: vm-screenshots',
+                rationale: 'Se genera una URL pública firmada de larga duración que se asocia a la solicitud en la base de datos para consulta rápida en la web.'
+            },
+            'con-n8n': {
+                name: 'n8n Automations',
+                type: 'Contenedor (Orquestación)',
+                tech: 'n8n Workflow Engine',
+                desc: 'Orquestador auxiliar para automatizaciones cron (como alertas de VMs retrasadas a las 6:00 PM y envíos automáticos de estadísticas de fallos al Telegram del Supervisor).',
+                files: 'new_workflow.json',
+                rationale: 'Sigue el principio de anti-acoplamiento: n8n es solo un orquestador, ninguna regla de negocio crítica permanente vive aquí.'
+            },
+            'con-user': {
+                name: 'DEC & Supervisor',
+                type: 'Persona',
+                tech: 'Dispositivo Operador',
+                desc: 'Usuarios operacionales. Acceden al frontend desde navegadores móviles o escritorio.',
+                files: 'N/A',
+                rationale: 'El diseño móvil responsivo y denso es clave debido a que operan en campo, muchas veces trepados en la torre.'
+            },
+            'con-vpn': {
+                name: 'Windscribe VPN Client',
+                type: 'Contenedor (Red)',
+                tech: 'OpenVPN Client (tun0)',
+                desc: 'Túnel de VPN ejecutado a nivel de sistema operativo en el VPS. Fuerza a que todas las solicitudes dirigidas a la IP de Claro Conecta salgan con IP colombiana.',
+                files: '/etc/openvpn/windscribe.conf',
+                rationale: 'Claro Conecta restringe las conexiones REST de IPs fuera del rango nacional de Colombia. Windscribe provee la IP colombiana estática requerida.'
+            },
+
+            // Component Level
+            'comp-apilayer': {
+                name: 'API Layer',
+                type: 'Componente (RPA Server)',
+                tech: 'FastAPI Routes',
+                desc: 'Expone endpoints REST HTTP en el VPS de manera rápida y ligera. Recibe solicitudes de apertura o cierre encolándolas de inmediato.',
+                files: 'scripts/rpa_server.py (routes)',
+                rationale: 'Valida los esquemas de entrada (como chg_id y responsable_dec) mediante Pydantic antes de pasarlos al worker.'
+            },
+            'comp-polling': {
+                name: 'Polling Worker',
+                type: 'Componente (RPA Server)',
+                tech: 'asyncio.create_task',
+                desc: 'Bucle infinito asíncrono que corre en segundo plano cada 5 segundos. Consulta en la base de datos si existen nuevas solicitudes en estado "pendiente".',
+                files: 'scripts/rpa_server.py (main worker loop)',
+                rationale: 'Garantiza que el servidor no consuma recursos innecesarios y procese en orden FIFO de llegada.'
+            },
+            'comp-semaphore': {
+                name: 'Semáforo de Concurrencia',
+                type: 'Componente (RPA Server)',
+                tech: 'asyncio.Semaphore(8)',
+                desc: 'Controlador de concurrencia a nivel de semáforo asíncrono. Limita el número de solicitudes simultáneas en Claro Conecta a un máximo de 8.',
+                files: 'scripts/rpa_server.py (semaphore)',
+                rationale: 'Evita que el VPS sea baneado por Claro debido a un pico de solicitudes simultáneas a las 7:00 AM (shift start).'
+            },
+            'comp-opentask': {
+                name: 'Open VM Task',
+                type: 'Componente (RPA Server)',
+                tech: 'Python script asíncrono',
+                desc: 'Lógica síncrona/asíncrona para abrir ventanas de Claro Conecta. Se encarga de hacer el login, consultar el CHG, iniciar la ventana, generar el print, guardarlo en Supabase y alertar por Telegram.',
+                files: 'scripts/conecta_api_task.py (process_api_abrir_task)',
+                rationale: 'Toda llamada HTTP a Claro se controla bajo un bloque try/except para asegurar que se capturen y reporten errores de red.'
+            },
+            'comp-closetask': {
+                name: 'Close VM Task',
+                type: 'Componente (RPA Server)',
+                tech: 'Python script asíncrono',
+                desc: 'Lógica síncrona/asíncrona para cerrar ventanas activas. A diferencia del inicio, este proceso SIEMPRE genera una imagen de evidencia (éxito en verde o fallo/error detallado en rojo) y la sube al bucket.',
+                files: 'scripts/conecta_api_task.py (process_api_cerrar_task)',
+                rationale: 'Implementa la doble vía para persistir la URL de captura en la base de datos para máxima resiliencia.'
+            },
+            'comp-credential': {
+                name: 'Credential Manager',
+                type: 'Componente (RPA Server)',
+                tech: 'Supabase client wrapper',
+                desc: 'Módulo que descarga en tiempo de ejecución las credenciales (LDAP/pass) del DEC que está operando.',
+                files: 'scripts/conecta_api_task.py (get_dec_credentials)',
+                rationale: 'Evita almacenar contraseñas en texto plano o variables de entorno locales del VPS. Las descarga bajo demanda segura.'
+            },
+            'comp-imagegen': {
+                name: 'Image Generator',
+                type: 'Componente (RPA Server)',
+                tech: 'Python Pillow (PIL)',
+                desc: 'Motor gráfico simple que dibuja una imagen sintética en base a plantillas y coordenadas. Inserta los datos del CHG, la fecha, y los colores oficiales de Claro Conecta.',
+                files: 'scripts/conecta_imagen.py',
+                rationale: 'Garantiza la entrega de un print oficial requerido por la interventoría Nokia a pesar de que el proceso corra en un servidor de consola headless.'
+            },
+            'comp-tgsender': {
+                name: 'Telegram Sender',
+                type: 'Componente (RPA Server)',
+                tech: 'Requests / httpx',
+                desc: 'Wrapper que se conecta con la API de Telegram para subir la evidencia a los grupos operacionales operacionales con menciones formateadas de los implicados.',
+                files: 'scripts/conecta_api_task.py (send_telegram_photo)',
+                rationale: 'Si falla el envío a Telegram, el flujo del script NO se detiene; se registra el warning y se prosigue con el guardado en base de datos.'
+            },
+            'comp-conectaclient': {
+                name: 'Claro Conecta Client',
+                type: 'Componente (RPA Server)',
+                tech: 'Requests session',
+                desc: 'Manejador de bajo nivel de las cookies de sesión y llamadas HTTP a los endpoints REST legados de Claro Conecta.',
+                files: 'scripts/claro_conecta_api.py',
+                rationale: 'Utiliza bypass de verificación SSL debido a certificados expirados del servidor de Claro Conecta :8443.'
+            }
+        };
+
+        // Relaciones / Conectores
+        const connectorData = {
+            'L1_DEC_PORTAL': {
+                name: 'DEC → Nokia Portal',
+                type: 'Interacción',
+                tech: 'HTTPS / JSON',
+                desc: 'El ingeniero de campo ingresa al portal Next.js 15 y da click en iniciar o finalizar su ventana asignada.',
+                files: 'N/A',
+                rationale: 'Es síncrono. El usuario recibe un feedback "En cola" inmediato para no dejar la UI congelada.'
+            },
+            'L1_PORTAL_CONECTA': {
+                name: 'Nokia Portal → Claro Conecta',
+                type: 'Llamada API',
+                tech: 'HTTPS REST (:8443)',
+                desc: 'El RPA Server lanza peticiones simulando la app nativa de Claro Colombia para iniciar/cerrar ventana.',
+                files: 'N/A',
+                rationale: 'Requiere pasar por OpenVPN de Windscribe para validar IP colombiana ante el firewall de Claro.'
+            },
+            'L1_PORTAL_TG': {
+                name: 'Nokia Portal → Telegram',
+                type: 'Notificación',
+                tech: 'HTTPS REST (Telegram API)',
+                desc: 'Envía el print de evidencia al grupo de chat con la información del CHG, sitio y menciones del DEC/FM.',
+                files: 'N/A',
+                rationale: 'Brinda transparencia al proceso en campo. Toda la interventoría puede ver el estado real del cierre.'
+            },
+            'L1_PORTAL_SUPABASE': {
+                name: 'Nokia Portal → Supabase',
+                type: 'Persistencia',
+                tech: 'PostgreSQL Link',
+                desc: 'Sincroniza logs, sube evidencias en formato PNG y obtiene credenciales encriptadas de DECs.',
+                files: 'N/A',
+                rationale: 'Postgres actúa como la cola de mensajería (status = pendiente, ejecutando, completado, fallido).'
+            },
+            'L2_RPA_VPN': {
+                name: 'RPA Server → Windscribe VPN',
+                type: 'Túnel de Red',
+                tech: 'OpenVPN (tun0)',
+                desc: 'Enruta todo el tráfico dirigido a 190.144.218.215 a través del túnel VPN.',
+                files: 'Windscribe systemd config',
+                rationale: 'Decisión clave para simular locación colombiana y evitar el cortafuegos perimetral de Claro.'
+            },
+            'L3_TASKS_CLIENT': {
+                name: 'Tasks → Conecta Client',
+                type: 'Invocación de Código',
+                tech: 'Python Import',
+                desc: 'Llama las funciones login(), iniciarVentana() y cerrarVentana() pasando los parámetros correctos.',
+                files: 'scripts/claro_conecta_api.py',
+                rationale: 'Abstrae los detalles de red y cookies en una sola clase reusable.'
+            }
+        };
+
+        // Secuencias de Flujos
+        const flows = {
+            'apertura': {
+                name: 'Apertura de VM (Iniciar Ventana)',
+                steps: [
+                    { title: '1. Click de Apertura', desc: 'El DEC presiona "Abrir VM" en la UI del Portal Web.', tech: 'Next.js Frontend · Client-side event' },
+                    { title: '2. Encolado del Job', desc: 'Next.js inserta una nueva fila en "vm_open_log" con status="pendiente" y tipo_accion="abrir_vm".', tech: 'INSERT en Supabase DB · API route' },
+                    { title: '3. Detección en VPS', desc: 'El Polling Worker asíncrono en el VPS detecta la solicitud "pendiente" en su ciclo de 5s.', tech: 'SELECT query · rpa_server.py' },
+                    { title: '4. Concurrencia Bloqueada', desc: 'El task solicita entrar al semáforo(8) para evitar sobrepasar límites en Claro Conecta.', tech: 'asyncio.Semaphore(8) acquire' },
+                    { title: '5. Login en Claro Conecta', desc: 'Se obtienen las credenciales del DEC y se invoca el login REST a Claro Conecta.', tech: 'POST /LDAP :443 (Windscribe Tunnel IP)' },
+                    { title: '6. Validación de CHG', desc: 'El script consulta Claro Conecta para corroborar que el CHG esté autorizado para hoy y corresponda al sitio.', tech: 'POST /getChange :8443' },
+                    { title: '7. Inicio de Ventana', desc: 'Se envía la orden de inicio de ventana técnica de mantenimiento a Claro.', tech: 'POST /iniciarVentana :8443' },
+                    { title: '8. Evidencia Gráfica', desc: 'Se crea la imagen sintética en Pillow usando los datos del CHG (Yeison, sitio, fecha) simulando el print oficial.', tech: 'conecta_imagen.py · generar_imagen_apertura' },
+                    { title: '9. Persistencia de URL', desc: 'Sube la imagen al bucket y actualiza el log en DB con status="completado" y la url de la imagen.', tech: 'Upload Storage + UPDATE vm_open_log' },
+                    { title: '10. Alerta Telegram', desc: 'Se envía la evidencia PNG al canal grupal notificando a coordinadores y cierra sesión en Claro.', tech: 'Telegram Bot API sendPhoto + POST /cierreSession' }
+                ]
+            },
+            'cierre': {
+                name: 'Cierre de VM (Finalizar Ventana con Evidencia)',
+                steps: [
+                    { title: '1. Click de Cierre', desc: 'El DEC presiona "Cerrar VM" en la UI del portal.', tech: 'Next.js Frontend · state mapping' },
+                    { title: '2. Inserción de Cierre', desc: 'Se inserta log en "vm_open_log" tipo_accion="cerrar_vm". Se muestra mini-barra de progreso en la UI.', tech: 'INSERT en Supabase DB · job_id retornado' },
+                    { title: '3. Polling & Login', desc: 'RPA Server toma la solicitud, se loguea en Claro usando EXCLUSIVAMENTE la cuenta del DEC que inició.', tech: 'rpa_server.py worker · Aislamiento credenciales' },
+                    { title: '4. Filtrar Ventanas Activas', desc: 'El script lista todas las ventanas en curso del DEC para encontrar el CHG en cuestión.', tech: 'POST /listarVentanasActivas :8443' },
+                    { title: '5. Orden de Cierre', desc: 'Se envía comando de cierre. El API de Claro puede retornar éxito (ok: true) o fallo (ej. NO EXCNAF).', tech: 'POST /cerrarVentana :8443' },
+                    { title: '6. Evidencia Condicional', desc: 'Independientemente del resultado, se genera imagen: verde (Éxito) o roja (Error) detallando el motivo.', tech: 'conecta_imagen.py · generar_imagen_cierre(exitoso, error)' },
+                    { title: '7. Guardado Seguro Doble Vía', desc: 'Sube PNG. Guarda URL en DB por ID del Job. Si falla, hace fallback buscando chg_id en estado pendiente.', tech: 'Upload Storage + UPDATE doble vía (ADR-05)' },
+                    { title: '8. Telegram & Cierre', desc: 'Envía el print de cierre (éxito/error) al canal de Telegram del FM. Cierra sesión del DEC.', tech: 'Telegram API + POST /cierreSession (cierre seguro)' },
+                    { title: '9. Actualización UI', desc: 'La UI detecta la imagen y transforma el botón en "🔒 Print Cierre" inmediato.', tech: 'Next.js frontend · fetchScreenshots() poll' }
+                ]
+            }
+        };
+
+        let currentActiveTab = 'context';
+        let currentActiveFlow = 'apertura';
+        let currentFlowStep = 0;
+
+        // Cambiar entre Pestañas
+        function switchTab(tabId) {
+            // Ocultar contenidos
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Quitar clase activa de botones
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-nokia-blue', 'text-white', 'shadow', 'shadow-nokia-blue/30');
+                btn.classList.add('text-slate-400', 'hover:text-white');
+            });
+
+            // Mostrar actual
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            // Activar botón
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.remove('text-slate-400', 'hover:text-white');
+            activeBtn.classList.add('bg-nokia-blue', 'text-white', 'shadow', 'shadow-nokia-blue/30');
+
+            currentActiveTab = tabId;
+
+            // Resetear detalles
+            resetDetails();
+
+            // Si es flujos, inicializar
+            if (tabId === 'flows') {
+                renderFlowSteps();
+            }
+        }
+
+        // Selección de Nodo en el SVG
+        function selectNode(nodeId) {
+            // Remover clase activa en SVG
+            document.querySelectorAll('.node-group').forEach(el => el.classList.remove('active'));
+            
+            // Agregar activa
+            const activeNode = document.getElementById(`node-${nodeId}`);
+            if (activeNode) activeNode.classList.add('active');
+
+            const info = nodeData[nodeId];
+            if (info) {
+                document.getElementById('details-placeholder').classList.add('hidden');
+                
+                const content = document.getElementById('details-content');
+                content.classList.remove('hidden');
+                
+                document.getElementById('comp-type-badge').textContent = info.type;
+                document.getElementById('comp-tech-badge').textContent = info.tech;
+                document.getElementById('comp-name').textContent = info.name;
+                document.getElementById('comp-desc').textContent = info.desc;
+                document.getElementById('comp-files').innerHTML = `<code>${info.files}</code>`;
+                document.getElementById('comp-rationale').textContent = info.rationale;
+            }
+        }
+
+        // Selección de Conector/Línea
+        function selectConnector(connId) {
+            const info = connectorData[connId];
+            if (info) {
+                document.getElementById('details-placeholder').classList.add('hidden');
+                
+                const content = document.getElementById('details-content');
+                content.classList.remove('hidden');
+                
+                document.getElementById('comp-type-badge').textContent = info.type;
+                document.getElementById('comp-tech-badge').textContent = info.tech;
+                document.getElementById('comp-name').textContent = info.name;
+                document.getElementById('comp-desc').textContent = info.desc;
+                document.getElementById('comp-files').textContent = info.files;
+                document.getElementById('comp-rationale').textContent = info.rationale;
+            }
+        }
+
+        // Reset panel derecho
+        function resetDetails() {
+            document.getElementById('details-placeholder').classList.remove('hidden');
+            document.getElementById('details-content').classList.add('hidden');
+            document.querySelectorAll('.node-group').forEach(el => el.classList.remove('active'));
+        }
+
+        // --- LÓGICA DE FLUJOS DE CÓDIGO (Tab 4) ---
+        function selectFlow(flowId) {
+            currentActiveFlow = flowId;
+            currentFlowStep = 0;
+
+            // Clases botones
+            const btnApertura = document.getElementById('flow-btn-apertura');
+            const btnCierre = document.getElementById('flow-btn-cierre');
+
+            if (flowId === 'apertura') {
+                btnApertura.className = 'px-3 py-2 rounded-lg text-xs font-bold font-outfit border border-nokia-accent bg-nokia-blue text-white transition-all shadow shadow-nokia-blue/30';
+                btnCierre.className = 'px-3 py-2 rounded-lg text-xs font-bold font-outfit border border-white/10 bg-slate-900 text-slate-300 hover:text-white transition-all';
+            } else {
+                btnCierre.className = 'px-3 py-2 rounded-lg text-xs font-bold font-outfit border border-nokia-accent bg-nokia-blue text-white transition-all shadow shadow-nokia-blue/30';
+                btnApertura.className = 'px-3 py-2 rounded-lg text-xs font-bold font-outfit border border-white/10 bg-slate-900 text-slate-300 hover:text-white transition-all';
+            }
+
+            renderFlowSteps();
+        }
+
+        function renderFlowSteps() {
+            const flow = flows[currentActiveFlow];
+            const stepsList = document.getElementById('flow-steps-list');
+            stepsList.innerHTML = '';
+
+            flow.steps.forEach((step, idx) => {
+                const isActive = idx === currentFlowStep;
+                const item = document.createElement('div');
+                item.className = `p-3 rounded-lg border text-left cursor-pointer transition-all ${
+                    isActive 
+                    ? 'bg-nokia-blue/20 border-nokia-accent text-white shadow shadow-nokia-blue/10' 
+                    : 'bg-slate-900/40 border-white/5 text-slate-400 hover:bg-slate-900 hover:text-white'
+                }`;
+                item.onclick = () => jumpToStep(idx);
+                item.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold font-outfit">${step.title}</span>
+                        ${isActive ? '<span class="h-1.5 w-1.5 rounded-full bg-nokia-accent animate-ping"></span>' : ''}
+                    </div>
+                `;
+                stepsList.appendChild(item);
+            });
+
+            // Actualizar panel de detalle paso
+            const activeStep = flow.steps[currentFlowStep];
+            document.getElementById('active-flow-name').textContent = flow.name;
+            document.getElementById('active-flow-step-num').textContent = `PASO ${currentFlowStep + 1} DE ${flow.steps.length}`;
+            document.getElementById('active-flow-step-title').textContent = activeStep.title;
+            document.getElementById('active-flow-step-desc').textContent = activeStep.desc;
+            document.getElementById('active-flow-step-technical').textContent = activeStep.tech;
+
+            // Habilitar/Deshabilitar botones
+            document.getElementById('btn-prev-step').disabled = currentFlowStep === 0;
+            document.getElementById('btn-next-step').disabled = currentFlowStep === flow.steps.length - 1;
+
+            // Render Dots
+            const dotsContainer = document.getElementById('step-dots');
+            dotsContainer.innerHTML = '';
+            flow.steps.forEach((_, idx) => {
+                const dot = document.createElement('span');
+                dot.className = `h-1.5 w-1.5 rounded-full transition-all ${idx === currentFlowStep ? 'bg-nokia-accent w-4' : 'bg-slate-700'}`;
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        function nextStep() {
+            const flow = flows[currentActiveFlow];
+            if (currentFlowStep < flow.steps.length - 1) {
+                currentFlowStep++;
+                renderFlowSteps();
+            }
+        }
+
+        function prevStep() {
+            if (currentFlowStep > 0) {
+                currentFlowStep--;
+                renderFlowSteps();
+            }
+        }
+
+        function jumpToStep(stepIdx) {
+            currentFlowStep = stepIdx;
+            renderFlowSteps();
+        }
+
+        // Seleccionar Nodo Inicial al arrancar
+        window.onload = () => {
+            selectNode('ctx-portal');
+        }
+    </script>
+</body>
+</html>

@@ -83,7 +83,7 @@
                     <tr>
                         <td style="background-color:#f8fafc;border-top:1px solid #e2e8f0;padding:18px 32px;text-align:center;font-size:11.5px;color:#64748b;">
                             <strong>{{ $tenant->name }}</strong> · {{ $tenant->branding['address'] ?? 'Sede Principal' }} · {{ $tenant->branding['city'] ?? 'Colombia' }}<br>
-                            Tecnología de Salud Preventiva impulsada por <a href="https://avipetapp.com" style="color:#0284c7;text-decoration:none;font-weight:700;">AVI-Plan</a>
+                            Tecnología de Salud Preventiva impulsada por <a href="https://avipetapp.com" style="color:#0284c7;text-decoration:none;font-weight:700;">AviPetApp</a>
                         </td>
                     </tr>
 

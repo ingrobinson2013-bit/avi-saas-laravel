@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     
     @php
         $primaryColor = $tenant->branding['primary_color'] ?? '#0D9488';
@@ -48,7 +48,7 @@
             --brand-primary-rgb: {{ implode(', ', sscanf(ltrim($primaryColor, '#'), "%02x%02x%02x") ?: [13, 148, 136]) }};
             --brand-secondary-rgb: {{ implode(', ', sscanf(ltrim($secondaryColor, '#'), "%02x%02x%02x") ?: [11, 17, 32]) }};
         }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Inter', Arial, sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         
         .bg-brand-primary { background-color: var(--brand-primary) !important; }

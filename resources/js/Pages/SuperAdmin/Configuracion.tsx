@@ -102,7 +102,7 @@ export default function Configuracion({
                             Configuración del Sistema
                         </h1>
                         <p className="text-sm text-slate-500 mt-1">
-                            Ajustes globales de la plataforma AVI Pet, llaves de recaudo Bold y parámetros de suscripción SaaS.
+                            Ajustes globales de la plataforma AviPetApp, llaves de recaudo Bold y parámetros de suscripción SaaS.
                         </p>
                     </div>
 

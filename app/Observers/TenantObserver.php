@@ -35,7 +35,7 @@ class TenantObserver
      */
     public function created(Tenant $tenant): void
     {
-        Log::info("🏥 [OBSERVER] Nueva Clínica Veterinaria aprovisionada en AVI-Plan:", [
+        Log::info("🏥 [OBSERVER] Nueva Clínica Veterinaria aprovisionada en AviPetApp:", [
             'tenant_id' => $tenant->id,
             'name' => $tenant->name,
             'slug' => $tenant->slug,

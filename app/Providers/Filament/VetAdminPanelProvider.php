@@ -37,8 +37,8 @@ class VetAdminPanelProvider extends PanelProvider
             ->brandName(fn () => \Filament\Facades\Filament::getTenant()?->name ?? 'Portal Veterinario')
             ->brandLogo(fn () => view('filament.vet-admin.logo'))
             ->brandLogoHeight('2.85rem')
-            ->favicon('/logo.svg')
-            ->font('Plus Jakarta Sans')
+            ->favicon('/brand/favicons/avipetapp_favicon.svg')
+            ->font('Inter')
             ->darkMode(true)
             ->defaultAvatarProvider(\App\AvatarProviders\ClinicAvatarProvider::class)
             ->colors([

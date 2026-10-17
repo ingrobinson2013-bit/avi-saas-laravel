@@ -128,7 +128,7 @@
                     <tr>
                         <td style="background-color:#f8fafc;padding:20px 28px;text-align:center;border-top:1px solid #e2e8f0;font-size:12px;color:#64748b;line-height:1.6;">
                             <strong>{{ $tenant->name }}</strong> · {{ $clinicAddress }}, {{ $clinicCity }}<br>
-                            Tecnología de Membresías Veterinarias impulsada por <a href="https://avipetapp.com" style="color:#0d9488;text-decoration:none;font-weight:700;">AVI-Plan (avipetapp.com)</a>
+                            Tecnología de Membresías Veterinarias impulsada por <a href="https://avipetapp.com" style="color:#0d9488;text-decoration:none;font-weight:700;">AviPetApp (avipetapp.com)</a>
                         </td>
                     </tr>
                 </table>

@@ -34,7 +34,7 @@ class UserResource extends Resource
                             ->searchable()
                             ->preload()
                             ->nullable()
-                            ->helperText('Dejar vacío únicamente si es un usuario SuperAdministrador global de AVI-Plan.'),
+                            ->helperText('Dejar vacío únicamente si es un usuario SuperAdministrador global de AviPetApp.'),
 
                         Forms\Components\TextInput::make('name')
                             ->label('Nombre Completo / Título')
@@ -52,7 +52,7 @@ class UserResource extends Resource
                         Forms\Components\Select::make('role')
                             ->label('Rol en el Sistema')
                             ->options([
-                                'super_admin' => '👑 SuperAdministrador (NODIA / AVI-Plan Central)',
+                                'super_admin' => '👑 SuperAdministrador (NODIA / AviPetApp Central)',
                                 'clinic_admin' => '🏥 Director / Administrador de Clínica',
                                 'vet_doctor' => '🩺 Médico Veterinario de Turno',
                                 'reception' => '💼 Recepcionista / Mostrador',
@@ -88,7 +88,7 @@ class UserResource extends Resource
 
                 Tables\Columns\TextColumn::make('tenant.name')
                     ->label('Clínica')
-                    ->default('👑 AVI-Plan Central (SuperAdmin)')
+                    ->default('👑 AviPetApp Central (SuperAdmin)')
                     ->badge()
                     ->color(fn ($state) => str_contains($state, 'Central') ? 'primary' : 'gray')
                     ->searchable()

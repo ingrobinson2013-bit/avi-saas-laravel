@@ -28,16 +28,16 @@ class SuperAdminPanelProvider extends PanelProvider
             ->id('super-admin')
             ->path('super-admin')
             ->login()
-            ->brandName('AVI Pet')
+            ->brandName('AviPetApp')
             ->brandLogo(fn () => view('filament.super-admin.components.brand-logo'))
             ->brandLogoHeight('2.5rem')
-            ->font('Plus Jakarta Sans')
+            ->font('Inter')
             ->colors([
-                'primary' => Color::Teal,
-                'success' => Color::Emerald,
+                'primary' => Color::Violet,
+                'success' => Color::Teal,
                 'warning' => Color::Amber,
-                'danger' => Color::Rose,
-                'info' => Color::Sky,
+                'danger' => Color::Red,
+                'info' => Color::Cyan,
                 'gray' => Color::Slate,
             ])
             ->renderHook(

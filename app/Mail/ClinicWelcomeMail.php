@@ -28,12 +28,12 @@ class ClinicWelcomeMail extends Mailable
     public function envelope(): Envelope
     {
         $fromAddress = config('mail.from.address', 'contacto@avipetapp.com');
-        $fromName = config('mail.from.name', 'Robinson Naranjo — AVI-Plan');
+        $fromName = config('mail.from.name', 'Robinson Naranjo — AviPetApp');
 
         return new Envelope(
             from: new Address($fromAddress, $fromName),
-            replyTo: [new Address('contacto@avipetapp.com', 'Soporte AVI-Plan')],
-            subject: "🎉 ¡Bienvenido(a) a AVI-Plan, Dr(a). {$this->adminName}! Tu prueba de 15 días está lista"
+            replyTo: [new Address('contacto@avipetapp.com', 'Soporte AviPetApp')],
+            subject: "🎉 ¡Bienvenido(a) a AviPetApp, Dr(a). {$this->adminName}! Tu prueba de 15 días está lista"
         );
     }
 

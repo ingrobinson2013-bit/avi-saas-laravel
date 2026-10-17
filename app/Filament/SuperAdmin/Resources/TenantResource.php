@@ -60,7 +60,7 @@ class TenantResource extends Resource
                                         ->helperText('Fecha en que expiran los 15 días gratis'),
 
                                     Forms\Components\Select::make('saas_plan_tier')
-                                        ->label('Nivel de Plan AVI-Plan')
+                                        ->label('Nivel de Plan AviPetApp')
                                         ->options([
                                             'pay_per_pet' => '🌱 Por Mascota Activa ($5.000 COP / mascota)',
                                             'starter' => '🚀 Starter ($99.000 COP/mes — Hasta 60 mascotas)',
@@ -239,7 +239,7 @@ class TenantResource extends Resource
                                         $mrr = '$' . number_format($gmv, 0, ',', '.') . ' COP/mes';
                                         $canon = '$' . number_format((float) ($record->branding['saas_monthly_fee'] ?? 229000), 0, ',', '.') . ' COP/mes';
 
-                                        return "📊 {$tutores} Tutores Registrados | 🐕 {$subs} Membresías Activas | 💰 Facturación Clínica: {$mrr} | 🏷️ Canon AVI-Plan: {$canon}";
+                                        return "📊 {$tutores} Tutores Registrados | 🐕 {$subs} Membresías Activas | 💰 Facturación Clínica: {$mrr} | 🏷️ Canon AviPetApp: {$canon}";
                                     }),
                             ]),
 
@@ -427,7 +427,7 @@ class TenantResource extends Resource
                         $formattedPhone = strlen($phone) === 10 
                             ? substr($phone, 0, 3) . ' ' . substr($phone, 3, 3) . ' ' . substr($phone, 6)
                             : $phone;
-                        $msg = urlencode("Hola Dr(a) de {$record->name}, te escribo del equipo AVI-Plan para conocer cómo va la experiencia en tu clínica veterinaria.");
+                        $msg = urlencode("Hola Dr(a) de {$record->name}, te escribo del equipo AviPetApp para conocer cómo va la experiencia en tu clínica veterinaria.");
                         $waUrl = "https://wa.me/{$prefix}?text={$msg}";
 
                         return "
@@ -491,7 +491,7 @@ class TenantResource extends Resource
                         ->color('warning')
                         ->requiresConfirmation()
                         ->modalHeading('¿Extender período de prueba?')
-                        ->modalDescription('Se sumarán 15 días adicionales a partir de hoy a la clínica para que continúe evaluando AVI-Plan.')
+                        ->modalDescription('Se sumarán 15 días adicionales a partir de hoy a la clínica para que continúe evaluando AviPetApp.')
                         ->action(function (Tenant $record) {
                             $branding = $record->branding ?? [];
                             $branding['trial_ends_at'] = now()->addDays(15)->toIso8601String();
@@ -511,7 +511,7 @@ class TenantResource extends Resource
                         ->color('success')
                         ->requiresConfirmation()
                         ->modalHeading('¿Activar Suscripción Oficial de Pago?')
-                        ->modalDescription('Esta clínica pasará a estado oficial activo pagado en AVI-Plan y se sumarán 30 días de cobertura.')
+                        ->modalDescription('Esta clínica pasará a estado oficial activo pagado en AviPetApp y se sumarán 30 días de cobertura.')
                         ->action(function (Tenant $record) {
                             $branding = $record->branding ?? [];
                             $branding['saas_status'] = 'paid';
@@ -623,7 +623,7 @@ class TenantResource extends Resource
                             $prefix = str_starts_with($phone, '57') ? $phone : "57{$phone}";
                             $fee = '$' . number_format((float) ($record->branding['saas_monthly_fee'] ?? 99000), 0, ',', '.') . ' COP';
                             $link = url("/admin/{$record->slug}/renovar-saas");
-                            $msg = "Hola Dr(a) de {$record->name}, te escribo de AVI-Plan. Tu suscripción mensual ({$fee}) está lista para renovación. Puedes realizar tu pago seguro con PSE, Tarjeta o Botón Bancolombia en el siguiente link oficial de Bold: {$link} . ¡Muchas gracias!";
+                            $msg = "Hola Dr(a) de {$record->name}, te escribo de AviPetApp. Tu suscripción mensual ({$fee}) está lista para renovación. Puedes realizar tu pago seguro con PSE, Tarjeta o Botón Bancolombia en el siguiente link oficial de Bold: {$link} . ¡Muchas gracias!";
                             return "https://wa.me/{$prefix}?text=" . urlencode($msg);
                         }, true),
 

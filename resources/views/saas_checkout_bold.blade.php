@@ -3,44 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activar Suscripción AVI-Plan — {{ $tenant->name }}</title>
+    <title>Activar Suscripción AviPetApp — {{ $tenant->name }}</title>
+    <link rel="icon" type="image/svg+xml" href="/brand/favicons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
     
     <!-- Bold Official Checkout SDK -->
     <script type="text/javascript" src="https://checkout.bold.co/library/boldPaymentButton.js"></script>
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Inter', Arial, sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         .hero-bg {
-            background: radial-gradient(circle at 50% -20%, rgba(37, 99, 235, 0.08) 0%, rgba(248, 250, 252, 0.9) 70%);
+            background: radial-gradient(circle at 50% -20%, rgba(109, 40, 217, 0.06) 0%, rgba(244, 247, 252, 0.95) 70%);
         }
     </style>
 </head>
-<body class="min-h-full flex flex-col justify-between bg-slate-50 text-slate-900 hero-bg">
+<body class="min-h-full flex flex-col justify-between bg-[#F4F7FC] text-[#15213B] hero-bg">
 
-    <!-- 1. TOP NAVBAR CLARA Y MODERNA -->
-    <header class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+    <!-- 1. TOP NAVBAR CLARA Y MODERNA (Logo Horizontal Oficial AviPetApp) -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 shadow-xs">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="/" class="flex items-center space-x-2.5">
-                <img src="/images/dashboard/brand_logo.png" alt="AVI-Plan" class="w-8 h-8 object-contain">
-                <div class="flex items-center space-x-1.5">
-                    <span class="text-lg font-black text-slate-900 tracking-tight">AVI<span class="text-blue-600">Plan</span></span>
-                    <span class="text-[10px] font-bold uppercase bg-blue-50 text-blue-800 px-2 py-0.5 rounded-md border border-blue-200">
-                        Checkout Seguro
-                    </span>
-                </div>
+            <a href="/" class="flex items-center space-x-3">
+                <img src="/brand/svg/avipetapp-horizontal-fondo-claro.svg" alt="AviPetApp" class="h-8 w-auto min-w-[140px] object-contain">
+                <span class="text-[10px] font-bold uppercase bg-[#6D28D9]/10 text-[#6D28D9] px-2.5 py-0.5 rounded-md border border-[#6D28D9]/20">
+                    Checkout Seguro
+                </span>
             </a>
 
             <div class="flex items-center space-x-3 text-xs font-semibold">
-                <div class="hidden sm:flex items-center space-x-1.5 text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <div class="hidden sm:flex items-center space-x-1.5 text-[#0F9F9A] bg-[#0F9F9A]/10 border border-[#0F9F9A]/25 px-3 py-1 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-[#0F9F9A] animate-ping"></span>
                     <span>Cifrado SSL 256 bits · Bold.co</span>
                 </div>
-                <a href="/admin/{{ $tenant->slug }}" class="text-slate-600 hover:text-slate-900 font-bold hover:underline transition">
+                <a href="/admin/{{ $tenant->slug }}" class="text-[#5C6B85] hover:text-[#15213B] font-bold hover:underline transition">
                     ← Volver a la Clínica
                 </a>
             </div>
@@ -162,7 +161,7 @@
                         </div>
                         <div class="flex items-start space-x-2.5">
                             <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
-                            <span><strong>Soporte Prioritario & Acompañamiento:</strong> Asesoría directa por WhatsApp con el equipo de AVI-Plan y NODIA.</span>
+                            <span><strong>Soporte Prioritario & Acompañamiento:</strong> Asesoría directa por WhatsApp con el equipo de AviPetApp y NODIA.</span>
                         </div>
                     </div>
                 </div>
@@ -244,7 +243,7 @@
                                     data-amount="{{ (int) round($amount) }}"
                                     data-currency="COP"
                                     data-integrity-signature="{{ $integritySignature }}"
-                                    data-description="Mensualidad SaaS AVI-Plan - {{ $tenant->name }}"
+                                    data-description="Mensualidad SaaS AviPetApp - {{ $tenant->name }}"
                                     data-redirection-url="{{ $redirectUrl }}"
                                     data-webhook-url="{{ $webhookUrl }}"
                                     data-payer-email="{{ $payerEmail }}"
@@ -286,13 +285,13 @@
                                         </div>
                                         <div class="flex justify-between items-center pt-1">
                                             <span class="text-slate-500 font-medium">Titular:</span>
-                                            <span class="font-bold text-slate-900">AVI Plan SaaS Colombia</span>
+                                            <span class="font-bold text-slate-900">AviPetApp SaaS Colombia</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <a 
-                                    href="https://wa.me/573235813942?text={{ urlencode('Hola Robinson, adjunto comprobante de pago de la suscripción SaaS AVI-Plan (' . $tenant->name . ') por valor de $' . number_format($amount, 0, ',', '.') . ' COP. ID de orden: ' . $orderId) }}"
+                                    href="https://wa.me/573235813942?text={{ urlencode('Hola Robinson, adjunto comprobante de pago de la suscripción SaaS AviPetApp (' . $tenant->name . ') por valor de $' . number_format($amount, 0, ',', '.') . ' COP. ID de orden: ' . $orderId) }}"
                                     target="_blank"
                                     class="w-full py-4 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-600/25 transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 text-center"
                                 >
@@ -339,8 +338,8 @@
     </main>
 
     <!-- 3. FOOTER SENCILLO -->
-    <footer class="border-t border-slate-200 py-6 bg-white text-center text-xs text-slate-500">
-        <p>AVI-Plan by AviPetApp & NODIA · Facturación y Recaudo Seguro de Software Veterinario.</p>
+    <footer class="border-t border-slate-200 py-6 bg-white text-center text-xs text-[#5C6B85]">
+        <p>© {{ date('Y') }} AviPetApp · Software con IA para veterinarias · Facturación y Recaudo Seguro.</p>
     </footer>
 
 </body>

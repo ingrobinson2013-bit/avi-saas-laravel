@@ -39,7 +39,7 @@ class SuperAdminDashboardController extends Controller
             ? (int) round((($mascotasConMembresia - $subsLastMonth) / $subsLastMonth) * 100) 
             : 33;
 
-        // 3. MRR Recaudación SaaS para la Plataforma AVI Pet (Real DB)
+        // 3. MRR Recaudación SaaS para la Plataforma AviPetApp (Real DB)
         $tenants = Tenant::all();
         $realMrr = (float) $tenants->sum(function ($t) {
             $fee = $t->branding['saas_monthly_fee'] ?? 99000;
@@ -138,7 +138,7 @@ class SuperAdminDashboardController extends Controller
                 'id' => 'tenant_' . $t->id,
                 'type' => 'clinic',
                 'title' => 'Nueva clínica registrada',
-                'description' => "Clínica {$t->name} se incorporó a la red AVI Pet",
+                'description' => "Clínica {$t->name} se incorporó a la red AviPetApp",
                 'time' => $t->created_at ? $t->created_at->translatedFormat('d M. Y · h:i a') : 'Reciente',
                 'created_at' => $t->created_at ?? now(),
             ];

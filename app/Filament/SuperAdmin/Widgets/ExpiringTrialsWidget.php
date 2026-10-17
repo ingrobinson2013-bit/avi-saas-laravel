@@ -99,7 +99,7 @@ class ExpiringTrialsWidget extends BaseWidget
                         $days = $record->trial_days_remaining;
                         
                         $urgency = $days <= 0 ? 'ha finalizado' : "vence en {$days} días";
-                        $msg = "Hola Dr(a) de *{$record->name}*, te saludamos de AVI-Plan.\n\n"
+                        $msg = "Hola Dr(a) de *{$record->name}*, te saludamos de AviPetApp.\n\n"
                              . "Tu período de prueba gratuito de 15 días {$urgency}.\n\n"
                              . "Para mantener activos los carnets digitales de tus pacientes y el portal de membresías de tu clínica, puedes realizar tu pago seguro ({$fee}) con PSE, Nequi o Tarjetas a través de nuestra pasarela oficial Bold:\n"
                              . "👉 {$link}\n\n"

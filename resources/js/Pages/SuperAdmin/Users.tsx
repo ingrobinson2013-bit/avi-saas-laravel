@@ -390,7 +390,7 @@ export default function Users({
                                                             <span>{u.tenant_name}</span>
                                                         </>
                                                     ) : (
-                                                        <span className="text-purple-700 font-bold">👑 Central AVI Pet</span>
+                                                        <span className="text-purple-700 font-bold">👑 Central AviPetApp</span>
                                                     )}
                                                 </div>
                                             </td>

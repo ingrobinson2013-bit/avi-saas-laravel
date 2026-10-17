@@ -42,7 +42,7 @@ class SuperAdminConfiguracionController extends Controller
             'enterprise_saas_fee' => (float) env('SAAS_ENTERPRISE_FEE', 199000),
 
             // Contacto y Soporte
-            'platform_name' => 'AVI Pet — Gestión Veterinaria SaaS',
+            'platform_name' => 'AviPetApp — Software con IA para veterinarias',
             'support_email' => 'contacto@avipetapp.com',
             'support_phone' => '+57 323 581 3942',
             'base_domain' => env('APP_BASE_DOMAIN', 'avipetapp.com'),

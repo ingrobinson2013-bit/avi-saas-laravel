@@ -27,7 +27,7 @@ class NewClinicLeadAlertMail extends Mailable
     public function envelope(): Envelope
     {
         $fromAddress = config('mail.from.address', 'contacto@avipetapp.com');
-        $fromName = config('mail.from.name', 'Sistema Central AVI-Plan');
+        $fromName = config('mail.from.name', 'Sistema Central AviPetApp');
 
         return new Envelope(
             from: new Address($fromAddress, $fromName),

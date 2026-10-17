@@ -225,7 +225,7 @@ export default function Settings({
                             </div>
                             <div>
                                 <h3 className="text-sm font-extrabold flex items-center gap-1.5">
-                                    🎉 ¡Bienvenido a AVI Plan! Paso 1: Configura tu Marca
+                                    🎉 ¡Bienvenido a AviPetApp! Paso 1: Configura tu Marca
                                 </h3>
                                 <p className="text-xs text-emerald-100 mt-0.5 max-w-xl">
                                     Sube el logotipo oficial de tu veterinaria, elige los colores corporativos y actualiza los datos de contacto. Tu vitrina pública se adaptará automáticamente a tu identidad.

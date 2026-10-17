@@ -35,7 +35,7 @@ class TutorWelcomeCarnetMail extends Mailable
         $replyToEmail = $this->tenant->branding['email'] ?? $fromAddress;
 
         return new Envelope(
-            from: new Address($fromAddress, "{$clinicName} · vía AVI-Plan"),
+            from: new Address($fromAddress, "{$clinicName} · vía AviPetApp"),
             replyTo: [
                 new Address($replyToEmail, $clinicName),
             ],

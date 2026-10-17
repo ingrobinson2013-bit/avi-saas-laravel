@@ -9,7 +9,7 @@
                 Centro de control
             </h1>
             <p class="avi-sa-header-sub">
-                Resumen de la red AVI Pet
+                Resumen de la red AviPetApp · Software con IA para veterinarias
             </p>
         </div>
 
@@ -73,7 +73,7 @@
                 </div>
                 <div class="avi-sa-kpi-info">
                     <span class="avi-sa-kpi-label">
-                        MRR
+                        MRR (Plataforma SaaS)
                     </span>
                     <span class="avi-sa-kpi-value">
                         ${{ number_format($mrr, 0, ',', '.') }} <span style="font-size: 0.75rem; font-weight: 700; color: #64748b;">COP</span>
@@ -94,7 +94,7 @@
                 </div>
                 <div class="avi-sa-kpi-info">
                     <span class="avi-sa-kpi-label">
-                        GMV mensual
+                        GMV mensual (Clínicas)
                     </span>
                     <span class="avi-sa-kpi-value">
                         ${{ number_format($gmv, 0, ',', '.') }} <span style="font-size: 0.75rem; font-weight: 700; color: #64748b;">COP</span>
@@ -150,7 +150,7 @@
                     No hay oportunidades registradas
                 </h4>
                 <p style="font-size: 0.75rem; color: #64748b; max-width: 380px; margin: 0.25rem 0 0 0; line-height: 1.4;">
-                    Aún no tienes demos, leads u oportunidades en el pipeline comercial. Empieza a generar nuevas oportunidades para hacer crecer AVI Pet.
+                    Aún no tienes demos, leads u oportunidades en el pipeline comercial. Empieza a generar nuevas oportunidades para hacer crecer AviPetApp.
                 </p>
 
                 <a href="/super-admin/prospecto-veterinarias/create" class="avi-sa-btn-teal">

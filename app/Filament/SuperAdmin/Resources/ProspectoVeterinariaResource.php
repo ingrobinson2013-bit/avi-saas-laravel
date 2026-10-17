@@ -236,7 +236,7 @@ class ProspectoVeterinariaResource extends Resource
                     ->icon('heroicon-o-paper-airplane')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->modalHeading('Enviar Correo Oficial de AVI-Plan')
+                    ->modalHeading('Enviar Correo Oficial de AviPetApp')
                     ->modalDescription(fn (ProspectoVeterinaria $record) => "¿Deseas despachar inmediatamente la propuesta de ingresos recurrentes a {$record->razon_social} ({$record->correo_comercial})?")
                     ->modalSubmitActionLabel('Sí, Enviar Correo Ahora')
                     ->action(function (ProspectoVeterinaria $record) {
@@ -277,7 +277,7 @@ class ProspectoVeterinariaResource extends Resource
                     ->visible(fn (ProspectoVeterinaria $record) => filled($record->clean_whatsapp_number))
                     ->url(function (ProspectoVeterinaria $record) {
                         $texto = "¡Hola, muy buenas tardes equipo de {$record->razon_social}! 👋🐾\n\n"
-                            . "Les saluda Robinson de AVI-Plan (https://avipetapp.com).\n\n"
+                            . "Les saluda Robinson de AviPetApp (https://avipetapp.com).\n\n"
                             . "Les escribo porque estamos trabajando con clínicas veterinarias ayudándoles a implementar Planes de Salud Preventiva en suscripción mensual (con carnet digital y canje en mostrador), para asegurar ingresos fijos recurrentes de $3M a $6M mensuales para la clínica.\n\n"
                             . "¿Ustedes actualmente manejan algún plan de salud o membresías para sus pacientes, o les gustaría conocer cómo funciona?";
                         $mensaje = rawurlencode($texto);
@@ -295,7 +295,7 @@ class ProspectoVeterinariaResource extends Resource
                         ->color('success')
                         ->requiresConfirmation()
                         ->modalHeading('Despacho Masivo de Correos')
-                        ->modalDescription('Se enviará la propuesta oficial de AVI-Plan a cada una de las veterinarias seleccionadas a través de Hostinger SMTP.')
+                        ->modalDescription('Se enviará la propuesta oficial de AviPetApp a cada una de las veterinarias seleccionadas a través de Hostinger SMTP.')
                         ->action(function ($records) {
                             $enviados = 0;
                             $fallidos = 0;

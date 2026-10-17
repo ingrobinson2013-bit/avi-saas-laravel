@@ -103,7 +103,7 @@ return [
 
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'contacto@avipetapp.com'),
-        'name' => env('MAIL_FROM_NAME', 'AVI-Plan'),
+        'name' => env('MAIL_FROM_NAME', 'AviPetApp'),
     ],
 
 ];

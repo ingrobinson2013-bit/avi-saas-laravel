@@ -146,7 +146,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     @if($googleTagId)
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ $googleTagId }}"></script>
@@ -164,7 +164,7 @@
             --brand-secondary: {{ $secondaryColor }};
         }
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Inter', Arial, sans-serif;
             background-color: #FAFBFD;
             color: #1e293b;
         }
@@ -632,7 +632,7 @@
                 <div class="text-xs text-slate-500 mt-0.5">{{ $address }} &bull; {{ $city }} &bull; Tel: {{ $phone }}</div>
             </div>
             <div class="text-xs text-slate-400">
-                Plataforma de Salud Preventiva impulsada por <a href="https://avipetapp.com" target="_blank" class="text-blue-600 hover:underline font-bold">AVI-Plan SaaS</a>.
+                Plataforma de Salud Preventiva impulsada por <a href="https://avipetapp.com" target="_blank" class="text-blue-600 hover:underline font-bold">AviPetApp</a>.
             </div>
         </div>
     </footer>

@@ -34,7 +34,7 @@ class ClinicAvatarProvider implements AvatarProvider
             . '</linearGradient>'
             . '</defs>'
             . '<circle cx="20" cy="20" r="20" fill="url(#grad)" />'
-            . '<text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" fill="#ffffff" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="15" font-weight="800">' . e($initials) . '</text>'
+            . '<text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" fill="#ffffff" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="800">' . e($initials) . '</text>'
             . '</svg>';
 
         return 'data:image/svg+xml;utf8,' . rawurlencode($svg);

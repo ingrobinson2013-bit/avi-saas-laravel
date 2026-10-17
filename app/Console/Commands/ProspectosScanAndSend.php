@@ -27,15 +27,15 @@ class ProspectosScanAndSend extends Command
         $shouldScan = $this->option('scan');
 
         $this->info("============================================================");
-        $this->info("🚀 AVI-PLAN: MOTOR AUTOMÁTICO DE PROSPECCIÓN Y DISPACHO");
+        $this->info("🚀 AVIPETAPP: MOTOR AUTOMÁTICO DE PROSPECCIÓN Y DESPACHO");
         $this->info("============================================================");
         $this->info("- Modo: " . ($dryRun ? "[SIMULACIÓN]" : ($testEmail ? "[TEST: $testEmail]" : "[ENVÍO REAL]")));
         $this->info("- Límite de lote diario: $limit");
 
         // 1. Escaneo / Enriquecimiento si se solicitó
         if ($shouldScan) {
-            $this->info("\n🔍 Iniciando escaneo de directorios y registros veterinarios de Colombia...");
-            $res = app(\App\Services\VeterinariaScraperService::class)->scanRegion('todo_el_pais');
+            $this->info("\n🔍 Iniciando escaneo de directorios y registros veterinarios de Colombia (Cuota: {$limit})...");
+            $res = app(\App\Services\VeterinariaScraperService::class)->scanRegion('todo_el_pais', null, null, null, $limit);
             $this->info("✓ Escaneo completado: {$res['guardados_o_actualizados']} prospectos procesados con Upsert (Total cola: {$res['pendientes_en_cola']}).");
         }
 

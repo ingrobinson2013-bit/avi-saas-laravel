@@ -152,39 +152,47 @@ export default function Dashboard({
 
     return (
         <SuperAdminLayout userName={userName} userEmail={userEmail} activeItem="Escritorio">
-            <Head title="Centro de control · AVI Pet Superadmin" />
+            <Head title="Centro de control · AviPetApp Superadmin" />
 
             <div className="space-y-6 w-full max-w-full">
 
                 {/* 1. HEADER */}
-                <div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0f172a] tracking-tight">
-                        Centro de control
-                    </h1>
-                    <p className="text-sm text-slate-500 mt-1">
-                        Resumen de la red AVI Pet
-                    </p>
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+                    <div>
+                        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#15213B] tracking-tight">
+                            Centro de control
+                        </h1>
+                        <p className="text-sm text-[#5C6B85] mt-1">
+                            Resumen operativo de la red <strong className="font-bold text-[#15213B]">AviPetApp</strong> · Software con IA para veterinarias
+                        </p>
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-slate-200 text-[11px] font-semibold text-[#5C6B85] w-fit">
+                        <span>Periodo activo: Mes en curso vs. mes anterior</span>
+                    </span>
                 </div>
 
-                {/* 2. ROW 1: 4 METRIC CARDS MATCHING REFERENCE MOCKUP */}
+                {/* 2. ROW 1: 4 METRIC CARDS CON PERIODO Y DEFINICIÓN VISIBLES (Manual v1.1 Sección 06) */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
                     
                     {/* Card 1: Clínicas Activas */}
                     <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-md transition">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-[#eafaf5] text-[#00a884] flex items-center justify-center shrink-0">
+                        <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-[#0F9F9A]/10 text-[#0F9F9A] flex items-center justify-center shrink-0">
                                 <Building2 className="w-6 h-6" />
                             </div>
-                            <div>
-                                <div className="text-xs font-semibold text-slate-500">
+                            <div className="min-w-0">
+                                <div className="text-xs font-bold text-[#15213B]">
                                     Clínicas activas
                                 </div>
-                                <div className="text-2xl font-black text-[#0f172a] leading-tight mt-0.5">
+                                <div className="text-2xl font-black text-[#15213B] leading-tight mt-0.5">
                                     {clinicasActivas}
                                 </div>
-                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#00a884] mt-1">
+                                <div className="text-[11px] text-[#5C6B85] mt-1 leading-snug">
+                                    Veterinarias con plataforma habilitada
+                                </div>
+                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#0F9F9A] mt-1">
                                     <span>↑ {clinicasTrend}%</span>
-                                    <span className="text-slate-400 font-normal">vs. mes anterior</span>
+                                    <span className="text-[#5C6B85] font-normal">vs. mes anterior</span>
                                 </div>
                             </div>
                         </div>
@@ -192,62 +200,71 @@ export default function Dashboard({
 
                     {/* Card 2: Mascotas con membresía */}
                     <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-md transition">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-[#f2eefd] text-[#784fe8] flex items-center justify-center shrink-0">
+                        <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-[#6D28D9]/10 text-[#6D28D9] flex items-center justify-center shrink-0">
                                 <PawPrint className="w-6 h-6" />
                             </div>
-                            <div>
-                                <div className="text-xs font-semibold text-slate-500">
+                            <div className="min-w-0">
+                                <div className="text-xs font-bold text-[#15213B]">
                                     Mascotas con membresía
                                 </div>
-                                <div className="text-2xl font-black text-[#0f172a] leading-tight mt-0.5">
+                                <div className="text-2xl font-black text-[#15213B] leading-tight mt-0.5">
                                     {mascotasConMembresia}
                                 </div>
-                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#00a884] mt-1">
+                                <div className="text-[11px] text-[#5C6B85] mt-1 leading-snug">
+                                    Pacientes con plan de salud vigente
+                                </div>
+                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#0F9F9A] mt-1">
                                     <span>↑ {petsTrend}%</span>
-                                    <span className="text-slate-400 font-normal">vs. mes anterior</span>
+                                    <span className="text-[#5C6B85] font-normal">vs. mes anterior</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Card 3: MRR */}
+                    {/* Card 3: MRR (Ingreso recurrente de la plataforma) */}
                     <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-md transition">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-[#e6f7f6] text-[#009e99] flex items-center justify-center shrink-0">
+                        <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-[#0E7490]/10 text-[#0E7490] flex items-center justify-center shrink-0">
                                 <DollarSign className="w-6 h-6" />
                             </div>
-                            <div>
-                                <div className="text-xs font-semibold text-slate-500">
-                                    MRR
+                            <div className="min-w-0">
+                                <div className="text-xs font-bold text-[#15213B]">
+                                    MRR (Plataforma SaaS)
                                 </div>
-                                <div className="text-2xl font-black text-[#0f172a] leading-tight mt-0.5">
-                                    {formatCurrency(mrr)} <span className="text-xs font-bold text-slate-500">COP</span>
+                                <div className="text-2xl font-black text-[#15213B] leading-tight mt-0.5">
+                                    {formatCurrency(mrr)} <span className="text-xs font-bold text-[#5C6B85]">COP</span>
                                 </div>
-                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#00a884] mt-1">
+                                <div className="text-[11px] text-[#5C6B85] mt-1 leading-snug">
+                                    Ingreso recurrente mensual de AviPetApp
+                                </div>
+                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#0F9F9A] mt-1">
                                     <span>↑ {mrrTrend}%</span>
-                                    <span className="text-slate-400 font-normal">vs. mes anterior</span>
+                                    <span className="text-[#5C6B85] font-normal">vs. mes anterior</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Card 4: GMV mensual */}
+                    {/* Card 4: GMV mensual (Valor gestionado por las clínicas) */}
                     <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:shadow-md transition">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-[#f1eefd] text-[#845ef7] flex items-center justify-center shrink-0">
+                        <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-[#6D28D9]/10 text-[#6D28D9] flex items-center justify-center shrink-0">
                                 <BarChart3 className="w-6 h-6" />
                             </div>
-                            <div>
-                                <div className="text-xs font-semibold text-slate-500">
-                                    GMV mensual
+                            <div className="min-w-0">
+                                <div className="text-xs font-bold text-[#15213B]">
+                                    GMV mensual (Clínicas)
                                 </div>
-                                <div className="text-2xl font-black text-[#0f172a] leading-tight mt-0.5">
-                                    {formatCurrency(gmv)} <span className="text-xs font-bold text-slate-500">COP</span>
+                                <div className="text-2xl font-black text-[#15213B] leading-tight mt-0.5">
+                                    {formatCurrency(gmv)} <span className="text-xs font-bold text-[#5C6B85]">COP</span>
                                 </div>
-                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#00a884] mt-1">
+                                <div className="text-[11px] text-[#5C6B85] mt-1 leading-snug">
+                                    Valor gestionado por las clínicas en planes
+                                </div>
+                                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#0F9F9A] mt-1">
                                     <span>↑ {gmvTrend}%</span>
-                                    <span className="text-slate-400 font-normal">vs. mes anterior</span>
+                                    <span className="text-[#5C6B85] font-normal">vs. mes anterior</span>
                                 </div>
                             </div>
                         </div>
@@ -255,21 +272,21 @@ export default function Dashboard({
 
                 </div>
 
-                {/* 3. ROW 2: PIPELINE COMERCIAL MATCHING REFERENCE MOCKUP */}
+                {/* 3. ROW 2: PIPELINE COMERCIAL */}
                 <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-[0_1px_3px_rgba(0,0,0,0.03)] w-full">
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
 
                         {/* Left Column: Header */}
                         <div className="w-full lg:w-1/4">
                             <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-xl bg-[#eafaf5] text-[#00a884] flex items-center justify-center shrink-0">
+                                <div className="w-9 h-9 rounded-xl bg-[#6D28D9]/10 text-[#6D28D9] flex items-center justify-center shrink-0">
                                     <Filter className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm sm:text-base font-bold text-[#0f172a] leading-tight">
+                                    <h3 className="text-sm sm:text-base font-bold text-[#15213B] leading-tight">
                                         Pipeline comercial
                                     </h3>
-                                    <p className="text-xs text-slate-500 mt-0.5">
+                                    <p className="text-xs text-[#5C6B85] mt-0.5">
                                         Gestiona tus oportunidades y haz crecer la red de clínicas.
                                     </p>
                                 </div>
@@ -279,27 +296,26 @@ export default function Dashboard({
                         {/* Middle Column: Opportunity State */}
                         <div className="w-full lg:w-1/2 flex flex-col items-center text-center px-4">
                             <div className="flex flex-col items-center">
-                                {/* Illustration icon with plus badge matching mockup */}
                                 <div className="relative mb-2">
-                                    <div className="w-10 h-12 rounded-lg bg-sky-50 border border-sky-200/80 flex flex-col justify-center px-2 py-1.5 gap-1.5 shadow-2xs">
-                                        <div className="h-1 bg-sky-300 rounded-sm w-3/4" />
-                                        <div className="h-1 bg-sky-300 rounded-sm w-full" />
-                                        <div className="h-1 bg-sky-300 rounded-sm w-2/3" />
+                                    <div className="w-10 h-12 rounded-lg bg-[#F4F7FC] border border-slate-200 flex flex-col justify-center px-2 py-1.5 gap-1.5 shadow-2xs">
+                                        <div className="h-1 bg-[#6D28D9]/40 rounded-sm w-3/4" />
+                                        <div className="h-1 bg-[#6D28D9]/40 rounded-sm w-full" />
+                                        <div className="h-1 bg-[#6D28D9]/40 rounded-sm w-2/3" />
                                     </div>
-                                    <div className="absolute -bottom-1 -right-1.5 w-5 h-5 rounded-full bg-[#008b82] text-white flex items-center justify-center font-black text-xs shadow-xs ring-2 ring-white">
+                                    <div className="absolute -bottom-1 -right-1.5 w-5 h-5 rounded-full bg-[#6D28D9] text-white flex items-center justify-center font-black text-xs shadow-xs ring-2 ring-white">
                                         +
                                     </div>
                                 </div>
 
-                                <h4 className="text-sm font-bold text-[#0f172a]">
+                                <h4 className="text-sm font-bold text-[#15213B]">
                                     No hay oportunidades registradas
                                 </h4>
-                                <p className="text-xs text-slate-500 max-w-sm mt-1 leading-relaxed">
-                                    Aún no tienes demos, leads u oportunidades en el pipeline comercial. Empieza a generar nuevas oportunidades para hacer crecer AVI Pet.
+                                <p className="text-xs text-[#5C6B85] max-w-sm mt-1 leading-relaxed">
+                                    Aún no tienes demos, leads u oportunidades en el pipeline comercial. Empieza a generar nuevas oportunidades para hacer crecer AviPetApp.
                                 </p>
                                 <a
                                     href="/super-admin/prospecto-veterinarias"
-                                    className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 bg-[#00736e] hover:bg-[#005f5b] active:bg-[#004e4a] text-white text-xs font-bold rounded-lg shadow-sm transition hover:scale-102 cursor-pointer"
+                                    className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 bg-[#6D28D9] hover:bg-[#5b21b6] text-white text-xs font-semibold rounded-xl shadow-sm transition cursor-pointer"
                                 >
                                     <span>Registrar oportunidad</span>
                                     <span>&rarr;</span>

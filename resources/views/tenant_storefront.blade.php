@@ -156,7 +156,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     @php
         $isPilot = ($tenant->slug === 'vet-pet-patitas');
@@ -206,7 +206,7 @@
             --brand-primary-rgb: {{ implode(', ', sscanf(ltrim($primaryColor, '#'), "%02x%02x%02x") ?: [13, 148, 136]) }};
             --brand-secondary-rgb: {{ implode(', ', sscanf(ltrim($secondaryColor, '#'), "%02x%02x%02x") ?: [11, 17, 32]) }};
         }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Inter', Arial, sans-serif; }
         
         /* 🎨 THEME DINÁMICO: 100% PERSONALIZABLE POR EL DUEÑO DE LA CLÍNICA */
         .hero-gradient { 
@@ -1542,7 +1542,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-slate-900 text-center text-slate-400 text-[11px] flex flex-col sm:flex-row items-center justify-between gap-3">
             <div>© {{ date('Y') }} {{ $tenant->name }}. Todos los derechos reservados. Sistema Integral de Membresías y Salud Preventiva.</div>
             <div class="text-slate-400">
-                Tecnología y Planes de Salud Preventiva por <a href="https://avipetapp.com" target="_blank" rel="follow" title="AVI-Plan — Software SaaS de Planes de Salud para Mascotas en Colombia" class="text-teal-400 hover:text-teal-300 font-bold underline decoration-teal-500/50">AVI-Plan</a>
+                Tecnología y Planes de Salud Preventiva por <a href="https://avipetapp.com" target="_blank" rel="follow" title="AviPetApp — Software con IA para veterinarias" class="text-teal-400 hover:text-teal-300 font-bold underline decoration-teal-500/50">AviPetApp</a>
             </div>
         </div>
     </footer>

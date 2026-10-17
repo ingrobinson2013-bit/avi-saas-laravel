@@ -1,14 +1,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
     /* =========================================================
-       AVI PET SUPERADMIN: MOTOR DE DISEÑO PIXEL-PERFECT
+       AVIPETAPP SUPERADMIN: MOTOR DE DISEÑO PIXEL-PERFECT
        ========================================================= */
 
     *, html, body, .fi-body, .fi-main, .fi-sidebar, input, button, select, textarea {
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        font-family: 'Inter', Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     }
 
     /* Ocultar header por defecto en Dashboard customizado */

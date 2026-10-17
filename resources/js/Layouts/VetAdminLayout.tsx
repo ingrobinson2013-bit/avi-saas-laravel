@@ -295,12 +295,12 @@ export default function VetAdminLayout({
     };
 
     return (
-        <div className="min-h-screen flex bg-[#F3F6FB] text-slate-800 font-sans antialiased selection:bg-blue-500 selection:text-white relative">
+        <div className="min-h-screen flex bg-[#F4F7FC] text-[#15213B] font-sans antialiased selection:bg-[#A855F7] selection:text-white relative">
             
             {/* Backdrop para móviles */}
             {isMobileMenuOpen && (
                 <div 
-                    className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-40 md:hidden"
+                    className="fixed inset-0 bg-[#080B20]/70 backdrop-blur-xs z-40 md:hidden"
                     onClick={() => setIsMobileMenuOpen(false)}
                 />
             )}
@@ -308,7 +308,7 @@ export default function VetAdminLayout({
             {/* =========================================================
                  SIDEBAR (DRAWER MÓVIL EN CELULAR / FIJO EN DESKTOP)
                  ========================================================= */}
-            <aside className={`w-[260px] md:w-[235px] 2xl:w-[250px] bg-[#0c1527] text-slate-300 flex flex-col shrink-0 min-h-screen fixed md:sticky top-0 h-screen select-none z-50 md:z-40 border-r border-slate-800/80 transition-transform duration-300 ease-in-out ${
+            <aside className={`w-[260px] md:w-[235px] 2xl:w-[250px] bg-[#080B20] text-slate-300 flex flex-col shrink-0 min-h-screen fixed md:sticky top-0 h-screen select-none z-50 md:z-40 border-r border-slate-800/80 transition-transform duration-300 ease-in-out ${
                 isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
             }`}>
                 
@@ -544,8 +544,8 @@ export default function VetAdminLayout({
                 </nav>
 
                 {/* Footer Clinic Card & Estado del Plan SaaS */}
-                <div className="p-3 border-t border-slate-800/80 shrink-0 bg-[#0c1527]">
-                    <div className="rounded-xl border border-slate-800 bg-[#131f37] p-3 space-y-2.5">
+                <div className="p-3 border-t border-slate-800/80 shrink-0 bg-[#080B20]">
+                    <div className="rounded-xl border border-slate-800 bg-[#111936] p-3 space-y-2.5">
                         <div className="flex items-center gap-2.5">
                             {logoUrl ? (
                                 <img src={logoUrl} alt={brandName} className="w-8 h-8 rounded-lg object-contain bg-white p-0.5 shrink-0" />
@@ -725,7 +725,7 @@ export default function VetAdminLayout({
 
                                     <div className="p-2.5 bg-slate-50 border-t border-slate-100 text-center">
                                         <span className="text-[10px] text-slate-400 font-medium">
-                                            Centro de Alertas Clínicas · AVI-Plan Staging
+                                            Centro de Alertas Clínicas · AviPetApp
                                         </span>
                                     </div>
                                 </div>

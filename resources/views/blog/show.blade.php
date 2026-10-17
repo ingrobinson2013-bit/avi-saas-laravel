@@ -8,7 +8,7 @@
         $canonicalUrl = "https://avipetapp.com/blog/{$post['slug']}";
     @endphp
 
-    <title>{{ $post['title'] }} | Blog AVI-Plan</title>
+    <title>{{ $post['title'] }} | Blog AviPetApp</title>
     <meta name="description" content="{{ $post['excerpt'] }}">
     <meta name="keywords" content="{{ implode(', ', $post['keywords']) }}">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
@@ -20,7 +20,7 @@
     <meta property="og:title" content="{{ $post['title'] }}">
     <meta property="og:description" content="{{ $post['excerpt'] }}">
     <meta property="og:image" content="{{ $post['image'] }}">
-    <meta property="og:site_name" content="AVI-Plan">
+    <meta property="og:site_name" content="AviPetApp">
     <meta property="article:published_time" content="{{ $post['published_at'] }}">
     <meta property="article:modified_time" content="{{ $post['updated_at'] }}">
     <meta property="article:section" content="{{ $post['category'] }}">
@@ -53,11 +53,11 @@
           },
           "publisher": {
             "@@type": "Organization",
-            "name": "AVI-Plan",
+            "name": "AviPetApp",
             "url": "https://avipetapp.com",
             "logo": {
               "@@type": "ImageObject",
-              "url": "https://avipetapp.com/logo-app.png"
+              "url": "https://avipetapp.com/brand/png/avipetapp-icono-app.png"
             }
           },
           "datePublished": "{{ $post['published_at'] }}",
@@ -102,20 +102,22 @@
     </script>
     @endif
 
-    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="/brand/favicons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/brand/favicons/favicon-180.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Inter', Arial, sans-serif; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
     </style>
 </head>
-<body class="min-h-full flex flex-col justify-between bg-slate-50">
+<body class="min-h-full flex flex-col justify-between bg-[#F4F7FC] text-[#15213B]">
 
     <!-- Reading Progress Bar -->
-    <div id="reading-progress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-500 z-[100] transition-all duration-75" style="width: 0%"></div>
+    <div id="reading-progress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-[#6D28D9] via-[#A855F7] to-[#0E7490] z-[100] transition-all duration-75" style="width: 0%"></div>
     <script>
       window.addEventListener('scroll', function() {
         var h = document.documentElement, b = document.body;
@@ -126,16 +128,15 @@
       });
     </script>
 
-    <!-- Header / Navbar -->
+    <!-- Header / Navbar Oficial AviPetApp -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2.5">
-                <img src="/logo-app.png" alt="AVI-Plan Logo" class="h-9 w-auto">
-                <span class="font-extrabold text-lg tracking-tight text-slate-900">AVI<span class="text-blue-600">-Plan</span></span>
+                <img src="/brand/svg/avipetapp-horizontal-fondo-claro.svg" alt="AviPetApp" class="h-8 w-auto min-w-[140px] object-contain">
             </a>
             <div class="flex items-center gap-2 sm:gap-3">
-                <a href="/blog" class="text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 px-2 sm:px-3 py-1.5 transition whitespace-nowrap">← <span class="hidden sm:inline">Ver más </span>Guías</a>
-                <a href="/registro-clinica" class="text-xs sm:text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-xl shadow-sm transition whitespace-nowrap">Probar Gratis</a>
+                <a href="/blog" class="text-xs sm:text-sm font-semibold text-[#5C6B85] hover:text-[#15213B] px-2 sm:px-3 py-1.5 transition whitespace-nowrap">← <span class="hidden sm:inline">Ver más </span>Guías</a>
+                <a href="/registro-clinica" class="text-xs sm:text-sm font-semibold bg-[#6D28D9] hover:bg-[#5b21b6] text-white px-3 sm:px-4 py-2 rounded-xl shadow-sm transition whitespace-nowrap">Crear mi clínica</a>
             </div>
         </div>
     </header>
@@ -227,10 +228,11 @@
         @endif
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 text-center text-xs text-slate-500">
-        <div class="max-w-4xl mx-auto px-4">
-            <p>© {{ date('Y') }} AVI-Plan · Potenciando clínicas veterinarias en Colombia con planes de salud y cobro recurrente.</p>
+    <!-- Footer Oficial -->
+    <footer class="bg-[#080B20] border-t border-[#111936] py-8 text-center text-xs text-slate-400">
+        <div class="max-w-4xl mx-auto px-4 space-y-1">
+            <p class="text-white font-semibold">AviPetApp · Software con IA para veterinarias</p>
+            <p class="text-[#35DDF5]">Más inteligencia. Más bienestar. Más futuro.</p>
         </div>
     </footer>
 

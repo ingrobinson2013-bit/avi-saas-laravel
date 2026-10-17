@@ -41,7 +41,7 @@ class GoogleCalendarService
                  . "🏥 Clínica: {$clinicName}\n"
                  . "📍 Dirección: {$location}"
                  . "{$notes}\n\n"
-                 . "✨ Gestionado automáticamente por AVI-Plan SaaS";
+                 . "✨ Gestionado automáticamente por AviPetApp SaaS";
 
         $masterAccount = $tenant->branding['google_account'] ?? null;
         $attendees = [];
