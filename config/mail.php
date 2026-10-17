@@ -1,13 +1,6 @@
 <?php
 
-$mailPassword = env('MAIL_PASSWORD');
-if (empty($mailPassword) || $mailPassword === 'your-email-password' || $mailPassword === 'Ashley2023') {
-    if (env('MAIL_HOST') === 'smtp.gmail.com' || env('MAIL_USERNAME') === 'ingrobinson2013@gmail.com') {
-        $mailPassword = 'zdnbzmsmqbmxavuj';
-    } else {
-        $mailPassword = '3g9TWH?j7bcPTAQ';
-    }
-}
+
 
 return [
 
@@ -44,11 +37,11 @@ return [
         'smtp' => [
             'transport' => 'smtp',
             'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', 'smtp.hostinger.com'),
-            'port' => (int) env('MAIL_PORT', 465),
-            'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
-            'username' => env('MAIL_USERNAME', 'contacto@avipetapp.com'),
-            'password' => $mailPassword,
+            'host' => env('MAIL_HOST', 'smtp.resend.com'),
+            'port' => (int) env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_USERNAME', 'resend'),
+            'password' => env('MAIL_PASSWORD'),
             'timeout' => 15,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'https://avipetapp.com'), PHP_URL_HOST)),
         ],

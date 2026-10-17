@@ -88,6 +88,41 @@ Route::get('/', function () use ($resolveTenantFromHost) {
     return view('b2b_landing');
 });
 
+// 1.0.1 Favicon First-Party Dinámico en el mismo Subdominio para Google Search (Google-Favicon)
+Route::get('/clinic-favicon.webp', function () use ($resolveTenantFromHost) {
+    $tenant = $resolveTenantFromHost();
+    $slug = request('slug') ?: $tenant?->slug;
+    if (!$tenant && $slug) {
+        $tenant = Tenant::where('slug', $slug)->first();
+    }
+
+    if ($tenant && $tenant->slug === 'vet-pet-patitas' && file_exists(public_path('images/tenants/vet-pet-patitas-logo.webp'))) {
+        return response()->file(public_path('images/tenants/vet-pet-patitas-logo.webp'), [
+            'Content-Type' => 'image/webp',
+            'Cache-Control' => 'public, max-age=2592000',
+        ]);
+    }
+
+    $logoUrl = $tenant?->branding['logo_url'] ?? null;
+    if ($logoUrl && str_starts_with($logoUrl, 'http')) {
+        try {
+            $imageContent = @file_get_contents($logoUrl);
+            if ($imageContent !== false) {
+                $mime = str_ends_with(strtolower($logoUrl), '.png') ? 'image/png' : 'image/webp';
+                return response($imageContent, 200, [
+                    'Content-Type' => $mime,
+                    'Cache-Control' => 'public, max-age=2592000',
+                ]);
+            }
+        } catch (\Throwable $e) {}
+    }
+
+    return response()->file(public_path('favicon.png'), [
+        'Content-Type' => 'image/png',
+        'Cache-Control' => 'public, max-age=86400',
+    ]);
+});
+
 // 1.1 Rutas de Afiliación y Carnet directas para Clínicas con Dominio o Subdominio Propio
 Route::post('/afiliar', function () use ($resolveTenantFromHost) {
     $tenant = $resolveTenantFromHost();

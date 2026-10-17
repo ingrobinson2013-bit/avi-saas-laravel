@@ -143,9 +143,25 @@ class SuperAdminProspectoController extends Controller
     public function sendOutreach(Request $request, int $id)
     {
         $prospecto = ProspectoVeterinaria::findOrFail($id);
+        $email = trim($prospecto->correo_comercial ?? '');
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $prospecto->estado = 'error';
+            $prospecto->error_mensaje = 'Formato de correo electrónico inválido.';
+            $prospecto->save();
+            return redirect()->back()->with('error', "El correo de {$prospecto->razon_social} tiene un formato inválido.");
+        }
+
+        $domain = substr(strrchr($email, "@"), 1);
+        if ($domain && function_exists('checkdnsrr') && !checkdnsrr($domain, 'MX') && !checkdnsrr($domain, 'A')) {
+            $prospecto->estado = 'error';
+            $prospecto->error_mensaje = "El dominio @{$domain} no posee servidores de correo activos.";
+            $prospecto->save();
+            return redirect()->back()->with('error', "El dominio @{$domain} no existe o no recibe correos.");
+        }
 
         try {
-            Mail::to($prospecto->correo_comercial)->send(new ProspectoOutreachMail($prospecto));
+            Mail::to($email)->send(new ProspectoOutreachMail($prospecto));
 
             $prospecto->estado = 'enviado';
             $prospecto->intentos_envio = ($prospecto->intentos_envio ?? 0) + 1;

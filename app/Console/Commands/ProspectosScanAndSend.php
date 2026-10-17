@@ -77,8 +77,31 @@ class ProspectosScanAndSend extends Command
 
         foreach ($prospectos as $idx => $prospecto) {
             $num = $idx + 1;
-            $email = $prospecto->correo_comercial;
+            $email = trim($prospecto->correo_comercial ?? '');
             $clinica = substr($prospecto->razon_social, 0, 30);
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $prospecto->update([
+                    'estado' => 'error',
+                    'intentos_envio' => $prospecto->intentos_envio + 1,
+                    'error_mensaje' => 'Sintaxis de correo inválida',
+                ]);
+                $fallidos++;
+                $this->warn("[$num/$totalPendientes] [SKIPPED]   -> {$email} (Sintaxis inválida)");
+                continue;
+            }
+
+            $domain = substr(strrchr($email, "@"), 1);
+            if ($domain && function_exists('checkdnsrr') && !checkdnsrr($domain, 'MX') && !checkdnsrr($domain, 'A')) {
+                $prospecto->update([
+                    'estado' => 'error',
+                    'intentos_envio' => $prospecto->intentos_envio + 1,
+                    'error_mensaje' => "Dominio @{$domain} sin servidores MX activos",
+                ]);
+                $fallidos++;
+                $this->warn("[$num/$totalPendientes] [SKIPPED]   -> {$email} (Dominio @{$domain} inactivo)");
+                continue;
+            }
 
             if ($dryRun) {
                 $this->line("[$num/$totalPendientes] [SIMULADO] -> {$email} | {$clinica}");
