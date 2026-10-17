@@ -54,7 +54,9 @@ class SuperAdminUserController extends Controller
         $receptionCount = User::where('role', 'reception')->count();
 
         $tenantsList = Tenant::select('id', 'name', 'slug')->orderBy('name')->get();
-        $authUser = auth()->user();
+        $authUser = (auth()->user() && auth()->user()->role === 'super_admin')
+            ? auth()->user()
+            : User::where('role', 'super_admin')->orWhere('email', 'contacto@avipetapp.com')->first();
 
         return Inertia::render('SuperAdmin/Users', [
             'users' => $users,
@@ -71,7 +73,7 @@ class SuperAdminUserController extends Controller
             'tenantsList' => $tenantsList,
             'currentUserId' => $authUser?->id,
             'userName' => $authUser?->name ?? 'Robinson Naranjo',
-            'userEmail' => $authUser?->email ?? 'superadmin@avipetapp.com',
+            'userEmail' => $authUser?->email ?? 'contacto@avipetapp.com',
         ]);
     }
 
@@ -140,6 +142,9 @@ class SuperAdminUserController extends Controller
         }
 
         $user = User::findOrFail($id);
+        if ($user->role === 'super_admin' || $user->email === 'contacto@avipetapp.com') {
+            return redirect()->back()->with('error', 'La cuenta maestra de SuperAdmin está protegida contra eliminación.');
+        }
         $user->delete();
 
         return redirect()->back()->with('success', 'Usuario eliminado correctamente.');

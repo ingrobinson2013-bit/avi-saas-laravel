@@ -100,7 +100,9 @@ class SuperAdminTenantController extends Controller
             return true;
         })->values();
 
-        $authUser = auth()->user();
+        $authUser = (auth()->user() && auth()->user()->role === 'super_admin')
+            ? auth()->user()
+            : User::where('role', 'super_admin')->orWhere('email', 'contacto@avipetapp.com')->first();
 
         return Inertia::render('SuperAdmin/Tenants', [
             'tenants' => $filtered,
@@ -110,7 +112,7 @@ class SuperAdminTenantController extends Controller
             ],
             'stats' => $stats,
             'userName' => $authUser?->name ?? 'Robinson Naranjo',
-            'userEmail' => $authUser?->email ?? 'superadmin@avipetapp.com',
+            'userEmail' => $authUser?->email ?? 'contacto@avipetapp.com',
         ]);
     }
 

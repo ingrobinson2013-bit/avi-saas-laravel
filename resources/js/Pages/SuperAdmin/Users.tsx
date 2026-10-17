@@ -419,7 +419,7 @@ export default function Users({
                                                         <Edit2 className="w-4 h-4" />
                                                     </button>
 
-                                                    {currentUserId !== u.id && (
+                                                    {currentUserId !== u.id && u.role !== 'super_admin' && u.email !== 'contacto@avipetapp.com' && (
                                                         <button
                                                             onClick={() => handleDeleteUser(u.id, u.name)}
                                                             title="Eliminar usuario"

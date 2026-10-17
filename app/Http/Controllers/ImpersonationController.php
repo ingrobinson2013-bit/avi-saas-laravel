@@ -4,73 +4,60 @@ namespace App\Http\Controllers;
 
 use App\Models\Tenant;
 use App\Models\User;
-use Filament\Facades\Filament;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class ImpersonationController extends Controller
 {
     /**
-     * Iniciar sesión como una clínica específica desde el SuperAdmin.
+     * Acceder al panel de una clínica específica desde el SuperAdmin
+     * SIN sobrescribir la identidad del SuperAdmin en Auth::user().
      */
     public function impersonateTenant(string $tenantId)
     {
         $tenant = Tenant::findOrFail($tenantId);
         $currentUser = Auth::user();
 
-        // Guardar el ID del SuperAdmin en sesión si no estamos ya impersonando
-        if ($currentUser && !session()->has('impersonator_superadmin_id')) {
-            session(['impersonator_superadmin_id' => $currentUser->id]);
-        } elseif (!session()->has('impersonator_superadmin_id')) {
-            // Si vino por link directo, buscamos al superadmin
-            $superAdmin = User::whereNull('tenant_id')->orWhere('role', 'super_admin')->first();
+        // Si el usuario actual no es super_admin (ej. quedó logueado como doctor en sesión previa), restaurar SuperAdmin
+        if (!$currentUser || $currentUser->role !== 'super_admin') {
+            $superAdmin = User::where('role', 'super_admin')
+                ->orWhere('email', 'contacto@avipetapp.com')
+                ->first();
+
             if ($superAdmin) {
-                session(['impersonator_superadmin_id' => $superAdmin->id]);
+                Auth::guard('web')->login($superAdmin, true);
+                $currentUser = $superAdmin;
             }
         }
 
-        // Buscar el usuario administrador principal de la clínica
-        $tenantUser = $tenant->users()->where('email', 'petmovilveterinario@gmail.com')->first() 
-            ?? $tenant->users()->first();
-
-        if (!$tenantUser) {
-            $tenantUser = User::create([
-                'name' => "Admin {$tenant->name}",
-                'email' => "admin@{$tenant->slug}.local",
-                'tenant_id' => $tenant->id,
-                'password' => bcrypt(Str::random(24)),
-            ]);
+        if ($currentUser) {
+            session(['impersonator_superadmin_id' => $currentUser->id]);
         }
 
-        // Iniciar sesión con el usuario de la clínica
-        Auth::guard('web')->login($tenantUser, true);
-        session()->regenerate();
-        
-        session(['current_tenant_id' => $tenant->id]);
-        session(['current_tenant_slug' => $tenant->slug]);
+        session([
+            'current_tenant_id' => $tenant->id,
+            'current_tenant_slug' => $tenant->slug,
+        ]);
 
         return redirect()->to("/admin/{$tenant->slug}");
     }
 
     /**
-     * Salir del modo soporte y volver al SuperAdmin.
+     * Salir del modo soporte de clínica y volver al SuperAdmin.
      */
     public function stopImpersonating()
     {
         $superAdminId = session('impersonator_superadmin_id');
-        session()->forget('impersonator_superadmin_id');
-        session()->forget('current_tenant_id');
-        session()->forget('current_tenant_slug');
+        session()->forget(['impersonator_superadmin_id', 'current_tenant_id', 'current_tenant_slug']);
 
-        $superAdmin = $superAdminId ? User::find($superAdminId) : User::whereNull('tenant_id')->orWhere('role', 'super_admin')->first();
+        $superAdmin = $superAdminId
+            ? User::find($superAdminId)
+            : User::where('role', 'super_admin')->orWhere('email', 'contacto@avipetapp.com')->first();
 
-        if ($superAdmin) {
+        if ($superAdmin && (!Auth::check() || Auth::id() !== $superAdmin->id)) {
             Auth::guard('web')->login($superAdmin, true);
             session()->regenerate();
-            return redirect()->to('/super-admin/tenants');
         }
 
-        return redirect()->to('/super-admin');
+        return redirect()->to('/super-admin/tenants');
     }
 }
