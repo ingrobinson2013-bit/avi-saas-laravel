@@ -20,7 +20,11 @@ import {
     ChevronRight,
     Copy,
     Check,
-    Filter
+    Filter,
+    Loader2,
+    Sparkles,
+    Compass,
+    UploadCloud
 } from 'lucide-react';
 
 interface ProspectoItem {
@@ -83,6 +87,22 @@ export default function Prospectos({
     const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
     const [sendingEmailId, setSendingEmailId] = useState<number | null>(null);
 
+    // Batch Campaign State
+    const [isBatchModalOpen, setIsBatchModalOpen] = useState(false);
+    const [batchLimit, setBatchLimit] = useState(50);
+    const [isDispatchingBatch, setIsDispatchingBatch] = useState(false);
+
+    // Live Web Scraper State
+    const [isScanModalOpen, setIsScanModalOpen] = useState(false);
+    const [scanRegion, setScanRegion] = useState('todo_el_pais');
+    const [scanLimit, setScanLimit] = useState(50);
+    const [isScanning, setIsScanning] = useState(false);
+
+    // CSV Import State
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+    const [csvData, setCsvData] = useState('');
+    const [isImporting, setIsImporting] = useState(false);
+
     const [newProspecto, setNewProspecto] = useState({
         razon_social: '',
         correo_comercial: '',
@@ -92,6 +112,38 @@ export default function Prospectos({
         tipo: 'Clínica Veterinaria',
         direccion: ''
     });
+
+    const handleDispatchBatch = () => {
+        setIsDispatchingBatch(true);
+        router.post('/super-admin/prospecto-veterinarias/dispatch-batch', { limit: batchLimit }, {
+            onFinish: () => {
+                setIsDispatchingBatch(false);
+                setIsBatchModalOpen(false);
+            }
+        });
+    };
+
+    const handleScanRegion = () => {
+        setIsScanning(true);
+        router.post('/super-admin/prospecto-veterinarias/scan-region', { region: scanRegion, limit: scanLimit }, {
+            onFinish: () => {
+                setIsScanning(false);
+                setIsScanModalOpen(false);
+            }
+        });
+    };
+
+    const handleImportCsv = (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsImporting(true);
+        router.post('/super-admin/prospecto-veterinarias/import-csv', { csv_data: csvData }, {
+            onFinish: () => {
+                setIsImporting(false);
+                setIsImportModalOpen(false);
+                setCsvData('');
+            }
+        });
+    };
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -226,13 +278,45 @@ export default function Prospectos({
                         </p>
                     </div>
 
-                    <button
-                        onClick={() => setIsCreateModalOpen(true)}
-                        className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-bold text-sm shadow-sm transition-all shadow-teal-600/20 hover:shadow-teal-600/30 self-start sm:self-auto cursor-pointer"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Nuevo Prospecto
-                    </button>
+                    <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+                        <button
+                            type="button"
+                            onClick={() => setIsBatchModalOpen(true)}
+                            disabled={isDispatchingBatch}
+                            className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-xs sm:text-sm shadow-sm transition-all shadow-indigo-600/20 hover:shadow-indigo-600/30 cursor-pointer disabled:opacity-50"
+                        >
+                            <Send className="w-4 h-4" />
+                            <span>Despachar Campaña (50)</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => setIsScanModalOpen(true)}
+                            disabled={isScanning}
+                            className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-bold text-xs sm:text-sm shadow-sm transition-all shadow-teal-600/20 hover:shadow-teal-600/30 cursor-pointer disabled:opacity-50"
+                        >
+                            <Search className="w-4 h-4" />
+                            <span>Escanear Nuevas (50+)</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => setIsImportModalOpen(true)}
+                            className="inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold text-xs sm:text-sm shadow-2xs transition-all cursor-pointer"
+                        >
+                            <UploadCloud className="w-4 h-4 text-slate-500" />
+                            <span>Importar CSV</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => setIsCreateModalOpen(true)}
+                            className="inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer"
+                        >
+                            <Plus className="w-4 h-4" />
+                            <span>Nuevo</span>
+                        </button>
+                    </div>
                 </div>
 
                 {/* 5 KPI CARDS */}
@@ -665,6 +749,271 @@ export default function Prospectos({
                                     </button>
                                 ))}
                             </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* MODAL: DESPACHAR CAMPAÑA POR LOTE */}
+                {isBatchModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+                        <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600">
+                                        <Send className="w-4 h-4" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-base font-black text-slate-900">Despachar Campaña por Lote</h3>
+                                        <p className="text-xs text-slate-500">Envío automático vía Resend SMTP</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => !isDispatchingBatch && setIsBatchModalOpen(false)}
+                                    disabled={isDispatchingBatch}
+                                    className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer disabled:opacity-50"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            <div className="bg-indigo-50/70 border border-indigo-100 rounded-xl p-3.5 text-xs text-indigo-900 space-y-1.5">
+                                <div className="font-bold flex items-center gap-1.5 text-indigo-950">
+                                    <Sparkles className="w-4 h-4 text-indigo-600" />
+                                    <span>Motor Anti-Rebote con Verificación DNS MX</span>
+                                </div>
+                                <p className="text-indigo-800 leading-relaxed">
+                                    El sistema tomará las siguientes clínicas en estado <strong>Pendiente</strong> con correo comercial válido y les enviará la propuesta oficial de membresías de AVI-Plan firmada por <strong>@avipetapp.com</strong>.
+                                </p>
+                            </div>
+
+                            <div className="space-y-3">
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1.5">Tamaño del Lote a Enviar</label>
+                                    <div className="grid grid-cols-4 gap-2">
+                                        {[25, 50, 75, 100].map((num) => (
+                                            <button
+                                                key={num}
+                                                type="button"
+                                                onClick={() => setBatchLimit(num)}
+                                                className={`py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                                                    batchLimit === num
+                                                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                                                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                                                }`}
+                                            >
+                                                {num}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-between text-xs text-slate-500 px-1 pt-1">
+                                    <span>Prospectos pendientes disponibles:</span>
+                                    <span className="font-bold text-amber-600">{stats.pendientes}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsBatchModalOpen(false)}
+                                    disabled={isDispatchingBatch}
+                                    className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 cursor-pointer disabled:opacity-50"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleDispatchBatch}
+                                    disabled={isDispatchingBatch || stats.pendientes === 0}
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                                >
+                                    {isDispatchingBatch ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            <span>Despachando correos...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Send className="w-4 h-4" />
+                                            <span>Disparar {batchLimit} Correos Ahora</span>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* MODAL: ESCANEAR NUEVAS VETERINARIAS */}
+                {isScanModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+                        <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="w-9 h-9 rounded-xl bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-600">
+                                        <Search className="w-4 h-4" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-base font-black text-slate-900">Escanear y Buscar Nuevas Clínicas</h3>
+                                        <p className="text-xs text-slate-500">Rastreador web en vivo y OpenStreetMap</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => !isScanning && setIsScanModalOpen(false)}
+                                    disabled={isScanning}
+                                    className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer disabled:opacity-50"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1.5">Seleccionar Región a Explorar</label>
+                                    <select
+                                        value={scanRegion}
+                                        onChange={(e) => setScanRegion(e.target.value)}
+                                        className="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                    >
+                                        <option value="todo_el_pais">🇨🇴 Barrido Nacional Completo (Todas las regiones)</option>
+                                        <option value="bogota">🏙️ Bogotá D.C. (Suba, Usaquén, Chapinero, Salitre, etc.)</option>
+                                        <option value="sabana">🐾 Zipaquirá y Sabana Centro (Chía, Cajicá, Cota, Tenjo, etc.)</option>
+                                        <option value="antioquia">🏔️ Antioquia (Medellín, Envigado, Sabaneta, Rionegro)</option>
+                                        <option value="valle">☀️ Valle del Cauca (Cali, Palmira, Jamundí, Tuluá)</option>
+                                        <option value="santander">🦅 Santanderes (Bucaramanga, Floridablanca, Cúcuta)</option>
+                                        <option value="ejecafetero">☕ Eje Cafetero (Pereira, Manizales, Armenia)</option>
+                                        <option value="caribe">🏖️ Costa Caribe (Barranquilla, Cartagena, Santa Marta)</option>
+                                        <option value="cundinamarca_tolima">🌄 Cundinamarca Sur & Tolima (Soacha, Fusagasugá, Girardot)</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1.5">Cantidad Mínima de Prospectos a Extraer</label>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {[25, 50, 100].map((num) => (
+                                            <button
+                                                key={num}
+                                                type="button"
+                                                onClick={() => setScanLimit(num)}
+                                                className={`py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
+                                                    scanLimit === num
+                                                        ? 'bg-teal-600 text-white border-teal-600 shadow-xs'
+                                                        : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                                                }`}
+                                            >
+                                                +{num} Clínicas
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3 text-[11px] text-slate-600 leading-relaxed">
+                                    💡 <strong>Upsert Automático:</strong> El motor rastrea directorios y páginas web, extrae correos y números de WhatsApp reales, e inserta las clínicas nuevas descartando duplicados sin alterar las que ya recibieron correos.
+                                </div>
+                            </div>
+
+                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsScanModalOpen(false)}
+                                    disabled={isScanning}
+                                    className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 cursor-pointer disabled:opacity-50"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleScanRegion}
+                                    disabled={isScanning}
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                                >
+                                    {isScanning ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            <span>Rastreando la web...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Search className="w-4 h-4" />
+                                            <span>Iniciar Escaneo (+{scanLimit})</span>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* MODAL: IMPORTAR CSV / EXCEL */}
+                {isImportModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+                        <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700">
+                                        <UploadCloud className="w-4 h-4" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-base font-black text-slate-900">Importar Filas de Excel o CSV</h3>
+                                        <p className="text-xs text-slate-500">Carga masiva con protección Upsert</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => !isImporting && setIsImportModalOpen(false)}
+                                    disabled={isImporting}
+                                    className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer disabled:opacity-50"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleImportCsv} className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                                        Pega aquí las filas (delimitado por <code>;</code> o <code>,</code>)
+                                    </label>
+                                    <textarea
+                                        value={csvData}
+                                        onChange={(e) => setCsvData(e.target.value)}
+                                        rows={6}
+                                        placeholder={"razon_social;correo_comercial;municipio;telefono\nClínica Animal Pets;contacto@animalpets.com;Bogotá D.C.;3201234567\nVeterinaria San Roque;ventas@sanroque.com;Medellín;3109876543"}
+                                        className="w-full text-xs font-mono bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                        required
+                                    />
+                                    <p className="text-[11px] text-slate-500 mt-1">
+                                        Columnas admitidas: <code>razon_social</code>, <code>correo_comercial</code>, <code>municipio</code>, <code>telefono</code>, <code>departamento</code>.
+                                    </p>
+                                </div>
+
+                                <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsImportModalOpen(false)}
+                                        disabled={isImporting}
+                                        className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 cursor-pointer disabled:opacity-50"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={isImporting || !csvData.trim()}
+                                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                                    >
+                                        {isImporting ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                <span>Importando datos...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <UploadCloud className="w-4 h-4" />
+                                                <span>Importar Filas</span>
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 )}

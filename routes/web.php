@@ -554,6 +554,9 @@ Route::prefix('super-admin')->group(function () {
     Route::post('/prospecto-veterinarias', [App\Http\Controllers\SuperAdmin\SuperAdminProspectoController::class, 'store'])->name('superadmin.prospectos.store');
     Route::post('/prospecto-veterinarias/{id}/send-outreach', [App\Http\Controllers\SuperAdmin\SuperAdminProspectoController::class, 'sendOutreach'])->name('superadmin.prospectos.send');
     Route::post('/prospecto-veterinarias/{id}/update-estado', [App\Http\Controllers\SuperAdmin\SuperAdminProspectoController::class, 'updateEstado'])->name('superadmin.prospectos.update-estado');
+    Route::post('/prospecto-veterinarias/dispatch-batch', [App\Http\Controllers\SuperAdmin\SuperAdminProspectoController::class, 'dispatchBatch'])->name('superadmin.prospectos.dispatch-batch');
+    Route::post('/prospecto-veterinarias/scan-region', [App\Http\Controllers\SuperAdmin\SuperAdminProspectoController::class, 'scanRegion'])->name('superadmin.prospectos.scan-region');
+    Route::post('/prospecto-veterinarias/import-csv', [App\Http\Controllers\SuperAdmin\SuperAdminProspectoController::class, 'importCsv'])->name('superadmin.prospectos.import-csv');
 
     // 6. Configuración Global SaaS
     Route::get('/configuracion', [App\Http\Controllers\SuperAdmin\SuperAdminConfiguracionController::class, 'index'])->name('superadmin.configuracion');

@@ -196,4 +196,138 @@ class SuperAdminProspectoController extends Controller
 
         return redirect()->back()->with('success', 'Estado del prospecto actualizado.');
     }
+
+    public function dispatchBatch(Request $request)
+    {
+        $limit = min((int) $request->input('limit', 50), 100);
+
+        $prospectos = ProspectoVeterinaria::where('estado', 'pendiente')
+            ->whereNotNull('correo_comercial')
+            ->where('correo_comercial', '!=', '')
+            ->where('correo_comercial', 'LIKE', '%@%')
+            ->orderBy('id', 'asc')
+            ->take($limit)
+            ->get();
+
+        if ($prospectos->isEmpty()) {
+            return redirect()->back()->with('warning', 'No hay prospectos pendientes listos para enviar en este momento.');
+        }
+
+        $enviados = 0;
+        $fallidos = 0;
+
+        foreach ($prospectos as $prospecto) {
+            $email = trim($prospecto->correo_comercial ?? '');
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $prospecto->update([
+                    'estado' => 'error',
+                    'intentos_envio' => ($prospecto->intentos_envio ?? 0) + 1,
+                    'error_mensaje' => 'Sintaxis de correo inválida',
+                ]);
+                $fallidos++;
+                continue;
+            }
+
+            $domain = substr(strrchr($email, "@"), 1);
+            if ($domain && function_exists('checkdnsrr') && !checkdnsrr($domain, 'MX') && !checkdnsrr($domain, 'A')) {
+                $prospecto->update([
+                    'estado' => 'error',
+                    'intentos_envio' => ($prospecto->intentos_envio ?? 0) + 1,
+                    'error_mensaje' => "Dominio @{$domain} inactivo o sin servidores MX",
+                ]);
+                $fallidos++;
+                continue;
+            }
+
+            try {
+                Mail::to($email)->send(new ProspectoOutreachMail($prospecto));
+                $prospecto->update([
+                    'estado' => 'enviado',
+                    'ultimo_envio_at' => now(),
+                    'intentos_envio' => ($prospecto->intentos_envio ?? 0) + 1,
+                    'error_mensaje' => null,
+                ]);
+                $enviados++;
+                usleep(400000); // 0.4s pause
+            } catch (\Throwable $e) {
+                $fallidos++;
+                $prospecto->update([
+                    'estado' => 'error',
+                    'intentos_envio' => ($prospecto->intentos_envio ?? 0) + 1,
+                    'error_mensaje' => substr($e->getMessage(), 0, 1000),
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', "🚀 Campaña procesada: {$enviados} correos enviados con éxito vía Resend." . ($fallidos > 0 ? " ({$fallidos} omitidos por dominio inactivo o error)." : ""));
+    }
+
+    public function scanRegion(Request $request)
+    {
+        $region = $request->input('region', 'todo_el_pais');
+        $limit = min((int) $request->input('limit', 50), 100);
+
+        try {
+            $scraper = app(\App\Services\VeterinariaScraperService::class);
+            $res = $scraper->scanRegion($region, null, null, null, $limit);
+
+            $guardados = $res['guardados_o_actualizados'] ?? count($res['encontrados'] ?? []);
+            $totalPendientes = $res['pendientes_en_cola'] ?? ProspectoVeterinaria::where('estado', 'pendiente')->count();
+
+            return redirect()->back()->with('success', "🔍 Escaneo completado: Se descubrieron y sincronizaron {$guardados} clínicas en {$region}. Total pendientes en base: {$totalPendientes}.");
+        } catch (\Throwable $e) {
+            Log::error("Error en escaneo de veterinarias: " . $e->getMessage());
+            return redirect()->back()->with('error', "No se pudo completar el escaneo: " . $e->getMessage());
+        }
+    }
+
+    public function importCsv(Request $request)
+    {
+        $csvData = trim($request->input('csv_data', ''));
+        if (empty($csvData)) {
+            return redirect()->back()->with('error', 'Por favor ingresa o pega el contenido CSV.');
+        }
+
+        $lines = explode("\n", $csvData);
+        $delimiter = str_contains($lines[0], ';') ? ';' : ',';
+        $header = null;
+        $items = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (!$line) continue;
+            $cols = str_getcsv($line, $delimiter);
+            if (!$header) {
+                $header = array_map(fn($h) => strtolower(trim($h)), $cols);
+                continue;
+            }
+
+            $row = [];
+            foreach ($header as $i => $key) {
+                $row[$key] = $cols[$i] ?? null;
+            }
+
+            $email = $row['correo_comercial'] ?? $row['email'] ?? $row['correo'] ?? null;
+            if ($email) {
+                $items[] = [
+                    'razon_social' => $row['razon_social'] ?? $row['nombre'] ?? 'Clínica Veterinaria',
+                    'correo_comercial' => $email,
+                    'telefono' => $row['telefono'] ?? null,
+                    'municipio' => $row['municipio'] ?? $row['ciudad'] ?? 'Bogotá D.C.',
+                    'departamento' => $row['departamento'] ?? 'Cundinamarca',
+                    'tipo' => $row['tipo'] ?? 'Clínica Veterinaria',
+                    'fuente' => 'Importación Manual CSV',
+                ];
+            }
+        }
+
+        if (empty($items)) {
+            return redirect()->back()->with('error', 'No se encontraron registros válidos con columna de correo electrónico.');
+        }
+
+        $total = ProspectoVeterinaria::upsertProspectos($items);
+
+        return redirect()->back()->with('success', "📥 Importación exitosa: Se sincronizaron {$total} clínicas con Upsert (cero duplicados).");
+    }
 }
