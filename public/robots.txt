@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Allow: /clinic-favicon.webp
 Allow: /v/
 Allow: /blog/
 Allow: /blog
