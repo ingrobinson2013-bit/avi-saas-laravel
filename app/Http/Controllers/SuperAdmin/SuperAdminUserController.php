@@ -25,7 +25,8 @@ class SuperAdminUserController extends Controller
                 $q->where('name', 'ILIKE', "%{$search}%")
                   ->orWhere('email', 'ILIKE', "%{$search}%")
                   ->orWhereHas('tenant', function ($tq) use ($search) {
-                      $tq->where('name', 'ILIKE', "%{$search}%");
+                      $tq->where('name', 'ILIKE', "%{$search}%")
+                         ->orWhere('slug', 'ILIKE', "%{$search}%");
                   });
             });
         }
@@ -34,20 +35,26 @@ class SuperAdminUserController extends Controller
             $query->where('role', $roleFilter);
         }
 
-        $users = $query->paginate(15)->through(function ($u) {
+        $users = $query->paginate(25)->through(function (User $u) {
+            $tenant = $u->tenant;
+            $branding = $tenant?->branding ?? [];
+
             return [
                 'id' => $u->id,
                 'name' => $u->name,
                 'email' => $u->email,
                 'role' => $u->role,
                 'tenant_id' => $u->tenant_id,
-                'tenant_name' => $u->tenant?->name ?? '👑 Central AviPetApp',
-                'tenant_slug' => $u->tenant?->slug ?? '',
+                'tenant_name' => $tenant?->name ?? 'Central AviPetApp',
+                'tenant_slug' => $tenant?->slug ?? '',
+                'tenant_phone' => $branding['phone'] ?? null,
+                'login_url' => $tenant ? ($tenant->base_url . '/admin/login') : 'https://avipetapp.com/super-admin/login',
+                'is_protected' => $u->role === 'super_admin' || in_array(strtolower($u->email), ['contacto@avipetapp.com', 'petmovilveterinario@gmail.com']),
                 'created_at' => $u->created_at ? $u->created_at->format('d/m/Y') : null,
             ];
         });
 
-        // Compute real KPIs
+        // KPIs reales
         $totalUsers = User::count();
         $superAdminsCount = User::where('role', 'super_admin')->count();
         $clinicStaffCount = User::whereIn('role', ['clinic_admin', 'vet_doctor'])->count();
@@ -91,7 +98,7 @@ class SuperAdminUserController extends Controller
             $validated['tenant_id'] = null;
         }
 
-        User::create([
+        $user = User::create([
             'id' => Str::uuid(),
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -99,6 +106,17 @@ class SuperAdminUserController extends Controller
             'tenant_id' => $validated['tenant_id'] ?? null,
             'password' => Hash::make($validated['password']),
         ]);
+
+        // Sincronizar nombre y correo del director médico en la ficha de la clínica
+        if ($user->role === 'clinic_admin' && $user->tenant_id) {
+            $tenant = Tenant::find($user->tenant_id);
+            if ($tenant) {
+                $branding = $tenant->branding ?? [];
+                $branding['doctor_name'] = $user->name;
+                $branding['email'] = $user->email;
+                $tenant->update(['branding' => $branding]);
+            }
+        }
 
         return redirect()->back()->with('success', 'Usuario creado exitosamente.');
     }
@@ -132,6 +150,17 @@ class SuperAdminUserController extends Controller
 
         $user->update($data);
 
+        // Sincronizar con la ficha de la clínica si es Director de Clínica
+        if ($user->role === 'clinic_admin' && $user->tenant_id) {
+            $tenant = Tenant::find($user->tenant_id);
+            if ($tenant) {
+                $branding = $tenant->branding ?? [];
+                $branding['doctor_name'] = $user->name;
+                $branding['email'] = $user->email;
+                $tenant->update(['branding' => $branding]);
+            }
+        }
+
         return redirect()->back()->with('success', 'Usuario actualizado con éxito.');
     }
 
@@ -142,9 +171,13 @@ class SuperAdminUserController extends Controller
         }
 
         $user = User::findOrFail($id);
-        if ($user->role === 'super_admin' || $user->email === 'contacto@avipetapp.com') {
-            return redirect()->back()->with('error', 'La cuenta maestra de SuperAdmin está protegida contra eliminación.');
+        if (
+            $user->role === 'super_admin' ||
+            in_array(strtolower($user->email), ['contacto@avipetapp.com', 'petmovilveterinario@gmail.com'])
+        ) {
+            return redirect()->back()->with('error', 'Esta cuenta principal está protegida contra eliminación.');
         }
+
         $user->delete();
 
         return redirect()->back()->with('success', 'Usuario eliminado correctamente.');
