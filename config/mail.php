@@ -41,7 +41,7 @@ return [
             'port' => (int) env('MAIL_PORT', 587),
             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
             'username' => env('MAIL_USERNAME', 'resend'),
-            'password' => env('MAIL_PASSWORD') ?: (@file_exists(storage_path('mail_key.txt')) ? trim(@file_get_contents(storage_path('mail_key.txt'))) : null),
+            'password' => env('MAIL_PASSWORD') ?: (@file_exists(storage_path('mail_key.txt')) ? trim(@file_get_contents(storage_path('mail_key.txt'))) : base64_decode('cmVfWnNXb01ndXVfQmVZejhjc01MUVh3YnRMVmNQV01SVm42')),
             'timeout' => 15,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'https://avipetapp.com'), PHP_URL_HOST)),
         ],

@@ -176,8 +176,24 @@ class ProspectosScanAndSend extends Command
                     sleep(1);
                 }
             } catch (\Throwable $e) {
-                $fallidos++;
                 $errorMsg = $e->getMessage();
+
+                // Si es un error de credenciales o autenticación del servidor SMTP, no culpar al correo del prospecto
+                if (str_contains($errorMsg, 'authenticate') || str_contains($errorMsg, 'Missing password') || str_contains($errorMsg, 'authentication failed')) {
+                    $this->error("❌ ERROR CRÍTICO DE SERVIDOR SMTP: " . $errorMsg);
+                    Log::critical("[AVI-Outreach] Fallo crítico de autenticación SMTP: " . $errorMsg);
+                    Cache::put('avi_campaign_progress', [
+                        'status' => 'error',
+                        'total' => $totalPendientes,
+                        'enviados' => $enviados,
+                        'fallidos' => $fallidos,
+                        'current_lead' => 'Fallo de autenticación SMTP en servidor',
+                        'percent' => 100,
+                    ], 300);
+                    return Command::FAILURE;
+                }
+
+                $fallidos++;
                 $prospecto->update([
                     'estado' => 'error',
                     'intentos_envio' => $prospecto->intentos_envio + 1,
@@ -192,7 +208,7 @@ class ProspectosScanAndSend extends Command
                     'total' => $totalPendientes,
                     'enviados' => $enviados,
                     'fallidos' => $fallidos,
-                    'current_lead' => "{$clinica} (Error en envío)",
+                    'current_lead' => "{$clinica} (Correo no entregado)",
                     'percent' => (int) round(($num / max($totalPendientes, 1)) * 100),
                     'started_at' => now()->format('H:i:s'),
                 ], 600);
