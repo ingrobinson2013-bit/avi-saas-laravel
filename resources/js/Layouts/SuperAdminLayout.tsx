@@ -74,7 +74,7 @@ export default function SuperAdminLayout({
         },
         {
             name: 'Inteligencia',
-            href: '/admin/vet-pet-patitas/inteligencia',
+            href: '/super-admin/inteligencia',
             icon: Sparkles,
             active: activeItem === 'Inteligencia'
         },

@@ -555,6 +555,10 @@ Route::prefix('super-admin')->middleware([\App\Http\Middleware\EnsureSuperAdminS
     Route::get('/prospecto-veterinarias/scan-status', [App\Http\Controllers\SuperAdmin\SuperAdminProspectoController::class, 'scanStatus'])->name('superadmin.prospectos.scan-status');
     Route::post('/prospecto-veterinarias/import-csv', [App\Http\Controllers\SuperAdmin\SuperAdminProspectoController::class, 'importCsv'])->name('superadmin.prospectos.import-csv');
 
+    // 5.1 Centro de Inteligencia B2B & Salud de Red SaaS
+    Route::get('/inteligencia', [App\Http\Controllers\SuperAdmin\SuperAdminInteligenciaController::class, 'index'])->name('superadmin.inteligencia');
+    Route::post('/inteligencia/ask', [App\Http\Controllers\SuperAdmin\SuperAdminInteligenciaController::class, 'askCopilot'])->name('superadmin.inteligencia.ask');
+
     // 6. Configuración Global SaaS
     Route::get('/configuracion', [App\Http\Controllers\SuperAdmin\SuperAdminConfiguracionController::class, 'index'])->name('superadmin.configuracion');
     Route::post('/configuracion', [App\Http\Controllers\SuperAdmin\SuperAdminConfiguracionController::class, 'update'])->name('superadmin.configuracion.update');
