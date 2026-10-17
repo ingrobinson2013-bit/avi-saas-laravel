@@ -213,58 +213,17 @@ class SuperAdminProspectoController extends Controller
             return redirect()->back()->with('warning', 'No hay prospectos pendientes listos para enviar en este momento.');
         }
 
-        $enviados = 0;
-        $fallidos = 0;
+        // Para evitar cortes de conexión HTTP o timeout 502 de Cloudflare en lotes de 50+:
+        // Ejecutamos el despachador artisan en segundo plano
+        $artisan = base_path('artisan');
+        exec("php {$artisan} avi:prospectos-scan-and-send --limit={$limit} > /dev/null 2>&1 &");
 
-        foreach ($prospectos as $prospecto) {
-            $email = trim($prospecto->correo_comercial ?? '');
-
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $prospecto->update([
-                    'estado' => 'error',
-                    'intentos_envio' => ($prospecto->intentos_envio ?? 0) + 1,
-                    'error_mensaje' => 'Sintaxis de correo inválida',
-                ]);
-                $fallidos++;
-                continue;
-            }
-
-            $domain = substr(strrchr($email, "@"), 1);
-            if ($domain && function_exists('checkdnsrr') && !checkdnsrr($domain, 'MX') && !checkdnsrr($domain, 'A')) {
-                $prospecto->update([
-                    'estado' => 'error',
-                    'intentos_envio' => ($prospecto->intentos_envio ?? 0) + 1,
-                    'error_mensaje' => "Dominio @{$domain} inactivo o sin servidores MX",
-                ]);
-                $fallidos++;
-                continue;
-            }
-
-            try {
-                Mail::to($email)->send(new ProspectoOutreachMail($prospecto));
-                $prospecto->update([
-                    'estado' => 'enviado',
-                    'ultimo_envio_at' => now(),
-                    'intentos_envio' => ($prospecto->intentos_envio ?? 0) + 1,
-                    'error_mensaje' => null,
-                ]);
-                $enviados++;
-                usleep(400000); // 0.4s pause
-            } catch (\Throwable $e) {
-                $fallidos++;
-                $prospecto->update([
-                    'estado' => 'error',
-                    'intentos_envio' => ($prospecto->intentos_envio ?? 0) + 1,
-                    'error_mensaje' => substr($e->getMessage(), 0, 1000),
-                ]);
-            }
-        }
-
-        return redirect()->back()->with('success', "🚀 Campaña procesada: {$enviados} correos enviados con éxito vía Resend." . ($fallidos > 0 ? " ({$fallidos} omitidos por dominio inactivo o error)." : ""));
+        return redirect()->back()->with('success', "🚀 Campaña iniciada para {$prospectos->count()} prospectos en segundo plano vía Resend SMTP. Los correos se están enviando de forma continua. Puedes recargar la página en un momento para ver el progreso.");
     }
 
     public function scanRegion(Request $request)
     {
+        set_time_limit(180);
         $region = $request->input('region', 'todo_el_pais');
         $limit = min((int) $request->input('limit', 50), 100);
 
