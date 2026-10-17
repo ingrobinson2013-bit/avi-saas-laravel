@@ -16,12 +16,13 @@ class BlogService
                 'excerpt' => 'Aprende paso a paso a diseñar planes de bienestar para perros y gatos que generen ingresos fijos mes a mes, blinden tu flujo de caja y aumenten la fidelidad de los tutores de mascotas.',
                 'category' => 'Rentabilidad & Negocio',
                 'read_time' => '7 min de lectura',
-                'author' => 'Robinson R. & Equipo Médico AVI',
+                'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & Estratega SaaS',
                 'published_at' => '2026-10-01',
-                'updated_at' => '2026-10-08',
+                'updated_at' => '2026-10-17',
                 'image' => 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
+                    'avipetapp',
                     'planes de salud veterinaria',
                     'ingresos recurrentes veterinaria colombia',
                     'membresias para mascotas',
@@ -42,7 +43,7 @@ El modelo tradicional de facturación en las clínicas veterinarias de Colombia 
 
 <h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">1. ¿Qué es un Plan de Salud Preventiva para Mascotas?</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
-A diferencia de un seguro médico para mascotas (que cubre imprevistos quirúrgicos o accidentes mayores), un <strong>plan de salud preventiva</strong> es un programa de suscripción recurrente mensual que cubre la medicina preventiva que toda mascota necesita a lo largo del año para mantenerse sana:
+A diferencia de una póliza de accidentes mayores, un <strong>plan de salud preventiva para mascotas</strong> es un programa de suscripción recurrente mensual que cubre la medicina preventiva que toda mascota necesita a lo largo del año para mantenerse sana:
 </p>
 <ul class="list-disc pl-6 space-y-2 text-slate-700 mb-6">
     <li>Esquema vacunal anual completo (Rabia, Séxtuple, KC en caninos; Triple felina y Leucemia en felinos).</li>
@@ -104,7 +105,7 @@ Muchos veterinarios intentan vender membresías cobrando por Nequi o transferenc
     <li>No hay forma de validar si una vacuna ya fue aplicada o sigue disponible en el saldo.</li>
 </ol>
 <p class="text-slate-700 leading-relaxed mb-6">
-Por esta razón, la tecnología SaaS como <strong>AviPetApp</strong> automatiza el débito bancario recurrente (vía pasarelas como Bold o tarjetas de crédito), genera un <strong>Carnet Digital interactivo</strong> con código QR y actualiza en tiempo real el saldo de servicios en mostrador con un solo clic.
+Por esta razón, la tecnología SaaS como <strong>AviPetApp</strong> automatiza el recaudo recurrente, genera un <strong>Carnet Digital interactivo</strong> con código QR y actualiza en tiempo real el saldo de servicios en mostrador con un solo clic.
 </p>
 
 <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-8 my-8 text-center shadow-xl">
@@ -124,7 +125,7 @@ HTML,
                 'excerpt' => 'Guía práctica de retención de clientes en clínica veterinaria: cómo aumentar la fidelización en más del 80% con planes preventivos, carnet digital en WhatsApp y recordatorios automatizados.',
                 'category' => 'Fidelización & Retención',
                 'read_time' => '6 min de lectura',
-                'author' => 'Robinson R. & Equipo Médico AVI',
+                'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & Estratega SaaS',
                 'published_at' => '2026-10-03',
                 'updated_at' => '2026-10-17',
@@ -193,12 +194,13 @@ HTML,
                 'excerpt' => 'Guía imparcial y comparativa de los principales programas de gestión veterinaria en Colombia: historias clínicas, facturación DIAN, planes de salud preventiva y apps móviles.',
                 'category' => 'Tecnología & Software',
                 'read_time' => '8 min de lectura',
-                'author' => 'Robinson R. & Equipo de Arquitectura SaaS',
+                'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & CEO NODIA',
                 'published_at' => '2026-10-05',
-                'updated_at' => '2026-10-08',
+                'updated_at' => '2026-10-17',
                 'image' => 'https://images.unsplash.com/photo-1516715094483-75da7dee9758?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
+                    'avipetapp',
                     'software veterinario colombia',
                     'programa gestion veterinaria bogota medellin',
                     'software para clinicas veterinarias',
@@ -214,11 +216,11 @@ Elegir el software adecuado para tu clínica veterinaria en Colombia es una de l
 En esta comparativa analizamos las opciones líderes del mercado colombiano en 2026 según su enfoque: <strong>Historias Clínicas, Facturación Electrónica DIAN y Planes de Salud Preventiva Recurrente</strong>.
 </p>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">1. AviPetApp: El Especialista en Ingresos Recurrentes y Planes Preventivos</h2>
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">1. AviPetApp: Software con IA para Veterinarias y Planes de Salud</h2>
 <div class="border border-blue-200 bg-blue-50/40 rounded-xl p-5 mb-6">
-    <p class="text-sm text-slate-700 mb-2"><strong>Lo mejor:</strong> Diseñado específicamente para convertir clientes ocasionales en ingresos mensuales fijos automáticos.</p>
-    <p class="text-sm text-slate-700 mb-2"><strong>Funciones estrella:</strong> Motor actuarial de planes de salud, cobro recurrente con Bold / tarjetas, carnet digital con QR para tutores, terminal de canje en mostrador y triage con Inteligencia Artificial.</p>
-    <p class="text-sm text-slate-700 mb-0"><strong>Precio:</strong> Desde $129.000 COP/mes (15 días de prueba gratis, sin tarjeta de crédito).</p>
+    <p class="text-sm text-slate-700 mb-2"><strong>Lo mejor:</strong> Diseñado específicamente para gestionar planes de salud para mascotas, organizar la relación con tus clientes y aprovechar herramientas de IA desde una sola plataforma.</p>
+    <p class="text-sm text-slate-700 mb-2"><strong>Funciones estrella:</strong> Motor actuarial de planes de salud, carnet digital con QR para tutores, terminal de canje en mostrador y sugerencias preventivas con Inteligencia Artificial supervisada.</p>
+    <p class="text-sm text-slate-700 mb-0"><strong>Precio:</strong> Paquetes prepago desde $50.000 COP / 10 mascotas o planes mensuales desde $99.000 COP/mes (15 días de prueba gratis, sin tarjeta de crédito).</p>
 </div>
 
 <h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">2. Vetsoft / Q-Vet: Gestión Clínica y Hospitalización Tradicional</h2>
@@ -245,8 +247,8 @@ Una de las plataformas en la nube más avanzadas a nivel global. Ideal para hosp
         </thead>
         <tbody class="divide-y divide-slate-200 text-slate-600">
             <tr>
-                <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Ingresos Recurrentes Automáticos</td>
-                <td class="p-3 font-bold text-emerald-600 border-r border-slate-200">✓ Nativo (Bold/Débito)</td>
+                <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Planes de Salud y Membresías</td>
+                <td class="p-3 font-bold text-emerald-600 border-r border-slate-200">✓ Nativo (100% configurable)</td>
                 <td class="p-3 text-red-500 border-r border-slate-200">✗ No incluye</td>
                 <td class="p-3 text-red-500">✗ No incluye</td>
             </tr>
@@ -274,13 +276,13 @@ Una de las plataformas en la nube más avanzadas a nivel global. Ideal para hosp
 
 <h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">¿Cuál es la Mejor Opción para tu Clínica?</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
-Si tu prioridad exclusiva es archivar historias clínicas de urgencias, un software clínico clásico te servirá. Pero <strong>si tu objetivo es hacer crecer tu negocio, garantizar que todos los meses tengas un ingreso fijo garantizado y fidelizar a tus clientes para que nunca vayan a otra clínica</strong>, la arquitectura de planes preventivos de <strong>AviPetApp</strong> es el complemento perfecto para tu operación médica.
+Si tu prioridad exclusiva es archivar historias clínicas de urgencias, un software clínico clásico te servirá. Pero <strong>si tu objetivo es organizar los planes de salud de tu clínica veterinaria, fortalecer la relación con las familias y aprovechar herramientas de IA</strong>, la arquitectura de <strong>AviPetApp</strong> es el complemento ideal para tu operación médica.
 </p>
 
 <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-8 my-8 text-center shadow-lg">
     <h3 class="text-2xl font-extrabold mb-2">Comprueba la Diferencia en tu Propia Clínica</h3>
     <p class="text-blue-100 text-sm max-w-xl mx-auto mb-6">
-        Únete a las veterinarias que ya están cobrando planes de bienestar mensuales en Colombia.
+        Únete a las veterinarias que ya gestionan sus planes de salud para mascotas en Colombia con AviPetApp.
     </p>
     <a href="/registro-clinica" class="inline-flex items-center px-6 py-3 bg-white hover:bg-slate-100 text-blue-900 font-extrabold rounded-xl shadow-lg transition">
         Iniciar Prueba Gratuita de 15 Días →
@@ -294,12 +296,13 @@ HTML,
                 'excerpt' => 'Guía actuarial práctica para clínicas veterinarias en Colombia: cómo calcular el costo unitario de insumos biológicos, horas médicas y fijar cuotas mensuales con un 65% de margen neto real.',
                 'category' => 'Finanzas & Rentabilidad',
                 'read_time' => '9 min de lectura',
-                'author' => 'Robinson R. & Equipo Actuarial AVI',
+                'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & Director Técnico',
                 'published_at' => '2026-10-08',
-                'updated_at' => '2026-10-08',
+                'updated_at' => '2026-10-17',
                 'image' => 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
+                    'avipetapp',
                     'como calcular precios veterinaria',
                     'plantilla costos clinica veterinaria',
                     'margen ganancia planes salud mascotas',

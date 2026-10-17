@@ -575,48 +575,53 @@ Route::get('/impersonate-clinic/{tenant_id}', [App\Http\Controllers\Impersonatio
 Route::get('/impersonate-clinic-stop', [App\Http\Controllers\ImpersonationController::class, 'stopImpersonating'])->name('superadmin.stop-impersonating');
 
 // 11. SEO: Generador Dinámico de Sitemap XML para Google Search Console
-Route::get('/sitemap.xml', function () {
-    $baseUrl = 'https://avipetapp.com';
+Route::get('/sitemap.xml', function () use ($resolveTenantFromHost) {
+    $tenantHost = $resolveTenantFromHost();
 
-    $tenants = Tenant::query()
-        ->where('is_active', true)
-        ->whereNotNull('slug')
-        ->orderBy('updated_at', 'desc')
-        ->get();
+    // Si se consulta desde el subdominio o dominio propio de una clínica activa
+    if ($tenantHost) {
+        $canonicalTenantUrl = rtrim($tenantHost->base_url, '/') . '/';
+        $lastmod = $tenantHost->updated_at ? $tenantHost->updated_at->toDateString() : now()->toDateString();
 
-    $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
-
-    // 1. Landing Principal B2B
-    $xml .= "  <url>\n";
-    $xml .= "    <loc>{$baseUrl}/</loc>\n";
-    $xml .= "    <lastmod>" . now()->toDateString() . "</lastmod>\n";
-    $xml .= "    <changefreq>daily</changefreq>\n";
-    $xml .= "    <priority>1.0</priority>\n";
-    $xml .= "  </url>\n";
-
-    // 2. Portada del Blog B2B
-    $xml .= "  <url>\n";
-    $xml .= "    <loc>{$baseUrl}/blog</loc>\n";
-    $xml .= "    <lastmod>" . now()->toDateString() . "</lastmod>\n";
-    $xml .= "    <changefreq>weekly</changefreq>\n";
-    $xml .= "    <priority>0.90</priority>\n";
-    $xml .= "  </url>\n";
-
-    // 3. Vitrinas B2C Canónicas de cada Clínica Veterinaria activa (Sin duplicar /v/{slug})
-    foreach ($tenants as $tenant) {
-        $lastmod = $tenant->updated_at ? $tenant->updated_at->toDateString() : now()->toDateString();
-        $canonicalTenantUrl = rtrim($tenant->base_url, '/') . '/';
-
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
         $xml .= "  <url>\n";
         $xml .= "    <loc>{$canonicalTenantUrl}</loc>\n";
         $xml .= "    <lastmod>{$lastmod}</lastmod>\n";
         $xml .= "    <changefreq>weekly</changefreq>\n";
-        $xml .= "    <priority>0.90</priority>\n";
+        $xml .= "    <priority>1.0</priority>\n";
         $xml .= "  </url>\n";
+        $xml .= '</urlset>';
+
+        return response($xml, 200, [
+            'Content-Type' => 'application/xml; charset=utf-8',
+            'Cache-Control' => 'public, max-age=3600',
+        ]);
     }
 
-    // 4. Artículos Estratégicos del Blog de AVI-Plan (SEO B2B)
+    $baseUrl = 'https://avipetapp.com';
+    $today = now()->toDateString();
+
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+    // 1. Landing Principal B2B (Máxima prioridad de rastreo)
+    $xml .= "  <url>\n";
+    $xml .= "    <loc>{$baseUrl}/</loc>\n";
+    $xml .= "    <lastmod>{$today}</lastmod>\n";
+    $xml .= "    <changefreq>daily</changefreq>\n";
+    $xml .= "    <priority>1.0</priority>\n";
+    $xml .= "  </url>\n";
+
+    // 2. Portada del Blog B2B de AviPetApp
+    $xml .= "  <url>\n";
+    $xml .= "    <loc>{$baseUrl}/blog</loc>\n";
+    $xml .= "    <lastmod>{$today}</lastmod>\n";
+    $xml .= "    <changefreq>daily</changefreq>\n";
+    $xml .= "    <priority>0.90</priority>\n";
+    $xml .= "  </url>\n";
+
+    // 3. Artículos Estratégicos del Blog de AviPetApp (SEO B2B)
     $blogPosts = \App\Services\BlogService::getAllPosts();
     foreach ($blogPosts as $post) {
         $xml .= "  <url>\n";
@@ -639,7 +644,7 @@ Route::get('/sitemap.xml', function () {
 Route::get('/blog', [App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
 
-// 13. Píxel de Seguimiento de Aperturas de Correo (Prospección AVI-Plan)
+// 13. Píxel de Seguimiento de Aperturas de Correo (Prospección AviPetApp)
 Route::get('/track/p/{id}.png', function ($id) {
     try {
         $prospecto = \App\Models\ProspectoVeterinaria::find($id);

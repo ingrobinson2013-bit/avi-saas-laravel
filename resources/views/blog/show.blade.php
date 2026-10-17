@@ -57,7 +57,9 @@
             "url": "https://avipetapp.com",
             "logo": {
               "@@type": "ImageObject",
-              "url": "https://avipetapp.com/brand/png/avipetapp-icono-app.png"
+              "url": "https://avipetapp.com/brand/favicons/favicon-512.png",
+              "width": 512,
+              "height": 512
             }
           },
           "datePublished": "{{ $post['published_at'] }}",
@@ -70,13 +72,13 @@
             {
               "@@type": "ListItem",
               "position": 1,
-              "name": "Inicio",
+              "name": "AviPetApp",
               "item": "https://avipetapp.com/"
             },
             {
               "@@type": "ListItem",
               "position": 2,
-              "name": "Blog Veterinario",
+              "name": "Blog para Clínicas Veterinarias",
               "item": "https://avipetapp.com/blog"
             },
             {
@@ -102,9 +104,15 @@
     </script>
     @endif
 
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
     <link rel="icon" type="image/svg+xml" href="/brand/favicons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="48x48" href="/brand/favicons/favicon-48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/brand/favicons/favicon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/brand/favicons/favicon-512.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/brand/favicons/favicon-16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/brand/favicons/favicon-180.png">
+    <link rel="manifest" href="/site.webmanifest">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

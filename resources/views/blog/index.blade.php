@@ -28,6 +28,54 @@
     <meta name="twitter:description" content="Guías para clínicas veterinarias: planes de salud para mascotas, clientes e IA en una sola plataforma.">
     <meta name="twitter:image" content="{{ url('/brand/favicons/og-image-1200x630.png') }}">
 
+    <!-- Schema.org JSON-LD para Portada del Blog AviPetApp -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@graph": [
+        {
+          "@@type": "CollectionPage",
+          "@@id": "https://avipetapp.com/blog#collection",
+          "url": "https://avipetapp.com/blog",
+          "name": "Blog para Clínicas Veterinarias — Planes de Salud, Clientes e IA | AviPetApp",
+          "description": "Artículos, guías estratégicas y análisis de negocio para veterinarias en Colombia con AviPetApp.",
+          "isPartOf": {
+            "@@id": "https://avipetapp.com/#website"
+          },
+          "publisher": {
+            "@@type": "Organization",
+            "name": "AviPetApp",
+            "url": "https://avipetapp.com",
+            "logo": {
+              "@@type": "ImageObject",
+              "url": "https://avipetapp.com/brand/favicons/favicon-512.png",
+              "width": 512,
+              "height": 512
+            }
+          }
+        },
+        {
+          "@@type": "BreadcrumbList",
+          "@@id": "https://avipetapp.com/blog#breadcrumb",
+          "itemListElement": [
+            {
+              "@@type": "ListItem",
+              "position": 1,
+              "name": "AviPetApp",
+              "item": "https://avipetapp.com/"
+            },
+            {
+              "@@type": "ListItem",
+              "position": 2,
+              "name": "Blog para Clínicas Veterinarias",
+              "item": "https://avipetapp.com/blog"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
     <!-- Google Tag (gtag.js) -->
     @if($gaId)
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
@@ -39,9 +87,15 @@
     </script>
     @endif
 
+    <link rel="icon" href="/favicon.ico" sizes="48x48">
     <link rel="icon" type="image/svg+xml" href="/brand/favicons/favicon.svg">
+    <link rel="icon" type="image/png" sizes="48x48" href="/brand/favicons/favicon-48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/brand/favicons/favicon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/brand/favicons/favicon-512.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/brand/favicons/favicon-16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/brand/favicons/favicon-180.png">
+    <link rel="manifest" href="/site.webmanifest">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
