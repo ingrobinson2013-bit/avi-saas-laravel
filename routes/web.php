@@ -521,32 +521,7 @@ Route::get('/v/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentController
 Route::redirect('/superadmin', '/super-admin');
 Route::redirect('/superadmin/login', '/super-admin/login');
 
-Route::prefix('super-admin')->middleware([function (\Illuminate\Http\Request $request, \Closure $next) {
-    if ($request->is('super-admin/logout')) {
-        return $next($request);
-    }
-
-    if (!auth()->check()) {
-        return redirect('/super-admin/login');
-    }
-
-    $user = auth()->user();
-    if ($user->role !== 'super_admin') {
-        $superAdmin = \App\Models\User::where('role', 'super_admin')
-            ->orWhere('email', 'contacto@avipetapp.com')
-            ->first();
-
-        if ($superAdmin && (session()->has('impersonator_superadmin_id') || $user->email === 'petmovilveterinario@gmail.com')) {
-            \Illuminate\Support\Facades\Auth::guard('web')->login($superAdmin, true);
-            session()->forget(['impersonator_superadmin_id', 'current_tenant_id', 'current_tenant_slug']);
-        } else {
-            \Illuminate\Support\Facades\Auth::logout();
-            return redirect('/super-admin/login');
-        }
-    }
-
-    return $next($request);
-}])->group(function () {
+Route::prefix('super-admin')->middleware([\App\Http\Middleware\EnsureSuperAdminSession::class])->group(function () {
     // 1. Escritorio / Dashboard
     Route::get('/', [App\Http\Controllers\SuperAdmin\SuperAdminDashboardController::class, 'index'])->name('superadmin.dashboard');
 
