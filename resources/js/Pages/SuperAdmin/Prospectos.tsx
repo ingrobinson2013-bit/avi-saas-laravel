@@ -307,9 +307,12 @@ export default function Prospectos({
                 );
             case 'error':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                    <span 
+                        title={item.error_mensaje || 'Correo o dominio sin servidores de correo'}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200"
+                    >
                         <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-                        Error
+                        Correo Inválido
                     </span>
                 );
             default:
@@ -549,6 +552,17 @@ export default function Prospectos({
                             }`}
                         >
                             Respondidos
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => handleFilterEstado('error')}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                                selectedEstado === 'error'
+                                    ? 'bg-rose-600 text-white shadow-xs'
+                                    : 'text-slate-600 hover:bg-slate-100'
+                            }`}
+                        >
+                            Inválidos
                         </button>
                     </div>
 
