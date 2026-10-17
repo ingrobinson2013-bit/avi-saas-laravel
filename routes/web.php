@@ -85,7 +85,7 @@ Route::get('/', function () use ($resolveTenantFromHost) {
         }
         return view('tenant_storefront', compact('tenant', 'plans'));
     }
-    return view('b2b_landing');
+    return \Inertia\Inertia::render('Landing/B2BLanding');
 });
 
 // 1.0.1 Favicon First-Party Dinámico en el mismo Subdominio para Google Search (Google-Favicon)
