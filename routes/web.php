@@ -131,15 +131,15 @@ Route::post('/afiliar', function () use ($resolveTenantFromHost) {
 });
 
 Route::get('/carnet/{subscription_id}', function (string $subscription_id) use ($resolveTenantFromHost) {
-    $tenant = $resolveTenantFromHost();
-    if (!$tenant) abort(404, 'Clínica no identificada para este carnet.');
-    return app(App\Http\Controllers\SubscriptionCarnetController::class)->show($tenant->slug, $subscription_id);
+    $tenant = $resolveTenantFromHost() ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
+    $slug = $tenant?->slug ?? 'vet-pet-patitas';
+    return app(App\Http\Controllers\SubscriptionCarnetController::class)->show($slug, $subscription_id);
 });
 
 Route::get('/carnet/{subscription_id}/pdf', function (string $subscription_id) use ($resolveTenantFromHost) {
-    $tenant = $resolveTenantFromHost();
-    if (!$tenant) abort(404, 'Clínica no identificada para este carnet.');
-    return app(App\Http\Controllers\SubscriptionCarnetController::class)->downloadPdf($tenant->slug, $subscription_id);
+    $tenant = $resolveTenantFromHost() ?? Tenant::where('slug', 'vet-pet-patitas')->first() ?? Tenant::first();
+    $slug = $tenant?->slug ?? 'vet-pet-patitas';
+    return app(App\Http\Controllers\SubscriptionCarnetController::class)->downloadPdf($slug, $subscription_id);
 });
 
 Route::get('/afiche', function () use ($resolveTenantFromHost) {
@@ -484,20 +484,10 @@ Route::post('/v/{slug}/afiliar', [App\Http\Controllers\StorefrontEnrollmentContr
 
 // 6. Carnet Digital y Certificado de Afiliación Imprimible / PDF
 Route::get('/v/{slug}/carnet/{subscription_id}', function (string $slug, string $subscription_id) {
-    $tenant = Tenant::where('slug', $slug)->firstOrFail();
-    $host = request()->getHost();
-    if (!str_contains($host, $tenant->slug) && (!empty($tenant->domain) && !str_contains($host, $tenant->domain))) {
-        return redirect($tenant->getCarnetUrl($subscription_id), 301);
-    }
     return app(App\Http\Controllers\SubscriptionCarnetController::class)->show($slug, $subscription_id);
 })->name('carnet.show');
 
 Route::get('/v/{slug}/carnet/{subscription_id}/pdf', function (string $slug, string $subscription_id) {
-    $tenant = Tenant::where('slug', $slug)->firstOrFail();
-    $host = request()->getHost();
-    if (!str_contains($host, $tenant->slug) && (!empty($tenant->domain) && !str_contains($host, $tenant->domain))) {
-        return redirect("{$tenant->getCarnetUrl($subscription_id)}/pdf", 301);
-    }
     return app(App\Http\Controllers\SubscriptionCarnetController::class)->downloadPdf($slug, $subscription_id);
 })->name('carnet.pdf');
 
@@ -538,6 +528,9 @@ Route::prefix('super-admin')->group(function () {
     // 2. Clínicas Veterinarias (Tenants)
     Route::get('/tenants', [App\Http\Controllers\SuperAdmin\SuperAdminTenantController::class, 'index'])->name('superadmin.tenants');
     Route::post('/tenants', [App\Http\Controllers\SuperAdmin\SuperAdminTenantController::class, 'store'])->name('superadmin.tenants.store');
+    Route::post('/tenants/{id}/update', [App\Http\Controllers\SuperAdmin\SuperAdminTenantController::class, 'update'])->name('superadmin.tenants.update');
+    Route::post('/tenants/{id}/delete', [App\Http\Controllers\SuperAdmin\SuperAdminTenantController::class, 'destroy'])->name('superadmin.tenants.destroy');
+    Route::get('/tenants/{id}/edit', fn (string $id) => redirect("/super-admin/tenants?manage={$id}"));
 
     // 3. Suscripciones y Pagos SaaS
     Route::get('/saas-payment-logs', [App\Http\Controllers\SuperAdmin\SuperAdminPaymentController::class, 'index'])->name('superadmin.payments');

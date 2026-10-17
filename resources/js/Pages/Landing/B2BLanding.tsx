@@ -124,7 +124,7 @@ const FAQ_ITEMS = [
     },
     {
         question: '¿Puedo utilizar el dominio o subdominio de mi veterinaria?',
-        answer: 'Desde el primer día cuentas con tu portal web propio (ej: tu-clinica.avipetapp.com y avipetapp.com/v/tu-clinica). En el plan Enterprise también puedes conectar directamente tu propio dominio corporativo.'
+        answer: 'Desde el primer día cuentas con tu propio subdominio exclusivo (ej: tu-clinica.avipetapp.com) personalizado con tu logo, fotos y colores. En el plan Enterprise también puedes conectar directamente tu propio dominio corporativo (ej: salud.tuclinica.com).'
     },
     {
         question: '¿Qué ocurre cuando terminan los 15 días de prueba gratuita?',
@@ -330,8 +330,8 @@ export default function B2BLanding() {
                 throw new Error(errorMsg);
             }
 
-            const sfUrl = data.storefront_url || `https://avipetapp.com/v/${data.tenant_slug}`;
-            const admUrl = data.admin_url || `https://avipetapp.com/admin/${data.tenant_slug}`;
+            const sfUrl = data.storefront_url || `https://${data.tenant_slug}.avipetapp.com`;
+            const admUrl = data.admin_url || `https://${data.tenant_slug}.avipetapp.com/admin`;
 
             setRegistrationSuccess({
                 storefrontUrl: sfUrl,
@@ -885,15 +885,27 @@ export default function B2BLanding() {
                                         )}
 
                                         {/* Acción Secundaria Oficial (Borde #6D28D9) */}
-                                        <a
-                                            href="/v/vet-pet-patitas"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="w-full py-2.5 px-4 text-center rounded-xl bg-white hover:bg-[#6D28D9]/5 text-[#6D28D9] font-semibold text-[13px] border border-[#6D28D9] transition flex items-center justify-center gap-1.5"
-                                        >
-                                            <span>Explorar clínica piloto en vivo</span>
-                                            <ExternalLink className="w-3.5 h-3.5" strokeWidth={2} />
-                                        </a>
+                                        {heroTab === 'carnet' ? (
+                                            <a
+                                                href="/carnet/VP-2026-0881"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="w-full py-2.5 px-4 text-center rounded-xl bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-semibold text-[13px] transition flex items-center justify-center gap-1.5 shadow-2xs"
+                                            >
+                                                <span>Ver Carnet Real en Pantalla Completa</span>
+                                                <ExternalLink className="w-3.5 h-3.5" strokeWidth={2} />
+                                            </a>
+                                        ) : (
+                                            <a
+                                                href="https://vet-pet-patitas.avipetapp.com"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="w-full py-2.5 px-4 text-center rounded-xl bg-white hover:bg-[#6D28D9]/5 text-[#6D28D9] font-semibold text-[13px] border border-[#6D28D9] transition flex items-center justify-center gap-1.5"
+                                            >
+                                                <span>Explorar clínica piloto en vivo</span>
+                                                <ExternalLink className="w-3.5 h-3.5" strokeWidth={2} />
+                                            </a>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -1305,7 +1317,7 @@ export default function B2BLanding() {
                                         </div>
                                         <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#111936] border border-[#1E2B58] text-[11px] text-slate-300">
                                             <Lock className="w-3 h-3 text-[#0F9F9A]" strokeWidth={2} />
-                                            <span>avipetapp.com/v/vet-pet-patitas</span>
+                                            <span>vet-pet-patitas.avipetapp.com</span>
                                         </div>
                                         <span className="text-xs text-[#35DDF5] font-bold uppercase tracking-wider tabular-nums">
                                             Paso 0{activeStep}
@@ -1796,7 +1808,7 @@ export default function B2BLanding() {
                                                     </div>
 
                                                     <a
-                                                        href="/v/vet-pet-patitas"
+                                                        href="https://vet-pet-patitas.avipetapp.com"
                                                         target="_blank"
                                                         rel="noreferrer"
                                                         className="w-full py-2.5 rounded-xl bg-[#0F9F9A] hover:bg-[#0E7490] text-white font-semibold text-xs shadow-md transition flex items-center justify-center gap-1.5"
@@ -1893,12 +1905,23 @@ export default function B2BLanding() {
                                 </div>
                                 <h3 className="text-lg font-bold text-[#15213B]">Portal Web con tu Marca</h3>
                                 <p className="text-xs text-[#5C6B85] leading-relaxed">
-                                    Tu propia vitrina digital con tu logo y colores (ej:{' '}
+                                    Tu propia página web personalizada con tu subdominio exclusivo, logo, fotos y colores (ej:{' '}
                                     <code className="text-[#6D28D9] bg-[#6D28D9]/10 px-1.5 py-0.5 rounded font-semibold">
-                                        avipetapp.com/v/tu-clinica
+                                        tu-clinica.avipetapp.com
                                     </code>
-                                    ). Tus clientes consultan planes y se afilian en línea.
+                                    ). Tus clientes consultan tus planes de salud y afilian a sus mascotas en línea.
                                 </p>
+                                <div className="pt-1">
+                                    <a
+                                        href="https://vet-pet-patitas.avipetapp.com"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#6D28D9] hover:text-[#5B21B6] transition"
+                                    >
+                                        <span>Ver clínica real: vet-pet-patitas.avipetapp.com</span>
+                                        <ExternalLink className="w-3 h-3" strokeWidth={2} />
+                                    </a>
+                                </div>
                             </div>
 
                             <div className="p-7 rounded-2xl bg-white border border-[#D9E2F2] space-y-3 shadow-2xs">
@@ -2007,7 +2030,7 @@ export default function B2BLanding() {
 
                                 <div className="pt-2 flex flex-wrap items-center gap-3">
                                     <a
-                                        href="/v/vet-pet-patitas/carnet/VP-2026-0001"
+                                        href="/carnet/VP-2026-0881"
                                         target="_blank"
                                         rel="noreferrer"
                                         className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#6D28D9] hover:bg-[#5B21B6] text-white text-xs sm:text-sm font-semibold shadow-md transition-all transform hover:-translate-y-0.5"
@@ -2931,7 +2954,7 @@ export default function B2BLanding() {
                                         <p className="text-[11px] text-[#5C6B85] mt-1">
                                             Tu web será:{' '}
                                             <span className="text-[#6D28D9] font-bold">
-                                                avipetapp.com/v/{slugPreview}
+                                                {slugPreview}.avipetapp.com
                                             </span>
                                         </p>
                                     </div>

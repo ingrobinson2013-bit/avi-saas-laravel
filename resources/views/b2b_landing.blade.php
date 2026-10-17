@@ -544,7 +544,7 @@
                                 </div>
 
                                 <!-- Acción Secundaria Oficial (Borde #6D28D9) -->
-                                <a href="/v/vet-pet-patitas" target="_blank" class="w-full py-2.5 px-4 text-center rounded-xl bg-white hover:bg-[#6D28D9]/5 text-[#6D28D9] font-semibold text-[13px] border border-[#6D28D9] transition flex items-center justify-center gap-1.5">
+                                <a href="https://vet-pet-patitas.avipetapp.com" target="_blank" class="w-full py-2.5 px-4 text-center rounded-xl bg-white hover:bg-[#6D28D9]/5 text-[#6D28D9] font-semibold text-[13px] border border-[#6D28D9] transition flex items-center justify-center gap-1.5">
                                     <span>Explorar clínica piloto en vivo</span>
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                                 </a>
@@ -850,7 +850,7 @@
                                 </div>
                                 <div class="hidden sm:flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-[#111936] border border-[#1E2B58] text-[11px] text-slate-300">
                                     <span class="text-[#0F9F9A]">🔒</span>
-                                    <span>avipetapp.com/v/vet-patitas</span>
+                                    <span>vet-pet-patitas.avipetapp.com</span>
                                 </div>
                                 <span id="step-screen-tag" class="text-xs text-[#35DDF5] font-bold uppercase tracking-wider">
                                     Paso 01 · Configuración
@@ -1074,7 +1074,7 @@
                                         </div>
 
                                         <!-- Botón CTA en Celular -->
-                                        <a href="/v/vet-pet-patitas" target="_blank" class="w-full py-2.5 rounded-xl bg-[#0F9F9A] hover:bg-[#0d8a85] text-white font-semibold text-xs shadow-md transition flex items-center justify-center space-x-1.5">
+                                        <a href="https://vet-pet-patitas.avipetapp.com" target="_blank" class="w-full py-2.5 rounded-xl bg-[#0F9F9A] hover:bg-[#0d8a85] text-white font-semibold text-xs shadow-md transition flex items-center justify-center space-x-1.5">
                                             <span>✓ Confirmar y Activar Carnet</span>
                                         </a>
                                     </div>
@@ -1156,9 +1156,9 @@
                         <div class="w-12 h-12 rounded-xl bg-[#6D28D9]/10 text-[#6D28D9] flex items-center justify-center text-2xl font-bold border border-[#6D28D9]/20">
                             🌐
                         </div>
-                        <h3 class="text-lg font-bold text-[#15213B]">Portal Web Marca Blanca</h3>
+                        <h3 class="text-lg font-bold text-[#15213B]">Portal Web con tu Marca</h3>
                         <p class="text-xs text-[#5C6B85] leading-relaxed">
-                            Tu propia página web personalizada con tu logo, fotos y colores (ej: <code class="text-[#6D28D9] bg-[#6D28D9]/10 px-1.5 py-0.5 rounded font-semibold">avipetapp.com/v/tu-clinica</code>). Tus clientes consultan planes y se afilian en línea.
+                            Tu propia página web personalizada con tu subdominio exclusivo, logo, fotos y colores (ej: <code class="text-[#6D28D9] bg-[#6D28D9]/10 px-1.5 py-0.5 rounded font-semibold">tu-clinica.avipetapp.com</code>). Tus clientes consultan tus planes de salud y afilian a sus mascotas en línea.
                         </p>
                     </div>
 
@@ -1258,7 +1258,7 @@
                         </div>
 
                         <div class="pt-2 flex flex-wrap items-center gap-3">
-                            <a href="/v/vet-pet-patitas/carnet/VP-2026-0001" target="_blank" class="inline-flex items-center space-x-2 px-6 py-3.5 rounded-xl bg-[#6D28D9] hover:bg-[#5B21B6] text-white text-xs sm:text-sm font-semibold shadow-md transition-all transform hover:-translate-y-0.5">
+                            <a href="/carnet/VP-2026-0881" target="_blank" class="inline-flex items-center space-x-2 px-6 py-3.5 rounded-xl bg-[#6D28D9] hover:bg-[#5B21B6] text-white text-xs sm:text-sm font-semibold shadow-md transition-all transform hover:-translate-y-0.5">
                                 <span>Ver Carnet Real en Pantalla Completa</span>
                                 <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                             </a>
@@ -1951,7 +1951,7 @@
                     <label class="block text-xs font-bold text-[#15213B] uppercase mb-1">Nombre de tu Veterinaria <span class="text-[#6D28D9]">*</span></label>
                     <input type="text" name="clinic_name" id="clinic-name-input" required placeholder="Ej. Veterinaria San Roque" oninput="updateSlugPreview(this.value)" class="w-full bg-[#F4F7FC] border border-[#D9E2F2] rounded-xl px-4 py-2.5 text-sm text-[#15213B] focus:outline-none focus:border-[#6D28D9] focus:bg-white transition placeholder:text-[#5C6B85]/60">
                     <p class="text-[11px] text-[#5C6B85] mt-1">
-                        Tu web será: <span id="slug-preview" class="text-[#6D28D9] font-bold">avipetapp.com/v/tu-clinica</span>
+                        Tu web será: <span id="slug-preview" class="text-[#6D28D9] font-bold">tu-clinica.avipetapp.com</span>
                     </p>
                 </div>
 
@@ -2130,7 +2130,7 @@
                 .replace(/[^a-z0-9]/g, '-')
                 .replace(/-+/g, '-');
             const preview = clean || 'tu-clinica';
-            document.getElementById('slug-preview').innerText = `avipetapp.com/v/${preview}`;
+            document.getElementById('slug-preview').innerText = `${preview}.avipetapp.com`;
         }
 
         function togglePasswordVisibility() {
@@ -2208,8 +2208,8 @@
                 document.getElementById('onboarding-header-info').classList.add('hidden');
                 
                 const successCard = document.getElementById('onboarding-success-card');
-                const sfUrl = data.storefront_url || `https://avipetapp.com/v/${data.tenant_slug}`;
-                const admUrl = data.admin_url || `https://avipetapp.com/admin/${data.tenant_slug}`;
+                const sfUrl = data.storefront_url || `https://${data.tenant_slug}.avipetapp.com`;
+                const admUrl = data.admin_url || `https://${data.tenant_slug}.avipetapp.com/admin`;
                 
                 document.getElementById('success-storefront-url').innerText = sfUrl;
                 document.getElementById('success-admin-url').innerText = admUrl;
@@ -2400,7 +2400,7 @@
                             </div>
                             <div class="space-y-1">
                                 <h5 class="text-xs font-bold text-white">El tutor escanea mientras espera</h5>
-                                <p class="text-[11px] text-[#35DDF5] font-semibold">avipetapp.com/v/tu-clinica</p>
+                                <p class="text-[11px] text-[#35DDF5] font-semibold">tu-clinica.avipetapp.com</p>
                                 <span class="inline-block text-[9.5px] bg-[#A855F7]/20 text-white px-2 py-0.5 rounded border border-[#A855F7]/30">Cero filas en recepción</span>
                             </div>
                         </div>

@@ -154,8 +154,8 @@ class ClinicOnboardingController extends Controller
                     'redirect_url' => $targetUrl,
                     'tenant_name' => $tenant->name,
                     'tenant_slug' => $tenant->slug,
-                    'storefront_url' => url("/v/{$tenant->slug}"),
-                    'admin_url' => url("/admin/{$tenant->slug}"),
+                    'storefront_url' => $tenant->getStorefrontUrl(),
+                    'admin_url' => $tenant->getAdminUrl(),
                 ]);
             }
 

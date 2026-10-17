@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     @php
         $primaryColor = $tenant->branding['primary_color'] ?? '#0D9488';
@@ -49,7 +49,7 @@
             --brand-secondary-rgb: {{ implode(', ', sscanf(ltrim($secondaryColor, '#'), "%02x%02x%02x") ?: [11, 17, 32]) }};
         }
         body { font-family: 'Inter', Arial, sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .font-mono { font-family: 'Inter', Arial, sans-serif; font-variant-numeric: tabular-nums; }
         
         .bg-brand-primary { background-color: var(--brand-primary) !important; }
         .bg-brand-secondary { background-color: var(--brand-secondary) !important; }
@@ -138,7 +138,7 @@
         <!-- 1. BARRA SUPERIOR DE ACCIONES (NO PRINT) -->
         <header class="no-print bg-slate-900/90 backdrop-blur-md p-3.5 sm:p-4 rounded-3xl border border-slate-800 shadow-xl flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center space-x-3 min-w-0">
-                <a href="/v/{{ $tenant->slug }}" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 shrink-0 border border-slate-700">
+                <a href="{{ $tenant->base_url }}" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 shrink-0 border border-slate-700">
                     <span>←</span>
                     <span class="truncate">Volver a {{ $tenant->name }}</span>
                 </a>
