@@ -535,6 +535,8 @@ Route::prefix('super-admin')->middleware([\App\Http\Middleware\EnsureSuperAdminS
     // 3. Suscripciones y Pagos SaaS
     Route::get('/saas-payment-logs', [App\Http\Controllers\SuperAdmin\SuperAdminPaymentController::class, 'index'])->name('superadmin.payments');
     Route::post('/saas-payment-logs', [App\Http\Controllers\SuperAdmin\SuperAdminPaymentController::class, 'store'])->name('superadmin.payments.store');
+    Route::post('/saas-payment-logs/{id}/update', [App\Http\Controllers\SuperAdmin\SuperAdminPaymentController::class, 'update'])->name('superadmin.payments.update');
+    Route::post('/saas-payment-logs/{id}/delete', [App\Http\Controllers\SuperAdmin\SuperAdminPaymentController::class, 'destroy'])->name('superadmin.payments.destroy');
 
     // 4. Usuarios y Doctores
     Route::get('/users', [App\Http\Controllers\SuperAdmin\SuperAdminUserController::class, 'index'])->name('superadmin.users');
