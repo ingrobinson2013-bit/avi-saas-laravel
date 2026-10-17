@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white scroll-smooth">
+<html lang="es" class="h-full bg-[#F4F7FC] text-[#15213B] antialiased selection:bg-[#6D28D9] selection:text-white scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -108,10 +108,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', Arial, sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
     </style>
 </head>
 <body class="min-h-full flex flex-col justify-between bg-[#F4F7FC] text-[#15213B]">
@@ -129,14 +128,14 @@
     </script>
 
     <!-- Header / Navbar Oficial AviPetApp -->
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-[#D9E2F2]">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2.5">
                 <img src="/brand/svg/avipetapp-horizontal-fondo-claro.svg" alt="AviPetApp" class="h-8 w-auto min-w-[140px] object-contain">
             </a>
             <div class="flex items-center gap-2 sm:gap-3">
                 <a href="/blog" class="text-xs sm:text-sm font-semibold text-[#5C6B85] hover:text-[#15213B] px-2 sm:px-3 py-1.5 transition whitespace-nowrap">← <span class="hidden sm:inline">Ver más </span>Guías</a>
-                <a href="/registro-clinica" class="text-xs sm:text-sm font-semibold bg-[#6D28D9] hover:bg-[#5b21b6] text-white px-3 sm:px-4 py-2 rounded-xl shadow-sm transition whitespace-nowrap">Crear mi clínica</a>
+                <a href="/registro-clinica" class="text-xs sm:text-sm font-semibold bg-[#6D28D9] hover:bg-[#5B21B6] text-white px-3 sm:px-4 py-2 rounded-xl shadow-sm transition whitespace-nowrap">Crear mi clínica</a>
             </div>
         </div>
     </header>
@@ -144,33 +143,31 @@
     <!-- Main Content -->
     <main class="max-w-4xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full">
         <!-- Breadcrumbs -->
-        <nav class="flex items-center gap-2 text-xs font-semibold text-slate-500 mb-6">
-            <a href="/" class="hover:text-slate-900">Inicio</a>
+        <nav class="flex items-center gap-2 text-xs font-semibold text-[#5C6B85] mb-6">
+            <a href="/" class="hover:text-[#15213B]">Inicio</a>
             <span>/</span>
-            <a href="/blog" class="hover:text-slate-900">Blog</a>
+            <a href="/blog" class="hover:text-[#15213B]">Blog</a>
             <span>/</span>
-            <span class="text-slate-900 truncate max-w-[200px] sm:max-w-md">{{ $post['category'] }}</span>
+            <span class="text-[#15213B] truncate max-w-[200px] sm:max-w-md">{{ $post['category'] }}</span>
         </nav>
 
         <!-- Article Header -->
         <header class="mb-8">
-            <span class="inline-block bg-blue-100 text-blue-800 text-xs font-extrabold px-3 py-1 rounded-full mb-3">
+            <span class="inline-block bg-[#6D28D9]/10 text-[#6D28D9] border border-[#6D28D9]/20 text-xs font-bold px-3 py-1 rounded-full mb-3">
                 {{ $post['category'] }}
             </span>
-            <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight leading-tight mb-4">
+            <h1 class="text-2xl sm:text-4xl lg:text-5xl font-bold text-[#15213B] tracking-tight leading-tight mb-4">
                 {{ $post['title'] }}
             </h1>
-            <div class="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-slate-600 py-3 border-y border-slate-200">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-full bg-blue-600 text-white font-black flex items-center justify-center text-xs">
-                        AVI
-                    </div>
+            <div class="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-[#5C6B85] py-3 border-y border-[#D9E2F2]">
+                <div class="flex items-center gap-2.5">
+                    <img src="/brand/svg/avipetapp-icono-app.svg" alt="AviPetApp" class="w-8 h-8 rounded-lg object-contain">
                     <div>
-                        <div class="font-bold text-slate-900">{{ $post['author'] }}</div>
-                        <div class="text-xs text-slate-500">{{ $post['author_role'] }}</div>
+                        <div class="font-bold text-[#15213B]">{{ $post['author'] }}</div>
+                        <div class="text-xs text-[#5C6B85]">{{ $post['author_role'] }}</div>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 ml-auto text-xs text-slate-500">
+                <div class="flex items-center gap-3 ml-auto text-xs text-[#5C6B85]">
                     <span>⏱️ {{ $post['read_time'] }}</span>
                     <span>•</span>
                     <time datetime="{{ $post['published_at'] }}">📅 {{ date('d F, Y', strtotime($post['published_at'])) }}</time>
@@ -179,27 +176,25 @@
         </header>
 
         <!-- Featured Image -->
-        <div class="rounded-2xl overflow-hidden aspect-[16/9] mb-10 shadow-md">
+        <div class="rounded-2xl overflow-hidden aspect-[16/9] mb-10 shadow-md border border-[#D9E2F2]">
             <img src="{{ $post['image'] }}" alt="{{ $post['title'] }}" class="w-full h-full object-cover">
         </div>
 
         <!-- Article Body -->
-        <article class="bg-white rounded-3xl p-5 sm:p-8 md:p-12 border border-slate-200 shadow-sm text-slate-800 leading-relaxed text-base sm:text-lg">
+        <article class="bg-white rounded-2xl p-5 sm:p-8 md:p-12 border border-[#D9E2F2] shadow-sm text-[#15213B] leading-relaxed text-base sm:text-lg">
             {!! $post['content'] !!}
         </article>
 
         <!-- Share & Author Box -->
-        <div class="mt-8 bg-white border border-slate-200 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-800 font-extrabold flex items-center justify-center text-sm">
-                    NODIA
-                </div>
+        <div class="mt-8 bg-white border border-[#D9E2F2] rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+                <img src="/brand/svg/avipetapp-icono-app.svg" alt="AviPetApp" class="w-12 h-12 rounded-xl object-contain shrink-0">
                 <div>
-                    <h4 class="font-bold text-slate-900 text-sm">Escrito por Robinson R. y el equipo de NODIA</h4>
-                    <p class="text-xs text-slate-500">Especialistas en arquitectura SaaS y soluciones digitales para el sector veterinario en Colombia.</p>
+                    <h4 class="font-bold text-[#15213B] text-sm">Equipo Editorial AviPetApp</h4>
+                    <p class="text-xs text-[#5C6B85]">Software con IA para veterinarias · Planes de salud para mascotas, clientes e IA en una sola plataforma.</p>
                 </div>
             </div>
-            <a href="https://wa.me/573235813942?text=Hola%20Robinson,%20le%C3%AD%20el%20art%C3%ADculo%20sobre%20{{ urlencode($post['title']) }}%20y%20quiero%20conocer%20m%C3%A1s" target="_blank" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow transition">
+            <a href="https://wa.me/573235813942?text=Hola%20AviPetApp,%20le%C3%AD%20el%20art%C3%ADculo%20sobre%20{{ urlencode($post['title']) }}%20y%20quiero%20conocer%20m%C3%A1s" target="_blank" class="px-4 py-2.5 bg-[#0F9F9A] hover:bg-[#0d8a85] text-white font-semibold text-xs rounded-xl shadow transition whitespace-nowrap">
                 Consultar por WhatsApp
             </a>
         </div>
@@ -207,18 +202,18 @@
         <!-- Artículos Relacionados -->
         @if(count($relatedPosts) > 0)
         <section class="mt-16">
-            <h3 class="text-xl sm:text-2xl font-black text-slate-900 mb-6">Artículos Recomendados</h3>
+            <h3 class="text-xl sm:text-2xl font-bold text-[#15213B] mb-6">Artículos Recomendados</h3>
             <div class="grid md:grid-cols-2 gap-6">
                 @foreach($relatedPosts as $rel)
-                <div class="bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-md transition">
-                    <span class="text-xs font-bold text-blue-600 uppercase">{{ $rel['category'] }}</span>
-                    <h4 class="text-base font-bold text-slate-900 mt-1 mb-2">
-                        <a href="/blog/{{ $rel['slug'] }}" class="hover:text-blue-600">
+                <div class="bg-white border border-[#D9E2F2] rounded-2xl p-5 hover:shadow-md transition">
+                    <span class="text-xs font-bold text-[#6D28D9] uppercase">{{ $rel['category'] }}</span>
+                    <h4 class="text-base font-bold text-[#15213B] mt-1 mb-2">
+                        <a href="/blog/{{ $rel['slug'] }}" class="hover:text-[#6D28D9]">
                             {{ $rel['title'] }}
                         </a>
                     </h4>
-                    <p class="text-xs text-slate-600 line-clamp-2 mb-3">{{ $rel['excerpt'] }}</p>
-                    <a href="/blog/{{ $rel['slug'] }}" class="text-xs font-bold text-blue-600 flex items-center gap-1">
+                    <p class="text-xs text-[#5C6B85] line-clamp-2 mb-3">{{ $rel['excerpt'] }}</p>
+                    <a href="/blog/{{ $rel['slug'] }}" class="text-xs font-bold text-[#6D28D9] flex items-center gap-1">
                         Leer artículo →
                     </a>
                 </div>
