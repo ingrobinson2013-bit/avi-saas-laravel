@@ -1,0 +1,35 @@
+# AviPetApp — Software con IA para veterinarias
+
+> AviPetApp ayuda a tu clínica veterinaria a gestionar planes de salud para mascotas, organizar la relación con tus clientes y aprovechar herramientas inteligentes desde una sola plataforma.
+> Eslogan oficial: Más inteligencia. Más bienestar. Más futuro.
+
+## Información Oficial de Marca (Manual Maestro v1.1)
+- **Nombre oficial:** AviPetApp
+- **Descriptor:** Software con IA para veterinarias
+- **Sitio web oficial:** https://avipetapp.com/
+- **Blog oficial para clínicas veterinarias:** https://avipetapp.com/blog
+- **Contacto comercial:** contacto@avipetapp.com | WhatsApp: +57 323 581 3942
+- **Región de operación:** Colombia y Latinoamérica
+
+## ¿Qué es AviPetApp?
+AviPetApp es una plataforma tecnológica SaaS Multi-Tenant con Inteligencia Artificial supervisada para clínicas veterinarias que buscan digitalizar servicios, comercializar planes de salud para mascotas (membresías preventivas, nunca seguros) y fortalecer la relación con los tutores de mascotas.
+
+## Módulos y Capacidades Principales
+1. **Planes de salud para mascotas y membresías:** Configuración flexible de planes preventivos (vacunación anual, desparasitación, consultas médicas de control, laboratorio y estética) con cálculo actuarial de costos y margen.
+2. **Carnet digital interactivo con código QR:** Accesible desde el celular y WhatsApp sin instalar aplicaciones pesadas, con saldo de beneficios en tiempo real.
+3. **Terminal de canje en mostrador:** Validación en recepción en 1 clic por código QR o cédula del tutor con trazabilidad médica completa.
+4. **Herramientas con IA supervisada:** Recordatorios preventivos automatizados y sugerencias operativas. La IA organiza información; el criterio clínico siempre es del equipo veterinario.
+5. **Vitrina web y afiche QR por clínica:** Subdominio exclusivo personalizado con el logo y colores de cada veterinaria.
+
+## Modelos de Precios en Colombia (0% comisión por transacción)
+- **Prueba gratuita:** 15 días gratis sin tarjeta de crédito. Modalidad siempre prepago (mes anticipado, cero deudas acumuladas).
+- **Paquete Prepago 10 Mascotas:** $50.000 COP / mes ($5.000 COP por mascota activa).
+- **Plan Starter:** $99.000 COP / mes (hasta 80 mascotas activas).
+- **Plan Profesional:** $229.000 COP / mes (hasta 300 mascotas activas + herramientas con IA supervisada).
+- **Plan Enterprise:** $489.000 COP / mes (mascotas ilimitadas, multisucursal y dominio propio).
+
+## Guías y Recursos Oficiales (Blog B2B)
+- [Cómo crear Planes de Salud Preventiva en tu Clínica Veterinaria](https://avipetapp.com/blog/planes-de-salud-preventiva-veterinaria-ingresos-recurrentes)
+- [Retención de Clientes en Clínica Veterinaria: Cómo Fidelizar Tutores](https://avipetapp.com/blog/fidelizacion-clientes-veterinaria-retencion-mascotas)
+- [Los 5 Mejores Software Veterinarios en Colombia (Comparativa 2026)](https://avipetapp.com/blog/mejores-software-veterinarios-colombia-comparativa-2026)
+- [Cómo Calcular el Precio de los Planes de Salud para Mascotas (Plantilla Actuarial)](https://avipetapp.com/blog/como-calcular-precio-planes-salud-veterinaria-plantilla-costos)

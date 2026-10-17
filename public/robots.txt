@@ -8,6 +8,7 @@ Allow: /clinic-favicon.webp
 
 User-agent: *
 Allow: /
+Allow: /llms.txt
 Allow: /favicon.ico
 Allow: /favicon.svg
 Allow: /favicon.png

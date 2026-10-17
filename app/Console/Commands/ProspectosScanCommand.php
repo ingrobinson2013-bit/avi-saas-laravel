@@ -22,7 +22,7 @@ class ProspectosScanCommand extends Command
         $limit = min(max((int) $this->option('limit'), 1), 100);
 
         $this->info("============================================================");
-        $this->info("🔍 AVI-PLAN: MOTOR INTELIGENTE DE RASTREO Y PROSPECCIÓN");
+        $this->info("🔍 AVIPETAPP: MOTOR INTELIGENTE DE RASTREO Y PROSPECCIÓN");
         $this->info("============================================================");
         $this->info("- Región objetivo: {$region}");
         $this->info("- Cuota a descubrir: {$limit}");
