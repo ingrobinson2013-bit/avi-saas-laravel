@@ -3,9 +3,24 @@
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Route;
 
-// 0. Resolver Dinámico de Clínica por Host (Subdominio *.avipetapp.com o Dominio Personalizado en BD)
-$resolveTenantFromHost = function (): ?Tenant {
+// 0.0 Detector de Subdominio de Marca de Producto: AVIPET BioLab® (biolab.avipetapp.com)
+$isBioLabHost = function (): bool {
     try {
+        $cleanHost = strtolower(trim(request()->getHost()));
+        $hostWithoutWww = preg_replace('/^www\./', '', $cleanHost);
+        return str_starts_with($hostWithoutWww, 'biolab.');
+    } catch (\Throwable $e) {
+        return false;
+    }
+};
+
+// 0. Resolver Dinámico de Clínica por Host (Subdominio *.avipetapp.com o Dominio Personalizado en BD)
+$resolveTenantFromHost = function () use ($isBioLabHost): ?Tenant {
+    try {
+        if ($isBioLabHost()) {
+            return null;
+        }
+
         $host = request()->getHost();
         $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
         $cleanHost = strtolower(trim($host));
@@ -33,7 +48,7 @@ $resolveTenantFromHost = function (): ?Tenant {
         // 2. Coincidencia automática por subdominio de avipetapp.com (ej: vet-pet-patitas.avipetapp.com)
         if (str_ends_with($cleanHost, '.' . $baseDomain)) {
             $subdomain = str_replace('.' . $baseDomain, '', $hostWithoutWww);
-            if (!empty($subdomain) && $subdomain !== 'www') {
+            if (!empty($subdomain) && !in_array($subdomain, ['www', 'biolab'])) {
                 return Tenant::where('slug', $subdomain)
                     ->orWhere('slug', 'LIKE', "%{$subdomain}%")
                     ->orWhere('domain', 'LIKE', "%{$subdomain}%")
@@ -74,8 +89,19 @@ $redirectToLogin = function (?string $slug = null) use ($resolveTenantFromHost) 
     return redirect($loginUrl);
 };
 
-// 1. Landing Principal B2B ó Storefront de Clínica si el dominio/subdominio está asignado
-Route::get('/', function () use ($resolveTenantFromHost) {
+// 0.1 Rutas Oficiales de AVIPET BioLab® — Dermo & Gut Superboost (Subdominio biolab.avipetapp.com y Slugs SEO)
+Route::get('/biolab', [App\Http\Controllers\BioLabController::class, 'show'])->name('biolab.home');
+Route::get('/biolab/dermo-gut-superboost', [App\Http\Controllers\BioLabController::class, 'show'])->name('biolab.product');
+Route::get('/producto/dermo-gut-superboost', [App\Http\Controllers\BioLabController::class, 'show'])->name('biolab.product.slug');
+Route::get('/dermo-gut-superboost', [App\Http\Controllers\BioLabController::class, 'show']);
+Route::post('/biolab/order', [App\Http\Controllers\BioLabController::class, 'storeOrder'])->name('biolab.order.store');
+Route::post('/producto/dermo-gut-superboost/order', [App\Http\Controllers\BioLabController::class, 'storeOrder']);
+
+// 1. Landing Principal B2B, Subdominio AVIPET BioLab® ó Storefront de Clínica si el dominio/subdominio está asignado
+Route::get('/', function () use ($resolveTenantFromHost, $isBioLabHost) {
+    if ($isBioLabHost()) {
+        return app(App\Http\Controllers\BioLabController::class)->show(request());
+    }
     $tenant = $resolveTenantFromHost();
     if ($tenant) {
         $plans = $tenant->plans()->with('planBenefits.benefitDefinition')->where('is_active', true)->get();
@@ -579,13 +605,38 @@ Route::get('/impersonate-clinic/{tenant_id}', [App\Http\Controllers\Impersonatio
 Route::get('/impersonate-clinic-stop', [App\Http\Controllers\ImpersonationController::class, 'stopImpersonating'])->name('superadmin.stop-impersonating');
 
 // 11. SEO: Generador Dinámico de Sitemap XML para Google Search Console
-Route::get('/sitemap.xml', function () use ($resolveTenantFromHost) {
+Route::get('/sitemap.xml', function () use ($resolveTenantFromHost, $isBioLabHost) {
+    $today = now()->toDateString();
+
+    if ($isBioLabHost()) {
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        $xml .= "  <url>\n";
+        $xml .= "    <loc>https://biolab.avipetapp.com/</loc>\n";
+        $xml .= "    <lastmod>{$today}</lastmod>\n";
+        $xml .= "    <changefreq>daily</changefreq>\n";
+        $xml .= "    <priority>1.0</priority>\n";
+        $xml .= "  </url>\n";
+        $xml .= "  <url>\n";
+        $xml .= "    <loc>https://biolab.avipetapp.com/dermo-gut-superboost</loc>\n";
+        $xml .= "    <lastmod>{$today}</lastmod>\n";
+        $xml .= "    <changefreq>daily</changefreq>\n";
+        $xml .= "    <priority>0.95</priority>\n";
+        $xml .= "  </url>\n";
+        $xml .= '</urlset>';
+
+        return response($xml, 200, [
+            'Content-Type' => 'application/xml; charset=utf-8',
+            'Cache-Control' => 'public, max-age=3600',
+        ]);
+    }
+
     $tenantHost = $resolveTenantFromHost();
 
     // Si se consulta desde el subdominio o dominio propio de una clínica activa
     if ($tenantHost) {
         $canonicalTenantUrl = rtrim($tenantHost->base_url, '/') . '/';
-        $lastmod = $tenantHost->updated_at ? $tenantHost->updated_at->toDateString() : now()->toDateString();
+        $lastmod = $tenantHost->updated_at ? $tenantHost->updated_at->toDateString() : $today;
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
@@ -604,7 +655,6 @@ Route::get('/sitemap.xml', function () use ($resolveTenantFromHost) {
     }
 
     $baseUrl = 'https://avipetapp.com';
-    $today = now()->toDateString();
 
     $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
@@ -615,6 +665,20 @@ Route::get('/sitemap.xml', function () use ($resolveTenantFromHost) {
     $xml .= "    <lastmod>{$today}</lastmod>\n";
     $xml .= "    <changefreq>daily</changefreq>\n";
     $xml .= "    <priority>1.0</priority>\n";
+    $xml .= "  </url>\n";
+
+    // 1.1 AVIPET BioLab® — Dermo & Gut Superboost (Product Page E-commerce)
+    $xml .= "  <url>\n";
+    $xml .= "    <loc>{$baseUrl}/biolab/dermo-gut-superboost</loc>\n";
+    $xml .= "    <lastmod>{$today}</lastmod>\n";
+    $xml .= "    <changefreq>daily</changefreq>\n";
+    $xml .= "    <priority>0.95</priority>\n";
+    $xml .= "  </url>\n";
+    $xml .= "  <url>\n";
+    $xml .= "    <loc>{$baseUrl}/producto/dermo-gut-superboost</loc>\n";
+    $xml .= "    <lastmod>{$today}</lastmod>\n";
+    $xml .= "    <changefreq>daily</changefreq>\n";
+    $xml .= "    <priority>0.95</priority>\n";
     $xml .= "  </url>\n";
 
     // 2. Portada del Blog B2B de AviPetApp

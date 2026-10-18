@@ -16,30 +16,37 @@
         $baseDomain = env('APP_BASE_DOMAIN', 'avipetapp.com');
         $isBaseDomain = in_array($hostNoWww, ['localhost', '127.0.0.1', $baseDomain]) || str_contains($cleanHost, 'easypanel.host');
 
+        $isBioLabHost = str_starts_with($hostNoWww, 'biolab.');
+        $isBioLabPage = $isBioLabHost || request()->is('biolab*') || request()->is('producto/dermo-gut-superboost*');
+
         $tenantSlug = request()->route('slug') ?? request()->route('subdomain') ?? session('current_tenant_slug');
         $currentTenant = null;
 
-        if ($tenantSlug) {
-            $currentTenant = \App\Models\Tenant::where('slug', $tenantSlug)
-                ->orWhere('domain', 'LIKE', "%{$tenantSlug}%")
-                ->first();
-        }
+        if (!$isBioLabPage) {
+            if ($tenantSlug) {
+                $currentTenant = \App\Models\Tenant::where('slug', $tenantSlug)
+                    ->orWhere('domain', 'LIKE', "%{$tenantSlug}%")
+                    ->first();
+            }
 
-        if (!$currentTenant && !$isBaseDomain) {
-            $currentTenant = \App\Models\Tenant::where('domain', $cleanHost)
-                ->orWhere('domain', $hostNoWww)
-                ->first();
+            if (!$currentTenant && !$isBaseDomain) {
+                $currentTenant = \App\Models\Tenant::where('domain', $cleanHost)
+                    ->orWhere('domain', $hostNoWww)
+                    ->first();
 
-            if (!$currentTenant && str_ends_with($cleanHost, '.' . $baseDomain)) {
-                $sub = str_replace('.' . $baseDomain, '', $hostNoWww);
-                if ($sub !== 'www') {
-                    $currentTenant = \App\Models\Tenant::where('slug', $sub)->first();
+                if (!$currentTenant && str_ends_with($cleanHost, '.' . $baseDomain)) {
+                    $sub = str_replace('.' . $baseDomain, '', $hostNoWww);
+                    if (!in_array($sub, ['www', 'biolab'])) {
+                        $currentTenant = \App\Models\Tenant::where('slug', $sub)->first();
+                    }
                 }
             }
         }
 
-        $isPublicLanding = request()->is('/') && !$currentTenant;
-        $canonicalUrl = 'https://avipetapp.com/';
+        $isPublicLanding = request()->is('/') && !$currentTenant && !$isBioLabPage;
+        $canonicalUrl = $isBioLabPage
+            ? ($isBioLabHost ? 'https://biolab.avipetapp.com/dermo-gut-superboost' : 'https://avipetapp.com/biolab/dermo-gut-superboost')
+            : 'https://avipetapp.com/';
     @endphp
     @if($isPublicLanding)
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -228,6 +235,114 @@
       ]
     }
     </script>
+    @elseif($isBioLabPage)
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="description" content="Suplemento biotecnológico 3 en 1 en polvo para perros y gatos. Con Micro-Proteína Novel de Hermetia illucens y Ácido Láurico natural. Corta la picazón, hongos, caída de pelo y regula la digestión. 100% libre de gluten, pollo y res. Envíos gratis y pago contraentrega en toda Colombia.">
+    <meta name="keywords" content="dermo gut superboost, avipet biolab, suplemento dermatitis perros, picazon perros y gatos, hermetia illucens mascotas, acido laurico perros, prebioticos perros y gatos, suplemento hipoalergenico mascotas colombia">
+    <meta name="author" content="AVIPET BioLab®">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+    <link rel="alternate" hreflang="es-CO" href="{{ $canonicalUrl }}">
+
+    <!-- Open Graph / WhatsApp Business / Meta Catalog -->
+    <meta property="og:type" content="product">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:title" content="Dermo &amp; Gut Superboost (250g) | Alivio de Dermatitis, Picazón y Digestión — AVIPET BioLab®">
+    <meta property="og:description" content="Suplemento biotecnológico 3 en 1 en polvo para perros y gatos. Con Micro-Proteína Novel de Hermetia illucens y Ácido Láurico natural. Corta la picazón, hongos, caída de pelo y regula la digestión. 100% libre de gluten, pollo y res. Envíos gratis y pago contraentrega en toda Colombia.">
+    <meta property="og:image" content="https://avipetapp.com/images/biolab/banner-hero-oficial.jpg">
+    <meta property="og:image:secure_url" content="https://avipetapp.com/images/biolab/banner-hero-oficial.jpg">
+    <meta property="og:image:alt" content="AVIPET BioLab® — Dermo &amp; Gut Superboost (250g)">
+    <meta property="og:site_name" content="AVIPET BioLab®">
+    <meta property="og:locale" content="es_CO">
+    <meta property="product:price:amount" content="69900">
+    <meta property="product:price:currency" content="COP">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dermo &amp; Gut Superboost (250g) | Alivio de Dermatitis, Picazón y Digestión — AVIPET BioLab®">
+    <meta name="twitter:description" content="Suplemento biotecnológico 3 en 1 en polvo para perros y gatos. 100% libre de gluten, pollo y res. Envíos gratis y pago contraentrega en toda Colombia.">
+    <meta name="twitter:image" content="https://avipetapp.com/images/biolab/banner-hero-oficial.jpg">
+
+    <!-- Schema.org JSON-LD Product + AggregateOffer + AggregateRating + FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@graph": [
+        {
+          "@@type": "Product",
+          "@@id": "https://avipetapp.com/biolab/dermo-gut-superboost#product",
+          "name": "AVIPET BioLab® — Dermo & Gut Superboost (250g)",
+          "description": "Suplemento biotecnológico 3 en 1 en polvo para perros y gatos. Con Micro-Proteína Novel de Hermetia illucens y Ácido Láurico natural. Corta la picazón, hongos, caída de pelo y regula la digestión. 100% libre de gluten, pollo y res.",
+          "sku": "AVIPET-BIOLAB-DGS-250G",
+          "mpn": "BIOLAB-DGS-250",
+          "image": [
+            "https://avipetapp.com/images/biolab/empaque-frente-250g.jpg",
+            "https://avipetapp.com/images/biolab/empaque-frente-reverso.jpg",
+            "https://avipetapp.com/images/biolab/banner-hero-oficial.jpg",
+            "https://avipetapp.com/images/biolab/afiche-beneficios-dermatitis.jpg"
+          ],
+          "brand": {
+            "@@type": "Brand",
+            "name": "AVIPET BioLab®"
+          },
+          "aggregateRating": {
+            "@@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "bestRating": "5.0",
+            "ratingCount": "148"
+          },
+          "offers": {
+            "@@type": "AggregateOffer",
+            "url": "{{ $canonicalUrl }}",
+            "priceCurrency": "COP",
+            "lowPrice": "69900",
+            "highPrice": "169900",
+            "offerCount": "3",
+            "availability": "https://schema.org/InStock",
+            "itemCondition": "https://schema.org/NewCondition"
+          }
+        },
+        {
+          "@@type": "FAQPage",
+          "@@id": "https://avipetapp.com/biolab/dermo-gut-superboost#faq",
+          "mainEntity": [
+            {
+              "@@type": "Question",
+              "name": "¿En cuánto tiempo veré resultados en mi mascota?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Días 3 a 7: Notarás heces más firmes, menos gases y reducción del mal aliento gracias a la fibra prebiótica y la clorofila. Semanas 2 a 3: Disminución notable del enrojecimiento en piel, menor picazón y reducción del lamido de patas por el efecto del Ácido Láurico y la cúrcuma. Semana 4 en adelante: Frenado de la caída excesiva de pelo y crecimiento de pelaje nuevo, fuerte y brillante."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Sirve tanto para perros como para gatos?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "¡Sí! Su perfil de aminoácidos esenciales y ácidos grasos está formulado para la fisiología digestiva y cutánea tanto de perros como de gatos de todas las razas y edades (a partir de los 3 meses de vida)."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Se lo puedo dar si mi perro toma medicamentos o come concentrado medicado?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Totalmente. Al ser un suplemento nutricional 100% natural libre de alérgenos y fármacos químicos, actúa como coadyuvante perfecto junto a cualquier dieta veterinaria o tratamiento clínico sin generar interacciones."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Cómo funciona el envío y el pago contraentrega?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Despachamos a toda Colombia. Solo registras tus datos de entrega y pagas en efectivo o transferencia únicamente cuando el transportador te entregue el paquete en la puerta de tu casa."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
     @else
     <meta name="robots" content="noindex, nofollow">
     @endif
@@ -257,7 +372,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @php
-        if ($isPublicLanding) {
+        if ($isBioLabPage) {
+            $clinicPageTitle = 'Dermo & Gut Superboost (250g) | Alivio de Dermatitis, Picazón y Digestión — AVIPET BioLab®';
+            $favIcon = '/images/biolab/logo-avipet-biolab.jpg';
+        } elseif ($isPublicLanding) {
             $clinicPageTitle = 'AviPetApp — Software con IA para veterinarias | Planes de salud para mascotas';
             $favIcon = '/brand/favicons/favicon.svg';
         } elseif (request()->is('super-admin*')) {
@@ -272,7 +390,7 @@
         }
     @endphp
     <title inertia>{{ $clinicPageTitle }}</title>
-    @if(!$currentTenant)
+    @if(!$currentTenant && !$isBioLabPage)
     <!-- Favicons Oficiales AviPetApp Optimizados para Google Search (Google-Favicon múltiplos de 48px) -->
     <link rel="icon" href="/favicon.ico?v=20261017" sizes="48x48">
     <link rel="icon" type="image/svg+xml" href="/brand/favicons/favicon.svg?v=20261017">
@@ -287,7 +405,7 @@
     @else
     <link rel="icon" href="{{ $favIcon }}">
     <link rel="shortcut icon" href="{{ $favIcon }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="/brand/favicons/favicon-180.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ $favIcon }}">
     @endif
 
     @viteReactRefresh
@@ -304,6 +422,19 @@
             echo preg_replace_callback(
                 '/(<div id="app"[^>]*>)<\/div>/',
                 fn($matches) => $matches[1] . $seoPrerender . '</div>',
+                $inertiaHtml,
+                1
+            );
+        @endphp
+    @elseif($isBioLabPage)
+        @php ob_start(); @endphp
+        @inertia
+        @php
+            $inertiaHtml = ob_get_clean();
+            $seoBioLabPrerender = view('partials.seo_biolab_prerender')->render();
+            echo preg_replace_callback(
+                '/(<div id="app"[^>]*>)<\/div>/',
+                fn($matches) => $matches[1] . $seoBioLabPrerender . '</div>',
                 $inertiaHtml,
                 1
             );
