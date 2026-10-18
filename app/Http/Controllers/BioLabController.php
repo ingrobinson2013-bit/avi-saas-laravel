@@ -53,6 +53,7 @@ class BioLabController extends Controller
             'pet_name' => 'nullable|string|max:80',
             'pet_weight' => 'nullable|string|max:60',
             'payment_method' => 'nullable|string|max:60',
+            'order_bump' => 'nullable|boolean',
             'notes' => 'nullable|string|max:500',
         ]);
 
@@ -85,6 +86,7 @@ class BioLabController extends Controller
 
         $selectedBundle = $bundles[$validated['bundle_id']] ?? $bundles['2_bolsas'];
         $orderCode = 'BIO-' . now()->format('ym') . '-' . strtoupper(substr(bin2hex(random_bytes(2)), 0, 4));
+        $hasOrderBump = (bool) ($validated['order_bump'] ?? true);
 
         $orderPayload = [
             'order_code' => $orderCode,
@@ -94,6 +96,7 @@ class BioLabController extends Controller
             'bundle_title' => $selectedBundle['title'],
             'total_cop' => $selectedBundle['price'],
             'formatted_total' => $selectedBundle['formatted_price'],
+            'order_bump_vip_guide' => $hasOrderBump,
             'customer_name' => $validated['customer_name'],
             'customer_phone' => $validated['customer_phone'],
             'customer_email' => $validated['customer_email'] ?? null,

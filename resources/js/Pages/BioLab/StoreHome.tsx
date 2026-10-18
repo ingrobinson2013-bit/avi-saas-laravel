@@ -452,9 +452,9 @@ export default function StoreHome({
                                             Ahorras $17.800 COP
                                         </span>
                                         <img
-                                            src="/images/biolab/empaque-frente-250g.jpg"
+                                            src="/images/biolab/funnel-frente-reverso.jpg"
                                             alt="AVIPET BioLab® — Dermo & Gut Superboost (250g)"
-                                            className="w-full max-h-96 object-contain mx-auto group-hover:scale-105 transition-transform duration-500"
+                                            className="w-full max-h-96 object-contain mx-auto group-hover:scale-105 transition-transform duration-500 rounded-xl"
                                         />
                                     </a>
                                 </div>
