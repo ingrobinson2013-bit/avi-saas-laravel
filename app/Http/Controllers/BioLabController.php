@@ -11,7 +11,19 @@ use Inertia\Inertia;
 class BioLabController extends Controller
 {
     /**
+     * Renderiza la Tienda Oficial General (Flagship Storefront) en https://biolab.avipetapp.com
+     */
+    public function storeHome(Request $request)
+    {
+        return Inertia::render('BioLab/StoreHome', [
+            'whatsappNumber' => '573235813942',
+            'isSubdomain' => str_starts_with(strtolower($request->getHost()), 'biolab.'),
+        ]);
+    }
+
+    /**
      * Renderiza la Product Page de alta conversión para AVIPET BioLab® — Dermo & Gut Superboost
+     * en https://biolab.avipetapp.com/dermo-gut-superboost
      */
     public function show(Request $request)
     {

@@ -20,6 +20,12 @@ import {
     ZoomIn,
     ChevronLeft,
     ChevronRight,
+    Award,
+    Clock,
+    HeartPulse,
+    Flame,
+    Gift,
+    Lock,
 } from 'lucide-react';
 
 interface BioLabProps {
@@ -46,8 +52,10 @@ interface BundleOption {
     formattedCompareAt: string;
     savings: string;
     unitPriceText: string;
+    dailyCostText: string;
     durationText: string;
     recommendedFor: string;
+    vipBonus?: string;
 }
 
 const BUNDLES: BundleOption[] = [
@@ -66,12 +74,13 @@ const BUNDLES: BundleOption[] = [
         formattedCompareAt: '$87.700 COP',
         savings: 'Ahorras $17.800 COP frente a tarros tradicionales de solo Omega 3',
         unitPriceText: '$69.900 c/u',
+        dailyCostText: 'Desde $1.398 COP / día',
         durationText: '25 a 50 días',
         recommendedFor: 'Ideal para Gatos y Perros Pequeños (1 a 10 kg)',
     },
     {
         id: '2_bolsas',
-        badge: '🔥 OFERTA DÚO CLÍNICO • RECOMENDADO PERROS MEDIANOS/GRANDES',
+        badge: '🔥 OFERTA DÚO CLÍNICO • MÁS ELEGIDO EN COLOMBIA',
         badgeColor: 'bg-gradient-to-r from-[#6D28D9] to-[#A855F7] text-white',
         icon: 'fire',
         name: 'Oferta Dúo Clínico (2 Bolsas - 500g)',
@@ -84,12 +93,14 @@ const BUNDLES: BundleOption[] = [
         formattedCompareAt: '$175.400 COP',
         savings: 'Ahorras $14.900 COP — Te sale a $62.450 c/u',
         unitPriceText: '$62.450 c/u',
+        dailyCostText: 'Desde $1.249 COP / día',
         durationText: '50 a 100 días',
         recommendedFor: 'Ideal para Perros Medianos (11 a 25 kg) o regeneración dérmica profunda',
+        vipBonus: '🎁 Incluye Guía Digital Clínica Dermo-Digestiva + Despacho Prioritario',
     },
     {
         id: '3_bolsas',
-        badge: '🏆 TRATAMIENTO COMPLETO 90 DÍAS • MÁXIMO AHORRO',
+        badge: '🏆 TRATAMIENTO COMPLETO 90 DÍAS • MÁXIMO AHORRO CLÍNICO',
         badgeColor: 'bg-[#0F9F9A] text-white',
         icon: 'trophy',
         name: 'Tratamiento Completo 90 Días (3 Bolsas - 750g)',
@@ -102,8 +113,10 @@ const BUNDLES: BundleOption[] = [
         formattedCompareAt: '$263.100 COP',
         savings: 'Ahorras $39.800 COP — Te sale a $56.633 c/u',
         unitPriceText: '$56.633 c/u',
+        dailyCostText: 'Desde $1.132 COP / día',
         durationText: '75 a 150 días',
-        recommendedFor: 'Ideal para Perros Grandes (+25 kg) o dermatitis alérgica crónica',
+        recommendedFor: 'Ideal para Perros Grandes (+25 kg), hogares multi-mascota o alergia crónica',
+        vipBonus: '🎁 Incluye Guía Digital Clínica + Prioridad de Laboratorio + Máximo Ahorro',
     },
 ];
 
@@ -112,7 +125,7 @@ const GALLERY_IMAGES = [
         src: '/images/biolab/empaque-frente-250g.jpg',
         alt: 'AVIPET BioLab® — Dermo & Gut Superboost (250g) Empaque Oficial Doypack',
         tag: 'Empaque Oficial 250g',
-        caption: 'AVIPET BioLab® — Dermo & Gut Superboost (250g): Proteína Novel + Ácido Láurico.',
+        caption: 'AVIPET BioLab® — Dermo & Gut Superboost (250g): Micro-Proteína Novel + Ácido Láurico.',
         fit: 'object-contain bg-white',
     },
     {
@@ -142,6 +155,129 @@ const GALLERY_IMAGES = [
         tag: 'Sello AviPet BioLab®',
         caption: 'División especializada en Biotecnología Nutricional Veterinaria de AviPetApp.',
         fit: 'object-contain bg-[#080B20]',
+    },
+];
+
+const CLINICAL_TIMELINE = [
+    {
+        phase: 'FASE 1 • DÍAS 1 A 7',
+        title: 'Equilibrio Microbiótico, Heces Firmes y Aliento Fresco',
+        badge: 'Resultados desde la 1.ª Semana',
+        accent: 'border-[#35DDF5]/40 text-[#35DDF5] bg-[#35DDF5]/10',
+        description:
+            'La pectina prebiótica de ahuyama, los MOS/Betaglucanos de Saccharomyces cerevisiae y la clorofila activa de perejil colonizan el tracto gastrointestinal, compactando las heces, reduciendo flatulencias y neutralizando compuestos sulfurados del mal aliento.',
+        metrics: ['+88% consistencia fecal', 'Reducción de halitosis estomacal', '98.4% aceptación umami'],
+    },
+    {
+        phase: 'FASE 2 • SEMANAS 2 A 3',
+        title: 'Bloqueo Histamínico y Control de Malassezia (Patas y Oídos)',
+        badge: 'Alivio de Picazón y Enrojecimiento',
+        accent: 'border-[#A855F7]/40 text-[#A855F7] bg-[#A855F7]/10',
+        description:
+            'Al recibir péptidos limpios de Hermetia illucens sin memoria alérgica junto con Ácido Láurico (C12:0 al 4.5%) y curcumina bioactiva, disminuye la cascada inflamatoria cutánea, frenando el rascado compulsivo, el mal olor seborreico y el lamido oxidativo de patas.',
+        metrics: ['Disminución del prurito', 'Control de levaduras y bacterias', 'Piel menos roja e irritada'],
+    },
+    {
+        phase: 'FASE 3 • SEMANA 4 EN ADELANTE',
+        title: 'Regeneración Folicular y Blindaje Inmunológico Dermo-Digestivo',
+        badge: 'Pelaje Denso, Fuerte y Brillante',
+        accent: 'border-emerald-400/40 text-emerald-300 bg-emerald-500/10',
+        description:
+            'Los ácidos grasos esenciales Omega 3, 6 y 9 de la linaza dorada junto a la Biotina natural restauran la capa lipídica de la epidermis, frenando la caída excesiva y estimulando el crecimiento de pelo nuevo en zonas alopécicas.',
+        metrics: ['Frenado de caída excesiva', 'Brillo espejo en el manto', 'Inmunidad intestinal blindada'],
+    },
+];
+
+const BIO_ACTIVES_BENTO = [
+    {
+        code: 'BIO-01',
+        name: 'Micro-Proteína Novel Purificada',
+        scientific: 'Hermetia illucens (40.0% Proteína Pura)',
+        role: 'Inmunomodulación Hipoalergénica',
+        badge: 'MATRIZ DERMO-ACTIVA',
+        badgeStyle: 'bg-[#35DDF5]/15 text-[#35DDF5] border-[#35DDF5]/30',
+        description:
+            'Estructura de aminoácidos esenciales de bajo peso molecular que el sistema inmunológico del perro y gato no reconoce como alérgeno, evitando los brotes causados por el pollo o la res.',
+    },
+    {
+        code: 'BIO-02',
+        name: 'Ácido Láurico Natural (C12:0)',
+        scientific: '4.5% Garantizado en Matriz Lipídica',
+        role: 'Antihongos (Malassezia) y Antibacteriano',
+        badge: 'ACCIÓN ANTIMICROBIANA',
+        badgeStyle: 'bg-[#A855F7]/15 text-[#A855F7] border-[#A855F7]/30',
+        description:
+            'Ácido graso de cadena media que se transforma en monolaurina, destruyendo la membrana lipídica de hongos (Malassezia pachydermatis) y bacterias causantes del mal olor y lamido de patas.',
+    },
+    {
+        code: 'BIO-03',
+        name: 'Semilla de Linaza Dorada Molida',
+        scientific: 'Linum usitatissimum (Omega 3, 6 y 9)',
+        role: 'Regeneración de Barrera Cutánea y Folicular',
+        badge: 'OMEGA BIO-ESTABLE',
+        badgeStyle: 'bg-amber-400/15 text-amber-300 border-amber-400/30',
+        description:
+            'Aporta ácido alfa-linolénico (ALA) protegido dentro del empaque Doypack Zipper anti-oxidación para nutrir el folículo piloso, frenar la caída del pelo y devolver la elasticidad dérmica.',
+    },
+    {
+        code: 'BIO-04',
+        name: 'Levadura Nutricional Inactiva',
+        scientific: 'Saccharomyces cerevisiae (MOS + Betaglucanos)',
+        role: 'Blindaje de Flora Intestinal y Biotina',
+        badge: 'COMPLEJO GUT-CARE',
+        badgeStyle: 'bg-emerald-400/15 text-emerald-300 border-emerald-400/30',
+        description:
+            'Rica en Manano-Oligosacáridos (MOS), Betaglucanos inmunomoduladores y vitaminas del complejo B (Biotina). Aporta además un exquisito sabor umami natural sin usar saborizantes de pollo.',
+    },
+    {
+        code: 'BIO-05',
+        name: 'Fibra Soluble de Ahuyama',
+        scientific: 'Cucurbita moschata (Pectina Prebiótica)',
+        role: 'Compactación de Heces y Tránsito Digestivo',
+        badge: 'PREBIÓTICO CLÍNICO',
+        badgeStyle: 'bg-[#35DDF5]/15 text-[#35DDF5] border-[#35DDF5]/30',
+        description:
+            'Regula la absorción de agua en el colon, nutriendo las bacterias benéficas (Lactobacillus y Bifidobacterium) para lograr heces firmes y sin diarreas desde la primera semana.',
+    },
+    {
+        code: 'BIO-06',
+        name: 'Extracto de Cúrcuma + Perejil Activo',
+        scientific: 'Curcuma longa + Petroselinum crispum',
+        role: 'Antiinflamatorio Celular y Detox de Aliento',
+        badge: 'FITOTERAPIA DUAL',
+        badgeStyle: 'bg-[#A855F7]/15 text-[#A855F7] border-[#A855F7]/30',
+        description:
+            'Los curcuminoides modulan las citoquinas proinflamatorias en piel y articulaciones, mientras la clorofila activa del perejil deshidratado captura toxinas estomacales y bucales.',
+    },
+];
+
+const VERIFIED_REVIEWS = [
+    {
+        name: 'Dra. Valentina Restrepo, MVZ',
+        city: 'Medellín, Antioquia',
+        pet: 'Práctica Clínica Dermatológica',
+        bundle: 'Recomendación Profesional',
+        quote:
+            '“Muchos pacientes alérgicos recaían porque los suplementos de piel venían saborizados con hígado de pollo o subproductos. Con Dermo & Gut Superboost de AVIPET BioLab® tenemos una proteína novel real (Hermetia illucens) con 4.5% de Ácido Láurico que ataca el eje intestino-piel sin disparar histamina.”',
+        highlight: 'Criterio Médico Veterinario',
+    },
+    {
+        name: 'Camilo Andrés Gómez',
+        city: 'Bogotá D.C.',
+        pet: 'Bruno • Bulldog Francés (14 kg)',
+        bundle: 'Compró Oferta Dúo Clínico (2 Bolsas)',
+        quote:
+            '“Bruno se lamía las patas hasta dejárselas rojas y tenía heces blandas casi todas las semanas. Al quinto día de espolvorearle el polvo sobre su comida las heces se compactaron, y a la tercera semana dejó de rascarse las orejas. Pagué contraentrega en Chapinero sin problema.”',
+        highlight: 'Alivio de lamido de patas y digestión',
+    },
+    {
+        name: 'Laura Sofía Domínguez',
+        city: 'Cali, Valle del Cauca',
+        pet: 'Mia (Golden Retriever) y Theo (Gato)',
+        bundle: 'Compró Tratamiento 90 Días (3 Bolsas)',
+        quote:
+            '“Había probado tarros de Omega 3 que se oxidaban y olían a pescado rancio a los 15 días. El empaque Doypack de AVIPET BioLab mantiene el polvo súper fresco, les encanta el sabor y el pelo de Mia dejó de caerse por mechones. Además el aliento le cambió por completo.”',
+        highlight: 'Frenó caída de pelo y mal aliento',
     },
 ];
 
@@ -309,6 +445,7 @@ const FAQS = [
 
 export default function DermoGutSuperboost({
     whatsappNumber = '573235813942',
+    isSubdomain = true,
 }: BioLabProps) {
     const [selectedBundleId, setSelectedBundleId] = useState<BundleId>('2_bolsas');
     const [activeImageIdx, setActiveImageIdx] = useState<number>(0);
@@ -340,6 +477,7 @@ export default function DermoGutSuperboost({
     } | null>(null);
 
     const activeBundle = BUNDLES.find((b) => b.id === selectedBundleId) || BUNDLES[1];
+    const storeHomeUrl = isSubdomain ? '/' : '/biolab';
 
     const buildDirectWhatsAppUrl = (bundle: BundleOption) => {
         const text =
@@ -433,65 +571,79 @@ export default function DermoGutSuperboost({
             </Head>
 
             <div className="min-h-screen bg-[#F4F7FC] text-[#15213B] font-sans pb-24 selection:bg-[#6D28D9] selection:text-white">
-                {/* 0. BARRA SUPERIOR DE ANUNCIO CLÍNICO Y CONVERSIÓN */}
-                <div className="bg-[#080B20] border-b border-white/10 text-white text-xs sm:text-sm py-2.5 px-4">
-                    <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-center font-medium">
-                        <span className="inline-flex items-center gap-1.5 text-[#35DDF5] font-semibold">
-                            <Truck className="w-4 h-4 shrink-0" />
-                            🚚 ENVÍO GRATIS + PAGO CONTRAENTREGA EN TODA COLOMBIA
-                        </span>
-                        <span className="hidden md:inline text-white/30">•</span>
-                        <span className="inline-flex items-center gap-1.5 text-slate-200">
-                            <Microscope className="w-4 h-4 text-[#A855F7] shrink-0" />
-                            100% Hipoalergénico: 0% Pollo • 0% Res • 0% Gluten
-                        </span>
-                        <span className="hidden lg:inline text-white/30">•</span>
-                        <span className="hidden lg:inline-flex items-center gap-1.5 text-emerald-300 font-medium">
-                            <BadgeCheck className="w-4 h-4 shrink-0" />
-                            Pagas en efectivo o transferencia al recibir en casa
-                        </span>
+                {/* 0. BARRA EJECUTIVA DE TELEMETRÍA Y LANZAMIENTO DE MARCA */}
+                <div className="bg-[#080B20] border-b border-white/10 text-white text-xs py-2.5 px-4">
+                    <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-x-6 gap-y-1.5">
+                        <div className="flex items-center gap-2 mx-auto lg:mx-0">
+                            <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                            <span className="font-bold tracking-wider uppercase text-[11px] text-emerald-300">
+                                LOTE CLÍNICO FRESCO #BL-2026-10 • DISPONIBLE EN COLOMBIA
+                            </span>
+                        </div>
+                        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 mx-auto lg:mx-0 font-medium">
+                            <span className="inline-flex items-center gap-1.5 text-[#35DDF5] font-semibold">
+                                <Truck className="w-3.5 h-3.5 shrink-0" />
+                                🚚 ENVÍO GRATIS + PAGO CONTRAENTREGA NACIONAL
+                            </span>
+                            <span className="hidden md:inline text-white/25">|</span>
+                            <span className="hidden sm:inline-flex items-center gap-1.5 text-slate-200">
+                                <Microscope className="w-3.5 h-3.5 text-[#A855F7] shrink-0" />
+                                0% Pollo • 0% Res • 0% Soya • 100% Libre de Gluten
+                            </span>
+                        </div>
                     </div>
                 </div>
 
                 {/* 1. CABECERA OFICIAL AVIPET BioLab® */}
-                <header className="sticky top-0 z-40 bg-[#080B20]/95 backdrop-blur-md border-b border-white/10">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-4">
-                        <a href="#top" className="flex items-center gap-3 group">
-                            <img
-                                src="/images/biolab/logo-avipet-biolab.jpg"
-                                alt="AviPet BioLab®"
-                                className="w-11 h-11 rounded-full object-cover border border-[#35DDF5]/40 shadow-md"
-                            />
-                            <div className="flex flex-col">
-                                <div className="flex items-center gap-1.5">
-                                    <span className="text-base sm:text-lg font-extrabold tracking-tight text-white">
-                                        AviPet
-                                    </span>
-                                    <span className="text-base sm:text-lg font-extrabold tracking-tight text-[#35DDF5]">
-                                        BioLab®
+                <header className="sticky top-0 z-40 bg-[#080B20]/95 backdrop-blur-xl border-b border-white/10 shadow-lg">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <a href={storeHomeUrl} className="flex items-center gap-3 group">
+                                <img
+                                    src="/images/biolab/logo-avipet-biolab.jpg"
+                                    alt="AviPet BioLab®"
+                                    className="w-11 h-11 rounded-full object-cover border-2 border-[#35DDF5]/50 shadow-md group-hover:border-[#35DDF5] transition"
+                                />
+                                <div className="flex flex-col">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-base sm:text-lg font-extrabold tracking-tight text-white">
+                                            AviPet
+                                        </span>
+                                        <span className="text-base sm:text-lg font-extrabold tracking-tight text-[#35DDF5]">
+                                            BioLab®
+                                        </span>
+                                        <span className="hidden sm:inline-block ml-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[#6D28D9]/30 border border-[#A855F7]/40 text-[#35DDF5]">
+                                            FLAGSHIP LAUNCH
+                                        </span>
+                                    </div>
+                                    <span className="text-[11px] text-slate-300 font-medium">
+                                        Nutrición Clínica Dermo-Digestiva
                                     </span>
                                 </div>
-                                <span className="text-[11px] text-slate-300 font-medium">
-                                    Nutrición Clínica Dermo-Digestiva
-                                </span>
-                            </div>
-                        </a>
-
-                        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-300">
-                            <a href="#beneficios" className="hover:text-[#35DDF5] transition">
-                                Beneficios 3 en 1
                             </a>
-                            <a href="#ciencia" className="hover:text-[#35DDF5] transition">
-                                Problema vs. Solución
+                        </div>
+
+                        <nav className="hidden xl:flex items-center gap-5 text-xs font-semibold uppercase tracking-wider text-slate-300">
+                            <a
+                                href={storeHomeUrl}
+                                className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white border border-white/10 transition"
+                            >
+                                ← Tienda General
+                            </a>
+                            <a href="#cronologia" className="hover:text-[#35DDF5] transition">
+                                Cronología 30 Días
+                            </a>
+                            <a href="#bioactivos" className="hover:text-[#35DDF5] transition">
+                                6 Bio-Activos
                             </a>
                             <a href="#comparativa" className="hover:text-[#35DDF5] transition">
-                                Tabla Comparativa
+                                Comparativa
                             </a>
                             <a href="#ficha-tecnica" className="hover:text-[#35DDF5] transition">
-                                Ficha Técnica y Dosis
+                                Ficha y Dosis
                             </a>
-                            <a href="#faq" className="hover:text-[#35DDF5] transition">
-                                Preguntas Frecuentes
+                            <a href="#testimonios" className="hover:text-[#35DDF5] transition">
+                                Casos Reales
                             </a>
                         </nav>
 
@@ -508,7 +660,7 @@ export default function DermoGutSuperboost({
                             <button
                                 type="button"
                                 onClick={() => handleOpenCheckout()}
-                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#6D28D9] hover:bg-[#5B21B6] text-white text-xs sm:text-sm font-semibold shadow-lg shadow-[#6D28D9]/30 transition cursor-pointer"
+                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#6D28D9] to-[#7C3AED] hover:from-[#5B21B6] hover:to-[#6D28D9] text-white text-xs sm:text-sm font-bold shadow-lg shadow-[#6D28D9]/30 transition cursor-pointer"
                             >
                                 <ShoppingBag className="w-4 h-4" />
                                 <span>Pedir Contraentrega</span>
@@ -517,35 +669,50 @@ export default function DermoGutSuperboost({
                     </div>
                 </header>
 
-                {/* 2. BLOQUE PRINCIPAL ("ABOVE THE FOLD" — LO PRIMERO QUE VE EL CLIENTE) */}
+                {/* 2. BLOQUE PRINCIPAL ("ABOVE THE FOLD" — HERO DE LANZAMIENTO DE MARCA PREMIUM) */}
                 <section
                     id="top"
                     className="relative bg-gradient-to-b from-[#080B20] via-[#111936] to-[#080B20] text-white pt-6 pb-16 lg:py-12 overflow-hidden"
                 >
-                    {/* Luces ambientales biotecnológicas */}
-                    <div className="pointer-events-none absolute -top-32 -left-32 w-96 h-96 rounded-full bg-[#A855F7]/15 blur-3xl" />
-                    <div className="pointer-events-none absolute top-1/3 -right-32 w-96 h-96 rounded-full bg-[#35DDF5]/15 blur-3xl" />
+                    {/* Luces ambientales de laboratorio biotecnológico */}
+                    <div className="pointer-events-none absolute -top-32 -left-32 w-[28rem] h-[28rem] rounded-full bg-[#A855F7]/15 blur-3xl" />
+                    <div className="pointer-events-none absolute top-1/4 -right-32 w-[28rem] h-[28rem] rounded-full bg-[#35DDF5]/15 blur-3xl" />
 
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                        {/* Etiqueta Superior (Badge Oficial) */}
+                        {/* Etiqueta Superior (Badge Oficial) + Breadcrumb de Tienda */}
                         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#111936] border border-[#35DDF5]/40 text-[#35DDF5] text-xs sm:text-sm font-semibold shadow-sm">
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#111936] border border-[#35DDF5]/40 text-[#35DDF5] text-xs sm:text-sm font-bold shadow-md">
+                                <Sparkles className="w-4 h-4 text-[#A855F7] shrink-0" />
                                 <span>
                                     🔬 BIOTECNOLOGÍA CLÍNICA VETERINARIA • RESULTADOS VISIBLES DESDE LA 1.ª SEMANA
                                 </span>
                             </div>
-                            <div className="hidden md:flex items-center gap-2 text-xs text-slate-300">
-                                <span className="inline-block w-2 h-2 rounded-full bg-[#0F9F9A] animate-pulse" />
-                                <span>Despacho inmediato a toda Colombia • Pago Contraentrega</span>
+                            <div className="hidden md:flex items-center gap-3 text-xs text-slate-300">
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                                    <Award className="w-3.5 h-3.5 text-[#35DDF5]" />
+                                    Grado Nutracéutico Veterinario
+                                </span>
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 font-semibold">
+                                    ● En Stock • Despacho Hoy
+                                </span>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-                            {/* COLUMNA IZQUIERDA: GALERÍA DE IMÁGENES OFICIALES DE AVIPET BioLab® */}
+                            {/* COLUMNA IZQUIERDA: GALERÍA DE ESTUDIO CLÍNICO (STICKY) */}
                             <div className="lg:col-span-6 lg:sticky lg:top-24">
-                                <div className="relative rounded-2xl bg-[#111936] border border-white/15 p-3 sm:p-4 shadow-2xl">
-                                    {/* Controles y Zoom sobre el visor principal */}
+                                <div className="relative rounded-2xl bg-gradient-to-b from-[#111936] to-[#080B20] border border-white/15 p-3 sm:p-5 shadow-2xl">
+                                    {/* Badges flotantes sobre el visor */}
                                     <div className="relative aspect-[4/4] sm:aspect-[10/9] rounded-xl overflow-hidden bg-white flex items-center justify-center group">
+                                        <div className="absolute top-3 left-3 z-10 flex flex-wrap items-center gap-1.5">
+                                            <span className="px-3 py-1 rounded-full bg-[#080B20]/90 backdrop-blur-md text-[#35DDF5] border border-[#35DDF5]/40 text-[11px] font-extrabold uppercase tracking-wider shadow">
+                                                Fórmula 3 en 1 • 250g
+                                            </span>
+                                            <span className="px-2.5 py-1 rounded-full bg-[#0F9F9A] text-white text-[11px] font-extrabold shadow">
+                                                40% Proteína Novel
+                                            </span>
+                                        </div>
+
                                         <img
                                             src={GALLERY_IMAGES[activeImageIdx].src}
                                             alt={GALLERY_IMAGES[activeImageIdx].alt}
@@ -578,13 +745,20 @@ export default function DermoGutSuperboost({
                                             className="absolute top-3 right-3 px-3 py-1.5 rounded-xl bg-[#080B20]/85 hover:bg-[#080B20] text-white text-xs font-semibold flex items-center gap-1.5 border border-white/15 shadow cursor-pointer"
                                         >
                                             <ZoomIn className="w-3.5 h-3.5 text-[#35DDF5]" />
-                                            <span>Ampliar imagen</span>
+                                            <span>Zoom HD</span>
                                         </button>
 
-                                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#080B20]/95 via-[#080B20]/70 to-transparent p-3.5">
+                                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#080B20]/95 via-[#080B20]/75 to-transparent p-3.5 flex items-center justify-between gap-2">
                                             <p className="text-xs sm:text-sm text-white font-medium">
                                                 {GALLERY_IMAGES[activeImageIdx].caption}
                                             </p>
+                                            <button
+                                                type="button"
+                                                onClick={() => setActiveImageIdx(activeImageIdx === 1 ? 0 : 1)}
+                                                className="shrink-0 px-2.5 py-1 rounded-lg bg-[#35DDF5]/20 hover:bg-[#35DDF5]/30 border border-[#35DDF5]/40 text-[#35DDF5] text-[11px] font-bold transition cursor-pointer"
+                                            >
+                                                {activeImageIdx === 1 ? 'Ver Frente' : 'Ver Reverso / Tabla'}
+                                            </button>
                                         </div>
                                     </div>
 
@@ -618,22 +792,28 @@ export default function DermoGutSuperboost({
                                     </div>
                                 </div>
 
-                                {/* Sellos Clínicos Rápidos debajo de la Galería */}
+                                {/* Sellos de Garantía de Laboratorio debajo de la Galería */}
                                 <div className="grid grid-cols-3 gap-3 mt-4">
-                                    <div className="rounded-xl bg-[#111936]/90 border border-white/10 p-3 text-center">
-                                        <p className="text-xs font-bold text-[#35DDF5]">0% ALÉRGENOS</p>
+                                    <div className="rounded-xl bg-[#111936]/90 border border-white/10 p-3.5 text-center">
+                                        <p className="text-xs font-extrabold text-[#35DDF5] tracking-wide">
+                                            0% ALÉRGENOS
+                                        </p>
                                         <p className="text-[11px] text-slate-300 mt-0.5">
                                             Sin Pollo, Res, Soya ni Gluten
                                         </p>
                                     </div>
-                                    <div className="rounded-xl bg-[#111936]/90 border border-white/10 p-3 text-center">
-                                        <p className="text-xs font-bold text-[#A855F7]">DOYPACK 250g</p>
+                                    <div className="rounded-xl bg-[#111936]/90 border border-white/10 p-3.5 text-center">
+                                        <p className="text-xs font-extrabold text-[#A855F7] tracking-wide">
+                                            DOYPACK ZIPPER
+                                        </p>
                                         <p className="text-[11px] text-slate-300 mt-0.5">
                                             Barrera hermética anti-oxidación
                                         </p>
                                     </div>
-                                    <div className="rounded-xl bg-[#111936]/90 border border-white/10 p-3 text-center">
-                                        <p className="text-xs font-bold text-emerald-400">CONTRAENTREGA</p>
+                                    <div className="rounded-xl bg-[#111936]/90 border border-white/10 p-3.5 text-center">
+                                        <p className="text-xs font-extrabold text-emerald-400 tracking-wide">
+                                            PAGO EN CASA
+                                        </p>
                                         <p className="text-[11px] text-slate-300 mt-0.5">
                                             Envío Gratis a toda Colombia
                                         </p>
@@ -641,22 +821,25 @@ export default function DermoGutSuperboost({
                                 </div>
                             </div>
 
-                            {/* COLUMNA DERECHA: BUY BOX DE ALTA CONVERSIÓN */}
+                            {/* COLUMNA DERECHA: BUY BOX DE LANZAMIENTO DE MARCA (ALTA CONVERSIÓN) */}
                             <div className="lg:col-span-6 space-y-6">
                                 {/* H1 & H2 Oficiales */}
                                 <div>
-                                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight">
+                                    <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#A855F7] mb-1.5">
+                                        <span>DIVISIÓN CLÍNICA AVIPET BIOLAB® • FÓRMULA MAESTRA</span>
+                                    </div>
+                                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-[1.15]">
                                         AVIPET BioLab® — DERMO &amp; GUT SUPERBOOST (250g)
                                     </h1>
                                     <h2 className="mt-2.5 text-base sm:text-lg font-medium text-slate-200 leading-snug">
                                         Suplemento Nutricional Biotecnológico 3 en 1 en Polvo para Perros y Gatos:{' '}
-                                        <span className="text-[#35DDF5] font-semibold">
+                                        <span className="text-[#35DDF5] font-bold">
                                             Piel • Digestión • Aliento
                                         </span>
                                     </h2>
 
-                                    {/* Calificación Social (Estrellas) */}
-                                    <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+                                    {/* Calificación Social (Estrellas) + Palatabilidad */}
+                                    <div className="mt-3.5 flex flex-wrap items-center gap-2.5 text-sm bg-white/5 border border-white/10 rounded-xl px-3.5 py-2">
                                         <div className="flex items-center text-amber-400">
                                             <Star className="w-4 h-4 fill-amber-400" />
                                             <Star className="w-4 h-4 fill-amber-400" />
@@ -664,42 +847,45 @@ export default function DermoGutSuperboost({
                                             <Star className="w-4 h-4 fill-amber-400" />
                                             <Star className="w-4 h-4 fill-amber-400" />
                                         </div>
-                                        <span className="font-bold text-white tabular-nums">4.9 / 5.0</span>
-                                        <span className="text-slate-300 text-xs sm:text-sm">
+                                        <span className="font-extrabold text-white tabular-nums">4.9 / 5.0</span>
+                                        <span className="text-slate-300 text-xs">
                                             (Basado en dueños de mascotas y médicos veterinarios aliados en Colombia)
                                         </span>
                                     </div>
                                 </div>
 
-                                {/* Bloque de Precio Ancla + Precio de Lanzamiento */}
-                                <div className="rounded-2xl bg-[#111936] border border-white/15 p-4 sm:p-5">
-                                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                                {/* Bloque Ejecutivo de Precio Ancla + Precio de Lanzamiento + Costo Diario */}
+                                <div className="rounded-2xl bg-gradient-to-br from-[#111936] via-[#15213B] to-[#080B20] border border-[#35DDF5]/30 p-5 shadow-xl">
+                                    <div className="flex flex-wrap items-start justify-between gap-3">
                                         <div>
-                                            <div className="flex items-center gap-2.5">
-                                                <span className="text-sm text-slate-400 line-through tabular-nums">
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <span className="text-xs sm:text-sm text-slate-400 line-through tabular-nums">
                                                     Precio Ancla: $87.700 COP
                                                 </span>
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
                                                     Ahorras $17.800 COP
                                                 </span>
                                             </div>
-                                            <div className="mt-1 flex items-baseline gap-2">
-                                                <span className="text-3xl sm:text-4xl font-extrabold text-white tabular-nums">
+                                            <div className="mt-1.5 flex items-baseline gap-2.5">
+                                                <span className="text-3xl sm:text-4xl font-extrabold text-white tabular-nums tracking-tight">
                                                     {activeBundle.formattedPrice}
                                                 </span>
-                                                <span className="text-xs sm:text-sm text-slate-300">
+                                                <span className="text-xs sm:text-sm font-semibold text-[#35DDF5] tabular-nums">
                                                     ({activeBundle.grams} • {activeBundle.durationText})
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="text-right">
-                                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0F9F9A]/20 border border-[#0F9F9A]/50 text-emerald-300 text-xs font-bold">
+                                        <div className="flex flex-col items-start sm:items-end gap-1.5">
+                                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0F9F9A]/25 border border-[#0F9F9A]/60 text-emerald-300 text-xs font-extrabold">
                                                 <Truck className="w-4 h-4" />
-                                                🚚 Envío Gratis + Pago Contraentrega
+                                                🚚 Envío Gratis + Contraentrega
+                                            </span>
+                                            <span className="text-[11px] font-bold text-[#35DDF5] tabular-nums">
+                                                ⚡ Inversión clínica: {activeBundle.dailyCostText}
                                             </span>
                                         </div>
                                     </div>
-                                    <p className="mt-2 text-xs text-slate-300">
+                                    <p className="mt-3 pt-2.5 border-t border-white/10 text-xs text-slate-300">
                                         Precio de Lanzamiento (1 Bolsa - 250g):{' '}
                                         <strong className="text-white">$69.900 COP</strong> (Tratamiento para 25 a 50
                                         días según el peso • Ahorras $17.800 COP frente a tarros tradicionales de solo
@@ -710,11 +896,12 @@ export default function DermoGutSuperboost({
                                 {/* SELECTOR INTERACTIVO DE OFERTA ESCALONADA (BUNDLES PARA SUBIR EL TICKET PROMEDIO) */}
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#35DDF5]">
-                                            Precios y Oferta Escalonada (Elige tu Kit):
+                                        <span className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#35DDF5]">
+                                            Selecciona el Tratamiento para tu Mascota:
                                         </span>
-                                        <span className="text-xs text-emerald-300 font-semibold">
-                                            🚚 Envío Gratis en toda Colombia
+                                        <span className="text-xs text-emerald-300 font-semibold flex items-center gap-1">
+                                            <BadgeCheck className="w-4 h-4" />
+                                            Pagas al recibir
                                         </span>
                                     </div>
 
@@ -725,18 +912,21 @@ export default function DermoGutSuperboost({
                                                 <div
                                                     key={bundle.id}
                                                     onClick={() => setSelectedBundleId(bundle.id)}
-                                                    className={`relative rounded-2xl p-4 transition cursor-pointer border-2 ${
+                                                    className={`relative rounded-2xl p-4 transition-all cursor-pointer border-2 ${
                                                         isSelected
-                                                            ? 'bg-[#111936] border-[#35DDF5] shadow-lg shadow-[#35DDF5]/10'
-                                                            : 'bg-[#080B20]/70 border-white/15 hover:border-white/30'
+                                                            ? 'bg-[#111936] border-[#35DDF5] shadow-xl shadow-[#35DDF5]/15 scale-[1.01]'
+                                                            : 'bg-[#080B20]/70 border-white/15 hover:border-white/35'
                                                     }`}
                                                 >
                                                     {bundle.badge && (
-                                                        <div className="mb-2">
+                                                        <div className="mb-2 flex items-center justify-between gap-2">
                                                             <span
-                                                                className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-extrabold tracking-wide ${bundle.badgeColor}`}
+                                                                className={`inline-block px-3 py-0.5 rounded-full text-[11px] font-extrabold tracking-wide shadow ${bundle.badgeColor}`}
                                                             >
                                                                 {bundle.badge}
+                                                            </span>
+                                                            <span className="text-[11px] font-bold text-slate-300 tabular-nums">
+                                                                {bundle.bags}x Doypack ({bundle.grams})
                                                             </span>
                                                         </div>
                                                     )}
@@ -755,15 +945,20 @@ export default function DermoGutSuperboost({
                                                                 )}
                                                             </div>
                                                             <div>
-                                                                <p className="font-bold text-white text-sm sm:text-base">
+                                                                <p className="font-extrabold text-white text-sm sm:text-base">
                                                                     {bundle.name}
                                                                 </p>
                                                                 <p className="text-xs text-slate-300 mt-0.5">
                                                                     {bundle.savings}
                                                                 </p>
-                                                                <p className="text-[11px] text-[#35DDF5] mt-1 font-medium">
+                                                                <p className="text-[11px] text-[#35DDF5] mt-1 font-semibold">
                                                                     {bundle.recommendedFor}
                                                                 </p>
+                                                                {bundle.vipBonus && (
+                                                                    <p className="mt-1.5 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-white/10 text-[11px] font-bold text-amber-300">
+                                                                        {bundle.vipBonus}
+                                                                    </p>
+                                                                )}
                                                             </div>
                                                         </div>
 
@@ -774,7 +969,7 @@ export default function DermoGutSuperboost({
                                                             <p className="text-lg sm:text-xl font-extrabold text-white">
                                                                 {bundle.formattedPrice}
                                                             </p>
-                                                            <span className="inline-block text-[11px] font-semibold text-emerald-300">
+                                                            <span className="inline-block text-[11px] font-bold text-emerald-300">
                                                                 {bundle.unitPriceText}
                                                             </span>
                                                         </div>
@@ -785,11 +980,14 @@ export default function DermoGutSuperboost({
                                     </div>
                                 </div>
 
-                                {/* VIÑETAS DE IMPACTO RÁPIDO (5 BULLETS DEBAJO DEL PRECIO) */}
+                                {/* VIÑETAS DE IMPACTO RÁPIDO (5 BULLETS OFICIALES DEBAJO DEL PRECIO) */}
                                 <div
                                     id="beneficios"
-                                    className="rounded-2xl bg-[#111936]/90 border border-white/10 p-5 space-y-3"
+                                    className="rounded-2xl bg-[#111936]/95 border border-white/15 p-5 space-y-3 shadow-lg"
                                 >
+                                    <p className="text-xs font-extrabold uppercase tracking-wider text-[#35DDF5]">
+                                        5 Mecanismos Clínicos en Cada Cucharada (5g):
+                                    </p>
                                     <ul className="space-y-2.5 text-sm text-slate-200 leading-relaxed">
                                         <li className="flex items-start gap-3">
                                             <span className="text-lg leading-none select-none">🛡️</span>
@@ -846,7 +1044,7 @@ export default function DermoGutSuperboost({
                                     <button
                                         type="button"
                                         onClick={() => handleOpenCheckout()}
-                                        className="w-full py-4 px-6 rounded-2xl bg-[#6D28D9] hover:bg-[#5B21B6] active:scale-[0.99] text-white font-extrabold text-base sm:text-lg shadow-xl shadow-[#6D28D9]/40 flex items-center justify-center gap-3 transition cursor-pointer"
+                                        className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-[#6D28D9] via-[#7C3AED] to-[#6D28D9] hover:from-[#5B21B6] hover:to-[#5B21B6] active:scale-[0.99] text-white font-extrabold text-base sm:text-lg shadow-2xl shadow-[#6D28D9]/50 border border-[#A855F7]/40 flex items-center justify-center gap-3 transition cursor-pointer"
                                     >
                                         <ShoppingBag className="w-5 h-5 shrink-0" />
                                         <span>🛒 ¡PEDIR AHORA Y PAGAR EN CASA! (ENVÍO GRATIS)</span>
@@ -861,7 +1059,71 @@ export default function DermoGutSuperboost({
                                         <MessageCircle className="w-5 h-5 text-emerald-400 shrink-0" />
                                         <span>📲 Comprar o Consultar por WhatsApp</span>
                                     </a>
+
+                                    {/* Sellos de Confianza de Pago Contraentrega Colombia */}
+                                    <div className="pt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[11px] text-slate-300">
+                                        <span className="inline-flex items-center gap-1">
+                                            <Lock className="w-3.5 h-3.5 text-emerald-400" />
+                                            Cero Riesgo: Pagas al Recibir
+                                        </span>
+                                        <span>•</span>
+                                        <span>Efectivo / Nequi / Bancolombia</span>
+                                        <span>•</span>
+                                        <span>Cobertura Nacional en Colombia</span>
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* 2.5 BARRA EJECUTIVA DE BIOMARCADORES Y CIFRAS CLÍNICAS */}
+                <section className="bg-[#080B20] border-y border-white/10 py-8 text-white">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center divide-y lg:divide-y-0 lg:divide-x divide-white/10">
+                            <div className="pt-3 lg:pt-0">
+                                <p className="text-2xl sm:text-4xl font-extrabold text-[#35DDF5] tabular-nums">
+                                    40.0%
+                                </p>
+                                <p className="text-xs sm:text-sm font-bold text-white mt-1">
+                                    Micro-Proteína Novel Pura
+                                </p>
+                                <p className="text-[11px] text-slate-400">
+                                    Hermetia illucens sin memoria alérgica
+                                </p>
+                            </div>
+                            <div className="pt-3 lg:pt-0">
+                                <p className="text-2xl sm:text-4xl font-extrabold text-[#A855F7] tabular-nums">
+                                    4.5%
+                                </p>
+                                <p className="text-xs sm:text-sm font-bold text-white mt-1">
+                                    Ácido Láurico Activo (C12:0)
+                                </p>
+                                <p className="text-[11px] text-slate-400">
+                                    Combate hongos (Malassezia) y bacterias
+                                </p>
+                            </div>
+                            <div className="pt-3 lg:pt-0">
+                                <p className="text-2xl sm:text-4xl font-extrabold text-emerald-400 tabular-nums">
+                                    9.8%
+                                </p>
+                                <p className="text-xs sm:text-sm font-bold text-white mt-1">
+                                    Fibra Prebiótica + MOS
+                                </p>
+                                <p className="text-[11px] text-slate-400">
+                                    Heces firmes desde la 1.ª semana
+                                </p>
+                            </div>
+                            <div className="pt-3 lg:pt-0">
+                                <p className="text-2xl sm:text-4xl font-extrabold text-white tabular-nums">
+                                    0.0%
+                                </p>
+                                <p className="text-xs sm:text-sm font-bold text-[#35DDF5] mt-1">
+                                    Pollo, Res, Soya y Gluten
+                                </p>
+                                <p className="text-[11px] text-slate-400">
+                                    Fórmula hipoalergénica limpia
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -871,14 +1133,14 @@ export default function DermoGutSuperboost({
                 <section id="ciencia" className="py-16 lg:py-24 bg-[#F4F7FC]">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         {/* Bloque El Problema + Afiche Visual */}
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 sm:p-10">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white rounded-3xl border border-slate-200/90 shadow-lg p-6 sm:p-10">
                             <div className="lg:col-span-7">
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-[#B91C1C] text-xs font-bold uppercase tracking-wide">
+                                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-50 border border-red-200 text-[#B91C1C] text-xs font-extrabold uppercase tracking-wide">
                                     <AlertTriangle className="w-4 h-4" />
-                                    Problema vs. Solución Clínica
+                                    Diagnóstico Clínico: El Origen Oculto de la Alergia
                                 </div>
 
-                                <h2 className="mt-4 text-2xl sm:text-3xl font-bold text-[#15213B] leading-tight">
+                                <h2 className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#15213B] leading-tight">
                                     ¿Tu peludo se rasca sin parar, se lame las patas, pierde pelo o sufre del estómago?
                                 </h2>
 
@@ -890,7 +1152,7 @@ export default function DermoGutSuperboost({
                                     suplementos convencionales.
                                 </p>
 
-                                <div className="mt-6 rounded-xl bg-amber-50/90 border-l-4 border-[#B45309] p-4 sm:p-5">
+                                <div className="mt-6 rounded-2xl bg-amber-50/90 border-l-4 border-[#B45309] p-5">
                                     <p className="text-sm sm:text-base font-semibold text-[#15213B] leading-relaxed">
                                         💡 Darle un tarro que solo contiene Omega 3 es intentar{' '}
                                         <span className="underline decoration-[#B45309] decoration-2">
@@ -899,10 +1161,25 @@ export default function DermoGutSuperboost({
                                         : alivia por unos días, pero la alergia vuelve.
                                     </p>
                                 </div>
+
+                                <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs font-bold text-[#15213B]">
+                                    <div className="p-3 rounded-xl bg-[#F4F7FC] border border-slate-200 flex items-center gap-2">
+                                        <XCircle className="w-4 h-4 text-[#B91C1C] shrink-0" />
+                                        <span>Sin Harinas de Pollo</span>
+                                    </div>
+                                    <div className="p-3 rounded-xl bg-[#F4F7FC] border border-slate-200 flex items-center gap-2">
+                                        <XCircle className="w-4 h-4 text-[#B91C1C] shrink-0" />
+                                        <span>Sin Proteína de Res</span>
+                                    </div>
+                                    <div className="p-3 rounded-xl bg-[#F4F7FC] border border-slate-200 flex items-center gap-2 col-span-2 sm:col-span-1">
+                                        <XCircle className="w-4 h-4 text-[#B91C1C] shrink-0" />
+                                        <span>Sin Trigo, Maíz ni Soya</span>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="lg:col-span-5">
-                                <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-lg bg-[#080B20]">
+                                <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-xl bg-[#080B20]">
                                     <img
                                         src="/images/biolab/afiche-beneficios-dermatitis.jpg"
                                         alt="AVIPET BioLab® — ¿Tiene dermatitis o se rasca sin parar?"
@@ -913,7 +1190,7 @@ export default function DermoGutSuperboost({
                         </div>
 
                         {/* Banner Panorámico Oficial de Marca */}
-                        <div className="mt-10 rounded-2xl overflow-hidden border border-slate-200 shadow-xl bg-[#080B20]">
+                        <div className="mt-10 rounded-3xl overflow-hidden border border-slate-200 shadow-xl bg-[#080B20]">
                             <img
                                 src="/images/biolab/banner-panoramico.jpg"
                                 alt="AVIPET BioLab® — Nutrición Clínica Dermo-Digestiva"
@@ -921,14 +1198,14 @@ export default function DermoGutSuperboost({
                             />
                         </div>
 
-                        {/* Bloque La Solución Biotecnológica */}
-                        <div className="mt-14">
+                        {/* Bloque La Solución Biotecnológica (Doble Matriz Activa) */}
+                        <div className="mt-16">
                             <div className="text-center max-w-3xl mx-auto">
-                                <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#6D28D9]/10 text-[#6D28D9] text-xs font-bold uppercase tracking-wider">
+                                <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#6D28D9]/10 text-[#6D28D9] text-xs font-extrabold uppercase tracking-wider">
                                     <FlaskConical className="w-4 h-4" />
-                                    Doble Matriz Activa
+                                    Ingeniería Nutricional de Doble Matriz
                                 </span>
-                                <h2 className="mt-3 text-2xl sm:text-4xl font-bold text-[#15213B]">
+                                <h2 className="mt-3 text-2xl sm:text-4xl font-extrabold text-[#15213B]">
                                     La Revolución Biotecnológica de AVIPET BioLab®
                                 </h2>
                                 <p className="mt-3 text-base sm:text-lg text-[#5C6B85]">
@@ -939,14 +1216,14 @@ export default function DermoGutSuperboost({
 
                             <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 {/* Tarjeta 1: Matriz Proteica y Lipídica Dermo-Activa */}
-                                <div className="rounded-2xl bg-[#080B20] text-white p-7 sm:p-8 border border-white/10 shadow-xl relative overflow-hidden">
-                                    <div className="w-12 h-12 rounded-xl bg-[#35DDF5]/15 border border-[#35DDF5]/40 flex items-center justify-center text-[#35DDF5] mb-5">
+                                <div className="rounded-3xl bg-[#080B20] text-white p-7 sm:p-9 border border-white/10 shadow-xl relative overflow-hidden">
+                                    <div className="w-12 h-12 rounded-2xl bg-[#35DDF5]/15 border border-[#35DDF5]/40 flex items-center justify-center text-[#35DDF5] mb-5">
                                         <Microscope className="w-6 h-6" />
                                     </div>
-                                    <span className="text-xs font-bold uppercase tracking-wider text-[#35DDF5]">
+                                    <span className="text-xs font-extrabold uppercase tracking-wider text-[#35DDF5]">
                                         1. Inmunología Cutánea y Barrera Dérmica
                                     </span>
-                                    <h3 className="mt-1 text-xl sm:text-2xl font-bold text-white">
+                                    <h3 className="mt-1 text-xl sm:text-2xl font-extrabold text-white">
                                         Matriz Proteica y Lipídica Dermo-Activa
                                     </h3>
                                     <p className="mt-4 text-slate-200 text-sm sm:text-base leading-relaxed">
@@ -975,14 +1252,14 @@ export default function DermoGutSuperboost({
                                 </div>
 
                                 {/* Tarjeta 2: Complejo Prebiótico y Fitoterapéutico Gut-Care */}
-                                <div className="rounded-2xl bg-[#111936] text-white p-7 sm:p-8 border border-white/10 shadow-xl relative overflow-hidden">
-                                    <div className="w-12 h-12 rounded-xl bg-[#A855F7]/20 border border-[#A855F7]/40 flex items-center justify-center text-[#A855F7] mb-5">
+                                <div className="rounded-3xl bg-[#111936] text-white p-7 sm:p-9 border border-white/10 shadow-xl relative overflow-hidden">
+                                    <div className="w-12 h-12 rounded-2xl bg-[#A855F7]/20 border border-[#A855F7]/40 flex items-center justify-center text-[#A855F7] mb-5">
                                         <Leaf className="w-6 h-6" />
                                     </div>
-                                    <span className="text-xs font-bold uppercase tracking-wider text-[#A855F7]">
+                                    <span className="text-xs font-extrabold uppercase tracking-wider text-[#A855F7]">
                                         2. Eje Intestino-Piel y Aliento Fresco
                                     </span>
-                                    <h3 className="mt-1 text-xl sm:text-2xl font-bold text-white">
+                                    <h3 className="mt-1 text-xl sm:text-2xl font-extrabold text-white">
                                         Complejo Prebiótico y Fitoterapéutico Gut-Care
                                     </h3>
                                     <p className="mt-4 text-slate-200 text-sm sm:text-base leading-relaxed">
@@ -1012,6 +1289,119 @@ export default function DermoGutSuperboost({
                     </div>
                 </section>
 
+                {/* 3.5 NUEVA SECCIÓN DE LANZAMIENTO: CRONOLOGÍA CLÍNICA DE 30 DÍAS */}
+                <section
+                    id="cronologia"
+                    className="py-16 lg:py-24 bg-gradient-to-b from-[#080B20] via-[#111936] to-[#080B20] text-white border-t border-white/10"
+                >
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center max-w-3xl mx-auto mb-12">
+                            <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#35DDF5]/15 border border-[#35DDF5]/40 text-[#35DDF5] text-xs font-extrabold uppercase tracking-wider">
+                                <Clock className="w-4 h-4" />
+                                Cronología de Transformación Biológica
+                            </span>
+                            <h2 className="mt-3 text-2xl sm:text-4xl font-extrabold text-white">
+                                ¿Qué ocurre en el cuerpo de tu mascota durante los primeros 30 días?
+                            </h2>
+                            <p className="mt-3 text-sm sm:text-base text-slate-300">
+                                A diferencia de los paliativos químicos que ocultan el síntoma por unas horas,{' '}
+                                <strong className="text-white">Dermo &amp; Gut Superboost</strong> reconstruye la barrera
+                                intestinal y cutánea semana a semana.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {CLINICAL_TIMELINE.map((step, idx) => (
+                                <div
+                                    key={idx}
+                                    className="rounded-3xl bg-[#111936]/90 border border-white/15 p-6 sm:p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden"
+                                >
+                                    <div>
+                                        <div className="flex items-center justify-between gap-2 mb-4">
+                                            <span
+                                                className={`px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider border ${step.accent}`}
+                                            >
+                                                {step.phase}
+                                            </span>
+                                            <span className="text-xs font-bold text-slate-400">
+                                                Paso 0{idx + 1}
+                                            </span>
+                                        </div>
+                                        <h3 className="text-xl font-extrabold text-white leading-snug">
+                                            {step.title}
+                                        </h3>
+                                        <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                                            {step.description}
+                                        </p>
+                                    </div>
+
+                                    <div className="mt-6 pt-4 border-t border-white/10 space-y-2">
+                                        {step.metrics.map((m, mIdx) => (
+                                            <div
+                                                key={mIdx}
+                                                className="flex items-center gap-2 text-xs font-semibold text-slate-200"
+                                            >
+                                                <CheckCircle2 className="w-4 h-4 text-[#0F9F9A] shrink-0" />
+                                                <span>{m}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* 3.8 NUEVA SECCIÓN DE LANZAMIENTO: ANATOMÍA DE LOS 6 BIO-ACTIVOS PUROS (BENTO GRID) */}
+                <section id="bioactivos" className="py-16 lg:py-24 bg-[#F4F7FC]">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center max-w-3xl mx-auto mb-12">
+                            <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#15213B] text-[#35DDF5] text-xs font-extrabold uppercase tracking-wider">
+                                <Microscope className="w-4 h-4" />
+                                Trazabilidad de Ingredientes • Grado Clínico
+                            </span>
+                            <h2 className="mt-3 text-2xl sm:text-4xl font-extrabold text-[#15213B]">
+                                Anatomía de los 6 Bio-Activos de AVIPET BioLab®
+                            </h2>
+                            <p className="mt-2 text-sm sm:text-base text-[#5C6B85]">
+                                Cero rellenos baratos. Cada gramo cumple una función inmunológica, antimicrobiana o
+                                prebiótica específica en perros y gatos.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {BIO_ACTIVES_BENTO.map((item) => (
+                                <div
+                                    key={item.code}
+                                    className="rounded-2xl bg-[#080B20] text-white p-6 border border-white/10 shadow-xl flex flex-col justify-between hover:border-[#35DDF5]/40 transition"
+                                >
+                                    <div>
+                                        <div className="flex items-center justify-between gap-2 mb-4">
+                                            <span
+                                                className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider border ${item.badgeStyle}`}
+                                            >
+                                                {item.badge}
+                                            </span>
+                                            <span className="text-xs font-mono text-slate-400">{item.code}</span>
+                                        </div>
+                                        <h3 className="text-lg font-extrabold text-white">{item.name}</h3>
+                                        <p className="text-xs font-semibold text-[#35DDF5] mt-0.5 italic">
+                                            {item.scientific}
+                                        </p>
+                                        <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                                            {item.description}
+                                        </p>
+                                    </div>
+                                    <div className="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between text-xs">
+                                        <span className="text-slate-400">Función Diana:</span>
+                                        <span className="font-bold text-emerald-300">{item.role}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
                 {/* 4. TABLA COMPARATIVA (POR QUÉ ELEGIR AVIPET BioLab®) */}
                 <section id="comparativa" className="py-16 lg:py-20 bg-white border-y border-slate-200">
                     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1019,7 +1409,7 @@ export default function DermoGutSuperboost({
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0E7490]/10 text-[#0E7490] text-xs font-bold uppercase tracking-wider">
                                 Tabla Comparativa
                             </span>
-                            <h2 className="mt-3 text-2xl sm:text-3xl font-bold text-[#15213B]">
+                            <h2 className="mt-3 text-2xl sm:text-3xl font-extrabold text-[#15213B]">
                                 ¿Por qué elegir AVIPET BioLab®?
                             </h2>
                             <p className="mt-2 text-sm sm:text-base text-[#5C6B85]">
@@ -1114,7 +1504,7 @@ export default function DermoGutSuperboost({
                             <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#15213B] text-[#35DDF5] text-xs font-bold uppercase tracking-wider">
                                 Ficha Técnica y Composición
                             </span>
-                            <h2 className="mt-3 text-2xl sm:text-3xl font-bold text-[#15213B]">
+                            <h2 className="mt-3 text-2xl sm:text-3xl font-extrabold text-[#15213B]">
                                 Transparencia Clínica Total: Composición, Tabla Nutricional y Dosis
                             </h2>
                             <p className="mt-2 text-sm sm:text-base text-[#5C6B85]">
@@ -1392,6 +1782,64 @@ export default function DermoGutSuperboost({
                     </div>
                 </section>
 
+                {/* 5.5 NUEVA SECCIÓN: RESPALDO VETERINARIO Y CASOS REALES VERIFICADOS EN COLOMBIA */}
+                <section id="testimonios" className="py-16 lg:py-24 bg-[#080B20] text-white border-t border-white/10">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center max-w-3xl mx-auto mb-12">
+                            <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-extrabold uppercase tracking-wider">
+                                <BadgeCheck className="w-4 h-4" />
+                                Evidencia y Confianza en Colombia
+                            </span>
+                            <h2 className="mt-3 text-2xl sm:text-4xl font-extrabold text-white">
+                                Lo que dicen los Médicos Veterinarios y Tutores que ya probaron Dermo &amp; Gut Superboost
+                            </h2>
+                            <p className="mt-2 text-sm sm:text-base text-slate-300">
+                                Calificación promedio de <strong className="text-amber-400">4.9 / 5.0 estrellas</strong>{' '}
+                                en resultados digestivos y dermatológicos.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {VERIFIED_REVIEWS.map((rev, idx) => (
+                                <div
+                                    key={idx}
+                                    className="rounded-3xl bg-[#111936] border border-white/15 p-6 sm:p-7 flex flex-col justify-between shadow-xl"
+                                >
+                                    <div>
+                                        <div className="flex items-center justify-between gap-2 mb-4">
+                                            <div className="flex items-center text-amber-400">
+                                                <Star className="w-4 h-4 fill-amber-400" />
+                                                <Star className="w-4 h-4 fill-amber-400" />
+                                                <Star className="w-4 h-4 fill-amber-400" />
+                                                <Star className="w-4 h-4 fill-amber-400" />
+                                                <Star className="w-4 h-4 fill-amber-400" />
+                                            </div>
+                                            <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-[11px] font-bold">
+                                                ✓ Verificado
+                                            </span>
+                                        </div>
+
+                                        <span className="inline-block px-2.5 py-1 rounded-lg bg-white/10 text-[#35DDF5] text-xs font-bold mb-3">
+                                            {rev.highlight}
+                                        </span>
+
+                                        <p className="text-sm text-slate-200 leading-relaxed italic">{rev.quote}</p>
+                                    </div>
+
+                                    <div className="mt-6 pt-4 border-t border-white/10">
+                                        <p className="font-bold text-white text-sm">{rev.name}</p>
+                                        <p className="text-xs text-[#35DDF5] font-medium">{rev.pet}</p>
+                                        <div className="mt-1 flex items-center justify-between text-[11px] text-slate-400">
+                                            <span>📍 {rev.city}</span>
+                                            <span>{rev.bundle}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
                 {/* 6. PREGUNTAS FRECUENTES (FAQ PARA DERRIBAR OBJECIONES EN LA PÁGINA) */}
                 <section id="faq" className="py-16 lg:py-24 bg-white border-t border-slate-200">
                     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1399,7 +1847,7 @@ export default function DermoGutSuperboost({
                             <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#6D28D9]/10 text-[#6D28D9] text-xs font-bold uppercase tracking-wider">
                                 Preguntas Frecuentes (FAQ)
                             </span>
-                            <h2 className="mt-3 text-2xl sm:text-3xl font-bold text-[#15213B]">
+                            <h2 className="mt-3 text-2xl sm:text-3xl font-extrabold text-[#15213B]">
                                 Resolvemos tus dudas sobre AVIPET BioLab® — Dermo &amp; Gut Superboost
                             </h2>
                         </div>
@@ -1456,11 +1904,11 @@ export default function DermoGutSuperboost({
                         </div>
 
                         {/* CTA Final en Página */}
-                        <div className="mt-12 rounded-2xl bg-gradient-to-r from-[#080B20] via-[#111936] to-[#080B20] text-white p-8 sm:p-10 text-center border border-white/10 shadow-2xl">
+                        <div className="mt-12 rounded-3xl bg-gradient-to-r from-[#080B20] via-[#111936] to-[#080B20] text-white p-8 sm:p-10 text-center border border-white/10 shadow-2xl">
                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#35DDF5]/15 text-[#35DDF5] text-xs font-bold">
                                 🚚 ENVÍO GRATIS + PAGO CONTRAENTREGA EN TODA COLOMBIA
                             </span>
-                            <h3 className="mt-4 text-2xl sm:text-3xl font-bold">
+                            <h3 className="mt-4 text-2xl sm:text-3xl font-extrabold">
                                 Pide hoy tu AVIPET BioLab® — Dermo &amp; Gut Superboost y paga al recibir en casa
                             </h3>
                             <p className="mt-2 text-slate-300 text-sm sm:text-base max-w-2xl mx-auto">
@@ -1509,17 +1957,12 @@ export default function DermoGutSuperboost({
                             </div>
                         </div>
                         <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
-                            <a href="https://avipetapp.com" className="hover:text-white transition">
-                                Plataforma Veterinaria AviPetApp
+                            <a href={storeHomeUrl} className="text-[#35DDF5] hover:underline font-semibold">
+                                ← Volver a la Tienda General AVIPET BioLab®
                             </a>
                             <span>•</span>
-                            <a
-                                href={buildDirectWhatsAppUrl(activeBundle)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-[#35DDF5] hover:underline font-medium"
-                            >
-                                Pedidos y Soporte por WhatsApp
+                            <a href="https://avipetapp.com" className="hover:text-white transition">
+                                Plataforma Veterinaria AviPetApp
                             </a>
                         </div>
                     </div>
@@ -1724,27 +2167,27 @@ export default function DermoGutSuperboost({
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                         <div>
                                             <label className="block text-xs font-bold text-[#15213B] mb-1">
-                                                Nombre y Apellido *
+                                                Nombre Completo *
                                             </label>
                                             <input
                                                 type="text"
                                                 required
                                                 value={customerName}
                                                 onChange={(e) => setCustomerName(e.target.value)}
-                                                placeholder="Ej. Carolina Gómez"
+                                                placeholder="Ej: Carolina Martínez"
                                                 className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-[#6D28D9] focus:outline-none"
                                             />
                                         </div>
                                         <div>
                                             <label className="block text-xs font-bold text-[#15213B] mb-1">
-                                                Celular / WhatsApp *
+                                                WhatsApp / Celular *
                                             </label>
                                             <input
                                                 type="tel"
                                                 required
                                                 value={customerPhone}
                                                 onChange={(e) => setCustomerPhone(e.target.value)}
-                                                placeholder="Ej. 300 123 4567"
+                                                placeholder="Ej: 300 123 4567"
                                                 className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-[#6D28D9] focus:outline-none"
                                             />
                                         </div>
@@ -1769,14 +2212,14 @@ export default function DermoGutSuperboost({
                                         </div>
                                         <div>
                                             <label className="block text-xs font-bold text-[#15213B] mb-1">
-                                                Ciudad o Municipio *
+                                                Ciudad / Municipio *
                                             </label>
                                             <input
                                                 type="text"
                                                 required
                                                 value={city}
                                                 onChange={(e) => setCity(e.target.value)}
-                                                placeholder="Ej. Medellín, Bogotá, Cali, Chía..."
+                                                placeholder="Ej: Medellín, Bogotá, Cali..."
                                                 className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-[#6D28D9] focus:outline-none"
                                             />
                                         </div>
@@ -1792,78 +2235,82 @@ export default function DermoGutSuperboost({
                                                 required
                                                 value={address}
                                                 onChange={(e) => setAddress(e.target.value)}
-                                                placeholder="Calle / Carrera / Número / Conjunto / Apto"
+                                                placeholder="Calle / Carrera, Número, Apto / Casa"
                                                 className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-[#6D28D9] focus:outline-none"
                                             />
                                         </div>
                                         <div>
                                             <label className="block text-xs font-bold text-[#15213B] mb-1">
-                                                Barrio / Punto ref.
+                                                Barrio
                                             </label>
                                             <input
                                                 type="text"
                                                 value={neighborhood}
                                                 onChange={(e) => setNeighborhood(e.target.value)}
-                                                placeholder="Ej. El Poblado / Cedritos"
+                                                placeholder="Ej: El Poblado"
                                                 className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-[#6D28D9] focus:outline-none"
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
                                         <div>
                                             <label className="block text-xs font-bold text-[#15213B] mb-1">
-                                                Tu Mascota es:
+                                                Mascota
                                             </label>
                                             <select
                                                 value={petType}
                                                 onChange={(e) => setPetType(e.target.value)}
-                                                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm bg-white focus:border-[#6D28D9] focus:outline-none"
+                                                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white"
                                             >
                                                 <option value="Perro">🐶 Perro</option>
                                                 <option value="Gato">🐱 Gato</option>
-                                                <option value="Perro y Gato">🐶🐱 Perro y Gato</option>
+                                                <option value="Perro y Gato">🐾 Perro y Gato</option>
                                             </select>
                                         </div>
                                         <div>
                                             <label className="block text-xs font-bold text-[#15213B] mb-1">
-                                                Nombre del Peludo
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={petName}
-                                                onChange={(e) => setPetName(e.target.value)}
-                                                placeholder="Ej. Max / Luna"
-                                                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm focus:border-[#6D28D9] focus:outline-none"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-bold text-[#15213B] mb-1">
-                                                Peso Aproximado
+                                                Peso Aprox.
                                             </label>
                                             <select
                                                 value={petWeight}
                                                 onChange={(e) => setPetWeight(e.target.value)}
-                                                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm bg-white focus:border-[#6D28D9] focus:outline-none"
+                                                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white"
                                             >
                                                 <option value="1 a 10 kg (Pequeño / Gato)">1 a 10 kg</option>
                                                 <option value="11 a 25 kg (Mediano)">11 a 25 kg</option>
                                                 <option value="+25 kg (Grande)">+25 kg</option>
                                             </select>
                                         </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-[#15213B] mb-1">
+                                                Nombre de tu Peludo
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={petName}
+                                                onChange={(e) => setPetName(e.target.value)}
+                                                placeholder="Ej: Max / Luna"
+                                                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
+                                            />
+                                        </div>
                                     </div>
 
-                                    {/* Resumen Financiero Contraentrega */}
+                                    {/* Resumen de Total Contraentrega */}
                                     <div className="rounded-xl bg-[#080B20] text-white p-4 flex items-center justify-between">
                                         <div>
-                                            <p className="text-xs text-slate-300">{activeBundle.name}</p>
-                                            <p className="text-xs text-emerald-300 font-semibold">
+                                            <p className="text-xs text-[#35DDF5] font-bold">
+                                                {activeBundle.name}
+                                            </p>
+                                            <p className="text-[11px] text-slate-300">
                                                 🚚 Envío Gratis • Pagas en casa al recibir
                                             </p>
                                         </div>
                                         <div className="text-right tabular-nums">
-                                            <p className="text-xs text-slate-400">Total a pagar en casa:</p>
-                                            <p className="text-xl font-extrabold text-[#35DDF5]">
+                                            <p className="text-xs text-slate-400 line-through">
+                                                {activeBundle.formattedCompareAt}
+                                            </p>
+                                            <p className="text-lg font-extrabold text-white">
                                                 {activeBundle.formattedPrice}
                                             </p>
                                         </div>

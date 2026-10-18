@@ -89,18 +89,19 @@ $redirectToLogin = function (?string $slug = null) use ($resolveTenantFromHost) 
     return redirect($loginUrl);
 };
 
-// 0.1 Rutas Oficiales de AVIPET BioLab® — Dermo & Gut Superboost (Subdominio biolab.avipetapp.com y Slugs SEO)
-Route::get('/biolab', [App\Http\Controllers\BioLabController::class, 'show'])->name('biolab.home');
+// 0.1 Rutas Oficiales de AVIPET BioLab® — Tienda General y Producto Dermo & Gut Superboost
+Route::get('/biolab', [App\Http\Controllers\BioLabController::class, 'storeHome'])->name('biolab.home');
+Route::get('/dermo-gut-superboost', [App\Http\Controllers\BioLabController::class, 'show'])->name('biolab.product.direct');
 Route::get('/biolab/dermo-gut-superboost', [App\Http\Controllers\BioLabController::class, 'show'])->name('biolab.product');
 Route::get('/producto/dermo-gut-superboost', [App\Http\Controllers\BioLabController::class, 'show'])->name('biolab.product.slug');
-Route::get('/dermo-gut-superboost', [App\Http\Controllers\BioLabController::class, 'show']);
 Route::post('/biolab/order', [App\Http\Controllers\BioLabController::class, 'storeOrder'])->name('biolab.order.store');
+Route::post('/dermo-gut-superboost/order', [App\Http\Controllers\BioLabController::class, 'storeOrder']);
 Route::post('/producto/dermo-gut-superboost/order', [App\Http\Controllers\BioLabController::class, 'storeOrder']);
 
-// 1. Landing Principal B2B, Subdominio AVIPET BioLab® ó Storefront de Clínica si el dominio/subdominio está asignado
+// 1. Landing Principal B2B, Tienda General AVIPET BioLab® (biolab.avipetapp.com) ó Storefront de Clínica
 Route::get('/', function () use ($resolveTenantFromHost, $isBioLabHost) {
     if ($isBioLabHost()) {
-        return app(App\Http\Controllers\BioLabController::class)->show(request());
+        return app(App\Http\Controllers\BioLabController::class)->storeHome(request());
     }
     $tenant = $resolveTenantFromHost();
     if ($tenant) {
