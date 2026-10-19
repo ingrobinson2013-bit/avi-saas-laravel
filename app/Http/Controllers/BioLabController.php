@@ -127,15 +127,32 @@ class BioLabController extends Controller
 
         Log::info("📦 [AVIPET BioLab] Nuevo Pedido Contraentrega {$orderCode}", $orderPayload);
 
+        $guidePdfUrl = 'https://biolab.avipetapp.com/guias/guia-nutricion-clinica-hipoalergenica-avipet-biolab.pdf';
+
         // 2. Notificar por correo al equipo de despachos
         try {
             $notifyEmails = array_filter(array_map('trim', explode(',', env('ADMIN_NOTIFY_EMAILS', 'contacto@avipetapp.com'))));
             if (!empty($notifyEmails)) {
+                $customerDigits = preg_replace('/\D+/', '', $orderPayload['customer_phone']);
+                if (strlen($customerDigits) === 10) {
+                    $customerDigits = '57' . $customerDigits;
+                }
+                $adminToCustomerWaText = "Hola *{$orderPayload['customer_name']}* 🐾 ¡Gracias por tu pedido en *AVIPET BioLab®*!\n\n"
+                    . "✅ *Orden confirmada:* {$orderCode}\n"
+                    . "📦 *Producto:* {$selectedBundle['title']}\n"
+                    . "💰 *Total a pagar al recibir en casa:* {$selectedBundle['formatted_price']} (Envío Gratis)\n"
+                    . "📍 *Dirección:* {$orderPayload['address']}, {$orderPayload['city']} ({$orderPayload['department']})\n\n"
+                    . "🎁 *AQUÍ TIENES TU BONO VIP GRATIS (Guía Clínica de Nutrición Hipoalergénica en PDF):*\n"
+                    . "{$guidePdfUrl}\n\n"
+                    . "Por favor confírmanos con un *SÍ* para despachar tu paquete con prioridad hoy mismo. 🚚";
+                $adminToCustomerWaUrl = "https://wa.me/{$customerDigits}?text=" . rawurlencode($adminToCustomerWaText);
+
                 $mailBody = "🔬 NUEVO PEDIDO CONTRAENTREGA — AVIPET BioLab®\n"
                     . "================================================\n"
                     . "Código de Pedido: {$orderCode}\n"
                     . "Producto: AVIPET BioLab® — Dermo & Gut Superboost\n"
                     . "Presentación: {$selectedBundle['title']}\n"
+                    . "Bono Guía PDF + Despacho Prioritario: " . ($orderPayload['order_bump'] ? 'SÍ INCLUIDO (GRATIS)' : 'No seleccionado') . "\n"
                     . "Total a Cobrar en Casa: {$selectedBundle['formatted_price']} (Envío Gratis)\n"
                     . "Método al Recibir: {$orderPayload['payment_method']}\n\n"
                     . "👤 DATOS DE ENTREGA:\n"
@@ -147,7 +164,11 @@ class BioLabController extends Controller
                     . "• Especie: {$orderPayload['pet_type']}\n"
                     . "• Nombre: " . ($orderPayload['pet_name'] ?: 'No indicado') . "\n"
                     . "• Peso: " . ($orderPayload['pet_weight'] ?: 'No indicado') . "\n"
-                    . "• Notas: " . ($orderPayload['notes'] ?: 'Ninguna') . "\n";
+                    . "• Notas: " . ($orderPayload['notes'] ?: 'Ninguna') . "\n\n"
+                    . "📲 ENVIAR CONFIRMACIÓN + GUÍA PDF AL WHATSAPP DEL CLIENTE (1 CLIC):\n"
+                    . "{$adminToCustomerWaUrl}\n\n"
+                    . "📄 URL Directa de la Guía PDF:\n"
+                    . "{$guidePdfUrl}\n";
 
                 Mail::raw($mailBody, function ($message) use ($notifyEmails, $orderCode, $selectedBundle, $orderPayload) {
                     $message->to($notifyEmails)
@@ -170,7 +191,7 @@ class BioLabController extends Controller
             . "• *Ciudad:* {$orderPayload['city']}, {$orderPayload['department']}\n"
             . "• *Dirección:* {$orderPayload['address']}" . ($orderPayload['neighborhood'] ? " ({$orderPayload['neighborhood']})" : "") . "\n"
             . "• *Mascota:* {$orderPayload['pet_type']}" . ($orderPayload['pet_name'] ? " ({$orderPayload['pet_name']})" : "") . ($orderPayload['pet_weight'] ? " - {$orderPayload['pet_weight']}" : "") . "\n\n"
-            . "¡Quedo atento(a) a la guía de despacho!";
+            . "¡Quedo atento(a) a la guía de despacho y a mi Guía Clínica Hipoalergénica!";
 
         $whatsappUrl = 'https://wa.me/573235813942?text=' . rawurlencode($waMessage);
 
@@ -179,6 +200,7 @@ class BioLabController extends Controller
             'order_code' => $orderCode,
             'order' => $orderPayload,
             'whatsapp_url' => $whatsappUrl,
+            'guide_pdf_url' => '/guias/guia-nutricion-clinica-hipoalergenica-avipet-biolab.pdf',
         ]);
     }
 }
