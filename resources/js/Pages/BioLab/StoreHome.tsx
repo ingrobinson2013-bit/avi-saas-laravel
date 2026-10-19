@@ -57,7 +57,7 @@ export default function StoreHome({
             diagnosisText:
                 'El lamido de patas (manchas cafés/rojizas) y el rascado constante suelen ser disparados por alergia a la proteína de pollo/res y proliferación de hongos cutáneos.',
             recommendedProduct: 'AVIPET BioLab® — DERMO & GUT SUPERBOOST (250g)',
-            activeIngredients: 'Micro-Proteína Novel (Hermetia illucens 40%) + Ácido Láurico Antihongos (4.5%) + Cúrcuma',
+            activeIngredients: 'Matriz Dermo-Calm® (Micro-Proteína Novel Hipoalergénica) + Escudo de Ácido Láurico + Cúrcuma',
             available: true,
             priceText: '$69.900 COP • Envío Gratis + Pago Contraentrega',
         },
@@ -476,9 +476,9 @@ export default function StoreHome({
                                             </h3>
                                         </a>
                                         <p className="mt-1.5 text-sm sm:text-base text-slate-600">
-                                            Suplemento Nutricional Biotecnológico 3 en 1 en Polvo con Micro-Proteína
-                                            Novel de <em>Hermetia illucens</em> (40%), Ácido Láurico natural (4.5%),
-                                            Omega 3-6-9, Fibra Prebiótica, Cúrcuma y Clorofila activa.
+                                            Suplemento Nutricional Biotecnológico 3 en 1 en Polvo con Matriz Dermo-Calm®
+                                            (Micro-Proteína Novel Hipoalergénica), Escudo de Ácido Láurico Dermo-Activo,
+                                            Omega 3-6-9, Complejo Prebiótico Gut-Care®, Cúrcuma y Clorofila activa.
                                         </p>
                                     </div>
 
