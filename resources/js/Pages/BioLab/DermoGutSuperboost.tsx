@@ -1452,22 +1452,23 @@ export default function DermoGutSuperboost({ product }: Props) {
                     10. LIVE PURCHASE SIMULATOR TOAST (FOMO SOCIAL PROOF POPUP)
                    ================================================================= */}
                 {showSaleToast && !dismissedToast && !isCodModalOpen && (
-                    <div className="fixed bottom-20 lg:bottom-5 left-3 sm:left-5 z-40 max-w-xs sm:max-w-sm bg-white rounded-2xl border-2 border-emerald-500/80 shadow-2xl p-3 flex items-center gap-3 animate-bounce">
-                        <img
-                            src={currentSale.img}
-                            alt={currentSale.buyer}
-                            className="h-14 w-14 rounded-xl object-cover border border-slate-200 shrink-0"
-                        />
+                    <div className="fixed bottom-20 lg:bottom-5 left-3 sm:left-5 z-40 max-w-xs sm:max-w-sm bg-white rounded-2xl border border-slate-200 shadow-2xl p-3.5 flex items-center gap-3.5 transition-all duration-500">
+                        <div className="h-12 w-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col items-center justify-center shrink-0 text-emerald-600 shadow-inner">
+                            <span className="text-lg leading-none">🛍️</span>
+                            <span className="text-[9px] font-black uppercase tracking-tighter text-emerald-700 mt-0.5">
+                                COD ✓
+                            </span>
+                        </div>
                         <div className="text-xs leading-snug pr-4">
-                            <div className="flex items-center gap-1 text-[10px] font-black text-emerald-700 uppercase">
-                                <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                                <span>Pedido Contraentrega Reciente</span>
+                            <div className="flex items-center gap-1.5 text-[10px] font-black text-emerald-700 uppercase">
+                                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                                <span>Pedido Contraentrega Verificado</span>
                             </div>
                             <p className="font-extrabold text-slate-900 mt-0.5">
-                                {currentSale.buyer} en <span className="text-indigo-700">{currentSale.location}</span>
+                                {currentSale.buyer} — <span className="text-indigo-700">{currentSale.location}</span>
                             </p>
                             <p className="text-[11px] text-slate-600 font-semibold">
-                                Pidió <strong>{currentSale.pkg}</strong> ({currentSale.pet})
+                                Pidió <strong>{currentSale.pkg}</strong>
                             </p>
                             <span className="text-[10px] font-bold text-slate-400 block mt-0.5">
                                 ⏱ {currentSale.timeAgo} • Envío Gratis Activado
@@ -1476,7 +1477,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                         <button
                             type="button"
                             onClick={() => setDismissedToast(true)}
-                            className="absolute top-1.5 right-2 text-slate-400 hover:text-slate-700 text-xs font-black cursor-pointer"
+                            className="absolute top-2 right-2.5 text-slate-400 hover:text-slate-700 text-xs font-black cursor-pointer"
                             aria-label="Cerrar notificación"
                         >
                             ✕
