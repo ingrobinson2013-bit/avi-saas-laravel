@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -37,17 +39,40 @@ class BioLabController extends Controller
 
     /**
      * Registra un pedido Contraentrega (Pago en Casa) de AVIPET BioLab®
+     * Incluye Escudo Anti-Bot de 5 Capas (Honeypot, Tiempo Mínimo, Lock Atómico, RateLimiter por IP/Teléfono y Validación Celular Colombia)
      */
     public function storeOrder(Request $request)
     {
+        // CAPA 1: Honeypot Anti-Bot (campo oculto que los humanos nunca llenan)
+        if ($request->filled('website_url')) {
+            Log::warning('🤖 [Anti-Bot BioLab] Honeypot activado desde IP: ' . $request->ip());
+            return response()->json([
+                'success' => false,
+                'message' => 'Solicitud bloqueada por el filtro de seguridad anti-bots.',
+            ], 422);
+        }
+
+        // CAPA 2: Verificación de tiempo humano mínimo de llenado (>= 2.5 segundos)
+        $openedAtMs = (int) $request->input('form_opened_at', 0);
+        if ($openedAtMs > 0) {
+            $elapsedMs = (int) round(microtime(true) * 1000) - $openedAtMs;
+            if ($elapsedMs > 0 && $elapsedMs < 2200) {
+                Log::warning("🤖 [Anti-Bot BioLab] Envío demasiado rápido ({$elapsedMs}ms) desde IP: " . $request->ip());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Por favor verifica tus datos antes de enviar el pedido.',
+                ], 429);
+            }
+        }
+
         $validated = $request->validate([
             'bundle_id' => 'required|string|in:1_bolsa,2_bolsas,3_bolsas',
-            'customer_name' => 'required|string|max:120',
+            'customer_name' => 'required|string|min:3|max:120',
             'customer_phone' => 'required|string|max:40',
             'customer_email' => 'nullable|email|max:120',
             'department' => 'required|string|max:80',
-            'city' => 'required|string|max:80',
-            'address' => 'required|string|max:255',
+            'city' => 'required|string|min:2|max:80',
+            'address' => 'required|string|min:6|max:255',
             'neighborhood' => 'nullable|string|max:120',
             'pet_type' => 'nullable|string|max:40',
             'pet_name' => 'nullable|string|max:80',
@@ -56,6 +81,51 @@ class BioLabController extends Controller
             'order_bump' => 'nullable|boolean',
             'notes' => 'nullable|string|max:500',
         ]);
+
+        // CAPA 3: Validación estricta de número celular colombiano (10 dígitos iniciando en 3, sin dígitos repetidos falsos)
+        $cleanPhone = preg_replace('/\D+/', '', $validated['customer_phone']);
+        if (str_starts_with($cleanPhone, '57') && strlen($cleanPhone) === 12) {
+            $cleanPhone = substr($cleanPhone, 2);
+        }
+        if (!preg_match('/^3\d{9}$/', $cleanPhone) || preg_match('/^3(\d)\1{8}$/', $cleanPhone)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Por favor ingresa un número de celular / WhatsApp válido en Colombia (10 dígitos, ej: 300 123 4567).',
+            ], 422);
+        }
+
+        $ip = $request->ip() ?: 'unknown';
+
+        // CAPA 4: Candado Atómico (evita doble clic simultáneo o ráfagas paralelas de bots en el mismo segundo)
+        $lockKey = 'biolab_cod_mutex_' . md5($ip . '_' . $cleanPhone);
+        if (!Cache::add($lockKey, true, now()->addSeconds(12))) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tu pedido ya se está procesando en este momento. Por favor espera unos segundos.',
+            ], 429);
+        }
+
+        // CAPA 5: Protección contra pedidos duplicados por Teléfono o IP (Cooldown de 15 minutos por teléfono y máx 2 por hora por IP)
+        $phoneCooldownKey = 'biolab_cod_phone_' . $cleanPhone;
+        $ipRateKey = 'biolab_cod_ip_' . md5($ip);
+
+        if (Cache::has($phoneCooldownKey)) {
+            $prevCode = Cache::get($phoneCooldownKey);
+            return response()->json([
+                'success' => false,
+                'message' => "🔒 Ya registramos tu pedido (#{$prevCode}) hace unos minutos. Nuestro equipo ya lo está alistando para despacho.",
+            ], 429);
+        }
+
+        if (RateLimiter::tooManyAttempts($ipRateKey, 2)) {
+            Log::warning("🛡️ [Anti-Bot BioLab] Rate limit por IP excedido ({$ip})");
+            return response()->json([
+                'success' => false,
+                'message' => '🔒 Ya recibimos tu pedido desde esta conexión. Si deseas modificar tu orden, escríbenos directamente por WhatsApp.',
+            ], 429);
+        }
+
+        RateLimiter::hit($ipRateKey, 3600); // ventana de 1 hora
 
         $bundles = [
             '1_bolsa' => [
@@ -72,7 +142,7 @@ class BioLabController extends Controller
                 'grams' => '500g',
                 'price' => 124900,
                 'formatted_price' => '$124.900 COP',
-                'savings' => '$14.900 COP adicionales ($62.450 c/u)',
+                'savings' => '$50.500 COP ($62.450 c/u)',
             ],
             '3_bolsas' => [
                 'title' => 'Tratamiento Completo 90 Días — 3 Bolsas (750g)',
@@ -80,13 +150,16 @@ class BioLabController extends Controller
                 'grams' => '750g',
                 'price' => 169900,
                 'formatted_price' => '$169.900 COP',
-                'savings' => '$39.800 COP ($56.633 c/u)',
+                'savings' => '$93.200 COP ($56.633 c/u)',
             ],
         ];
 
         $selectedBundle = $bundles[$validated['bundle_id']] ?? $bundles['2_bolsas'];
         $orderCode = 'BIO-' . now()->format('ym') . '-' . strtoupper(substr(bin2hex(random_bytes(2)), 0, 4));
         $hasOrderBump = (bool) ($validated['order_bump'] ?? true);
+
+        // Registrar el bloqueo de 15 minutos para este celular para impedir duplicados
+        Cache::put($phoneCooldownKey, $orderCode, now()->addMinutes(15));
 
         $orderPayload = [
             'order_code' => $orderCode,
@@ -96,9 +169,10 @@ class BioLabController extends Controller
             'bundle_title' => $selectedBundle['title'],
             'total_cop' => $selectedBundle['price'],
             'formatted_total' => $selectedBundle['formatted_price'],
+            'order_bump' => $hasOrderBump,
             'order_bump_vip_guide' => $hasOrderBump,
             'customer_name' => $validated['customer_name'],
-            'customer_phone' => $validated['customer_phone'],
+            'customer_phone' => $cleanPhone,
             'customer_email' => $validated['customer_email'] ?? null,
             'department' => $validated['department'],
             'city' => $validated['city'],
@@ -109,7 +183,7 @@ class BioLabController extends Controller
             'pet_weight' => $validated['pet_weight'] ?? null,
             'payment_method' => $validated['payment_method'] ?? 'Contraentrega (Efectivo / Transferencia al recibir)',
             'notes' => $validated['notes'] ?? null,
-            'ip' => $request->ip(),
+            'ip' => $ip,
             'host' => $request->getHost(),
         ];
 
@@ -133,10 +207,7 @@ class BioLabController extends Controller
         try {
             $notifyEmails = array_filter(array_map('trim', explode(',', env('ADMIN_NOTIFY_EMAILS', 'contacto@avipetapp.com'))));
             if (!empty($notifyEmails)) {
-                $customerDigits = preg_replace('/\D+/', '', $orderPayload['customer_phone']);
-                if (strlen($customerDigits) === 10) {
-                    $customerDigits = '57' . $customerDigits;
-                }
+                $customerDigits = '57' . $cleanPhone;
                 $adminToCustomerWaText = "Hola *{$orderPayload['customer_name']}* 🐾 ¡Gracias por tu pedido en *AVIPET BioLab®*!\n\n"
                     . "✅ *Orden confirmada:* {$orderCode}\n"
                     . "📦 *Producto:* {$selectedBundle['title']}\n"
@@ -152,7 +223,7 @@ class BioLabController extends Controller
                     . "Código de Pedido: {$orderCode}\n"
                     . "Producto: AVIPET BioLab® — Dermo & Gut Superboost\n"
                     . "Presentación: {$selectedBundle['title']}\n"
-                    . "Bono Guía PDF + Despacho Prioritario: " . ($orderPayload['order_bump'] ? 'SÍ INCLUIDO (GRATIS)' : 'No seleccionado') . "\n"
+                    . "Bono Guía PDF + Despacho Prioritario: " . ($hasOrderBump ? 'SÍ INCLUIDO (GRATIS)' : 'No seleccionado') . "\n"
                     . "Total a Cobrar en Casa: {$selectedBundle['formatted_price']} (Envío Gratis)\n"
                     . "Método al Recibir: {$orderPayload['payment_method']}\n\n"
                     . "👤 DATOS DE ENTREGA:\n"

@@ -13,6 +13,7 @@ interface PackageItem {
     compareAt: number;
     unitPrice: number;
     savings: number;
+    discountPct: number;
     badge?: string;
     popular?: boolean;
     bestValue?: boolean;
@@ -62,42 +63,31 @@ const COLOMBIA_DEPARTMENTS = [
     'Otro departamento',
 ];
 
+// 4 VISTAS DE ESTUDIO 100% EXCLUSIVAS PARA LA GALERÍA SUPERIOR (NINGUNA SE REPITE ABAJO)
 const GALLERY_IMAGES = [
     {
-        src: '/images/biolab/funnel-frente-reverso.jpg',
-        thumbLabel: 'Frente y Reverso',
-        badge: '✨ EMPAQUE OFICIAL 250g • FRENTE Y TABLA NUTRICIONAL',
-        caption: 'Presentación Doypack con cierre hermético Zipper (250g / 50 dosis) — Frente y reverso nutricional garantizado.',
-    },
-    {
-        src: '/images/biolab/biolab-demo-accion.gif',
-        thumbLabel: '🎬 Video GIF',
-        badge: '🎬 DEMO EN VIVO • MIRA CÓMO ACTÚA EN 4 PASOS',
-        caption: 'De la picazón y caída de pelo a una piel sana, heces firmes y pelaje brillante en semanas.',
+        src: '/images/biolab/hero-estudio-1-bolsa.jpg',
+        thumbLabel: 'Empaque 250g',
+        badge: '✨ FÓRMULA OFICIAL 250g • 50 DOSIS DE 5g',
+        caption: 'Empaque Doypack con cierre hermético Zipper (250g) rodeado de sus ingredientes bio-activos puros.',
     },
     {
         src: '/images/biolab/funnel-pack-trio.jpg',
-        thumbLabel: 'Pack Ahorro',
-        badge: '🔥 OFERTA MULTIPACK • TRATAMIENTO COMPLETO',
-        caption: 'Lleva el Pack Dúo (2 bolsas) o Tratamiento 90 Días (3 bolsas) con máximo descuento y envío gratis.',
+        thumbLabel: 'Packs Ahorro',
+        badge: '🔥 OFERTA MULTIPACK • DÚO Y TRATAMIENTO 90 DÍAS',
+        caption: 'Ahorra llevando el Pack Dúo (2 bolsas) o el Tratamiento Completo de 90 Días (3 bolsas) con Envío Gratis.',
     },
     {
-        src: '/images/biolab/funnel-modo-uso.jpg',
-        thumbLabel: 'Modo de Uso',
-        badge: '🥄 FÁCIL DE DAR • ALTA PALATABILIDAD NATURAL',
-        caption: 'Solo espolvorea 1 cuchara dosificadora (5g) al día sobre su concentrado, dieta BARF o comida húmeda.',
+        src: '/images/biolab/banner-panoramico.jpg',
+        thumbLabel: 'Bio-Activos',
+        badge: '🌿 6 ACTIVOS FUNCIONALES SINÉRGICOS',
+        caption: 'Micro-proteína novel Hermetia illucens (40%), Ácido Láurico (4.5%), Linaza Dorada, Ahuyama, Cúrcuma y Perejil.',
     },
     {
-        src: '/images/biolab/funnel-antes-despues.jpg',
-        thumbLabel: 'Antes y Después',
-        badge: '🐾 CAMBIO VISIBLE DESDE LA 1.ª A 3.ª SEMANA',
-        caption: 'Alivio progresivo del enrojecimiento interdigital, lamido de patas, dermatitis y caída excesiva de pelo.',
-    },
-    {
-        src: '/images/biolab/review-ugc-bulldog.jpg',
-        thumbLabel: 'Clientes Reales',
-        badge: '📦 ENTREGAS REALES CONTRAENTREGA EN COLOMBIA',
-        caption: 'Más de 340 dueños de perros y gatos en Colombia ya reciben su pedido en casa y pagan al recibir.',
+        src: '/images/biolab/empaque-frente-250g.jpg',
+        thumbLabel: 'Sello 7 Días',
+        badge: '🔬 BIOTECNOLOGÍA NUTRICIONAL 3 EN 1',
+        caption: 'Piel sana, heces firmes y aliento fresco: 0% Pollo, 0% Res, Sin Granos y 100% Libre de Gluten.',
     },
 ];
 
@@ -106,55 +96,37 @@ const LIVE_SALES_NOTIFICATIONS = [
         buyer: 'Marcela V.',
         location: 'El Poblado, Medellín',
         pkg: 'Pack Dúo Clínico (2 Bolsas)',
-        price: '$124.900',
         timeAgo: 'Hace 1 minuto',
-        pet: '🐕 Bulldog Francés',
-        img: '/images/biolab/review-ugc-bulldog.jpg',
     },
     {
         buyer: 'Carlos Eduardo R.',
         location: 'Chapinero, Bogotá D.C.',
         pkg: 'Tratamiento 90 Días (3 Bolsas)',
-        price: '$169.900',
         timeAgo: 'Hace 3 minutos',
-        pet: '🐕 Golden Retriever',
-        img: '/images/biolab/review-ugc-golden.jpg',
     },
     {
         buyer: 'Diana Carolina L.',
         location: 'Ciudad Jardín, Cali',
         pkg: 'Pack Dúo Clínico (2 Bolsas)',
-        price: '$124.900',
         timeAgo: 'Hace 2 minutos',
-        pet: '🐾 Pug y Gata Persa',
-        img: '/images/biolab/review-ugc-pug-cat.jpg',
     },
     {
         buyer: 'Jorge Hernán M.',
         location: 'Cabecera, Bucaramanga',
         pkg: 'Pack Dúo Clínico (2 Bolsas)',
-        price: '$124.900',
         timeAgo: 'Hace 4 minutos',
-        pet: '🐕 Pastor Alemán',
-        img: '/images/biolab/funnel-frente-reverso.jpg',
     },
     {
         buyer: 'Natalia S.',
         location: 'Alto Prado, Barranquilla',
         pkg: '1 Bolsa Inicial (250g)',
-        price: '$69.900',
         timeAgo: 'Hace 1 minuto',
-        pet: '🐕 Shih Tzu',
-        img: '/images/biolab/review-ugc-vet.jpg',
     },
     {
         buyer: 'Camilo Andrés P.',
         location: 'Cerritos, Pereira',
         pkg: 'Tratamiento 90 Días (3 Bolsas)',
-        price: '$169.900',
         timeAgo: 'Hace 5 minutos',
-        pet: '🐕 Labrador + Beagle',
-        img: '/images/biolab/funnel-pack-trio.jpg',
     },
 ];
 
@@ -230,7 +202,7 @@ const FAQS = [
     },
     {
         q: '¿Cómo recibo el Bono Gratis (Guía Clínica Hipoalergénica en PDF)?',
-        a: 'Apenas confirmas tu pedido contraentrega en el popup, se habilita de inmediato el botón de descarga directa de tu Guía Clínica de Nutrición Hipoalergénica y Protocolo de 30 Días (Manual PDF de 6 páginas valorado en $29.900 COP), y además te la enviamos a tu WhatsApp junto con la confirmación de tu despacho prioritario.',
+        a: 'Apenas confirmas tu pedido contraentrega en el popup, se habilita de inmediato el botón de descarga directa de tu Guía Clínica de Nutrición Hipoalergénica y Protocolo de 30 Días (Manual PDF de 6 páginas), y además te la enviamos a tu WhatsApp junto con la confirmación de tu despacho prioritario.',
     },
     {
         q: '¿En cuánto tiempo veré resultados en la piel y digestión de mi mascota?',
@@ -250,8 +222,8 @@ export default function DermoGutSuperboost({ product }: Props) {
     const packages: PackageItem[] = [
         {
             id: '1_bolsa',
-            name: '1 Bolsa • Prueba Inicial (30-50 Días)',
-            subtitle: '250g en Polvo (50 cucharadas de 5g)',
+            name: '1 Bolsa • Prueba Inicial (30 a 50 Días)',
+            subtitle: '250g en Polvo Bio-Activo (50 cucharadas de 5g)',
             bags: 1,
             weight: '250g',
             doses: 50,
@@ -259,14 +231,15 @@ export default function DermoGutSuperboost({ product }: Props) {
             compareAt: 87700,
             unitPrice: 69900,
             savings: 17800,
-            badge: 'AHORRAS $17.800',
+            discountPct: 20,
+            badge: '20% OFF HOY',
             popular: false,
             perks: ['1 Bolsa de 250g (50 dosis)', 'Envío GRATIS + Pago Contraentrega'],
         },
         {
             id: '2_bolsas',
-            name: 'Pack Dúo Clínico • 2 Bolsas (60-100 Días)',
-            subtitle: '500g en Polvo (100 cucharadas de 5g)',
+            name: 'Pack Dúo Clínico • 2 Bolsas (60 a 100 Días)',
+            subtitle: '500g en Polvo Bio-Activo (100 cucharadas de 5g)',
             bags: 2,
             weight: '500g',
             doses: 100,
@@ -274,18 +247,19 @@ export default function DermoGutSuperboost({ product }: Props) {
             compareAt: 175400,
             unitPrice: 62450,
             savings: 50500,
-            badge: '🔥 MÁS VENDIDO • 78% ELIGE ESTE PACK',
+            discountPct: 29,
+            badge: '🔥 MÁS VENDIDO • 29% DE DESCUENTO',
             popular: true,
             perks: [
-                '2 Bolsas de 250g ($62.450 c/u)',
-                'Ahorras $50.500 COP vs. precio regular',
+                '2 Bolsas de 250g (100 dosis en total)',
                 'Ciclo completo de regeneración de piel y pelaje',
+                'Envío GRATIS + Despacho Prioritario',
             ],
         },
         {
             id: '3_bolsas',
             name: 'Tratamiento 90 Días • 3 Bolsas (Máximo Ahorro)',
-            subtitle: '750g en Polvo (150 cucharadas de 5g)',
+            subtitle: '750g en Polvo Bio-Activo (150 cucharadas de 5g)',
             bags: 3,
             weight: '750g',
             doses: 150,
@@ -293,13 +267,14 @@ export default function DermoGutSuperboost({ product }: Props) {
             compareAt: 263100,
             unitPrice: 56633,
             savings: 93200,
-            badge: '🏆 MEJOR PRECIO • AHORRAS $93.200',
+            discountPct: 35,
+            badge: '🏆 MEJOR OPCIÓN • 35% DE DESCUENTO',
             popular: false,
             bestValue: true,
             perks: [
-                '3 Bolsas de 250g ($56.633 c/u)',
-                'Ahorras $93.200 COP (Máximo Descuento)',
+                '3 Bolsas de 250g (150 dosis en total)',
                 'Ideal para razas medianas/grandes o varias mascotas',
+                'Envío GRATIS + Bono VIP Incluido',
             ],
         },
     ];
@@ -312,7 +287,7 @@ export default function DermoGutSuperboost({ product }: Props) {
     const [petWeightRange, setPetWeightRange] = useState<'small' | 'medium' | 'large'>('small');
     const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
-    // Mental Triggers State (Scarcity, Live Viewers, Countdown, Live Purchase Simulator)
+    // Mental Triggers State
     const [liveViewers, setLiveViewers] = useState<number>(31);
     const [stockLeft, setStockLeft] = useState<number>(11);
     const [stockFlash, setStockFlash] = useState<boolean>(false);
@@ -323,8 +298,10 @@ export default function DermoGutSuperboost({ product }: Props) {
     const [showSaleToast, setShowSaleToast] = useState<boolean>(false);
     const [dismissedToast, setDismissedToast] = useState<boolean>(false);
 
-    // Shopify Releasit COD Popup Modal State
+    // Shopify Releasit COD Popup Modal State + Anti-Bot Timestamp
     const [isCodModalOpen, setIsCodModalOpen] = useState<boolean>(false);
+    const [formOpenedAt, setFormOpenedAt] = useState<number>(0);
+    const [websiteUrlHoneypot, setWebsiteUrlHoneypot] = useState<string>(''); // Honeypot anti-bot
 
     // Releasit COD Form Inputs
     const [customerName, setCustomerName] = useState('');
@@ -348,6 +325,23 @@ export default function DermoGutSuperboost({ product }: Props) {
         guide_pdf_url: string;
     } | null>(null);
 
+    // Restore recent order from localStorage if still within 15-min anti-duplicate window
+    useEffect(() => {
+        try {
+            const raw = localStorage.getItem('biolab_cod_order_lock');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (parsed?.expires_at && Date.now() < parsed.expires_at && parsed?.order) {
+                    setOrderSuccess(parsed.order);
+                } else {
+                    localStorage.removeItem('biolab_cod_order_lock');
+                }
+            }
+        } catch {
+            // ignore storage errors
+        }
+    }, []);
+
     // Countdown + Live Viewers
     useEffect(() => {
         const timer = setInterval(() => {
@@ -367,7 +361,7 @@ export default function DermoGutSuperboost({ product }: Props) {
         };
     }, []);
 
-    // Live Purchase Toast Simulator (Every 12s shows a purchase for 5.5s and decrements stock down to 6)
+    // Live Purchase Toast Simulator
     useEffect(() => {
         if (dismissedToast || isCodModalOpen) return;
 
@@ -419,15 +413,25 @@ export default function DermoGutSuperboost({ product }: Props) {
             setSelectedPkgId(pkgId);
         }
         setShowSaleToast(false);
+        setFormError(null);
+        setFormOpenedAt(Date.now());
         setIsCodModalOpen(true);
     };
 
     const handleOrderSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (isSubmitting) return;
         setFormError(null);
 
-        if (!customerName.trim() || !customerPhone.trim() || !department || !city.trim() || !address.trim()) {
-            setFormError('Por favor completa tu nombre, WhatsApp, departamento, ciudad y dirección exacta para despachar tu pedido.');
+        // Frontend validation of Colombian 10-digit cellular
+        const cleanDigits = customerPhone.replace(/\D+/g, '').replace(/^57/, '');
+        if (!/^3\d{9}$/.test(cleanDigits) || /^3(\d)\1{8}$/.test(cleanDigits)) {
+            setFormError('Por favor ingresa un número de WhatsApp / Celular válido en Colombia (10 dígitos comenzando en 3).');
+            return;
+        }
+
+        if (!customerName.trim() || !department || !city.trim() || !address.trim()) {
+            setFormError('Por favor completa tu nombre, departamento, ciudad y dirección exacta para despachar tu pedido.');
             return;
         }
 
@@ -436,7 +440,7 @@ export default function DermoGutSuperboost({ product }: Props) {
             const response = await axios.post('/biolab/order', {
                 bundle_id: selectedPkgId,
                 customer_name: customerName.trim(),
-                customer_phone: customerPhone.trim(),
+                customer_phone: cleanDigits,
                 customer_email: customerEmail.trim() || null,
                 department,
                 city: city.trim(),
@@ -446,18 +450,32 @@ export default function DermoGutSuperboost({ product }: Props) {
                 pet_name: petName.trim() || null,
                 notes: notes.trim() || null,
                 order_bump: orderBump,
+                website_url: websiteUrlHoneypot,
+                form_opened_at: formOpenedAt,
             });
 
             if (response.data?.success) {
-                setOrderSuccess({
+                const confirmedOrder = {
                     order_code: response.data.order_code,
                     bundle_title: response.data.order?.bundle_title || selectedPkg.name,
-                    formatted_price: response.data.order?.formatted_price || formatCOP(selectedPkg.price),
+                    formatted_price: response.data.order?.formatted_total || formatCOP(selectedPkg.price),
                     whatsapp_url: response.data.whatsapp_url,
                     guide_pdf_url:
                         response.data.guide_pdf_url ||
                         '/guias/guia-nutricion-clinica-hipoalergenica-avipet-biolab.pdf',
-                });
+                };
+                setOrderSuccess(confirmedOrder);
+                try {
+                    localStorage.setItem(
+                        'biolab_cod_order_lock',
+                        JSON.stringify({
+                            expires_at: Date.now() + 15 * 60 * 1000,
+                            order: confirmedOrder,
+                        })
+                    );
+                } catch {
+                    // ignore storage errors
+                }
             } else {
                 setFormError('No pudimos procesar tu solicitud. Intenta nuevamente.');
             }
@@ -537,11 +555,9 @@ export default function DermoGutSuperboost({ product }: Props) {
                 {/* 3. HERO BUY-BOX FUNNEL (ABOVE THE FOLD) */}
                 <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-14">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-                        {/* LEFT COLUMN: STICKY PRODUCT GALLERY + GIF DEMO + VISUAL STATS */}
+                        {/* LEFT COLUMN: STICKY PRODUCT GALLERY (4 UNIQUE VIEWS) + CLINICAL STATS */}
                         <div className="lg:col-span-6 lg:sticky lg:top-16 space-y-4">
-                            {/* Main 1:1 Image / GIF Frame */}
                             <div className="relative bg-white rounded-3xl border-2 border-slate-200 shadow-xl overflow-hidden">
-                                {/* Top Floating Badges */}
                                 <div className="absolute top-3.5 left-3.5 right-3.5 z-10 flex items-center justify-between gap-2 pointer-events-none">
                                     <span className="bg-[#1E1446]/90 backdrop-blur-md text-white text-[11px] sm:text-xs font-extrabold px-3 py-1.5 rounded-full shadow-md">
                                         {GALLERY_IMAGES[activeImageIdx].badge}
@@ -559,7 +575,6 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     />
                                 </div>
 
-                                {/* Bottom Caption Strip */}
                                 <div className="bg-slate-900 text-white px-4 py-2.5 flex items-center justify-between gap-3 text-xs">
                                     <span className="font-medium text-slate-200 line-clamp-1">
                                         {GALLERY_IMAGES[activeImageIdx].caption}
@@ -570,8 +585,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                                 </div>
                             </div>
 
-                            {/* 6 Thumbnail Selector Strip (Includes 🎬 Video GIF) */}
-                            <div className="grid grid-cols-6 gap-2">
+                            {/* 4 Exclusive Thumbnail Strip */}
+                            <div className="grid grid-cols-4 gap-2.5">
                                 {GALLERY_IMAGES.map((img, idx) => (
                                     <button
                                         key={idx}
@@ -591,7 +606,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             />
                                         </div>
                                         <div
-                                            className={`text-[10px] font-bold py-1 text-center truncate px-1 ${
+                                            className={`text-[11px] font-bold py-1 text-center truncate px-1 ${
                                                 activeImageIdx === idx
                                                     ? 'bg-indigo-600 text-white'
                                                     : 'bg-slate-100 text-slate-700'
@@ -656,9 +671,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                             </div>
                         </div>
 
-                        {/* RIGHT COLUMN: FUNNELISH BUY BOX + KACHING BUNDLES + POPUP TRIGGER */}
+                        {/* RIGHT COLUMN: FUNNELISH BUY BOX (PRECIO SOLO EN EL BOTÓN DE COMPRAR) */}
                         <div className="lg:col-span-6 space-y-5">
-                            {/* Social Proof & Live Viewers Pill */}
                             <div className="space-y-2">
                                 <div className="flex flex-wrap items-center gap-2">
                                     <div className="inline-flex items-center gap-1 bg-amber-100 border border-amber-300 text-amber-900 px-3 py-1 rounded-full text-xs font-extrabold">
@@ -680,43 +694,6 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <strong className="text-indigo-700">40% Micro-Proteína Novel Hipoalergénica</strong> +{' '}
                                     <strong className="text-indigo-700">4.5% Ácido Láurico + Omega 3-6-9 + Prebióticos</strong>.
                                 </p>
-                            </div>
-
-                            {/* Price Anchor + Veterinary Cost Comparison Mental Trigger */}
-                            <div className="bg-white rounded-2xl border-2 border-indigo-100 p-4 space-y-3 shadow-sm">
-                                <div className="flex flex-wrap items-center justify-between gap-3">
-                                    <div>
-                                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block">
-                                            Precio Oferta de Lanzamiento Hoy:
-                                        </span>
-                                        <div className="flex items-baseline gap-2.5 mt-0.5">
-                                            <span className="text-3xl sm:text-4xl font-black text-emerald-600">
-                                                {formatCOP(selectedPkg.price)}
-                                            </span>
-                                            <span className="text-base sm:text-lg text-slate-400 line-through font-bold">
-                                                {formatCOP(selectedPkg.compareAt)}
-                                            </span>
-                                            <span className="bg-rose-100 text-rose-700 text-xs font-black px-2.5 py-1 rounded-full">
-                                                AHORRAS {formatCOP(selectedPkg.savings)}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <span className="inline-flex items-center gap-1 text-xs font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
-                                            ✅ Envío Gratis + Contraentrega
-                                        </span>
-                                        <p className="text-[11px] text-slate-600 font-bold mt-1">
-                                            ☕ Solo <strong>{formatCOP(Math.round(selectedPkg.price / selectedPkg.doses))} al día</strong> por dosis
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Mental Trigger: Cost Comparison vs Vet Visits */}
-                                <div className="bg-indigo-50/80 border border-indigo-200/80 rounded-xl px-3.5 py-2 text-xs text-indigo-950 flex items-center justify-between gap-2">
-                                    <span>
-                                        💡 <strong>Ahorro Inteligente:</strong> Una sola consulta dermatológica + exámenes y cremas cuesta <strong>+$280.000 COP</strong>.
-                                    </span>
-                                </div>
                             </div>
 
                             {/* Dynamic Stock Scarcity & Countdown Strip */}
@@ -748,7 +725,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                             </div>
 
                             {/* =========================================================
-                                PASO 1: KACHING-STYLE BUNDLE SELECTOR (RADIO CARDS)
+                                PASO 1: SELECTOR DE CANTIDAD (SIN REPETIR PRECIOS, SOLO EN EL BOTÓN)
                                ========================================================= */}
                             <div className="bg-white rounded-3xl border-2 border-slate-200 p-4 sm:p-5 shadow-lg space-y-4">
                                 <div className="flex items-center justify-between">
@@ -757,11 +734,11 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             PASO 1
                                         </span>
                                         <h2 className="text-base sm:text-lg font-black text-slate-900">
-                                            ELIGE TU OFERTA CON ENVÍO GRATIS
+                                            ELIGE TU PLAN DE TRATAMIENTO
                                         </h2>
                                     </div>
                                     <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
-                                        Pagas en Casa
+                                        🚚 Envío Gratis
                                     </span>
                                 </div>
 
@@ -792,52 +769,40 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     </div>
                                                 )}
 
-                                                <div className="flex items-center justify-between gap-3">
-                                                    <div className="flex items-start gap-3">
-                                                        <div
-                                                            className={`mt-1 h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                                                                isSelected
-                                                                    ? 'border-indigo-600 bg-indigo-600'
-                                                                    : 'border-slate-300 bg-white'
-                                                            }`}
-                                                        >
-                                                            {isSelected && (
-                                                                <div className="h-2 w-2 rounded-full bg-white" />
-                                                            )}
-                                                        </div>
-
-                                                        <div>
-                                                            <span className="font-black text-sm sm:text-base text-slate-900 block">
-                                                                {pkg.name}
-                                                            </span>
-                                                            <p className="text-xs font-semibold text-slate-500 mt-0.5">
-                                                                {pkg.subtitle} •{' '}
-                                                                <span className="text-indigo-700 font-bold">
-                                                                    Sale a {formatCOP(pkg.unitPrice)} por bolsa
-                                                                </span>
-                                                            </p>
-                                                            <div className="flex flex-wrap gap-1.5 mt-2">
-                                                                {pkg.perks.map((perk, idx) => (
-                                                                    <span
-                                                                        key={idx}
-                                                                        className="text-[11px] font-bold bg-white border border-slate-200 text-slate-700 px-2 py-0.5 rounded-md"
-                                                                    >
-                                                                        ✓ {perk}
-                                                                    </span>
-                                                                ))}
-                                                            </div>
-                                                        </div>
+                                                <div className="flex items-start gap-3">
+                                                    <div
+                                                        className={`mt-1 h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                                                            isSelected
+                                                                ? 'border-indigo-600 bg-indigo-600'
+                                                                : 'border-slate-300 bg-white'
+                                                        }`}
+                                                    >
+                                                        {isSelected && (
+                                                            <div className="h-2 w-2 rounded-full bg-white" />
+                                                        )}
                                                     </div>
 
-                                                    <div className="text-right shrink-0">
-                                                        <div className="text-lg sm:text-xl font-black text-slate-900">
-                                                            {formatCOP(pkg.price)}
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center justify-between gap-2">
+                                                            <span className="font-black text-sm sm:text-base text-slate-900">
+                                                                {pkg.name}
+                                                            </span>
+                                                            <span className="text-xs font-black text-indigo-700 bg-indigo-100 px-2.5 py-0.5 rounded-lg shrink-0">
+                                                                {pkg.doses} Dosis ({pkg.weight})
+                                                            </span>
                                                         </div>
-                                                        <div className="text-xs text-slate-400 line-through font-bold">
-                                                            {formatCOP(pkg.compareAt)}
-                                                        </div>
-                                                        <div className="text-[11px] font-extrabold text-emerald-700 mt-0.5">
-                                                            Envío Gratis
+                                                        <p className="text-xs font-semibold text-slate-500 mt-0.5">
+                                                            {pkg.subtitle}
+                                                        </p>
+                                                        <div className="flex flex-wrap gap-1.5 mt-2">
+                                                            {pkg.perks.map((perk, idx) => (
+                                                                <span
+                                                                    key={idx}
+                                                                    className="text-[11px] font-bold bg-white border border-slate-200 text-slate-700 px-2 py-0.5 rounded-md"
+                                                                >
+                                                                    ✓ {perk}
+                                                                </span>
+                                                            ))}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -864,48 +829,50 @@ export default function DermoGutSuperboost({ product }: Props) {
                                         <div className="text-xs sm:text-sm">
                                             <div className="flex flex-wrap items-center gap-1.5 font-black text-slate-900">
                                                 <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded text-[11px]">
-                                                    🎁 BONO EXCLUSIVO HOY (PDF 6 PÁGINAS)
+                                                    🎁 BONO VIP INCLUIDO (PDF 6 PÁGINAS)
                                                 </span>
                                                 <span>
                                                     ¡SÍ! Incluir Guía Digital de Nutrición Clínica Hipoalergénica + Despacho Prioritario
                                                 </span>
                                             </div>
                                             <p className="text-xs text-slate-700 mt-1 leading-relaxed">
-                                                Descarga inmediata al pedir + envío a tu WhatsApp del Manual Clínico de 6 páginas (Semáforo de alérgenos, 3 recetas caseras y bitácora de 30 días).{' '}
-                                                <span className="line-through text-slate-400 font-bold">$29.900</span>{' '}
-                                                <strong className="text-emerald-700 font-black">¡HOY GRATIS ($0 COP)!</strong>
+                                                Descarga inmediata al confirmar tu pedido + envío a tu WhatsApp del Manual Clínico de 6 páginas (Semáforo de alérgenos, 3 recetas caseras y bitácora de 30 días).{' '}
+                                                <strong className="text-emerald-700 font-black">¡INCLUIDO GRATIS!</strong>
                                             </p>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* =========================================================
-                                    GIANT SHOPIFY RELEASIT COD POPUP TRIGGER BUTTON
+                                    BOTÓN ÚNICO DE COMPRA CON TODA LA INFORMACIÓN DE PRECIO
                                    ========================================================= */}
                                 <div className="pt-1 space-y-2.5">
                                     <button
                                         type="button"
                                         onClick={() => openCodModal()}
-                                        className="w-full py-4 sm:py-5 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-base sm:text-xl shadow-xl shadow-emerald-600/30 border-b-4 border-emerald-800 transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer flex flex-col items-center justify-center gap-0.5"
+                                        className="w-full py-4 sm:py-5 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black shadow-xl shadow-emerald-600/30 border-b-4 border-emerald-800 transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer flex flex-col items-center justify-center gap-1"
                                     >
-                                        <span className="flex items-center gap-2">
-                                            <span>🚚 ¡PEDIR AHORA Y PAGAR EN CASA! — {formatCOP(selectedPkg.price)}</span>
+                                        <span className="text-base sm:text-xl tracking-tight flex flex-wrap items-center justify-center gap-2">
+                                            <span>🚚 PEDIR CONTRAENTREGA — {formatCOP(selectedPkg.price)} COP</span>
+                                            <span className="text-xs sm:text-sm font-bold text-emerald-100 line-through opacity-85">
+                                                {formatCOP(selectedPkg.compareAt)}
+                                            </span>
                                         </span>
-                                        <span className="text-[11px] sm:text-xs font-bold text-emerald-100 tracking-wide">
-                                            🔒 Clic aquí para ingresar tu dirección en 30 segundos • Envío 100% Gratis
+                                        <span className="text-[11px] sm:text-xs font-bold text-amber-200 tracking-wide">
+                                            🔥 Ahorras {formatCOP(selectedPkg.savings)} hoy • Envío 100% Gratis • Pagas al recibir en casa
                                         </span>
                                     </button>
 
                                     <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] font-bold text-slate-500 text-center">
-                                        <span>💵 Pagas en Efectivo o Nequi/Bancolombia al recibir</span>
+                                        <span>💵 Efectivo o Transferencia al transportador</span>
                                         <span>•</span>
-                                        <span>📦 Despacho Prioritario 24h</span>
+                                        <span>🛡️ Sistema Protegido Anti-Duplicados</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* =========================================================
-                                ANIMATED GIF DEMO CARD RIGHT IN THE BUY FLOW
+                                ANIMATED GIF DEMO CARD (CON SUS 3 ESCENAS EXCLUSIVAS)
                                ========================================================= */}
                             <div className="bg-slate-900 text-white rounded-3xl p-4 sm:p-5 border-2 border-indigo-500/30 shadow-xl">
                                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
@@ -923,10 +890,10 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     </div>
                                     <div className="sm:col-span-7 space-y-2.5">
                                         <span className="text-[11px] font-black uppercase tracking-wider text-cyan-300">
-                                            🎬 MIRA LO FÁCIL QUE ES TRANSFORMAR SU SALUD
+                                            🎬 MÍRALO EN ACCIÓN EN 3 PASOS
                                         </span>
                                         <h3 className="text-base sm:text-lg font-black leading-snug">
-                                            Sin peleas con pastillas amargas ni cremas pegajosas que tu mascota se lame
+                                            Mide 1 cuchara (5g), mezcla en su plato y observa el cambio en su piel y digestión
                                         </h3>
                                         <ul className="space-y-1.5 text-xs text-slate-300">
                                             <li>✅ <strong>40% Micro-Proteína Novel:</strong> No dispara alergia como el pollo o la res.</li>
@@ -941,7 +908,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                 </section>
 
                 {/* =================================================================
-                    4. SECTION: ANTES VS DESPUÉS + ROMPE EL CICLO DE LA ALERGIA
+                    4. SECTION: ANTES VS DESPUÉS (IMAGEN EXCLUSIVA DE ESTA SECCIÓN)
                    ================================================================= */}
                 <section className="bg-white border-y border-slate-200 py-14 sm:py-20">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1038,7 +1005,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     onClick={() => openCodModal()}
                                     className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm sm:text-base shadow-lg transition cursor-pointer"
                                 >
-                                    🚚 PEDIR AHORA CON PAGO CONTRAENTREGA →
+                                    🚚 PEDIR CONTRAENTREGA — {formatCOP(selectedPkg.price)} COP →
                                 </button>
                             </div>
                         </div>
@@ -1113,7 +1080,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                 </section>
 
                 {/* =================================================================
-                    6. SECTION: MODO DE USO EN 3 SEGUNDOS + CALCULADORA DE DOSIS
+                    6. SECTION: MODO DE USO (IMAGEN EXCLUSIVA DE ESTA SECCIÓN)
                    ================================================================= */}
                 <section className="py-12 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
@@ -1129,7 +1096,6 @@ export default function DermoGutSuperboost({ product }: Props) {
                                 <strong>DERMO & GUT SUPERBOOST®</strong> tiene un aroma y sabor natural tostado que transforma su plato diario en un superalimento clínico.
                             </p>
 
-                            {/* Interactive Dosage Calculator */}
                             <div className="bg-white rounded-3xl border-2 border-indigo-100 p-5 sm:p-6 shadow-md space-y-4">
                                 <h3 className="text-sm font-black uppercase tracking-wider text-indigo-900">
                                     ⚖️ Calcula cuánto te dura según el peso de tu mascota:
@@ -1179,15 +1145,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             🥄 Dosis diaria: 1 cuchara dosificadora (5g) al día.
                                         </p>
                                         <p className="text-slate-700">
-                                            • <strong>1 Bolsa (250g)</strong> te rinde para <strong>50 días completos</strong>.
+                                            • <strong>1 Bolsa (250g)</strong> te rinde para <strong>50 días completos</strong>, o el <strong>Pack Dúo</strong> para <strong>100 días</strong>.
                                         </p>
-                                        <button
-                                            type="button"
-                                            onClick={() => openCodModal('2_bolsas')}
-                                            className="mt-1 inline-flex items-center gap-1.5 bg-emerald-600 text-white font-black text-xs px-4 py-2 rounded-xl cursor-pointer"
-                                        >
-                                            👉 Pedir Pack Dúo para 100 Días ($124.900)
-                                        </button>
                                     </div>
                                 )}
                                 {petWeightRange === 'medium' && (
@@ -1198,13 +1157,6 @@ export default function DermoGutSuperboost({ product }: Props) {
                                         <p className="text-slate-700">
                                             • <strong>Pack Dúo (500g)</strong> te rinde de <strong>50 a 100 días completos</strong>.
                                         </p>
-                                        <button
-                                            type="button"
-                                            onClick={() => openCodModal('2_bolsas')}
-                                            className="mt-1 inline-flex items-center gap-1.5 bg-emerald-600 text-white font-black text-xs px-4 py-2 rounded-xl cursor-pointer"
-                                        >
-                                            👉 Pedir Pack Dúo Recomendado ($124.900)
-                                        </button>
                                     </div>
                                 )}
                                 {petWeightRange === 'large' && (
@@ -1215,13 +1167,6 @@ export default function DermoGutSuperboost({ product }: Props) {
                                         <p className="text-slate-700">
                                             • <strong>Pack Trío (750g)</strong> te rinde para <strong>75 días de tratamiento continuo</strong>.
                                         </p>
-                                        <button
-                                            type="button"
-                                            onClick={() => openCodModal('3_bolsas')}
-                                            className="mt-1 inline-flex items-center gap-1.5 bg-emerald-600 text-white font-black text-xs px-4 py-2 rounded-xl cursor-pointer"
-                                        >
-                                            👉 Pedir Tratamiento 3 Bolsas ($169.900)
-                                        </button>
                                     </div>
                                 )}
                             </div>
@@ -1256,7 +1201,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                 </section>
 
                 {/* =================================================================
-                    7. SECTION: TRANSPARENCIA NUTRICIONAL + TABLA GARANTIZADA
+                    7. SECTION: TRANSPARENCIA NUTRICIONAL (FRENTE Y REVERSO EXCLUSIVO AQUÍ)
                    ================================================================= */}
                 <section className="bg-[#1E1446] text-white py-14 sm:py-20">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1328,7 +1273,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                 </section>
 
                 {/* =================================================================
-                    8. SECTION: LOOX / JUDGE.ME STYLE VERIFIED UGC PHOTO REVIEWS
+                    8. SECTION: 4 FOTOS REALES DE CLIENTES (EXCLUSIVAS AQUÍ)
                    ================================================================= */}
                 <section className="py-14 sm:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center max-w-3xl mx-auto space-y-3 mb-10">
@@ -1442,14 +1387,14 @@ export default function DermoGutSuperboost({ product }: Props) {
                                 onClick={() => openCodModal()}
                                 className="w-full sm:w-auto px-10 py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-base shadow-xl transition cursor-pointer"
                             >
-                                🚚 PEDIR AHORA CON PAGO CONTRAENTREGA ({formatCOP(selectedPkg.price)}) →
+                                🚚 PEDIR CONTRAENTREGA — {formatCOP(selectedPkg.price)} COP →
                             </button>
                         </div>
                     </div>
                 </section>
 
                 {/* =================================================================
-                    10. LIVE PURCHASE SIMULATOR TOAST (FOMO SOCIAL PROOF POPUP)
+                    10. LIVE PURCHASE SIMULATOR TOAST (SIN FOTO DE COMPRADOR)
                    ================================================================= */}
                 {showSaleToast && !dismissedToast && !isCodModalOpen && (
                     <div className="fixed bottom-20 lg:bottom-5 left-3 sm:left-5 z-40 max-w-xs sm:max-w-sm bg-white rounded-2xl border border-slate-200 shadow-2xl p-3.5 flex items-center gap-3.5 transition-all duration-500">
@@ -1486,33 +1431,22 @@ export default function DermoGutSuperboost({ product }: Props) {
                 )}
 
                 {/* =================================================================
-                    11. STICKY MOBILE CONVERSION BAR
+                    11. STICKY MOBILE CONVERSION BAR (PRECIO EN EL BOTÓN)
                    ================================================================= */}
                 <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/95 backdrop-blur-md border-t-2 border-slate-200 px-4 py-3 shadow-2xl">
-                    <div className="max-w-md mx-auto flex items-center justify-between gap-3">
-                        <div>
-                            <span className="text-[10px] font-extrabold uppercase text-emerald-700 block">
-                                🚚 Envío Gratis • Pagas al Recibir
-                            </span>
-                            <div className="flex items-baseline gap-1.5">
-                                <span className="text-lg font-black text-slate-900">{formatCOP(selectedPkg.price)}</span>
-                                <span className="text-xs text-slate-400 line-through font-bold">
-                                    {formatCOP(selectedPkg.compareAt)}
-                                </span>
-                            </div>
-                        </div>
+                    <div className="max-w-md mx-auto">
                         <button
                             type="button"
                             onClick={() => openCodModal()}
-                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm px-5 py-3 rounded-xl shadow-lg cursor-pointer shrink-0"
+                            className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs sm:text-sm py-3.5 px-4 rounded-xl shadow-lg cursor-pointer flex items-center justify-center gap-2"
                         >
-                            🚚 Pedir Contraentrega →
+                            <span>🚚 PEDIR CONTRAENTREGA — {formatCOP(selectedPkg.price)} COP</span>
                         </button>
                     </div>
                 </div>
 
                 {/* =================================================================
-                    12. SHOPIFY RELEASIT-STYLE 1-STEP COD POPUP MODAL
+                    12. SHOPIFY RELEASIT-STYLE 1-STEP COD POPUP MODAL + ESCUDO ANTI-BOT
                    ================================================================= */}
                 {isCodModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/75 backdrop-blur-sm overflow-y-auto">
@@ -1539,7 +1473,6 @@ export default function DermoGutSuperboost({ product }: Props) {
                             {/* Scrollable Modal Body */}
                             <div className="p-4 sm:p-5 overflow-y-auto space-y-4">
                                 {orderSuccess ? (
-                                    /* CONFIRMATION + INSTANT PDF DOWNLOAD + 1-CLICK WHATSAPP OTO */
                                     <div className="space-y-4">
                                         <div className="bg-emerald-50 border-2 border-emerald-500 rounded-2xl p-4 text-center space-y-2">
                                             <div className="mx-auto h-12 w-12 rounded-full bg-emerald-600 text-white flex items-center justify-center text-2xl font-black">
@@ -1549,11 +1482,11 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                 ORDEN CONFIRMADA #{orderSuccess.order_code}
                                             </span>
                                             <h4 className="text-lg font-black text-slate-900">
-                                                ¡Gracias {customerName}! Tu paquete está en alistamiento
+                                                ¡Tu paquete está en alistamiento prioritario!
                                             </h4>
                                             <p className="text-xs text-slate-600">
                                                 Elegiste: <strong>{orderSuccess.bundle_title}</strong> • Pagas{' '}
-                                                <strong className="text-emerald-700">{orderSuccess.formatted_price}</strong> al recibir en {city} ({department}).
+                                                <strong className="text-emerald-700">{orderSuccess.formatted_price}</strong> al recibir en casa.
                                             </p>
                                         </div>
 
@@ -1561,7 +1494,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                         <div className="bg-indigo-950 text-white rounded-2xl p-4 border-2 border-amber-400 space-y-2.5 shadow-md">
                                             <div className="flex items-center justify-between">
                                                 <span className="bg-amber-400 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full">
-                                                    🎁 TU BONO VIP ESTÁ LISTO ($29.900 → GRATIS)
+                                                    🎁 TU BONO VIP ESTÁ LISTO (GRATIS)
                                                 </span>
                                                 <span className="text-[11px] text-cyan-300 font-bold">PDF • 6 Páginas</span>
                                             </div>
@@ -1579,14 +1512,13 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             </a>
                                         </div>
 
-                                        {/* 1-CLICK WHATSAPP CONFIRMATION / OTO UPSELL */}
                                         {selectedPkgId === '1_bolsa' ? (
                                             <div className="bg-amber-50 border-2 border-amber-400 rounded-2xl p-4 space-y-2.5">
                                                 <span className="bg-rose-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full">
                                                     🔥 OFERTA ÚNICA PARA TU ORDEN #{orderSuccess.order_code}
                                                 </span>
                                                 <h5 className="text-sm font-black text-slate-900">
-                                                    ¿Quieres agregar una 2.ª bolsa en el mismo envío gratis por solo $55.000 adicionales?
+                                                    ¿Quieres agregar una 2.ª bolsa en el mismo envío gratis con descuento Dúo?
                                                 </h5>
                                                 <a
                                                     href={`https://wa.me/573235813942?text=${encodeURIComponent(
@@ -1612,10 +1544,25 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     </div>
                                 ) : (
                                     <form onSubmit={handleOrderSubmit} className="space-y-3.5">
-                                        {/* Quick Bundle Switcher inside Modal (Releasit Style) */}
+                                        {/* HONEYPOT ANTI-BOT FIELD (INVISIBLE TO HUMANS) */}
+                                        <div className="hidden" aria-hidden="true">
+                                            <label>
+                                                No llenar este campo:
+                                                <input
+                                                    type="text"
+                                                    name="website_url"
+                                                    tabIndex={-1}
+                                                    autoComplete="off"
+                                                    value={websiteUrlHoneypot}
+                                                    onChange={(e) => setWebsiteUrlHoneypot(e.target.value)}
+                                                />
+                                            </label>
+                                        </div>
+
+                                        {/* Quick Bundle Switcher inside Modal */}
                                         <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200 space-y-2">
                                             <div className="flex items-center justify-between text-xs font-extrabold text-slate-700">
-                                                <span>📦 Paquete seleccionado:</span>
+                                                <span>📦 Plan seleccionado:</span>
                                                 <span className="text-emerald-700">Envío Gratis Incluido</span>
                                             </div>
                                             <div className="grid grid-cols-3 gap-1.5">
@@ -1631,9 +1578,9 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                         }`}
                                                     >
                                                         <span className="block text-[11px]">
-                                                            {p.bags === 1 ? '1 Bolsa' : p.bags === 2 ? '🔥 2 Bolsas' : '🏆 3 Bolsas'}
+                                                            {p.bags === 1 ? '1 Bolsa (250g)' : p.bags === 2 ? '🔥 2 Bolsas' : '🏆 3 Bolsas'}
                                                         </span>
-                                                        <span className="block text-xs">{formatCOP(p.price)}</span>
+                                                        <span className="block text-[10px] opacity-90">{p.discountPct}% OFF</span>
                                                     </button>
                                                 ))}
                                             </div>
@@ -1645,7 +1592,6 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             </div>
                                         )}
 
-                                        {/* Nombre Completo */}
                                         <div>
                                             <label className="block text-xs font-extrabold text-slate-700 mb-1">
                                                 👤 Nombre y Apellido *
@@ -1660,11 +1606,10 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             />
                                         </div>
 
-                                        {/* WhatsApp + Tipo de Mascota */}
                                         <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
                                             <div className="sm:col-span-7">
                                                 <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                                                    📱 WhatsApp / Celular *
+                                                    📱 WhatsApp / Celular (10 dígitos) *
                                                 </label>
                                                 <input
                                                     type="tel"
@@ -1691,7 +1636,6 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             </div>
                                         </div>
 
-                                        {/* Departamento + Ciudad */}
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                                             <div>
                                                 <label className="block text-xs font-extrabold text-slate-700 mb-1">
@@ -1726,7 +1670,6 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             </div>
                                         </div>
 
-                                        {/* Dirección + Barrio */}
                                         <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
                                             <div className="sm:col-span-7">
                                                 <label className="block text-xs font-extrabold text-slate-700 mb-1">
@@ -1755,35 +1698,25 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             </div>
                                         </div>
 
-                                        {/* Order Summary Receipt inside Modal */}
-                                        <div className="bg-emerald-50/70 rounded-2xl border border-emerald-200 p-3.5 space-y-1.5 text-xs">
-                                            <div className="flex justify-between font-bold text-slate-700">
-                                                <span>{selectedPkg.name}</span>
-                                                <span>{formatCOP(selectedPkg.price)}</span>
-                                            </div>
-                                            <div className="flex justify-between text-emerald-700 font-bold">
-                                                <span>🎁 Bono Guía Clínica PDF (6 Páginas) + Prioridad</span>
-                                                <span>GRATIS ($0)</span>
-                                            </div>
-                                            <div className="flex justify-between text-emerald-700 font-bold">
-                                                <span>🚚 Envío Asegurado a Domicilio</span>
-                                                <span>GRATIS ($0)</span>
-                                            </div>
-                                            <div className="border-t border-emerald-200 pt-1.5 flex justify-between text-sm sm:text-base font-black text-slate-900">
-                                                <span>Total a Pagar en Casa al Recibir:</span>
-                                                <span className="text-emerald-700">{formatCOP(selectedPkg.price)} COP</span>
-                                            </div>
-                                        </div>
-
+                                        {/* Botón único de confirmación con el precio total */}
                                         <button
                                             type="submit"
                                             disabled={isSubmitting}
-                                            className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm sm:text-base shadow-xl border-b-4 border-emerald-800 cursor-pointer disabled:opacity-60"
+                                            className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm sm:text-base shadow-xl border-b-4 border-emerald-800 cursor-pointer disabled:opacity-60 flex flex-col items-center justify-center gap-0.5"
                                         >
-                                            {isSubmitting
-                                                ? '⏳ REGISTRANDO TU PEDIDO...'
-                                                : `✅ CONFIRMAR PEDIDO CONTRAENTREGA (${formatCOP(selectedPkg.price)})`}
+                                            <span>
+                                                {isSubmitting
+                                                    ? '⏳ VERIFICANDO Y REGISTRANDO TU PEDIDO...'
+                                                    : `✅ CONFIRMAR PEDIDO — ${formatCOP(selectedPkg.price)} COP`}
+                                            </span>
+                                            <span className="text-[11px] font-bold text-emerald-100">
+                                                🚚 Envío Gratis + Guía PDF Gratis • Pagas al recibir en casa
+                                            </span>
                                         </button>
+
+                                        <p className="text-[10px] font-bold text-slate-400 text-center">
+                                            🛡️ Protegido contra pedidos duplicados y bots automatizados (Máx. 1 orden activa por celular).
+                                        </p>
                                     </form>
                                 )}
                             </div>
