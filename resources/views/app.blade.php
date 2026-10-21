@@ -18,7 +18,7 @@
         $isBaseDomain = in_array($hostNoWww, ['localhost', '127.0.0.1', $baseDomain]) || str_contains($cleanHost, 'easypanel.host');
 
         $isBioLabHost = str_starts_with($hostNoWww, 'biolab.');
-        $isBioLabPage = $isBioLabHost || request()->is('biolab*') || request()->is('producto/dermo-gut-superboost*');
+        $isBioLabPage = $isBioLabHost || request()->is('biolab*') || request()->is('dermo-gut-superboost*') || request()->is('producto/dermo-gut-superboost*');
 
         $tenantSlug = request()->route('slug') ?? request()->route('subdomain') ?? session('current_tenant_slug');
         $currentTenant = null;
@@ -239,19 +239,21 @@
     @elseif($isBioLabPage)
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <meta name="description" content="Suplemento biotecnológico 3 en 1 en polvo para perros y gatos. Con Micro-Proteína Novel de Hermetia illucens y Ácido Láurico natural. Corta la picazón, hongos, caída de pelo y regula la digestión. 100% libre de gluten, pollo y res. Envíos gratis y pago contraentrega en toda Colombia.">
-    <meta name="keywords" content="dermo gut superboost, avipet biolab, suplemento dermatitis perros, picazon perros y gatos, hermetia illucens mascotas, acido laurico perros, prebioticos perros y gatos, suplemento hipoalergenico mascotas colombia">
+    <meta name="description" content="Suplemento biotecnológico 3 en 1 en polvo para perros y gatos en Colombia. Con Matriz de Micro-Proteína Novel Hipoalergénica y Ácido Láurico Dermo-Activo. Alivia picazón, dermatitis, lamido de patas, caída de pelo, heces blandas y mal aliento. 0% pollo, 0% res, sin gluten. Envío GRATIS + Pago Contraentrega + Comunidad VIP con Médica Veterinaria.">
+    <meta name="keywords" content="suplemento dermatitis perros colombia, mi perro se rasca mucho y se lame las patas, suplemento hipoalergenico perros y gatos, alergia alimentaria perros sin pollo ni res, vitaminas caida de pelo perros, mal aliento perros y gatos remedio, prebioticos perros colombia, omega 3 6 9 mascotas, acido laurico perros, dermo gut superboost, avipet biolab">
     <meta name="author" content="AVIPET BioLab®">
     <link rel="canonical" href="{{ $canonicalUrl }}">
     <link rel="alternate" hreflang="es-CO" href="{{ $canonicalUrl }}">
+    <link rel="alternate" hreflang="es" href="{{ $canonicalUrl }}">
+    <link rel="alternate" hreflang="x-default" href="{{ $canonicalUrl }}">
 
     <!-- Open Graph / WhatsApp Business / Meta Catalog -->
     <meta property="og:type" content="product">
     <meta property="og:url" content="{{ $canonicalUrl }}">
-    <meta property="og:title" content="Dermo &amp; Gut Superboost (250g) | Alivio de Dermatitis, Picazón y Digestión — AVIPET BioLab®">
-    <meta property="og:description" content="Suplemento biotecnológico 3 en 1 en polvo para perros y gatos. Con Micro-Proteína Novel de Hermetia illucens y Ácido Láurico natural. Corta la picazón, hongos, caída de pelo y regula la digestión. 100% libre de gluten, pollo y res. Envíos gratis y pago contraentrega en toda Colombia.">
-    <meta property="og:image" content="https://avipetapp.com/images/biolab/banner-hero-oficial.jpg">
-    <meta property="og:image:secure_url" content="https://avipetapp.com/images/biolab/banner-hero-oficial.jpg">
+    <meta property="og:title" content="Dermo &amp; Gut Superboost (250g) | Alivio de Dermatitis, Picazón, Pelo y Digestión — AVIPET BioLab®">
+    <meta property="og:description" content="Suplemento biotecnológico 3 en 1 en polvo para perros y gatos. Con Matriz de Micro-Proteína Novel Hipoalergénica y Ácido Láurico natural. Corta la picazón, lamido de patas, caída de pelo y regula la digestión. 0% pollo, 0% res y libre de gluten. Envío GRATIS y Pago Contraentrega en toda Colombia.">
+    <meta property="og:image" content="https://biolab.avipetapp.com/images/biolab/hero-estudio-1-bolsa.jpg">
+    <meta property="og:image:secure_url" content="https://biolab.avipetapp.com/images/biolab/hero-estudio-1-bolsa.jpg">
     <meta property="og:image:alt" content="AVIPET BioLab® — Dermo &amp; Gut Superboost (250g)">
     <meta property="og:site_name" content="AVIPET BioLab®">
     <meta property="og:locale" content="es_CO">
@@ -261,26 +263,27 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Dermo &amp; Gut Superboost (250g) | Alivio de Dermatitis, Picazón y Digestión — AVIPET BioLab®">
-    <meta name="twitter:description" content="Suplemento biotecnológico 3 en 1 en polvo para perros y gatos. 100% libre de gluten, pollo y res. Envíos gratis y pago contraentrega en toda Colombia.">
-    <meta name="twitter:image" content="https://avipetapp.com/images/biolab/banner-hero-oficial.jpg">
+    <meta name="twitter:description" content="Suplemento biotecnológico 3 en 1 en polvo para perros y gatos. 0% pollo, 0% res y libre de gluten. Envío GRATIS + Pago Contraentrega en Colombia.">
+    <meta name="twitter:image" content="https://biolab.avipetapp.com/images/biolab/hero-estudio-1-bolsa.jpg">
 
-    <!-- Schema.org JSON-LD Product + AggregateOffer + AggregateRating + FAQPage -->
+    <!-- Schema.org JSON-LD Product + AggregateOffer + OfferShippingDetails + MerchantReturnPolicy + AggregateRating + FAQPage -->
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
       "@@graph": [
         {
           "@@type": "Product",
-          "@@id": "https://avipetapp.com/biolab/dermo-gut-superboost#product",
-          "name": "AVIPET BioLab® — Dermo & Gut Superboost (250g)",
-          "description": "Suplemento biotecnológico 3 en 1 en polvo para perros y gatos. Con Micro-Proteína Novel de Hermetia illucens y Ácido Láurico natural. Corta la picazón, hongos, caída de pelo y regula la digestión. 100% libre de gluten, pollo y res.",
+          "@@id": "https://biolab.avipetapp.com/dermo-gut-superboost#product",
+          "name": "AVIPET BioLab® — Dermo & Gut Superboost (250g) | Suplemento 3 en 1 Piel, Pelo y Digestión para Perros y Gatos",
+          "description": "Suplemento nutricional biotecnológico 3 en 1 en polvo para perros y gatos. Formulado con Matriz de Micro-Proteína Novel Hipoalergénica (40%), Ácido Láurico Dermo-Activo (4.5%), Omega 3-6-9 de Linaza Dorada, Fibra Prebiótica, Cúrcuma y Clorofila. Alivia la picazón, lamido de patas (pododermatitis), caída de pelo, heces blandas y mal aliento. 100% libre de pollo, res, soya y gluten.",
           "sku": "AVIPET-BIOLAB-DGS-250G",
           "mpn": "BIOLAB-DGS-250",
+          "category": "Suplementos y Vitaminas para Perros y Gatos",
           "image": [
-            "https://avipetapp.com/images/biolab/empaque-frente-250g.jpg",
-            "https://avipetapp.com/images/biolab/empaque-frente-reverso.jpg",
-            "https://avipetapp.com/images/biolab/banner-hero-oficial.jpg",
-            "https://avipetapp.com/images/biolab/afiche-beneficios-dermatitis.jpg"
+            "https://biolab.avipetapp.com/images/biolab/hero-estudio-1-bolsa.jpg",
+            "https://biolab.avipetapp.com/images/biolab/empaque-frente-reverso.jpg",
+            "https://biolab.avipetapp.com/images/biolab/funnel-pack-trio.png",
+            "https://biolab.avipetapp.com/images/biolab/funnel-antes-despues.png"
           ],
           "brand": {
             "@@type": "Brand",
@@ -300,43 +303,89 @@
             "highPrice": "169900",
             "offerCount": "3",
             "availability": "https://schema.org/InStock",
-            "itemCondition": "https://schema.org/NewCondition"
+            "itemCondition": "https://schema.org/NewCondition",
+            "offers": [
+              {
+                "@@type": "Offer",
+                "name": "1 Bolsa Dermo & Gut Superboost (250g - 50 Dosis)",
+                "price": "69900",
+                "priceCurrency": "COP",
+                "priceValidUntil": "2027-12-31",
+                "availability": "https://schema.org/InStock",
+                "url": "{{ $canonicalUrl }}",
+                "shippingDetails": {
+                  "@@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "COP"
+                  },
+                  "shippingDestination": {
+                    "@@type": "DefinedRegion",
+                    "addressCountry": "CO"
+                  },
+                  "deliveryTime": {
+                    "@@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 1,
+                      "unitCode": "DAY"
+                    },
+                    "transitTime": {
+                      "@@type": "QuantitativeValue",
+                      "minValue": 1,
+                      "maxValue": 4,
+                      "unitCode": "DAY"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@@type": "MerchantReturnPolicy",
+                  "applicableCountry": "CO",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                  "merchantReturnDays": 30,
+                  "returnMethod": "https://schema.org/ReturnByMail",
+                  "returnFees": "https://schema.org/FreeReturn"
+                }
+              }
+            ]
           }
         },
         {
           "@@type": "FAQPage",
-          "@@id": "https://avipetapp.com/biolab/dermo-gut-superboost#faq",
+          "@@id": "https://biolab.avipetapp.com/dermo-gut-superboost#faq",
           "mainEntity": [
             {
               "@@type": "Question",
-              "name": "¿En cuánto tiempo veré resultados en mi mascota?",
+              "name": "¿Por qué funciona para la picazón, dermatitis y lamido de patas cuando otros suplementos fallan?",
               "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "Días 3 a 7: Notarás heces más firmes, menos gases y reducción del mal aliento gracias a la fibra prebiótica y la clorofila. Semanas 2 a 3: Disminución notable del enrojecimiento en piel, menor picazón y reducción del lamido de patas por el efecto del Ácido Láurico y la cúrcuma. Semana 4 en adelante: Frenado de la caída excesiva de pelo y crecimiento de pelaje nuevo, fuerte y brillante."
+                "text": "Más del 80% de las alergias alimentarias en perros y gatos son provocadas por las proteínas de pollo, res, lácteos o cereales. Dermo & Gut Superboost utiliza una Matriz de Micro-Proteína Novel Hipoalergénica de alta pureza (fórmula protegida de AVIPET BioLab®) que el sistema inmune de tu mascota no reconoce como alérgeno, combinada con Ácido Láurico Dermo-Activo (4.5%) que combate hongos y levaduras desde adentro."
               }
             },
             {
               "@@type": "Question",
-              "name": "¿Sirve tanto para perros como para gatos?",
+              "name": "¿En cuánto tiempo veré resultados en mi perro o gato?",
               "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "¡Sí! Su perfil de aminoácidos esenciales y ácidos grasos está formulado para la fisiología digestiva y cutánea tanto de perros como de gatos de todas las razas y edades (a partir de los 3 meses de vida)."
+                "text": "Días 5 a 7: Heces más firmes, menos gases y reducción del mal aliento gracias a la fibra prebiótica y la clorofila activa. Días 14 a 21: Disminución notable del enrojecimiento en piel, menor picazón y reducción del lamido de patas por el efecto del Ácido Láurico y la cúrcuma. Día 30 en adelante: Freno de la caída excesiva de pelo y crecimiento de pelaje nuevo, fuerte y brillante."
               }
             },
             {
               "@@type": "Question",
-              "name": "¿Se lo puedo dar si mi perro toma medicamentos o come concentrado medicado?",
+              "name": "¿Qué incluye el pedido además del suplemento Dermo & Gut Superboost?",
               "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "Totalmente. Al ser un suplemento nutricional 100% natural libre de alérgenos y fármacos químicos, actúa como coadyuvante perfecto junto a cualquier dieta veterinaria o tratamiento clínico sin generar interacciones."
+                "text": "Tu pedido incluye Envío 100% Gratis en toda Colombia, Pago Contraentrega en casa y 2 Bonos VIP sin costo: la Guía Clínica de Nutrición Hipoalergénica en PDF y el acceso a nuestra Comunidad VIP en WhatsApp donde contamos con una Médica Veterinaria de confianza para resolver tus dudas."
               }
             },
             {
               "@@type": "Question",
-              "name": "¿Cómo funciona el envío y el pago contraentrega?",
+              "name": "¿Sirve tanto para perros como para gatos y cómo se administra?",
               "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "Despachamos a toda Colombia. Solo registras tus datos de entrega y pagas en efectivo o transferencia únicamente cuando el transportador te entregue el paquete en la puerta de tu casa."
+                "text": "Sí. Está formulado para perros y gatos de todas las razas a partir de los 3 meses de edad. Viene en polvo natural altamente palatable que solo debes espolvorear una vez al día sobre su concentrado o alimento habitual."
               }
             }
           ]

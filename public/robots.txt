@@ -18,6 +18,11 @@ Allow: /clinic-favicon.webp
 Allow: /v/
 Allow: /blog/
 Allow: /blog
+Allow: /biolab
+Allow: /biolab/
+Allow: /dermo-gut-superboost
+Allow: /producto/dermo-gut-superboost
+Allow: /images/biolab/
 Disallow: /admin
 Disallow: /admin/
 Disallow: /super-admin
@@ -28,3 +33,4 @@ Disallow: /registro-clinica
 Disallow: /api/
 
 Sitemap: https://avipetapp.com/sitemap.xml
+Sitemap: https://biolab.avipetapp.com/sitemap.xml
