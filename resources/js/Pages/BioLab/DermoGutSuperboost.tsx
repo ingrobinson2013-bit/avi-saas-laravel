@@ -66,25 +66,25 @@ const COLOMBIA_DEPARTMENTS = [
 // 4 VISTAS DE ESTUDIO EXCLUSIVAS DE LA GALERÍA SUPERIOR (CERO DUPLICADOS EN EL RESTO DE LA PÁGINA)
 const GALLERY_IMAGES = [
     {
-        src: '/images/biolab/hero-estudio-1-bolsa.jpg',
+        src: '/images/biolab/hero-estudio-1-bolsa.webp',
         thumbLabel: 'Empaque 250g',
         badge: '✨ FÓRMULA OFICIAL 250g • 50 DOSIS',
         caption: 'Empaque Doypack con cierre hermético Zipper (250g) rodeado de sus ingredientes bio-activos puros.',
     },
     {
-        src: '/images/biolab/funnel-pack-trio.jpg',
+        src: '/images/biolab/funnel-pack-trio.webp',
         thumbLabel: 'Packs Ahorro',
         badge: '🔥 OFERTA MULTIPACK • DÚO Y 90 DÍAS',
         caption: 'Ahorra llevando el Pack Dúo (2 bolsas) o el Tratamiento Completo de 90 Días (3 bolsas) con Envío Gratis.',
     },
     {
-        src: '/images/biolab/banner-panoramico.jpg',
+        src: '/images/biolab/banner-panoramico.webp',
         thumbLabel: 'Bio-Activos',
         badge: '🌿 6 ACTIVOS FUNCIONALES SINÉRGICOS',
         caption: 'Complejo protegido de Micro-Proteína Novel Hipoalergénica, Ácido Láurico, Linaza Dorada, Ahuyama, Cúrcuma y Perejil.',
     },
     {
-        src: '/images/biolab/empaque-frente-250g.jpg',
+        src: '/images/biolab/empaque-frente-250g.webp',
         thumbLabel: 'Sello 7 Días',
         badge: '🔬 BIOTECNOLOGÍA NUTRICIONAL 3 EN 1',
         caption: 'Piel sana, heces firmes y aliento fresco: 0% Pollo, 0% Res, Sin Granos y 100% Libre de Gluten.',
@@ -158,7 +158,7 @@ const REVIEWS = [
         rating: 5,
         title: '¡Dejó de lamerse las patas hasta sangrar!',
         text: 'Mi gordito llevaba más de un año con las patas rojas y rascándose las orejas. Gastamos muchísimo en cremas y pastillas que solo le quitaban la picazón por unos días. Al día 12 con Dermo & Gut Superboost las paticas ya estaban secas, sin mal olor y sus heces súper firmes. Lo pedí contraentrega y llegó en 2 días.',
-        image: '/images/biolab/review-ugc-bulldog.jpg',
+        image: '/images/biolab/review-ugc-bulldog.webp',
     },
     {
         name: 'Andrés Felipe R.',
@@ -169,7 +169,7 @@ const REVIEWS = [
         rating: 5,
         title: 'Cero caída de pelo y le encanta el sabor',
         text: 'Simba soltaba mechones de pelo por toda la casa y tenía el estómago muy sensible con cualquier concentrado de pollo. Apenas le espolvoreo la cucharadita sobre las croquetas se las come de inmediato. Llevamos 1 mes, el pelo le brilla impresionante y el aliento le mejoró al 100%.',
-        image: '/images/biolab/review-ugc-golden.jpg',
+        image: '/images/biolab/review-ugc-golden.webp',
     },
     {
         name: 'Dra. Valentina G.',
@@ -180,7 +180,7 @@ const REVIEWS = [
         rating: 5,
         title: 'Excelente perfil hipoalergénico y prebiótico',
         text: 'El mayor reto en pacientes atópicos es la inflamación intestinal cruzada por proteínas convencionales (pollo/res). Su matriz de Micro-Proteína Novel purificada junto con Ácido Láurico dermo-activo, linaza dorada y cúrcuma ofrece una modulación dermo-digestiva limpia, segura y sin efectos adversos.',
-        image: '/images/biolab/review-ugc-vet.jpg',
+        image: '/images/biolab/review-ugc-vet.webp',
     },
     {
         name: 'Laura Sofía P.',
@@ -191,7 +191,7 @@ const REVIEWS = [
         rating: 5,
         title: 'Sirve tanto para mi perro como para mi gata',
         text: 'Me encantó que es para perros y gatos. Mi Pug sufría de gases horribles y caspa en el lomo, y mi gata tenía bolas de pelo y pelo opaco. En la primera semana el cambio en la digestión fue total. El pago contraentrega fue súper serio y rápido.',
-        image: '/images/biolab/review-ugc-pug-cat.jpg',
+        image: '/images/biolab/review-ugc-pug-cat.webp',
     },
 ];
 
@@ -578,8 +578,11 @@ export default function DermoGutSuperboost({ product }: Props) {
                     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
                         <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0">
                             <img
-                                src="/images/biolab/logo-avipet-biolab.jpg"
+                                src="/images/biolab/logo-avipet-biolab.webp"
                                 alt="AVIPET BioLab"
+                                width={44}
+                                height={44}
+                                decoding="async"
                                 className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl object-cover border border-slate-200 shadow-sm shrink-0"
                             />
                             <div className="min-w-0">
@@ -627,6 +630,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <img
                                         src={GALLERY_IMAGES[activeImageIdx].src}
                                         alt={GALLERY_IMAGES[activeImageIdx].caption}
+                                        fetchPriority="high"
+                                        decoding="async"
                                         className="w-full h-full object-cover transition-all duration-300"
                                     />
                                 </div>
@@ -661,6 +666,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             <img
                                                 src={img.src}
                                                 alt={img.thumbLabel}
+                                                loading="lazy"
+                                                decoding="async"
                                                 className="w-full h-full object-cover"
                                             />
                                         </div>
@@ -946,8 +953,10 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <div className="sm:col-span-5">
                                         <div className="rounded-2xl overflow-hidden border-2 border-cyan-400/40 aspect-square relative bg-slate-950">
                                             <img
-                                                src="/images/biolab/biolab-video-demo-3pasos.gif?v=3"
+                                                src="/images/biolab/biolab-video-demo-3pasos.webp?v=4"
                                                 alt="Demostración en acción Dermo & Gut Superboost en 3 pasos"
+                                                loading="lazy"
+                                                decoding="async"
                                                 className="w-full h-full object-cover"
                                             />
                                             <span className="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full animate-pulse shadow">
@@ -1025,8 +1034,10 @@ export default function DermoGutSuperboost({ product }: Props) {
                                 <div className="bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-2xl border border-slate-800">
                                     <div className="rounded-xl sm:rounded-2xl overflow-hidden aspect-square">
                                         <img
-                                            src="/images/biolab/funnel-antes-despues.jpg"
+                                            src="/images/biolab/funnel-antes-despues.webp"
                                             alt="Antes y Después Dermo & Gut Superboost"
+                                            loading="lazy"
+                                            decoding="async"
                                             className="w-full h-full object-cover"
                                         />
                                     </div>
@@ -1274,8 +1285,10 @@ export default function DermoGutSuperboost({ product }: Props) {
                             <div className="bg-white rounded-2xl sm:rounded-3xl border-2 border-slate-200 p-3 sm:p-4 shadow-xl">
                                 <div className="rounded-xl sm:rounded-2xl overflow-hidden aspect-square">
                                     <img
-                                        src="/images/biolab/funnel-modo-uso.jpg"
+                                        src="/images/biolab/funnel-modo-uso.webp"
                                         alt="Modo de uso Dermo & Gut Superboost"
+                                        loading="lazy"
+                                        decoding="async"
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
@@ -1319,8 +1332,10 @@ export default function DermoGutSuperboost({ product }: Props) {
                             <div className="lg:col-span-6">
                                 <div className="bg-white/10 backdrop-blur-md rounded-2xl sm:rounded-3xl p-3 border border-white/15 shadow-2xl">
                                     <img
-                                        src="/images/biolab/funnel-frente-reverso.jpg"
+                                        src="/images/biolab/funnel-frente-reverso.webp"
                                         alt="Empaque Frente y Reverso AVIPET BioLab"
+                                        loading="lazy"
+                                        decoding="async"
                                         className="w-full rounded-xl sm:rounded-2xl object-cover"
                                     />
                                 </div>
@@ -1406,6 +1421,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                                         <img
                                             src={rev.image}
                                             alt={rev.title}
+                                            loading="lazy"
+                                            decoding="async"
                                             className="w-full h-full object-cover"
                                         />
                                         <span className="absolute bottom-2.5 left-2.5 bg-slate-900/85 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-lg">

@@ -170,8 +170,11 @@ export default function StoreHome({
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
                         <a href={storeUrl} className="flex items-center gap-3">
                             <img
-                                src="/images/biolab/logo-avipet-biolab.jpg"
+                                src="/images/biolab/logo-avipet-biolab.webp"
                                 alt="AVIPET BioLab®"
+                                width={44}
+                                height={44}
+                                decoding="async"
                                 className="w-11 h-11 rounded-full object-cover border-2 border-[#311457]/20 shadow-sm"
                             />
                             <div className="flex flex-col">
@@ -290,8 +293,10 @@ export default function StoreHome({
                                     className="block group rounded-3xl overflow-hidden border-2 border-purple-200 shadow-2xl bg-white"
                                 >
                                     <img
-                                        src="/images/biolab/banner-panoramico.jpg"
+                                        src="/images/biolab/banner-panoramico.webp"
                                         alt="AVIPET BioLab® — Dermo & Gut Superboost"
+                                        fetchPriority="high"
+                                        decoding="async"
                                         className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
                                     />
                                     <div className="p-4 sm:p-5 bg-[#311457] text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -452,8 +457,10 @@ export default function StoreHome({
                                             Ahorras $17.800 COP
                                         </span>
                                         <img
-                                            src="/images/biolab/funnel-frente-reverso.jpg"
+                                            src="/images/biolab/funnel-frente-reverso.webp"
                                             alt="AVIPET BioLab® — Dermo & Gut Superboost (250g)"
+                                            loading="lazy"
+                                            decoding="async"
                                             className="w-full max-h-96 object-contain mx-auto group-hover:scale-105 transition-transform duration-500 rounded-xl"
                                         />
                                     </a>
@@ -586,8 +593,12 @@ export default function StoreHome({
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
                         <div className="flex items-center gap-3">
                             <img
-                                src="/images/biolab/logo-avipet-biolab.jpg"
+                                src="/images/biolab/logo-avipet-biolab.webp"
                                 alt="AVIPET BioLab®"
+                                width={40}
+                                height={40}
+                                loading="lazy"
+                                decoding="async"
                                 className="w-10 h-10 rounded-full object-cover border border-[#FDE68A]"
                             />
                             <div>

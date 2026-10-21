@@ -246,6 +246,8 @@
     <link rel="alternate" hreflang="es-CO" href="{{ $canonicalUrl }}">
     <link rel="alternate" hreflang="es" href="{{ $canonicalUrl }}">
     <link rel="alternate" hreflang="x-default" href="{{ $canonicalUrl }}">
+    <link rel="preload" as="image" href="/images/biolab/hero-estudio-1-bolsa.webp" type="image/webp" fetchpriority="high">
+    <link rel="preload" as="image" href="/images/biolab/logo-avipet-biolab.webp" type="image/webp">
 
     <!-- Open Graph / WhatsApp Business / Meta Catalog -->
     <meta property="og:type" content="product">
@@ -440,7 +442,7 @@
     @php
         if ($isBioLabPage) {
             $clinicPageTitle = 'Dermo & Gut Superboost (250g) | Alivio de Dermatitis, Picazón y Digestión — AVIPET BioLab®';
-            $favIcon = '/images/biolab/logo-avipet-biolab.jpg';
+            $favIcon = '/images/biolab/logo-avipet-biolab.webp';
         } elseif ($isPublicLanding) {
             $clinicPageTitle = 'AviPetApp — Software con IA para veterinarias | Planes de salud para mascotas';
             $favIcon = '/brand/favicons/favicon.svg';
