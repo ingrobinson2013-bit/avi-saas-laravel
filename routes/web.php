@@ -96,6 +96,7 @@ Route::get('/biolab/dermo-gut-superboost', [App\Http\Controllers\BioLabControlle
 Route::get('/producto/dermo-gut-superboost', [App\Http\Controllers\BioLabController::class, 'show'])->name('biolab.product.slug');
 Route::post('/biolab/order', [App\Http\Controllers\BioLabController::class, 'storeOrder'])->name('biolab.order.store');
 Route::post('/biolab/lead', [App\Http\Controllers\BioLabController::class, 'captureLead'])->name('biolab.lead.capture');
+Route::post('/biolab/telemetry', [App\Http\Controllers\BioLabController::class, 'trackTelemetry'])->name('biolab.telemetry');
 Route::post('/dermo-gut-superboost/order', [App\Http\Controllers\BioLabController::class, 'storeOrder']);
 Route::post('/producto/dermo-gut-superboost/order', [App\Http\Controllers\BioLabController::class, 'storeOrder']);
 Route::get('/biolab/pedidos', [App\Http\Controllers\BioLabController::class, 'listOrders'])->name('biolab.orders.list');

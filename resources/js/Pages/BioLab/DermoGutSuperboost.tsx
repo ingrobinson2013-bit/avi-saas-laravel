@@ -349,9 +349,77 @@ export default function DermoGutSuperboost({ product }: Props) {
 
     const [shouldLoadAnimatedGif, setShouldLoadAnimatedGif] = useState<boolean>(false);
 
+    // Lightweight Heatmap Telemetry (only fires after user interaction, 0 ms impact on Lighthouse)
+    const telemetryRef = React.useRef<{
+        sessionId: string;
+        maxScroll: number;
+        sections: Set<string>;
+        clicks: Set<string>;
+        timer: any;
+    }>({
+        sessionId: '',
+        maxScroll: 15,
+        sections: new Set(['hero_gallery']),
+        clicks: new Set(),
+        timer: null,
+    });
+
+    const flushTelemetry = () => {
+        const t = telemetryRef.current;
+        if (!t.sessionId) return;
+        if (t.timer) clearTimeout(t.timer);
+        t.timer = setTimeout(() => {
+            axios
+                .post('/biolab/telemetry', {
+                    session_id: t.sessionId,
+                    max_scroll_pct: t.maxScroll,
+                    sections: Array.from(t.sections),
+                    clicks: Array.from(t.clicks),
+                })
+                .catch(() => {});
+        }, 700);
+    };
+
+    const recordHeatmapClick = (key: string) => {
+        telemetryRef.current.clicks.add(key);
+        flushTelemetry();
+    };
+
     // Restore recent order from localStorage if still within 15-min anti-duplicate window + Fire ViewContent
     useEffect(() => {
-        const enableGif = () => setShouldLoadAnimatedGif(true);
+        try {
+            let sid = sessionStorage.getItem('biolab_hm_sid');
+            if (!sid) {
+                sid = 's_' + Math.random().toString(36).slice(2, 11) + '_' + Date.now().toString(36);
+                sessionStorage.setItem('biolab_hm_sid', sid);
+            }
+            telemetryRef.current.sessionId = sid;
+        } catch {
+            telemetryRef.current.sessionId = 's_' + Math.random().toString(36).slice(2, 11);
+        }
+
+        const handleScrollHeatmap = () => {
+            const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+            const pct = Math.min(100, Math.max(10, Math.round((window.scrollY / docHeight) * 100)));
+            const t = telemetryRef.current;
+            if (pct > t.maxScroll) {
+                t.maxScroll = pct;
+            }
+            if (pct >= 12) t.sections.add('plan_selector');
+            if (pct >= 24) t.sections.add('demo_gif');
+            if (pct >= 38) t.sections.add('problem_agitation');
+            if (pct >= 54) t.sections.add('formula_ingredients');
+            if (pct >= 68) t.sections.add('dosage_calculator');
+            if (pct >= 82) t.sections.add('reviews_social');
+            if (pct >= 92) t.sections.add('faq_guarantee');
+            flushTelemetry();
+        };
+
+        const enableGif = () => {
+            setShouldLoadAnimatedGif(true);
+            handleScrollHeatmap();
+            window.addEventListener('scroll', handleScrollHeatmap, { passive: true });
+        };
         const events = ['scroll', 'touchstart', 'pointerdown', 'mousemove', 'keydown'];
         events.forEach((ev) => window.addEventListener(ev, enableGif, { once: true, passive: true }));
 
@@ -380,6 +448,7 @@ export default function DermoGutSuperboost({ product }: Props) {
 
         return () => {
             events.forEach((ev) => window.removeEventListener(ev, enableGif));
+            window.removeEventListener('scroll', handleScrollHeatmap);
         };
     }, []);
 
@@ -481,6 +550,7 @@ export default function DermoGutSuperboost({ product }: Props) {
         setFormError(null);
         setFormOpenedAt(Date.now());
         setIsCodModalOpen(true);
+        recordHeatmapClick('cta_open_modal');
 
         const eventPayload = {
             content_name: targetPkg.name,
@@ -498,6 +568,7 @@ export default function DermoGutSuperboost({ product }: Props) {
     const handleOrderSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (isSubmitting) return;
+        recordHeatmapClick('modal_submit_attempt');
         setFormError(null);
 
         // Frontend validation of Colombian 10-digit cellular
@@ -702,7 +773,10 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <button
                                         key={idx}
                                         type="button"
-                                        onClick={() => setActiveImageIdx(idx)}
+                                        onClick={() => {
+                                            setActiveImageIdx(idx);
+                                            recordHeatmapClick('thumb_gallery');
+                                        }}
                                         className={`group relative rounded-xl overflow-hidden border-2 transition cursor-pointer bg-white ${
                                             activeImageIdx === idx
                                                 ? 'border-indigo-600 ring-2 ring-indigo-600/30 scale-[1.02]'
@@ -864,7 +938,10 @@ export default function DermoGutSuperboost({ product }: Props) {
                                         return (
                                             <div
                                                 key={pkg.id}
-                                                onClick={() => setSelectedPkgId(pkg.id)}
+                                                onClick={() => {
+                                                    setSelectedPkgId(pkg.id);
+                                                    recordHeatmapClick(`pkg_${pkg.id}`);
+                                                }}
                                                 className={`relative rounded-2xl border-2 p-3.5 sm:p-4 pt-5 sm:pt-4 transition-all cursor-pointer ${
                                                     isSelected
                                                         ? 'border-indigo-600 bg-indigo-50/50 ring-2 ring-indigo-600/20 shadow-md'
@@ -1804,6 +1881,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     type="tel"
                                                     required
                                                     value={customerPhone}
+                                                    onFocus={() => recordHeatmapClick('modal_focus_phone')}
                                                     onChange={(e) => {
                                                         const val = e.target.value;
                                                         setCustomerPhone(val);
@@ -1849,6 +1927,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                 type="text"
                                                 required
                                                 value={customerName}
+                                                onFocus={() => recordHeatmapClick('modal_focus_name')}
                                                 onChange={(e) => setCustomerName(e.target.value)}
                                                 placeholder="Ej: Carolina Martínez"
                                                 className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-semibold text-slate-900"
@@ -1863,6 +1942,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                 <select
                                                     required
                                                     value={department}
+                                                    onFocus={() => recordHeatmapClick('modal_focus_dept_city')}
                                                     onChange={(e) => setDepartment(e.target.value)}
                                                     className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3 py-2.5 text-base sm:text-sm font-semibold text-slate-900 bg-white"
                                                 >
@@ -1882,6 +1962,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     type="text"
                                                     required
                                                     value={city}
+                                                    onFocus={() => recordHeatmapClick('modal_focus_dept_city')}
                                                     onChange={(e) => setCity(e.target.value)}
                                                     placeholder="Ej: Medellín / Bogotá"
                                                     className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-semibold text-slate-900"
@@ -1898,6 +1979,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     type="text"
                                                     required
                                                     value={address}
+                                                    onFocus={() => recordHeatmapClick('modal_focus_address')}
                                                     onChange={(e) => setAddress(e.target.value)}
                                                     placeholder="Ej: Calle 45 # 12-34 Apto 502"
                                                     className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-semibold text-slate-900"
@@ -1942,6 +2024,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             target="_blank"
                                             rel="noreferrer"
                                             onClick={() => {
+                                                recordHeatmapClick('modal_click_whatsapp');
                                                 trackMetaPixel('Lead', {
                                                     content_name: selectedPkg.name,
                                                     value: selectedPkg.price,

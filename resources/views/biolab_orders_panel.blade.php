@@ -80,7 +80,22 @@
 
         <main class="max-w-6xl mx-auto px-4 py-6 space-y-8">
             <!-- KPI SUMMARY -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div class="bg-slate-900 border border-cyan-500/40 rounded-2xl p-4">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-cyan-300">
+                        👀 Visitantes Medidos (Mapa de Calor)
+                    </span>
+                    <div class="text-3xl font-black text-white mt-1 flex items-baseline gap-2">
+                        <span>{{ $heatmap['total_sessions'] ?? 0 }}</span>
+                        <span class="text-xs font-bold text-emerald-400">
+                            ({{ $heatmap['active_now'] ?? 0 }} últimos 10 min)
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-1">
+                        Scroll promedio en la página: <strong class="text-cyan-300">{{ $heatmap['avg_scroll_pct'] ?? 0 }}%</strong>
+                    </p>
+                </div>
+
                 <div class="bg-slate-900 border border-amber-500/40 rounded-2xl p-4">
                     <span class="text-xs font-extrabold uppercase tracking-wider text-amber-400">
                         🔥 Carritos por Recuperar (Con WhatsApp)
@@ -117,6 +132,121 @@
                     </p>
                 </div>
             </div>
+
+            <!-- HEATMAP SECTION: SCROLL RETENTION + CLICKS + MODAL FUNNEL -->
+            @php
+                $totalSess = max(1, (int) ($heatmap['total_sessions'] ?? 0));
+                $secData = $heatmap['sections'] ?? [];
+                $clkData = $heatmap['clicks'] ?? [];
+                $sectionLabels = [
+                    'hero_gallery' => '1. 📸 Galería Principal y Promesa Arriba (Hero)',
+                    'plan_selector' => '2. 📦 Selector de Planes (1, 2 y 3 Bolsas + Botón Comprar)',
+                    'demo_gif' => '3. 🎬 GIF Demostrativo en Vivo (3 Pasos de Uso)',
+                    'problem_agitation' => '4. 🚨 Historia del Problema (Por qué se rasca / lame las patas)',
+                    'formula_ingredients' => '5. 🔬 Doble Matriz Bio-Activa e Ingredientes',
+                    'dosage_calculator' => '6. ⚖️ Calculadora Interactiva de Dosis según Peso',
+                    'reviews_social' => '7. ⭐ Reseñas y Casos Reales Verificados en Colombia',
+                    'faq_guarantee' => '8. 🛡️ Preguntas Frecuentes (FAQ) y Garantía',
+                ];
+                $clickLabels = [
+                    'thumb_gallery' => '🖼️ Tocaron las 4 miniaturas de fotos de la galería',
+                    'pkg_1_bolsa' => '📦 Seleccionaron Plan 1 Bolsa ($69.900)',
+                    'pkg_2_bolsas' => '🔥 Seleccionaron Plan 2 Bolsas ($124.900)',
+                    'pkg_3_bolsas' => '🏆 Seleccionaron Plan 3 Bolsas ($169.900)',
+                    'cta_open_modal' => '🚚 Tocaron Botón "PEDIR CONTRAENTREGA" (Abrieron Popup)',
+                ];
+                $modalSteps = [
+                    'cta_open_modal' => 'Paso 1: Abrieron el Popup de Pedido Contraentrega',
+                    'modal_focus_phone' => 'Paso 2: Tocaron la casilla de 📱 WhatsApp / Celular',
+                    'modal_focus_name' => 'Paso 3: Tocaron la casilla de 👤 Nombre y Apellido',
+                    'modal_focus_dept_city' => 'Paso 4: Seleccionaron 📍 Departamento / Ciudad',
+                    'modal_focus_address' => 'Paso 5: Tocaron la casilla de 🏠 Dirección Exacta',
+                    'modal_submit_attempt' => 'Paso 6A: Tocaron "✅ CONFIRMAR PEDIDO"',
+                    'modal_click_whatsapp' => 'Paso 6B: Tocaron "💬 Pedir directo por WhatsApp en 1 clic"',
+                ];
+            @endphp
+            <section class="bg-slate-900 border border-slate-800 rounded-3xl p-5 space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-black text-cyan-300 flex items-center gap-2">
+                            <span>🌡️ Mapa de Calor en Vivo — ¿Dónde están y qué tocan los visitantes?</span>
+                        </h2>
+                        <p class="text-xs text-slate-400">
+                            Mide en tiempo real hasta qué sección bajan los usuarios y en qué botones o casillas del formulario se quedan.
+                        </p>
+                    </div>
+                    <span class="text-xs font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-full">
+                        🔥 Rojo = Muy Caliente • 🟠 Naranja = Tibio • 🔵 Azul = Frío
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- LEFT: SECTION SCROLL HEATMAP -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-black uppercase tracking-wider text-white">
+                            📜 1. Mapa de Calor de Lectura (Scroll por Sección de la Página)
+                        </h3>
+                        <div class="space-y-2.5">
+                            @foreach($sectionLabels as $secKey => $secTitle)
+                                @php
+                                    $count = (int) ($secData[$secKey] ?? 0);
+                                    $pct = ($heatmap['total_sessions'] ?? 0) > 0 ? min(100, round(($count / $totalSess) * 100)) : 0;
+                                    $barColor = $pct >= 70
+                                        ? 'from-rose-600 via-orange-500 to-amber-400'
+                                        : ($pct >= 40 ? 'from-amber-500 to-yellow-400' : 'from-cyan-600 to-blue-500');
+                                @endphp
+                                <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 space-y-1.5">
+                                    <div class="flex items-center justify-between text-xs font-bold">
+                                        <span class="text-slate-200">{{ $secTitle }}</span>
+                                        <span class="text-amber-300 font-black">{{ $count }} visit. ({{ $pct }}%)</span>
+                                    </div>
+                                    <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                                        <div class="h-full bg-gradient-to-r {{ $barColor }} rounded-full" style="width: {{ $pct }}%"></div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: CLICKS & CHECKOUT MODAL FUNNEL HEATMAP -->
+                    <div class="space-y-5">
+                        <div class="space-y-3">
+                            <h3 class="text-sm font-black uppercase tracking-wider text-white">
+                                👆 2. Zonas con Más Clics en la Página
+                            </h3>
+                            <div class="space-y-2">
+                                @foreach($clickLabels as $clkKey => $clkTitle)
+                                    @php
+                                        $cCount = (int) ($clkData[$clkKey] ?? 0);
+                                        $cPct = ($heatmap['total_sessions'] ?? 0) > 0 ? min(100, round(($cCount / $totalSess) * 100)) : 0;
+                                    @endphp
+                                    <div class="bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-2 flex items-center justify-between text-xs">
+                                        <span class="font-semibold text-slate-300">{{ $clkTitle }}</span>
+                                        <span class="font-black text-emerald-400">{{ $cCount }} personas ({{ $cPct }}%)</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h3 class="text-sm font-black uppercase tracking-wider text-amber-300">
+                                🛒 3. Radiografía Dentro del Formulario Contraentrega (¿Dónde se salen?)
+                            </h3>
+                            <div class="space-y-2">
+                                @foreach($modalSteps as $mKey => $mTitle)
+                                    @php
+                                        $mCount = (int) ($clkData[$mKey] ?? 0);
+                                    @endphp
+                                    <div class="bg-slate-950/80 border border-amber-500/20 rounded-xl px-3 py-2 flex items-center justify-between text-xs">
+                                        <span class="font-semibold text-slate-200">{{ $mTitle }}</span>
+                                        <span class="font-black text-amber-400">{{ $mCount }} usuarios</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <!-- SECTION 1: ABANDONED CHECKOUTS / LEADS TO RECOVER -->
             <section class="space-y-3">

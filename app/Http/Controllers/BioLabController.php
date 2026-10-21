@@ -332,7 +332,53 @@ class BioLabController extends Controller
     }
 
     /**
-     * Panel visual en vivo de pedidos registrados y carritos iniciados (protegido por PIN)
+     * Telemetría ultraligera de Mapa de Calor (Scroll por sección, Clics y Embudo del Modal)
+     */
+    public function trackTelemetry(Request $request)
+    {
+        $sessionId = substr(preg_replace('/[^a-zA-Z0-9_-]/', '', (string) $request->input('session_id', '')), 0, 64);
+        if (empty($sessionId)) {
+            return response()->json(['ok' => false]);
+        }
+
+        $maxScroll = max(0, min(100, (int) $request->input('max_scroll_pct', 0)));
+        $sections = array_values(array_unique(array_filter((array) $request->input('sections', []), 'is_string')));
+        $clicks = array_values(array_unique(array_filter((array) $request->input('clicks', []), 'is_string')));
+
+        try {
+            $sessions = Cache::get('biolab_telemetry_sessions', []);
+            if (empty($sessions) && Storage::disk('local')->exists('biolab_telemetry.json')) {
+                $sessions = json_decode(Storage::disk('local')->get('biolab_telemetry.json'), true) ?? [];
+            }
+
+            $existing = $sessions[$sessionId] ?? [
+                'first_seen' => now()->toIso8601String(),
+                'max_scroll_pct' => 0,
+                'sections' => ['hero_gallery'],
+                'clicks' => [],
+            ];
+
+            $existing['last_seen'] = now()->toIso8601String();
+            $existing['max_scroll_pct'] = max((int) ($existing['max_scroll_pct'] ?? 0), $maxScroll);
+            $existing['sections'] = array_values(array_unique(array_merge($existing['sections'] ?? [], $sections, ['hero_gallery'])));
+            $existing['clicks'] = array_values(array_unique(array_merge($existing['clicks'] ?? [], $clicks)));
+
+            $sessions[$sessionId] = $existing;
+            if (count($sessions) > 500) {
+                $sessions = array_slice($sessions, -500, 500, true);
+            }
+
+            Cache::forever('biolab_telemetry_sessions', $sessions);
+            Storage::disk('local')->put('biolab_telemetry.json', json_encode($sessions));
+        } catch (\Throwable $e) {
+            // ignore telemetry errors
+        }
+
+        return response()->json(['ok' => true]);
+    }
+
+    /**
+     * Panel visual en vivo de pedidos registrados, carritos iniciados y mapa de calor (protegido por PIN)
      */
     public function listOrders(Request $request)
     {
@@ -340,10 +386,19 @@ class BioLabController extends Controller
 
         $orders = [];
         $leads = [];
+        $heatmap = [
+            'total_sessions' => 0,
+            'active_now' => 0,
+            'avg_scroll_pct' => 0,
+            'sections' => [],
+            'clicks' => [],
+            'modal_funnel' => [],
+        ];
 
         if ($authorized) {
             $orders = Cache::get('biolab_orders_cache', []);
             $leads = Cache::get('biolab_leads_cache', []);
+            $sessions = Cache::get('biolab_telemetry_sessions', []);
             try {
                 if (empty($orders) && Storage::disk('local')->exists('biolab_orders.json')) {
                     $orders = json_decode(Storage::disk('local')->get('biolab_orders.json'), true) ?? [];
@@ -351,9 +406,67 @@ class BioLabController extends Controller
                 if (empty($leads) && Storage::disk('local')->exists('biolab_leads.json')) {
                     $leads = json_decode(Storage::disk('local')->get('biolab_leads.json'), true) ?? [];
                 }
+                if (empty($sessions) && Storage::disk('local')->exists('biolab_telemetry.json')) {
+                    $sessions = json_decode(Storage::disk('local')->get('biolab_telemetry.json'), true) ?? [];
+                }
             } catch (\Throwable $e) {
                 // ignore
             }
+
+            $totalSessions = count($sessions);
+            $activeNow = 0;
+            $scrollSum = 0;
+            $tenMinsAgo = now()->subMinutes(10)->timestamp;
+
+            $sectionCounts = [
+                'hero_gallery' => 0,
+                'plan_selector' => 0,
+                'demo_gif' => 0,
+                'problem_agitation' => 0,
+                'formula_ingredients' => 0,
+                'dosage_calculator' => 0,
+                'reviews_social' => 0,
+                'faq_guarantee' => 0,
+            ];
+
+            $clickCounts = [
+                'thumb_gallery' => 0,
+                'pkg_1_bolsa' => 0,
+                'pkg_2_bolsas' => 0,
+                'pkg_3_bolsas' => 0,
+                'cta_open_modal' => 0,
+                'modal_focus_phone' => 0,
+                'modal_focus_name' => 0,
+                'modal_focus_dept_city' => 0,
+                'modal_focus_address' => 0,
+                'modal_click_whatsapp' => 0,
+                'modal_submit_attempt' => 0,
+            ];
+
+            foreach ($sessions as $s) {
+                $scrollSum += (int) ($s['max_scroll_pct'] ?? 0);
+                if (!empty($s['last_seen']) && strtotime($s['last_seen']) >= $tenMinsAgo) {
+                    $activeNow++;
+                }
+                foreach (($s['sections'] ?? []) as $sec) {
+                    if (isset($sectionCounts[$sec])) {
+                        $sectionCounts[$sec]++;
+                    }
+                }
+                foreach (($s['clicks'] ?? []) as $clk) {
+                    if (isset($clickCounts[$clk])) {
+                        $clickCounts[$clk]++;
+                    }
+                }
+            }
+
+            $heatmap = [
+                'total_sessions' => $totalSessions,
+                'active_now' => $activeNow,
+                'avg_scroll_pct' => $totalSessions > 0 ? round($scrollSum / $totalSessions) : 0,
+                'sections' => $sectionCounts,
+                'clicks' => $clickCounts,
+            ];
         }
 
         if ($request->query('format') === 'json') {
@@ -365,6 +478,7 @@ class BioLabController extends Controller
                 'orders' => $orders,
                 'total_abandoned_checkouts' => count($leads),
                 'abandoned_checkouts' => $leads,
+                'heatmap' => $heatmap,
             ]);
         }
 
@@ -372,6 +486,7 @@ class BioLabController extends Controller
             'authorized' => $authorized,
             'orders' => $orders,
             'leads' => $leads,
+            'heatmap' => $heatmap,
         ]);
     }
 }
