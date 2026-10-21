@@ -201,8 +201,8 @@ const FAQS = [
         a: '¡Cero riesgo para ti! Haces tu pedido hoy en el formulario rápido de esta página sin necesidad de tarjeta de crédito. Despachamos tu orden en menos de 24 horas hábiles con envío 100% GRATIS y le pagas en efectivo (o transferencia al transportador) únicamente cuando tengas el producto en tus manos. Ciudades principales tardan de 1 a 3 días hábiles; resto del país de 3 a 5 días hábiles.',
     },
     {
-        q: '¿Cómo recibo el Bono Gratis (Guía Clínica Hipoalergénica en PDF)?',
-        a: 'Apenas confirmas tu pedido contraentrega en el popup, se habilita de inmediato el botón de descarga directa de tu Guía Clínica de Nutrición Hipoalergénica y Protocolo de 30 Días (Manual PDF de 6 páginas), y además te la enviamos a tu WhatsApp junto con la confirmación de tu despacho prioritario.',
+        q: '¿Cómo recibo los 2 Bonos Gratis (Guía Clínica PDF + Comunidad con Médica Veterinaria)?',
+        a: 'Apenas confirmas tu pedido contraentrega en el popup, se habilita de inmediato el botón de descarga directa de tu Guía Clínica de Nutrición Hipoalergénica (Manual PDF de 6 páginas) y recibes en tu WhatsApp tu pase de ingreso a nuestra Comunidad VIP de dueños, donde contamos con una Médica Veterinaria de confianza para responder tus dudas sobre la nutrición, dosificación y evolución de tu peludo.',
     },
     {
         q: '¿En cuánto tiempo veré resultados en la piel y digestión de mi mascota?',
@@ -234,7 +234,11 @@ export default function DermoGutSuperboost({ product }: Props) {
             discountPct: 20,
             badge: '20% OFF HOY',
             popular: false,
-            perks: ['1 Bolsa de 250g (50 dosis)', 'Envío GRATIS + Pago Contraentrega'],
+            perks: [
+                '1 Bolsa de 250g (50 dosis)',
+                'Envío GRATIS + Pago Contraentrega',
+                '🩺 Comunidad VIP con Médica Veterinaria',
+            ],
         },
         {
             id: '2_bolsas',
@@ -252,8 +256,8 @@ export default function DermoGutSuperboost({ product }: Props) {
             popular: true,
             perks: [
                 '2 Bolsas de 250g (100 dosis en total)',
-                'Ciclo completo de regeneración de piel y pelaje',
-                'Envío GRATIS + Despacho Prioritario',
+                '🩺 Comunidad VIP con Médica Veterinaria',
+                'Envío GRATIS + Guía PDF + Despacho Prioritario',
             ],
         },
         {
@@ -273,8 +277,8 @@ export default function DermoGutSuperboost({ product }: Props) {
             bestValue: true,
             perks: [
                 '3 Bolsas de 250g (150 dosis en total)',
-                'Ideal para razas medianas/grandes o varias mascotas',
-                'Envío GRATIS + Bono VIP Incluido',
+                '🩺 Comunidad VIP con Médica Veterinaria',
+                'Envío GRATIS + Guía PDF + Bono VIP Incluido',
             ],
         },
     ];
@@ -867,7 +871,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                 </div>
 
                                 {/* =========================================================
-                                    PASO 2: FUNNELISH 1-CLICK ORDER BUMP (BONO PDF 6 PÁGINAS)
+                                    PASO 2: FUNNELISH 1-CLICK ORDER BUMP (2 BONOS VIP: PDF + COMUNIDAD VETERINARIA)
                                    ========================================================= */}
                                 <div
                                     onClick={() => setOrderBump(!orderBump)}
@@ -881,19 +885,24 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             onClick={(e) => e.stopPropagation()}
                                             className="mt-1 h-5 w-5 rounded border-amber-500 text-emerald-600 focus:ring-emerald-500 cursor-pointer shrink-0"
                                         />
-                                        <div className="text-xs sm:text-sm">
+                                        <div className="text-xs sm:text-sm space-y-1.5">
                                             <div className="flex flex-wrap items-center gap-1.5 font-black text-slate-900">
                                                 <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded text-[10px] sm:text-[11px]">
-                                                    🎁 BONO VIP INCLUIDO (PDF 6 PÁGINAS)
+                                                    🎁 2 BONOS VIP INCLUIDOS HOY (GRATIS)
                                                 </span>
                                                 <span className="leading-snug">
-                                                    ¡SÍ! Incluir Guía Digital de Nutrición Clínica Hipoalergénica + Despacho Prioritario
+                                                    ¡SÍ! Incluir Guía Clínica PDF + Acceso a Comunidad VIP con Médica Veterinaria
                                                 </span>
                                             </div>
-                                            <p className="text-[11px] sm:text-xs text-slate-700 mt-1 leading-relaxed">
-                                                Descarga inmediata al confirmar tu pedido + envío a tu WhatsApp del Manual Clínico de 6 páginas (Semáforo de alérgenos, 3 recetas caseras y bitácora de 30 días).{' '}
-                                                <strong className="text-emerald-700 font-black">¡INCLUIDO GRATIS!</strong>
-                                            </p>
+                                            <ul className="text-[11px] sm:text-xs text-slate-700 space-y-1 leading-relaxed">
+                                                <li>
+                                                    📘 <strong>Bono #1 (PDF 6 Páginas):</strong> Guía de Nutrición Clínica Hipoalergénica, Semáforo de Alérgenos y Protocolo de 30 Días.
+                                                </li>
+                                                <li>
+                                                    🩺 <strong>Bono #2 (Comunidad VIP en WhatsApp):</strong> Acompañamiento con nuestra <strong>Médica Veterinaria de confianza</strong> para resolver tus preguntas de nutrición y cuidado.{' '}
+                                                    <strong className="text-emerald-700 font-black">¡100% GRATIS!</strong>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -1433,17 +1442,17 @@ export default function DermoGutSuperboost({ product }: Props) {
                     <div className="max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
                         <div className="bg-gradient-to-r from-indigo-50 via-white to-cyan-50 rounded-2xl sm:rounded-3xl border-2 border-indigo-200 p-5 sm:p-8 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 shadow-sm">
                             <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl sm:rounded-3xl bg-[#1E1446] text-amber-300 flex items-center justify-center text-3xl sm:text-4xl shrink-0 shadow-md">
-                                🛡️
+                                🩺
                             </div>
                             <div className="space-y-1.5 text-center sm:text-left">
                                 <span className="text-xs font-black uppercase tracking-wider text-indigo-700">
-                                    COMPRA SIN RIESGO • GARANTÍA AVIPET BIOLAB®
+                                    COMPRA SIN RIESGO • GARANTÍA + ACOMPAÑAMIENTO PROFESIONAL AVIPET BIOLAB®
                                 </span>
                                 <h3 className="text-lg sm:text-xl font-black text-slate-900">
-                                    Pagas al recibir en casa + Guía Clínica PDF de 6 Páginas GRATIS
+                                    Pagas al recibir en casa + Guía Clínica PDF + Comunidad VIP con Médica Veterinaria GRATIS
                                 </h3>
                                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                                    No adelantas ni un solo peso hoy. Recibes tu paquete sellado en la puerta de tu casa y descargas de inmediato nuestro Manual Clínico de Nutrición Hipoalergénica.
+                                    No adelantas ni un solo peso hoy. Recibes tu paquete sellado en la puerta de tu casa, descargas de inmediato nuestro Manual Clínico de Nutrición Hipoalergénica e ingresas gratis a nuestra Comunidad VIP en WhatsApp donde nuestra Médica Veterinaria de confianza responde tus preguntas sobre el cuidado nutricional de tu peludo.
                                 </p>
                             </div>
                         </div>
@@ -1590,17 +1599,20 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             </p>
                                         </div>
 
-                                        {/* INSTANT 1-CLICK PDF GUIDE DOWNLOAD */}
+                                        {/* INSTANT 1-CLICK PDF GUIDE DOWNLOAD + COMUNIDAD VETERINARIA */}
                                         <div className="bg-indigo-950 text-white rounded-2xl p-4 border-2 border-amber-400 space-y-2.5 shadow-md">
                                             <div className="flex items-center justify-between">
                                                 <span className="bg-amber-400 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded-full">
-                                                    🎁 TU BONO VIP ESTÁ LISTO (GRATIS)
+                                                    🎁 TUS 2 BONOS VIP ESTÁN LISTOS (GRATIS)
                                                 </span>
-                                                <span className="text-[11px] text-cyan-300 font-bold">PDF • 6 Páginas</span>
+                                                <span className="text-[11px] text-cyan-300 font-bold">PDF + Comunidad Vet</span>
                                             </div>
                                             <h5 className="text-sm font-black">
-                                                Guía de Nutrición Clínica Hipoalergénica y Protocolo 30 Días
+                                                1. Guía de Nutrición Clínica Hipoalergénica + 2. Pase a Comunidad con Médica Veterinaria
                                             </h5>
+                                            <p className="text-[11px] text-indigo-200 leading-relaxed">
+                                                Descarga tu Manual PDF aquí abajo y toca el botón de WhatsApp para activar tu ingreso a la Comunidad VIP con nuestra Médica Veterinaria de confianza:
+                                            </p>
                                             <a
                                                 href={orderSuccess.guide_pdf_url}
                                                 target="_blank"
@@ -1618,17 +1630,17 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     🔥 OFERTA ÚNICA PARA TU ORDEN #{orderSuccess.order_code}
                                                 </span>
                                                 <h5 className="text-sm font-black text-slate-900">
-                                                    ¿Quieres agregar una 2.ª bolsa en el mismo envío gratis con descuento Dúo?
+                                                    ¿Quieres agregar una 2.ª bolsa en el mismo envío gratis con descuento Dúo + Acceso a la Comunidad con Médica Veterinaria?
                                                 </h5>
                                                 <a
                                                     href={`https://wa.me/573235813942?text=${encodeURIComponent(
-                                                        `Hola AVIPET BioLab! Acabo de registrar mi orden #${orderSuccess.order_code} y quiero actualizarla al PACK DÚO (2 Bolsas por $124.900 contraentrega) + recibir mi Guía PDF en WhatsApp.`
+                                                        `Hola AVIPET BioLab! Acabo de registrar mi orden #${orderSuccess.order_code} y quiero actualizarla al PACK DÚO (2 Bolsas por $124.900 contraentrega) + unirme a la Comunidad VIP con la Médica Veterinaria.`
                                                     )}`}
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow transition text-center"
                                                 >
-                                                    <span>📲 SÍ, ACTUALIZAR A 2 BOLSAS POR WHATSAPP →</span>
+                                                    <span>📲 SÍ, ACTUALIZAR A 2 BOLSAS + ENTRAR A LA COMUNIDAD VET →</span>
                                                 </a>
                                             </div>
                                         ) : (
@@ -1638,7 +1650,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                 rel="noreferrer"
                                                 className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow transition text-center"
                                             >
-                                                <span>📲 RECIBIR GUÍA DE DESPACHO EN MI WHATSAPP →</span>
+                                                <span>📲 ENTRAR A LA COMUNIDAD VETERINARIA Y RECIBIR MI GUÍA EN WHATSAPP →</span>
                                             </a>
                                         )}
                                     </div>
@@ -1663,7 +1675,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                         <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200 space-y-2">
                                             <div className="flex items-center justify-between text-xs font-extrabold text-slate-700">
                                                 <span>📦 Plan seleccionado:</span>
-                                                <span className="text-emerald-700">Envío Gratis Incluido</span>
+                                                <span className="text-emerald-700">Envío Gratis + 🩺 Comunidad Vet</span>
                                             </div>
                                             <div className="grid grid-cols-3 gap-1.5">
                                                 {packages.map((p) => (
@@ -1683,6 +1695,12 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                         <span className="block text-[10px] opacity-90">{p.discountPct}% OFF</span>
                                                     </button>
                                                 ))}
+                                            </div>
+                                            <div className="bg-indigo-50 border border-indigo-200 rounded-xl px-2.5 py-1.5 text-[11px] font-bold text-indigo-950 flex items-center gap-1.5">
+                                                <span>🩺</span>
+                                                <span>
+                                                    <strong>Bono Gratis Incluido:</strong> Guía PDF + Comunidad VIP con Médica Veterinaria para dudas de tu peludo.
+                                                </span>
                                             </div>
                                         </div>
 
@@ -1810,7 +1828,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     : `✅ CONFIRMAR PEDIDO — ${formatCOP(selectedPkg.price)} COP`}
                                             </span>
                                             <span className="text-[11px] font-bold text-emerald-100">
-                                                🚚 Envío Gratis + Guía PDF Gratis • Pagas al recibir en casa
+                                                🚚 Envío Gratis + Guía PDF + 🩺 Comunidad Veterinaria • Pagas en casa
                                             </span>
                                         </button>
 

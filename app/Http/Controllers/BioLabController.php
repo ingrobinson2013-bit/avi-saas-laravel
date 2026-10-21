@@ -262,7 +262,7 @@ class BioLabController extends Controller
             . "• *Ciudad:* {$orderPayload['city']}, {$orderPayload['department']}\n"
             . "• *Dirección:* {$orderPayload['address']}" . ($orderPayload['neighborhood'] ? " ({$orderPayload['neighborhood']})" : "") . "\n"
             . "• *Mascota:* {$orderPayload['pet_type']}" . ($orderPayload['pet_name'] ? " ({$orderPayload['pet_name']})" : "") . ($orderPayload['pet_weight'] ? " - {$orderPayload['pet_weight']}" : "") . "\n\n"
-            . "¡Quedo atento(a) a la guía de despacho y a mi Guía Clínica Hipoalergénica!";
+            . "🩺 ¡Quedo atento(a) a mi ingreso a la Comunidad VIP con la Médica Veterinaria, mi Guía Clínica en PDF y la guía de despacho!";
 
         $whatsappUrl = 'https://wa.me/573235813942?text=' . rawurlencode($waMessage);
 
