@@ -325,8 +325,31 @@ export default function DermoGutSuperboost({ product }: Props) {
         guide_pdf_url: string;
     } | null>(null);
 
-    // Restore recent order from localStorage if still within 15-min anti-duplicate window
+    const trackMetaPixel = (eventName: string, params?: Record<string, any>) => {
+        try {
+            const w = window as any;
+            if (typeof w.fbq === 'function') {
+                w.fbq('track', eventName, params || {});
+            }
+            if (typeof w.gtag === 'function') {
+                w.gtag('event', eventName, params || {});
+            }
+        } catch {
+            // ignore tracking errors if blocked by browser extension
+        }
+    };
+
+    // Restore recent order from localStorage if still within 15-min anti-duplicate window + Fire ViewContent
     useEffect(() => {
+        trackMetaPixel('ViewContent', {
+            content_name: 'AVIPET BioLab® Dermo & Gut Superboost (250g)',
+            content_category: 'Mascotas / Suplementos',
+            content_ids: ['dermo-gut-superboost-250g'],
+            content_type: 'product',
+            value: 69900,
+            currency: 'COP',
+        });
+
         try {
             const raw = localStorage.getItem('biolab_cod_order_lock');
             if (raw) {
@@ -409,6 +432,8 @@ export default function DermoGutSuperboost({ product }: Props) {
     };
 
     const openCodModal = (pkgId?: '1_bolsa' | '2_bolsas' | '3_bolsas') => {
+        const targetId = pkgId || selectedPkgId;
+        const targetPkg = packages.find((p) => p.id === targetId) || selectedPkg;
         if (pkgId) {
             setSelectedPkgId(pkgId);
         }
@@ -416,6 +441,18 @@ export default function DermoGutSuperboost({ product }: Props) {
         setFormError(null);
         setFormOpenedAt(Date.now());
         setIsCodModalOpen(true);
+
+        const eventPayload = {
+            content_name: targetPkg.name,
+            content_category: 'Mascotas / Suplementos',
+            content_ids: [targetPkg.id],
+            content_type: 'product',
+            value: targetPkg.price,
+            currency: 'COP',
+            num_items: targetPkg.bags,
+        };
+        trackMetaPixel('AddToCart', eventPayload);
+        trackMetaPixel('InitiateCheckout', eventPayload);
     };
 
     const handleOrderSubmit = async (e: React.FormEvent) => {
@@ -465,6 +502,21 @@ export default function DermoGutSuperboost({ product }: Props) {
                         '/guias/guia-nutricion-clinica-hipoalergenica-avipet-biolab.pdf',
                 };
                 setOrderSuccess(confirmedOrder);
+
+                const conversionPayload = {
+                    content_name: selectedPkg.name,
+                    content_category: 'Mascotas / Suplementos',
+                    content_ids: [selectedPkg.id],
+                    content_type: 'product',
+                    value: selectedPkg.price,
+                    currency: 'COP',
+                    num_items: selectedPkg.bags,
+                    order_id: response.data.order_code,
+                };
+                trackMetaPixel('Purchase', conversionPayload);
+                trackMetaPixel('SubmitApplication', conversionPayload);
+                trackMetaPixel('Lead', conversionPayload);
+
                 try {
                     localStorage.setItem(
                         'biolab_cod_order_lock',

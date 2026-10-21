@@ -9,6 +9,7 @@
         $gaId = env('GOOGLE_TAG_ID', 'G-YRPKPVXZ2T') ?: env('GOOGLE_ANALYTICS_ID', 'G-YRPKPVXZ2T');
         $gtmId = env('GOOGLE_TAG_MANAGER_ID');
         $cfToken = env('CLOUDFLARE_ANALYTICS_TOKEN');
+        $metaPixelId = env('META_PIXEL_ID', '1655560125395952');
 
         $host = request()->getHost();
         $cleanHost = strtolower(trim($host));
@@ -367,6 +368,22 @@
     @if($cfToken)
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "{{ $cfToken }}"}'></script>
     @endif
+    @if($metaPixelId)
+    <!-- Meta Pixel Code (Vitalidad y Bienestar - {{ $metaPixelId }}) -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '{{ $metaPixelId }}');
+    fbq('track', 'PageView');
+    </script>
+    <!-- End Meta Pixel Code -->
+    @endif
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -413,6 +430,9 @@
     @inertiaHead
 </head>
 <body class="h-full font-sans antialiased bg-[#F4F7FC] text-[#15213B] selection:bg-[#6D28D9] selection:text-white">
+    @if($metaPixelId)
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ $metaPixelId }}&ev=PageView&noscript=1" alt="" /></noscript>
+    @endif
     @if($isPublicLanding)
         @php ob_start(); @endphp
         @inertia
