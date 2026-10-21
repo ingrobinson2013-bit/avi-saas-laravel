@@ -66,7 +66,7 @@ const COLOMBIA_DEPARTMENTS = [
 // 4 VISTAS DE ESTUDIO EXCLUSIVAS DE LA GALERÍA SUPERIOR (CERO DUPLICADOS EN EL RESTO DE LA PÁGINA)
 const GALLERY_IMAGES = [
     {
-        src: '/images/biolab/hero-estudio-1-bolsa.webp?v=3',
+        src: '/images/biolab/hero-estudio-1-bolsa.webp?v=4',
         thumbSrc: '/images/biolab/hero-estudio-1-bolsa-thumb.webp?v=3',
         thumbLabel: 'Empaque 250g',
         badge: '✨ FÓRMULA OFICIAL 250g • 50 DOSIS',
@@ -351,11 +351,6 @@ export default function DermoGutSuperboost({ product }: Props) {
 
     // Restore recent order from localStorage if still within 15-min anti-duplicate window + Fire ViewContent
     useEffect(() => {
-        const ssrShell = document.getElementById('biolab-ssr-shell');
-        if (ssrShell) {
-            ssrShell.style.cssText = 'position:fixed;top:0;left:0;width:100%;pointer-events:none;z-index:-10;opacity:0.001;';
-        }
-
         const enableGif = () => setShouldLoadAnimatedGif(true);
         const events = ['scroll', 'touchstart', 'pointerdown', 'mousemove', 'keydown'];
         events.forEach((ev) => window.addEventListener(ev, enableGif, { once: true, passive: true }));

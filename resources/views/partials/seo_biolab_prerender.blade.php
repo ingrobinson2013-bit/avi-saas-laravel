@@ -1,3 +1,62 @@
+<div class="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans antialiased">
+    <div class="bg-gradient-to-r from-[#1E1446] via-[#2D1B69] to-[#1E1446] text-white py-2 px-3 border-b border-indigo-500/30">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] sm:text-xs font-extrabold tracking-wide text-center">
+            <span class="inline-flex items-center gap-1.5">
+                <span>🇨🇴</span>
+                <span>ENVÍO GRATIS HOY EN COLOMBIA</span>
+            </span>
+            <span class="hidden sm:inline text-indigo-300">•</span>
+            <span class="text-amber-300">🤝 PAGAS AL RECIBIR EN CASA</span>
+        </div>
+    </div>
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                <img
+                    src="/images/biolab/logo-avipet-biolab.webp?v=3"
+                    alt="AVIPET BioLab"
+                    width="44"
+                    height="44"
+                    decoding="sync"
+                    class="h-10 w-10 sm:h-11 sm:w-11 rounded-xl object-cover border border-slate-200 shadow-sm shrink-0"
+                />
+                <div class="min-w-0">
+                    <div class="flex items-center gap-1">
+                        <span class="text-base sm:text-lg font-black tracking-tight text-[#1E1446]">AVIPET</span>
+                        <span class="text-base sm:text-lg font-extrabold tracking-tight text-cyan-700">BioLab®</span>
+                    </div>
+                    <p class="text-[10px] sm:text-[11px] font-semibold text-slate-600 -mt-1 truncate">
+                        Biotecnología Nutricional Veterinaria
+                    </p>
+                </div>
+            </div>
+            <span class="bg-emerald-700 text-white font-extrabold text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-md shrink-0">
+                🚚 Pedir Contraentrega
+            </span>
+        </div>
+    </header>
+    <main>
+        <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-12 sm:pb-14">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
+                <div class="lg:col-span-6 space-y-3.5 sm:space-y-4">
+                    <div class="relative bg-white rounded-2xl sm:rounded-3xl border-2 border-slate-200 shadow-xl overflow-hidden">
+                        <div class="aspect-square w-full bg-slate-50 flex items-center justify-center overflow-hidden">
+                            <img
+                                src="/images/biolab/hero-estudio-1-bolsa.webp?v=4"
+                                alt="Empaque Doypack con cierre hermético Zipper (250g) rodeado de sus ingredientes bio-activos puros."
+                                width="560"
+                                height="560"
+                                fetchpriority="high"
+                                decoding="sync"
+                                class="w-full h-full object-cover"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
 <article class="sr-only">
     <header>
         <p>🔬 BIOTECNOLOGÍA CLÍNICA VETERINARIA • RESULTADOS VISIBLES DESDE LA 1.ª SEMANA</p>
