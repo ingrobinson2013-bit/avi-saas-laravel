@@ -31,6 +31,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin/*/subscriptions/*/approve-payment',
             'admin/*/subscriptions/*/send-reminder',
             'admin/*/subscriptions/*/send-preventive',
+            'biolab/order',
+            'biolab/lead',
+            'biolab/*',
+            'dermo-gut-superboost/order',
+            'producto/dermo-gut-superboost/order',
             'api/*',
         ]);
         $middleware->web(append: [

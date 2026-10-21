@@ -1773,20 +1773,6 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             </div>
                                         )}
 
-                                        <div>
-                                            <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                                                👤 Nombre y Apellido *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                required
-                                                value={customerName}
-                                                onChange={(e) => setCustomerName(e.target.value)}
-                                                placeholder="Ej: Carolina Martínez"
-                                                className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-semibold text-slate-900"
-                                            />
-                                        </div>
-
                                         <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
                                             <div className="sm:col-span-7">
                                                 <label className="block text-xs font-extrabold text-slate-700 mb-1">
@@ -1796,7 +1782,23 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     type="tel"
                                                     required
                                                     value={customerPhone}
-                                                    onChange={(e) => setCustomerPhone(e.target.value)}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value;
+                                                        setCustomerPhone(val);
+                                                        const digits = val.replace(/\D+/g, '').replace(/^57/, '');
+                                                        if (/^3\d{9}$/.test(digits)) {
+                                                            axios
+                                                                .post('/biolab/lead', {
+                                                                    customer_phone: digits,
+                                                                    customer_name: customerName,
+                                                                    bundle_id: selectedPkgId,
+                                                                    department,
+                                                                    city,
+                                                                    address,
+                                                                })
+                                                                .catch(() => {});
+                                                        }
+                                                    }}
                                                     placeholder="Ej: 300 123 4567"
                                                     className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-semibold text-slate-900"
                                                 />
@@ -1815,6 +1817,20 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     <option value="Ambos">🐾 Perro y Gato</option>
                                                 </select>
                                             </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-extrabold text-slate-700 mb-1">
+                                                👤 Nombre y Apellido *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                required
+                                                value={customerName}
+                                                onChange={(e) => setCustomerName(e.target.value)}
+                                                placeholder="Ej: Carolina Martínez"
+                                                className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-semibold text-slate-900"
+                                            />
                                         </div>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -1894,6 +1910,26 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                 🚚 Envío Gratis + Guía PDF + 🩺 Comunidad Veterinaria • Pagas en casa
                                             </span>
                                         </button>
+
+                                        <a
+                                            href={`https://wa.me/573235813942?text=${encodeURIComponent(
+                                                `Hola AVIPET BioLab 🐾 Quiero pedir *${selectedPkg.name}* (${formatCOP(
+                                                    selectedPkg.price
+                                                )} COP) con *Envío Gratis y Pago Contraentrega*. Mi nombre y dirección son:`
+                                            )}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            onClick={() => {
+                                                trackMetaPixel('Lead', {
+                                                    content_name: selectedPkg.name,
+                                                    value: selectedPkg.price,
+                                                    currency: 'COP',
+                                                });
+                                            }}
+                                            className="w-full py-2.5 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-extrabold text-xs flex items-center justify-center gap-1.5 text-center transition"
+                                        >
+                                            <span>💬 ¿Prefieres pedir directo por WhatsApp en 1 clic? Toca aquí</span>
+                                        </a>
 
                                         <p className="text-[10px] font-bold text-slate-400 text-center">
                                             🛡️ Protegido contra pedidos duplicados y bots automatizados (Máx. 1 orden activa por celular).

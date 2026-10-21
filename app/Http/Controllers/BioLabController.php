@@ -184,14 +184,15 @@ class BioLabController extends Controller
             'host' => $request->getHost(),
         ];
 
-        // 1. Guardar en registro persistente JSON y Log del sistema
+        // 1. Guardar en registro persistente JSON, Cache y Log del sistema
         try {
-            $existingOrders = [];
-            if (Storage::disk('local')->exists('biolab_orders.json')) {
+            $existingOrders = Cache::get('biolab_orders_cache', []);
+            if (empty($existingOrders) && Storage::disk('local')->exists('biolab_orders.json')) {
                 $existingOrders = json_decode(Storage::disk('local')->get('biolab_orders.json'), true) ?? [];
             }
             array_unshift($existingOrders, $orderPayload);
             Storage::disk('local')->put('biolab_orders.json', json_encode($existingOrders, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            Cache::forever('biolab_orders_cache', $existingOrders);
         } catch (\Throwable $e) {
             Log::warning('No se pudo escribir biolab_orders.json: ' . $e->getMessage());
         }
@@ -273,7 +274,54 @@ class BioLabController extends Controller
     }
 
     /**
-     * Panel rápido de consulta de pedidos registrados (protegido por PIN)
+     * Captura automática de carrito iniciado (cuando el usuario escribe su WhatsApp en el modal)
+     * para recuperar el pedido si cierra la ventana antes de terminar la dirección
+     */
+    public function captureLead(Request $request)
+    {
+        $rawPhone = (string) $request->input('customer_phone', '');
+        $cleanPhone = preg_replace('/\D+/', '', $rawPhone);
+        if (str_starts_with($cleanPhone, '57') && strlen($cleanPhone) === 12) {
+            $cleanPhone = substr($cleanPhone, 2);
+        }
+
+        if (!preg_match('/^3\d{9}$/', $cleanPhone)) {
+            return response()->json(['saved' => false]);
+        }
+
+        $leadPayload = [
+            'created_at' => now()->toIso8601String(),
+            'customer_phone' => $cleanPhone,
+            'customer_name' => trim((string) $request->input('customer_name', '')),
+            'bundle_id' => (string) $request->input('bundle_id', '1_bolsa'),
+            'department' => trim((string) $request->input('department', '')),
+            'city' => trim((string) $request->input('city', '')),
+            'address' => trim((string) $request->input('address', '')),
+            'whatsapp_recovery_url' => 'https://wa.me/57' . $cleanPhone . '?text=' . rawurlencode(
+                "Hola 🐾 Vimos que estabas pidiendo tu *DERMO & GUT SUPERBOOST®* de *AVIPET BioLab®* con Envío Gratis y Pago Contraentrega. ¿Te ayudo por aquí a confirmar tu dirección de entrega?"
+            ),
+        ];
+
+        try {
+            $leads = Cache::get('biolab_leads_cache', []);
+            if (empty($leads) && Storage::disk('local')->exists('biolab_leads.json')) {
+                $leads = json_decode(Storage::disk('local')->get('biolab_leads.json'), true) ?? [];
+            }
+            // Actualizar si ya existe el mismo teléfono o insertar al inicio
+            $leads = array_values(array_filter($leads, fn($l) => ($l['customer_phone'] ?? '') !== $cleanPhone));
+            array_unshift($leads, $leadPayload);
+            $leads = array_slice($leads, 0, 200);
+            Storage::disk('local')->put('biolab_leads.json', json_encode($leads, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            Cache::forever('biolab_leads_cache', $leads);
+        } catch (\Throwable $e) {
+            Log::warning('No se pudo guardar lead BioLab: ' . $e->getMessage());
+        }
+
+        return response()->json(['saved' => true]);
+    }
+
+    /**
+     * Panel rápido de consulta de pedidos registrados y carritos iniciados (protegido por PIN)
      */
     public function listOrders(Request $request)
     {
@@ -281,10 +329,14 @@ class BioLabController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $orders = [];
+        $orders = Cache::get('biolab_orders_cache', []);
+        $leads = Cache::get('biolab_leads_cache', []);
         try {
-            if (Storage::disk('local')->exists('biolab_orders.json')) {
+            if (empty($orders) && Storage::disk('local')->exists('biolab_orders.json')) {
                 $orders = json_decode(Storage::disk('local')->get('biolab_orders.json'), true) ?? [];
+            }
+            if (empty($leads) && Storage::disk('local')->exists('biolab_leads.json')) {
+                $leads = json_decode(Storage::disk('local')->get('biolab_leads.json'), true) ?? [];
             }
         } catch (\Throwable $e) {
             // ignore
@@ -293,6 +345,8 @@ class BioLabController extends Controller
         return response()->json([
             'total_orders' => count($orders),
             'orders' => $orders,
+            'total_abandoned_checkouts' => count($leads),
+            'abandoned_checkouts' => $leads,
         ]);
     }
 }
