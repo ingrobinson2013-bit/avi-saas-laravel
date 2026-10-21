@@ -6,8 +6,8 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# 1. Imagen base PHP-FPM
-FROM php:8.3-fpm-alpine
+# 1. Imagen base PHP-FPM fijada a Alpine 3.20 LTS (evita rotura de ICU 78 en Alpine 3.24)
+FROM php:8.3-fpm-alpine3.20
 
 # Instalador oficial de extensiones binarias precompiladas
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
