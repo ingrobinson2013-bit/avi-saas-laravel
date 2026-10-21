@@ -97,6 +97,7 @@ Route::get('/producto/dermo-gut-superboost', [App\Http\Controllers\BioLabControl
 Route::post('/biolab/order', [App\Http\Controllers\BioLabController::class, 'storeOrder'])->name('biolab.order.store');
 Route::post('/dermo-gut-superboost/order', [App\Http\Controllers\BioLabController::class, 'storeOrder']);
 Route::post('/producto/dermo-gut-superboost/order', [App\Http\Controllers\BioLabController::class, 'storeOrder']);
+Route::get('/biolab/pedidos', [App\Http\Controllers\BioLabController::class, 'listOrders'])->name('biolab.orders.list');
 
 // 1. Landing Principal B2B, Tienda General AVIPET BioLab® (biolab.avipetapp.com) ó Storefront de Clínica
 Route::get('/', function () use ($resolveTenantFromHost, $isBioLabHost) {

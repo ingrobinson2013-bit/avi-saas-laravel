@@ -52,27 +52,24 @@ class BioLabController extends Controller
             ], 422);
         }
 
-        // CAPA 2: Verificación de tiempo humano mínimo de llenado (>= 2.5 segundos)
-        $openedAtMs = (int) $request->input('form_opened_at', 0);
-        if ($openedAtMs > 0) {
-            $elapsedMs = (int) round(microtime(true) * 1000) - $openedAtMs;
-            if ($elapsedMs > 0 && $elapsedMs < 2200) {
-                Log::warning("🤖 [Anti-Bot BioLab] Envío demasiado rápido ({$elapsedMs}ms) desde IP: " . $request->ip());
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Por favor verifica tus datos antes de enviar el pedido.',
-                ], 429);
-            }
+        // CAPA 2: Verificación de tiempo humano mínimo de llenado usando reloj consistente del cliente
+        $elapsedMs = (int) $request->input('elapsed_ms', 5000);
+        if ($elapsedMs > 0 && $elapsedMs < 1200) {
+            Log::warning("🤖 [Anti-Bot BioLab] Envío demasiado rápido ({$elapsedMs}ms) desde IP: " . $request->ip());
+            return response()->json([
+                'success' => false,
+                'message' => 'Por favor verifica tus datos antes de enviar el pedido.',
+            ], 429);
         }
 
         $validated = $request->validate([
             'bundle_id' => 'required|string|in:1_bolsa,2_bolsas,3_bolsas',
-            'customer_name' => 'required|string|min:3|max:120',
+            'customer_name' => 'required|string|min:2|max:120',
             'customer_phone' => 'required|string|max:40',
             'customer_email' => 'nullable|email|max:120',
             'department' => 'required|string|max:80',
             'city' => 'required|string|min:2|max:80',
-            'address' => 'required|string|min:6|max:255',
+            'address' => 'required|string|min:3|max:255',
             'neighborhood' => 'nullable|string|max:120',
             'pet_type' => 'nullable|string|max:40',
             'pet_name' => 'nullable|string|max:80',
@@ -272,6 +269,30 @@ class BioLabController extends Controller
             'order' => $orderPayload,
             'whatsapp_url' => $whatsappUrl,
             'guide_pdf_url' => '/guias/guia-nutricion-clinica-hipoalergenica-avipet-biolab.pdf',
+        ]);
+    }
+
+    /**
+     * Panel rápido de consulta de pedidos registrados (protegido por PIN)
+     */
+    public function listOrders(Request $request)
+    {
+        if ($request->query('pin') !== '2026') {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $orders = [];
+        try {
+            if (Storage::disk('local')->exists('biolab_orders.json')) {
+                $orders = json_decode(Storage::disk('local')->get('biolab_orders.json'), true) ?? [];
+            }
+        } catch (\Throwable $e) {
+            // ignore
+        }
+
+        return response()->json([
+            'total_orders' => count($orders),
+            'orders' => $orders,
         ]);
     }
 }

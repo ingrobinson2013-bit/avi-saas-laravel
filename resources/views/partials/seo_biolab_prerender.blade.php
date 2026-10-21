@@ -125,7 +125,7 @@
     <div class="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/95 border-t-2 border-slate-200 px-3 py-2.5 shadow-2xl">
         <div class="max-w-md mx-auto">
             <span class="w-full bg-gradient-to-r from-emerald-700 to-teal-700 text-white font-black text-xs sm:text-sm py-3.5 px-3 rounded-xl shadow-lg flex items-center justify-center gap-1.5">
-                <span>🚚 PEDIR CONTRAENTREGA — $124.900 COP</span>
+                <span>🚚 PEDIR CONTRAENTREGA — $69.900 COP</span>
             </span>
         </div>
     </div>

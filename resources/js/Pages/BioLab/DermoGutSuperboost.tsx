@@ -287,8 +287,8 @@ export default function DermoGutSuperboost({ product }: Props) {
         },
     ];
 
-    const [selectedPkgId, setSelectedPkgId] = useState<'1_bolsa' | '2_bolsas' | '3_bolsas'>('2_bolsas');
-    const selectedPkg = packages.find((p) => p.id === selectedPkgId) || packages[1];
+    const [selectedPkgId, setSelectedPkgId] = useState<'1_bolsa' | '2_bolsas' | '3_bolsas'>('1_bolsa');
+    const selectedPkg = packages.find((p) => p.id === selectedPkgId) || packages[0];
 
     const [activeImageIdx, setActiveImageIdx] = useState<number>(0);
     const [orderBump, setOrderBump] = useState<boolean>(true);
@@ -492,6 +492,7 @@ export default function DermoGutSuperboost({ product }: Props) {
 
         setIsSubmitting(true);
         try {
+            const elapsedMs = formOpenedAt > 0 ? Math.max(0, Date.now() - formOpenedAt) : 5000;
             const response = await axios.post('/biolab/order', {
                 bundle_id: selectedPkgId,
                 customer_name: customerName.trim(),
@@ -507,6 +508,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                 order_bump: orderBump,
                 website_url: websiteUrlHoneypot,
                 form_opened_at: formOpenedAt,
+                elapsed_ms: elapsedMs,
             });
 
             if (response.data?.success) {
@@ -545,6 +547,12 @@ export default function DermoGutSuperboost({ product }: Props) {
                     );
                 } catch {
                     // ignore storage errors
+                }
+
+                if (confirmedOrder.whatsapp_url) {
+                    setTimeout(() => {
+                        window.location.href = confirmedOrder.whatsapp_url;
+                    }, 1400);
                 }
             } else {
                 setFormError('No pudimos procesar tu solicitud. Intenta nuevamente.');
@@ -1745,7 +1753,9 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                         <span className="block text-[10px] sm:text-[11px] truncate">
                                                             {p.bags === 1 ? '1 Bolsa' : p.bags === 2 ? '🔥 2 Bolsas' : '🏆 3 Bolsas'}
                                                         </span>
-                                                        <span className="block text-[10px] opacity-90">{p.discountPct}% OFF</span>
+                                                        <span className="block text-[10px] opacity-95 font-extrabold">
+                                                            {formatCOP(p.price)}
+                                                        </span>
                                                     </button>
                                                 ))}
                                             </div>
