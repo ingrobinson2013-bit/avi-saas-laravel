@@ -14,7 +14,13 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 
 RUN apk add --no-cache nginx git curl icu-data-full
 
-RUN install-php-extensions pdo_pgsql pgsql gd zip bcmath opcache intl redis
+RUN install-php-extensions pdo_pgsql pgsql gd zip bcmath opcache intl && \
+    apk add --no-cache --virtual .redis-build-deps $PHPIZE_DEPS && \
+    git clone --depth 1 --branch 6.1.0 https://github.com/phpredis/phpredis.git /tmp/phpredis && \
+    cd /tmp/phpredis && phpize && ./configure && make -j$(nproc) && make install && \
+    docker-php-ext-enable redis && \
+    rm -rf /tmp/phpredis && \
+    apk del .redis-build-deps
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
