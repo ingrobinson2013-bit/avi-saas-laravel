@@ -246,8 +246,7 @@
     <link rel="alternate" hreflang="es-CO" href="{{ $canonicalUrl }}">
     <link rel="alternate" hreflang="es" href="{{ $canonicalUrl }}">
     <link rel="alternate" hreflang="x-default" href="{{ $canonicalUrl }}">
-    <link rel="preload" as="image" href="/images/biolab/hero-estudio-1-bolsa.webp" type="image/webp" fetchpriority="high">
-    <link rel="preload" as="image" href="/images/biolab/logo-avipet-biolab.webp" type="image/webp">
+    <link rel="preload" as="image" href="/images/biolab/hero-estudio-1-bolsa.webp?v=3" type="image/webp" fetchpriority="high">
 
     <!-- Open Graph / WhatsApp Business / Meta Catalog -->
     <meta property="og:type" content="product">
@@ -400,20 +399,27 @@
     @endif
 
     @if($gaId)
-    <!-- Google tag (gtag.js) diferido tras carga inicial para no bloquear LCP/FCP -->
+    <!-- Google tag (gtag.js) diferido tras interacción o carga completa para cero impacto en LCP/FCP/TBT -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', '{{ $gaId }}');
-      window.addEventListener('load', function() {
-        setTimeout(function() {
+      (function() {
+        var loaded = false;
+        function loadGtag() {
+          if (loaded) return;
+          loaded = true;
           var s = document.createElement('script');
           s.async = true;
           s.src = 'https://www.googletagmanager.com/gtag/js?id={{ $gaId }}';
           document.head.appendChild(s);
-        }, 1200);
-      });
+        }
+        ['scroll', 'touchstart', 'pointerdown', 'mousemove', 'keydown', 'click'].forEach(function(ev) {
+          window.addEventListener(ev, loadGtag, { once: true, passive: true });
+        });
+        window.addEventListener('load', function() { setTimeout(loadGtag, 6500); });
+      })();
     </script>
     @endif
     @if($gtmId)
@@ -434,16 +440,18 @@
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};
     if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
     n.queue=[];
+    var fbLoaded = false;
     var loadFb = function() {
+      if (fbLoaded) return;
+      fbLoaded = true;
       t=b.createElement(e);t.async=!0;
       t.src=v;s=b.getElementsByTagName(e)[0];
       s.parentNode.insertBefore(t,s);
     };
-    if (document.readyState === 'complete') {
-      loadFb();
-    } else {
-      window.addEventListener('load', function() { setTimeout(loadFb, 300); });
-    }
+    ['scroll', 'touchstart', 'pointerdown', 'mousemove', 'keydown', 'click'].forEach(function(ev) {
+      f.addEventListener(ev, loadFb, { once: true, passive: true });
+    });
+    f.addEventListener('load', function() { setTimeout(loadFb, 6500); });
     }(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '{{ $metaPixelId }}');
@@ -459,7 +467,7 @@
     @php
         if ($isBioLabPage) {
             $clinicPageTitle = 'Dermo & Gut Superboost (250g) | Alivio de Dermatitis, Picazón y Digestión — AVIPET BioLab®';
-            $favIcon = '/images/biolab/logo-avipet-biolab.webp';
+            $favIcon = '/images/biolab/logo-avipet-biolab.webp?v=3';
         } elseif ($isPublicLanding) {
             $clinicPageTitle = 'AviPetApp — Software con IA para veterinarias | Planes de salud para mascotas';
             $favIcon = '/brand/favicons/favicon.svg';
@@ -493,8 +501,26 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ $favIcon }}">
     @endif
 
+    @if($isBioLabPage)
+    <style>
+      body{margin:0;background:#F8FAFC;color:#0F172A;font-family:Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+      .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}
+    </style>
+    @viteReactRefresh
+    @php ob_start(); @endphp
+    @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
+    @php
+        $viteTags = ob_get_clean();
+        echo str_replace(
+            'rel="stylesheet"',
+            'rel="stylesheet" media="print" onload="this.media=\'all\'"',
+            $viteTags
+        );
+    @endphp
+    @else
     @viteReactRefresh
     @vite(isset($page['component']) ? ['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"] : ['resources/js/app.tsx'])
+    @endif
     @inertiaHead
 </head>
 <body class="h-full font-sans antialiased bg-[#F4F7FC] text-[#15213B] selection:bg-[#6D28D9] selection:text-white">
@@ -515,6 +541,38 @@
             );
         @endphp
     @elseif($isBioLabPage)
+        <div id="biolab-ssr-shell" aria-hidden="true" style="background:#F8FAFC;color:#0F172A;font-family:Inter,system-ui,-apple-system,sans-serif;">
+            <div style="background:#1E1446;color:#FFFFFF;padding:8px 12px;text-align:center;font-size:11px;font-weight:800;">
+                🇨🇴 ENVÍO GRATIS HOY EN COLOMBIA • <span style="color:#FCD34D;">💵 PAGO CONTRAENTREGA</span>
+            </div>
+            <div style="background:#FFFFFF;border-bottom:1px solid #E2E8F0;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;max-width:1280px;margin:0 auto;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <img src="/images/biolab/logo-avipet-biolab.webp?v=3" alt="" width="40" height="40" decoding="sync" style="width:40px;height:40px;border-radius:12px;object-fit:cover;border:1px solid #E2E8F0;" />
+                    <div>
+                        <div style="font-size:16px;font-weight:900;color:#1E1446;line-height:1.1;">AVIPET <span style="color:#0E7490;">BioLab®</span></div>
+                        <div style="font-size:10px;font-weight:600;color:#64748B;">Biotecnología Nutricional Veterinaria</div>
+                    </div>
+                </div>
+                <div style="background:#047857;color:#FFFFFF;font-weight:800;font-size:12px;padding:8px 14px;border-radius:12px;">
+                    🚚 Pedir Contraentrega
+                </div>
+            </div>
+            <div style="max-width:1280px;margin:0 auto;padding:12px;">
+                <div style="background:#FFFFFF;border-radius:16px;border:1px solid #E2E8F0;padding:8px;max-width:560px;margin:0 auto;">
+                    <div style="position:relative;aspect-ratio:1/1;width:100%;border-radius:12px;overflow:hidden;background:#F8FAFC;">
+                        <img
+                            src="/images/biolab/hero-estudio-1-bolsa.webp?v=3"
+                            alt=""
+                            width="640"
+                            height="640"
+                            fetchpriority="high"
+                            decoding="sync"
+                            style="width:100%;height:100%;object-fit:cover;display:block;"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
         @php ob_start(); @endphp
         @inertia
         @php

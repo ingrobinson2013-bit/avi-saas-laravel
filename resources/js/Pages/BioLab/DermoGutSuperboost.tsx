@@ -66,29 +66,29 @@ const COLOMBIA_DEPARTMENTS = [
 // 4 VISTAS DE ESTUDIO EXCLUSIVAS DE LA GALERÍA SUPERIOR (CERO DUPLICADOS EN EL RESTO DE LA PÁGINA)
 const GALLERY_IMAGES = [
     {
-        src: '/images/biolab/hero-estudio-1-bolsa.webp',
-        thumbSrc: '/images/biolab/hero-estudio-1-bolsa-thumb.webp',
+        src: '/images/biolab/hero-estudio-1-bolsa.webp?v=3',
+        thumbSrc: '/images/biolab/hero-estudio-1-bolsa-thumb.webp?v=3',
         thumbLabel: 'Empaque 250g',
         badge: '✨ FÓRMULA OFICIAL 250g • 50 DOSIS',
         caption: 'Empaque Doypack con cierre hermético Zipper (250g) rodeado de sus ingredientes bio-activos puros.',
     },
     {
-        src: '/images/biolab/funnel-pack-trio.webp',
-        thumbSrc: '/images/biolab/funnel-pack-trio-thumb.webp',
+        src: '/images/biolab/funnel-pack-trio.webp?v=3',
+        thumbSrc: '/images/biolab/funnel-pack-trio-thumb.webp?v=3',
         thumbLabel: 'Packs Ahorro',
         badge: '🔥 OFERTA MULTIPACK • DÚO Y 90 DÍAS',
         caption: 'Ahorra llevando el Pack Dúo (2 bolsas) o el Tratamiento Completo de 90 Días (3 bolsas) con Envío Gratis.',
     },
     {
-        src: '/images/biolab/banner-panoramico.webp',
-        thumbSrc: '/images/biolab/banner-panoramico-thumb.webp',
+        src: '/images/biolab/banner-panoramico.webp?v=3',
+        thumbSrc: '/images/biolab/banner-panoramico-thumb.webp?v=3',
         thumbLabel: 'Bio-Activos',
         badge: '🌿 6 ACTIVOS FUNCIONALES SINÉRGICOS',
         caption: 'Complejo protegido de Micro-Proteína Novel Hipoalergénica, Ácido Láurico, Linaza Dorada, Ahuyama, Cúrcuma y Perejil.',
     },
     {
-        src: '/images/biolab/empaque-frente-250g.webp',
-        thumbSrc: '/images/biolab/empaque-frente-250g-thumb.webp',
+        src: '/images/biolab/empaque-frente-250g.webp?v=3',
+        thumbSrc: '/images/biolab/empaque-frente-250g-thumb.webp?v=3',
         thumbLabel: 'Sello 7 Días',
         badge: '🔬 BIOTECNOLOGÍA NUTRICIONAL 3 EN 1',
         caption: 'Piel sana, heces firmes y aliento fresco: 0% Pollo, 0% Res, Sin Granos y 100% Libre de Gluten.',
@@ -162,7 +162,7 @@ const REVIEWS = [
         rating: 5,
         title: '¡Dejó de lamerse las patas hasta sangrar!',
         text: 'Mi gordito llevaba más de un año con las patas rojas y rascándose las orejas. Gastamos muchísimo en cremas y pastillas que solo le quitaban la picazón por unos días. Al día 12 con Dermo & Gut Superboost las paticas ya estaban secas, sin mal olor y sus heces súper firmes. Lo pedí contraentrega y llegó en 2 días.',
-        image: '/images/biolab/review-ugc-bulldog.webp',
+        image: '/images/biolab/review-ugc-bulldog.webp?v=3',
     },
     {
         name: 'Andrés Felipe R.',
@@ -173,7 +173,7 @@ const REVIEWS = [
         rating: 5,
         title: 'Cero caída de pelo y le encanta el sabor',
         text: 'Simba soltaba mechones de pelo por toda la casa y tenía el estómago muy sensible con cualquier concentrado de pollo. Apenas le espolvoreo la cucharadita sobre las croquetas se las come de inmediato. Llevamos 1 mes, el pelo le brilla impresionante y el aliento le mejoró al 100%.',
-        image: '/images/biolab/review-ugc-golden.webp',
+        image: '/images/biolab/review-ugc-golden.webp?v=3',
     },
     {
         name: 'Dra. Valentina G.',
@@ -184,7 +184,7 @@ const REVIEWS = [
         rating: 5,
         title: 'Excelente perfil hipoalergénico y prebiótico',
         text: 'El mayor reto en pacientes atópicos es la inflamación intestinal cruzada por proteínas convencionales (pollo/res). Su matriz de Micro-Proteína Novel purificada junto con Ácido Láurico dermo-activo, linaza dorada y cúrcuma ofrece una modulación dermo-digestiva limpia, segura y sin efectos adversos.',
-        image: '/images/biolab/review-ugc-vet.webp',
+        image: '/images/biolab/review-ugc-vet.webp?v=3',
     },
     {
         name: 'Laura Sofía P.',
@@ -195,7 +195,7 @@ const REVIEWS = [
         rating: 5,
         title: 'Sirve tanto para mi perro como para mi gata',
         text: 'Me encantó que es para perros y gatos. Mi Pug sufría de gases horribles y caspa en el lomo, y mi gata tenía bolas de pelo y pelo opaco. En la primera semana el cambio en la digestión fue total. El pago contraentrega fue súper serio y rápido.',
-        image: '/images/biolab/review-ugc-pug-cat.webp',
+        image: '/images/biolab/review-ugc-pug-cat.webp?v=3',
     },
 ];
 
@@ -347,8 +347,19 @@ export default function DermoGutSuperboost({ product }: Props) {
         }
     };
 
+    const [shouldLoadAnimatedGif, setShouldLoadAnimatedGif] = useState<boolean>(false);
+
     // Restore recent order from localStorage if still within 15-min anti-duplicate window + Fire ViewContent
     useEffect(() => {
+        const ssrShell = document.getElementById('biolab-ssr-shell');
+        if (ssrShell) {
+            ssrShell.style.cssText = 'position:fixed;top:0;left:0;width:100%;pointer-events:none;z-index:-10;opacity:0.001;';
+        }
+
+        const enableGif = () => setShouldLoadAnimatedGif(true);
+        const events = ['scroll', 'touchstart', 'pointerdown', 'mousemove', 'keydown'];
+        events.forEach((ev) => window.addEventListener(ev, enableGif, { once: true, passive: true }));
+
         trackMetaPixel('ViewContent', {
             content_name: 'AVIPET BioLab® Dermo & Gut Superboost (250g)',
             content_category: 'Mascotas / Suplementos',
@@ -371,6 +382,10 @@ export default function DermoGutSuperboost({ product }: Props) {
         } catch {
             // ignore storage errors
         }
+
+        return () => {
+            events.forEach((ev) => window.removeEventListener(ev, enableGif));
+        };
     }, []);
 
     // Countdown + Live Viewers
@@ -582,7 +597,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
                         <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0">
                             <img
-                                src="/images/biolab/logo-avipet-biolab.webp"
+                                src="/images/biolab/logo-avipet-biolab.webp?v=3"
                                 alt="AVIPET BioLab"
                                 width={44}
                                 height={44}
@@ -635,8 +650,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <img
                                         src={GALLERY_IMAGES[activeImageIdx].src}
                                         alt={GALLERY_IMAGES[activeImageIdx].caption}
-                                        width={720}
-                                        height={720}
+                                        width={640}
+                                        height={640}
                                         fetchPriority="high"
                                         decoding="async"
                                         className="w-full h-full object-cover transition-all duration-300"
@@ -674,8 +689,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                 src={img.thumbSrc}
                                                 alt=""
                                                 aria-hidden="true"
-                                                width={180}
-                                                height={180}
+                                                width={150}
+                                                height={150}
                                                 loading="lazy"
                                                 decoding="async"
                                                 className="w-full h-full object-cover"
@@ -964,7 +979,11 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <div className="sm:col-span-5">
                                         <div className="rounded-2xl overflow-hidden border-2 border-cyan-400/40 aspect-square relative bg-slate-950">
                                             <img
-                                                src="/images/biolab/biolab-video-demo-3pasos.webp?v=5"
+                                                src={
+                                                    shouldLoadAnimatedGif
+                                                        ? '/images/biolab/biolab-video-demo-3pasos.webp?v=5'
+                                                        : '/images/biolab/hero-estudio-1-bolsa-thumb.webp?v=3'
+                                                }
                                                 alt="Demostración en acción Dermo & Gut Superboost en 3 pasos"
                                                 width={360}
                                                 height={360}
@@ -1047,10 +1066,10 @@ export default function DermoGutSuperboost({ product }: Props) {
                                 <div className="bg-slate-900 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-2xl border border-slate-800">
                                     <div className="rounded-xl sm:rounded-2xl overflow-hidden aspect-square">
                                         <img
-                                            src="/images/biolab/funnel-antes-despues.webp"
+                                            src="/images/biolab/funnel-antes-despues.webp?v=3"
                                             alt="Antes y Después Dermo & Gut Superboost"
-                                            width={640}
-                                            height={640}
+                                            width={600}
+                                            height={600}
                                             loading="lazy"
                                             decoding="async"
                                             className="w-full h-full object-cover"
@@ -1300,10 +1319,10 @@ export default function DermoGutSuperboost({ product }: Props) {
                             <div className="bg-white rounded-2xl sm:rounded-3xl border-2 border-slate-200 p-3 sm:p-4 shadow-xl">
                                 <div className="rounded-xl sm:rounded-2xl overflow-hidden aspect-square">
                                     <img
-                                        src="/images/biolab/funnel-modo-uso.webp"
+                                        src="/images/biolab/funnel-modo-uso.webp?v=3"
                                         alt="Modo de uso Dermo & Gut Superboost"
-                                        width={640}
-                                        height={640}
+                                        width={600}
+                                        height={600}
                                         loading="lazy"
                                         decoding="async"
                                         className="w-full h-full object-cover"
@@ -1349,10 +1368,10 @@ export default function DermoGutSuperboost({ product }: Props) {
                             <div className="lg:col-span-6">
                                 <div className="bg-white/10 backdrop-blur-md rounded-2xl sm:rounded-3xl p-3 border border-white/15 shadow-2xl">
                                     <img
-                                        src="/images/biolab/funnel-frente-reverso.webp"
+                                        src="/images/biolab/funnel-frente-reverso.webp?v=3"
                                         alt="Empaque Frente y Reverso AVIPET BioLab"
-                                        width={640}
-                                        height={640}
+                                        width={600}
+                                        height={600}
                                         loading="lazy"
                                         decoding="async"
                                         className="w-full rounded-xl sm:rounded-2xl object-cover"
