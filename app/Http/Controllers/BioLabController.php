@@ -184,7 +184,7 @@ class BioLabController extends Controller
             'host' => $request->getHost(),
         ];
 
-        // 1. Guardar en registro persistente JSON, Cache y Log del sistema
+        // 1. Guardar en registro persistente JSON, Cache y Log del sistema (y limpiar de carritos abandonados si estaba allí)
         try {
             $existingOrders = Cache::get('biolab_orders_cache', []);
             if (empty($existingOrders) && Storage::disk('local')->exists('biolab_orders.json')) {
@@ -193,6 +193,17 @@ class BioLabController extends Controller
             array_unshift($existingOrders, $orderPayload);
             Storage::disk('local')->put('biolab_orders.json', json_encode($existingOrders, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
             Cache::forever('biolab_orders_cache', $existingOrders);
+
+            // Si este celular estaba en carritos abandonados, removerlo porque ya compró
+            $leads = Cache::get('biolab_leads_cache', []);
+            if (empty($leads) && Storage::disk('local')->exists('biolab_leads.json')) {
+                $leads = json_decode(Storage::disk('local')->get('biolab_leads.json'), true) ?? [];
+            }
+            if (!empty($leads)) {
+                $leads = array_values(array_filter($leads, fn($l) => ($l['customer_phone'] ?? '') !== $cleanPhone));
+                Storage::disk('local')->put('biolab_leads.json', json_encode($leads, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+                Cache::forever('biolab_leads_cache', $leads);
+            }
         } catch (\Throwable $e) {
             Log::warning('No se pudo escribir biolab_orders.json: ' . $e->getMessage());
         }
@@ -321,32 +332,46 @@ class BioLabController extends Controller
     }
 
     /**
-     * Panel rápido de consulta de pedidos registrados y carritos iniciados (protegido por PIN)
+     * Panel visual en vivo de pedidos registrados y carritos iniciados (protegido por PIN)
      */
     public function listOrders(Request $request)
     {
-        if ($request->query('pin') !== '2026') {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        $authorized = $request->query('pin') === '2026';
+
+        $orders = [];
+        $leads = [];
+
+        if ($authorized) {
+            $orders = Cache::get('biolab_orders_cache', []);
+            $leads = Cache::get('biolab_leads_cache', []);
+            try {
+                if (empty($orders) && Storage::disk('local')->exists('biolab_orders.json')) {
+                    $orders = json_decode(Storage::disk('local')->get('biolab_orders.json'), true) ?? [];
+                }
+                if (empty($leads) && Storage::disk('local')->exists('biolab_leads.json')) {
+                    $leads = json_decode(Storage::disk('local')->get('biolab_leads.json'), true) ?? [];
+                }
+            } catch (\Throwable $e) {
+                // ignore
+            }
         }
 
-        $orders = Cache::get('biolab_orders_cache', []);
-        $leads = Cache::get('biolab_leads_cache', []);
-        try {
-            if (empty($orders) && Storage::disk('local')->exists('biolab_orders.json')) {
-                $orders = json_decode(Storage::disk('local')->get('biolab_orders.json'), true) ?? [];
+        if ($request->query('format') === 'json') {
+            if (!$authorized) {
+                return response()->json(['error' => 'Unauthorized'], 401);
             }
-            if (empty($leads) && Storage::disk('local')->exists('biolab_leads.json')) {
-                $leads = json_decode(Storage::disk('local')->get('biolab_leads.json'), true) ?? [];
-            }
-        } catch (\Throwable $e) {
-            // ignore
+            return response()->json([
+                'total_orders' => count($orders),
+                'orders' => $orders,
+                'total_abandoned_checkouts' => count($leads),
+                'abandoned_checkouts' => $leads,
+            ]);
         }
 
-        return response()->json([
-            'total_orders' => count($orders),
+        return view('biolab_orders_panel', [
+            'authorized' => $authorized,
             'orders' => $orders,
-            'total_abandoned_checkouts' => count($leads),
-            'abandoned_checkouts' => $leads,
+            'leads' => $leads,
         ]);
     }
 }

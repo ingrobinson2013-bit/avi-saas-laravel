@@ -432,6 +432,28 @@ export default function DermoGutSuperboost({ product }: Props) {
         };
     }, [dismissedToast, isCodModalOpen]);
 
+    // Sync partial checkout fields to /biolab/lead as customer fills the modal
+    useEffect(() => {
+        if (!isCodModalOpen || orderSuccess) return;
+        const digits = customerPhone.replace(/\D+/g, '').replace(/^57/, '');
+        if (!/^3\d{9}$/.test(digits)) return;
+
+        const debounce = setTimeout(() => {
+            axios
+                .post('/biolab/lead', {
+                    customer_phone: digits,
+                    customer_name: customerName,
+                    bundle_id: selectedPkgId,
+                    department,
+                    city,
+                    address,
+                })
+                .catch(() => {});
+        }, 600);
+
+        return () => clearTimeout(debounce);
+    }, [customerPhone, customerName, selectedPkgId, department, city, address, isCodModalOpen, orderSuccess]);
+
     const formatTime = (totalSecs: number) => {
         const hrs = Math.floor(totalSecs / 3600);
         const mins = Math.floor((totalSecs % 3600) / 60);
