@@ -400,13 +400,20 @@
     @endif
 
     @if($gaId)
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
+    <!-- Google tag (gtag.js) diferido tras carga inicial para no bloquear LCP/FCP -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', '{{ $gaId }}');
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id={{ $gaId }}';
+          document.head.appendChild(s);
+        }, 1200);
+      });
     </script>
     @endif
     @if($gtmId)
@@ -426,9 +433,18 @@
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};
     if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    n.queue=[];
+    var loadFb = function() {
+      t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s);
+    };
+    if (document.readyState === 'complete') {
+      loadFb();
+    } else {
+      window.addEventListener('load', function() { setTimeout(loadFb, 300); });
+    }
+    }(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '{{ $metaPixelId }}');
     fbq('track', 'PageView');
@@ -438,7 +454,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
     @php
         if ($isBioLabPage) {
             $clinicPageTitle = 'Dermo & Gut Superboost (250g) | Alivio de Dermatitis, Picazón y Digestión — AVIPET BioLab®';
@@ -477,7 +494,7 @@
     @endif
 
     @viteReactRefresh
-    @vite(['resources/js/app.tsx'])
+    @vite(isset($page['component']) ? ['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"] : ['resources/js/app.tsx'])
     @inertiaHead
 </head>
 <body class="h-full font-sans antialiased bg-[#F4F7FC] text-[#15213B] selection:bg-[#6D28D9] selection:text-white">

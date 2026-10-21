@@ -1,4 +1,17 @@
-<article class="sr-only" aria-hidden="false">
+<div class="max-w-7xl mx-auto px-3 pt-4">
+    <div class="aspect-square max-w-md mx-auto overflow-hidden rounded-2xl bg-slate-50">
+        <img
+            src="/images/biolab/hero-estudio-1-bolsa.webp"
+            alt="AVIPET BioLab® — Dermo &amp; Gut Superboost (250g)"
+            width="720"
+            height="720"
+            fetchpriority="high"
+            decoding="sync"
+            class="w-full h-full object-cover"
+        />
+    </div>
+</div>
+<article class="sr-only">
     <header>
         <p>🔬 BIOTECNOLOGÍA CLÍNICA VETERINARIA • RESULTADOS VISIBLES DESDE LA 1.ª SEMANA</p>
         <h1>AVIPET BioLab® — DERMO &amp; GUT SUPERBOOST (250g) | Suplemento Hipoalergénico para Dermatitis, Picazón, Caída de Pelo y Digestión en Perros y Gatos</h1>

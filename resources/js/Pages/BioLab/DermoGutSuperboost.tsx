@@ -67,24 +67,28 @@ const COLOMBIA_DEPARTMENTS = [
 const GALLERY_IMAGES = [
     {
         src: '/images/biolab/hero-estudio-1-bolsa.webp',
+        thumbSrc: '/images/biolab/hero-estudio-1-bolsa-thumb.webp',
         thumbLabel: 'Empaque 250g',
         badge: '✨ FÓRMULA OFICIAL 250g • 50 DOSIS',
         caption: 'Empaque Doypack con cierre hermético Zipper (250g) rodeado de sus ingredientes bio-activos puros.',
     },
     {
         src: '/images/biolab/funnel-pack-trio.webp',
+        thumbSrc: '/images/biolab/funnel-pack-trio-thumb.webp',
         thumbLabel: 'Packs Ahorro',
         badge: '🔥 OFERTA MULTIPACK • DÚO Y 90 DÍAS',
         caption: 'Ahorra llevando el Pack Dúo (2 bolsas) o el Tratamiento Completo de 90 Días (3 bolsas) con Envío Gratis.',
     },
     {
         src: '/images/biolab/banner-panoramico.webp',
+        thumbSrc: '/images/biolab/banner-panoramico-thumb.webp',
         thumbLabel: 'Bio-Activos',
         badge: '🌿 6 ACTIVOS FUNCIONALES SINÉRGICOS',
         caption: 'Complejo protegido de Micro-Proteína Novel Hipoalergénica, Ácido Láurico, Linaza Dorada, Ahuyama, Cúrcuma y Perejil.',
     },
     {
         src: '/images/biolab/empaque-frente-250g.webp',
+        thumbSrc: '/images/biolab/empaque-frente-250g-thumb.webp',
         thumbLabel: 'Sello 7 Días',
         badge: '🔬 BIOTECNOLOGÍA NUTRICIONAL 3 EN 1',
         caption: 'Piel sana, heces firmes y aliento fresco: 0% Pollo, 0% Res, Sin Granos y 100% Libre de Gluten.',
@@ -588,9 +592,9 @@ export default function DermoGutSuperboost({ product }: Props) {
                             <div className="min-w-0">
                                 <div className="flex items-center gap-1">
                                     <span className="text-base sm:text-lg font-black tracking-tight text-[#1E1446]">AVIPET</span>
-                                    <span className="text-base sm:text-lg font-extrabold tracking-tight text-cyan-600">BioLab®</span>
+                                    <span className="text-base sm:text-lg font-extrabold tracking-tight text-cyan-700">BioLab®</span>
                                 </div>
-                                <p className="text-[10px] sm:text-[11px] font-semibold text-slate-500 -mt-1 truncate">
+                                <p className="text-[10px] sm:text-[11px] font-semibold text-slate-600 -mt-1 truncate">
                                     Biotecnología Nutricional Veterinaria
                                 </p>
                             </div>
@@ -604,13 +608,14 @@ export default function DermoGutSuperboost({ product }: Props) {
                         <button
                             type="button"
                             onClick={() => openCodModal()}
-                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-md transition cursor-pointer flex items-center gap-1 shrink-0"
+                            className="bg-emerald-700 hover:bg-emerald-600 text-white font-extrabold text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-md transition cursor-pointer flex items-center gap-1 shrink-0"
                         >
                             <span>🚚 Pedir Contraentrega</span>
                         </button>
                     </div>
                 </header>
 
+                <main>
                 {/* 3. HERO BUY-BOX FUNNEL (ABOVE THE FOLD) */}
                 <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-12 sm:pb-14">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
@@ -630,6 +635,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <img
                                         src={GALLERY_IMAGES[activeImageIdx].src}
                                         alt={GALLERY_IMAGES[activeImageIdx].caption}
+                                        width={720}
+                                        height={720}
                                         fetchPriority="high"
                                         decoding="async"
                                         className="w-full h-full object-cover transition-all duration-300"
@@ -642,7 +649,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     </span>
                                     <a
                                         href="#demo-gif-en-vivo"
-                                        className="shrink-0 bg-rose-600 hover:bg-rose-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full transition"
+                                        className="shrink-0 bg-rose-700 hover:bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full transition"
                                     >
                                         🎬 Ver GIF ↓
                                     </a>
@@ -664,8 +671,11 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     >
                                         <div className="aspect-square w-full overflow-hidden">
                                             <img
-                                                src={img.src}
-                                                alt={img.thumbLabel}
+                                                src={img.thumbSrc}
+                                                alt=""
+                                                aria-hidden="true"
+                                                width={180}
+                                                height={180}
                                                 loading="lazy"
                                                 decoding="async"
                                                 className="w-full h-full object-cover"
@@ -773,7 +783,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                 <div className="flex items-center justify-between gap-2 text-xs sm:text-sm font-extrabold text-amber-950">
                                     <span className="flex items-center gap-1.5 flex-wrap leading-snug">
                                         <span>🔥 ¡Alta demanda hoy! Solo quedan</span>
-                                        <span className="bg-rose-600 text-white px-2 py-0.5 rounded-md font-black animate-pulse">
+                                        <span className="bg-rose-700 text-white px-2 py-0.5 rounded-md font-black animate-pulse">
                                             {stockLeft} unidades
                                         </span>
                                         <span>con Envío Gratis</span>
@@ -887,6 +897,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <div className="flex items-start gap-2.5 sm:gap-3">
                                         <input
                                             type="checkbox"
+                                            aria-label="Incluir los 2 Bonos VIP Gratis con mi pedido"
                                             checked={orderBump}
                                             onChange={(e) => setOrderBump(e.target.checked)}
                                             onClick={(e) => e.stopPropagation()}
@@ -921,7 +932,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <button
                                         type="button"
                                         onClick={() => openCodModal()}
-                                        className="w-full py-4 sm:py-5 px-4 sm:px-6 rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black shadow-xl shadow-emerald-600/30 border-b-4 border-emerald-800 transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer flex flex-col items-center justify-center gap-1 text-center"
+                                        className="w-full py-4 sm:py-5 px-4 sm:px-6 rounded-2xl bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-700 hover:from-emerald-600 hover:to-teal-600 text-white font-black shadow-xl shadow-emerald-600/30 border-b-4 border-emerald-900 transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer flex flex-col items-center justify-center gap-1 text-center"
                                     >
                                         <span className="text-sm sm:text-xl tracking-tight flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
                                             <span>🚚 PEDIR CONTRAENTREGA — {formatCOP(selectedPkg.price)} COP</span>
@@ -953,13 +964,15 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <div className="sm:col-span-5">
                                         <div className="rounded-2xl overflow-hidden border-2 border-cyan-400/40 aspect-square relative bg-slate-950">
                                             <img
-                                                src="/images/biolab/biolab-video-demo-3pasos.webp?v=4"
+                                                src="/images/biolab/biolab-video-demo-3pasos.webp?v=5"
                                                 alt="Demostración en acción Dermo & Gut Superboost en 3 pasos"
+                                                width={360}
+                                                height={360}
                                                 loading="lazy"
                                                 decoding="async"
                                                 className="w-full h-full object-cover"
                                             />
-                                            <span className="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full animate-pulse shadow">
+                                            <span className="absolute top-2.5 left-2.5 bg-rose-700 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full animate-pulse shadow">
                                                 ● GIF EN VIVO
                                             </span>
                                         </div>
@@ -1036,6 +1049,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                                         <img
                                             src="/images/biolab/funnel-antes-despues.webp"
                                             alt="Antes y Después Dermo & Gut Superboost"
+                                            width={640}
+                                            height={640}
                                             loading="lazy"
                                             decoding="async"
                                             className="w-full h-full object-cover"
@@ -1076,7 +1091,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     </div>
 
                                     <div className="bg-slate-50 rounded-2xl border border-slate-200 p-4 sm:p-5 flex items-start gap-3.5 sm:gap-4">
-                                        <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-2xl bg-cyan-600 text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center shrink-0">
+                                        <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-2xl bg-cyan-700 text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center shrink-0">
                                             <span>DÍA</span>
                                             <span className="text-sm sm:text-base leading-none">14-21</span>
                                         </div>
@@ -1091,7 +1106,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     </div>
 
                                     <div className="bg-slate-50 rounded-2xl border border-slate-200 p-4 sm:p-5 flex items-start gap-3.5 sm:gap-4">
-                                        <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-2xl bg-emerald-600 text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center shrink-0">
+                                        <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-2xl bg-emerald-700 text-white font-black text-xs sm:text-sm flex flex-col items-center justify-center shrink-0">
                                             <span>DÍA</span>
                                             <span className="text-sm sm:text-base leading-none">30+</span>
                                         </div>
@@ -1109,7 +1124,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                 <button
                                     type="button"
                                     onClick={() => openCodModal()}
-                                    className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm sm:text-base shadow-lg transition cursor-pointer"
+                                    className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-700 hover:bg-emerald-600 text-white font-black text-sm sm:text-base shadow-lg transition cursor-pointer"
                                 >
                                     🚚 PEDIR CONTRAENTREGA — {formatCOP(selectedPkg.price)} COP →
                                 </button>
@@ -1140,7 +1155,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                 <thead>
                                     <tr className="bg-[#1E1446] text-white">
                                         <th className="p-3 sm:p-5 font-black">Característica / Beneficio</th>
-                                        <th className="p-3 sm:p-5 font-black bg-emerald-600 text-white text-center">
+                                        <th className="p-3 sm:p-5 font-black bg-emerald-700 text-white text-center">
                                             🏆 DERMO & GUT SUPERBOOST®
                                         </th>
                                         <th className="p-3 sm:p-5 font-bold text-slate-300 text-center">
@@ -1287,6 +1302,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <img
                                         src="/images/biolab/funnel-modo-uso.webp"
                                         alt="Modo de uso Dermo & Gut Superboost"
+                                        width={640}
+                                        height={640}
                                         loading="lazy"
                                         decoding="async"
                                         className="w-full h-full object-cover"
@@ -1334,6 +1351,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <img
                                         src="/images/biolab/funnel-frente-reverso.webp"
                                         alt="Empaque Frente y Reverso AVIPET BioLab"
+                                        width={640}
+                                        height={640}
                                         loading="lazy"
                                         decoding="async"
                                         className="w-full rounded-xl sm:rounded-2xl object-cover"
@@ -1421,6 +1440,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                                         <img
                                             src={rev.image}
                                             alt={rev.title}
+                                            width={480}
+                                            height={480}
                                             loading="lazy"
                                             decoding="async"
                                             className="w-full h-full object-cover"
@@ -1511,13 +1532,14 @@ export default function DermoGutSuperboost({ product }: Props) {
                             <button
                                 type="button"
                                 onClick={() => openCodModal()}
-                                className="w-full sm:w-auto px-8 sm:px-10 py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm sm:text-base shadow-xl transition cursor-pointer"
+                                className="w-full sm:w-auto px-8 sm:px-10 py-4 rounded-2xl bg-gradient-to-r from-emerald-700 to-teal-700 hover:from-emerald-600 hover:to-teal-600 text-white font-black text-sm sm:text-base shadow-xl transition cursor-pointer"
                             >
                                 🚚 PEDIR CONTRAENTREGA — {formatCOP(selectedPkg.price)} COP →
                             </button>
                         </div>
                     </div>
                 </section>
+                </main>
 
                 {/* =================================================================
                     10. LIVE PURCHASE SIMULATOR TOAST (SIN FOTO DE COMPRADOR, 100% RESPONSIVE)
@@ -1541,14 +1563,14 @@ export default function DermoGutSuperboost({ product }: Props) {
                             <p className="text-[11px] text-slate-600 font-semibold truncate">
                                 Pidió <strong>{currentSale.pkg}</strong>
                             </p>
-                            <span className="text-[10px] font-bold text-slate-400 block mt-0.5">
+                            <span className="text-[10px] font-bold text-slate-600 block mt-0.5">
                                 ⏱ {currentSale.timeAgo} • Envío Gratis Activado
                             </span>
                         </div>
                         <button
                             type="button"
                             onClick={() => setDismissedToast(true)}
-                            className="absolute top-2 right-2.5 text-slate-400 hover:text-slate-700 text-xs font-black cursor-pointer p-1"
+                            className="absolute top-2 right-2.5 text-slate-500 hover:text-slate-800 text-xs font-black cursor-pointer p-1"
                             aria-label="Cerrar notificación"
                         >
                             ✕
@@ -1564,7 +1586,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                         <button
                             type="button"
                             onClick={() => openCodModal()}
-                            className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs sm:text-sm py-3.5 px-3 rounded-xl shadow-lg cursor-pointer flex items-center justify-center gap-1.5"
+                            className="w-full bg-gradient-to-r from-emerald-700 to-teal-700 hover:from-emerald-600 hover:to-teal-600 text-white font-black text-xs sm:text-sm py-3.5 px-3 rounded-xl shadow-lg cursor-pointer flex items-center justify-center gap-1.5"
                         >
                             <span>🚚 PEDIR CONTRAENTREGA — {formatCOP(selectedPkg.price)} COP</span>
                         </button>
