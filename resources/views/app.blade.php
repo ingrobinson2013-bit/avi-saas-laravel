@@ -502,7 +502,18 @@
     @endif
 
     @viteReactRefresh
-    @vite(isset($page['component']) ? ['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"] : ['resources/js/app.tsx'])
+    @if($isBioLabPage)
+        @php
+            ob_start();
+        @endphp
+        @vite(isset($page['component']) ? ['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"] : ['resources/js/app.tsx'])
+        @php
+            $viteHtml = ob_get_clean();
+            echo preg_replace('/<link\b[^>]*\brel=["\']modulepreload["\'][^>]*>/i', '', $viteHtml);
+        @endphp
+    @else
+        @vite(isset($page['component']) ? ['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"] : ['resources/js/app.tsx'])
+    @endif
     @inertiaHead
 </head>
 <body class="h-full font-sans antialiased bg-[#F4F7FC] text-[#15213B] selection:bg-[#6D28D9] selection:text-white">
