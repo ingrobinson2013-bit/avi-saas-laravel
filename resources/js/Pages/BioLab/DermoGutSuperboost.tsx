@@ -540,6 +540,8 @@ export default function DermoGutSuperboost({ product }: Props) {
         return '$' + amount.toLocaleString('es-CO');
     };
 
+    const phoneInputRef = React.useRef<HTMLInputElement | null>(null);
+
     const openCodModal = (pkgId?: '1_bolsa' | '2_bolsas' | '3_bolsas') => {
         const targetId = pkgId || selectedPkgId;
         const targetPkg = packages.find((p) => p.id === targetId) || selectedPkg;
@@ -551,6 +553,13 @@ export default function DermoGutSuperboost({ product }: Props) {
         setFormOpenedAt(Date.now());
         setIsCodModalOpen(true);
         recordHeatmapClick('cta_open_modal');
+        setTimeout(() => {
+            try {
+                phoneInputRef.current?.focus();
+            } catch {
+                // ignore focus errors on restricted webviews
+            }
+        }, 120);
 
         const eventPayload = {
             content_name: targetPkg.name,
@@ -884,6 +893,20 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     <strong className="text-indigo-700">Matriz de Micro-Proteína Novel Hipoalergénica</strong> +{' '}
                                     <strong className="text-indigo-700">Ácido Láurico Dermo-Activo + Omega 3-6-9 + Prebióticos Gut-Care®</strong>.
                                 </p>
+
+                                {/* Botón rápido visible en la primera pantalla del celular */}
+                                <div className="lg:hidden pt-1">
+                                    <button
+                                        type="button"
+                                        onClick={() => openCodModal()}
+                                        className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 text-white font-black text-sm shadow-lg border-b-4 border-emerald-800 flex flex-col items-center justify-center gap-0.5 cursor-pointer active:scale-[0.99]"
+                                    >
+                                        <span>🚚 PEDIR CONTRAENTREGA — {formatCOP(selectedPkg.price)} COP</span>
+                                        <span className="text-[11px] font-bold text-emerald-100">
+                                            🇨🇴 Envío Gratis + Guía PDF + 🩺 Comunidad Vet • Pagas al recibir
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
 
                             {/* Dynamic Stock Scarcity & Countdown Strip */}
@@ -1831,11 +1854,11 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             </label>
                                         </div>
 
-                                        {/* Quick Bundle Switcher inside Modal */}
-                                        <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200 space-y-2">
-                                            <div className="flex items-center justify-between text-xs font-extrabold text-slate-700">
-                                                <span>📦 Plan seleccionado:</span>
-                                                <span className="text-emerald-700">Envío Gratis + 🩺 Comunidad Vet</span>
+                                        {/* Quick Bundle Switcher inside Modal (Compact 1-Row) */}
+                                        <div className="bg-slate-50 rounded-2xl p-2.5 border border-slate-200 space-y-1.5">
+                                            <div className="flex items-center justify-between text-[11px] font-extrabold text-slate-700">
+                                                <span>📦 Elige tu plan:</span>
+                                                <span className="text-emerald-700">🚚 Envío Gratis + 🎁 Guía PDF + Vet</span>
                                             </div>
                                             <div className="grid grid-cols-3 gap-1.5">
                                                 {packages.map((p) => (
@@ -1843,7 +1866,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                         key={p.id}
                                                         type="button"
                                                         onClick={() => setSelectedPkgId(p.id)}
-                                                        className={`py-2 px-1.5 rounded-xl border-2 text-center transition cursor-pointer ${
+                                                        className={`py-1.5 px-1.5 rounded-xl border-2 text-center transition cursor-pointer ${
                                                             selectedPkgId === p.id
                                                                 ? 'border-indigo-600 bg-indigo-600 text-white font-black'
                                                                 : 'border-slate-200 bg-white text-slate-700 font-bold'
@@ -1858,93 +1881,78 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     </button>
                                                 ))}
                                             </div>
-                                            <div className="bg-indigo-50 border border-indigo-200 rounded-xl px-2.5 py-1.5 text-[11px] font-bold text-indigo-950 flex items-center gap-1.5">
-                                                <span>🩺</span>
-                                                <span>
-                                                    <strong>Bono Gratis Incluido:</strong> Guía PDF + Comunidad VIP con Médica Veterinaria para dudas de tu peludo.
-                                                </span>
-                                            </div>
                                         </div>
 
                                         {formError && (
-                                            <div className="bg-rose-50 border-2 border-rose-300 text-rose-800 text-xs font-bold p-3 rounded-xl">
+                                            <div className="bg-rose-50 border-2 border-rose-300 text-rose-800 text-xs font-bold p-2.5 rounded-xl">
                                                 ⚠️ {formError}
                                             </div>
                                         )}
 
-                                        <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-                                            <div className="sm:col-span-7">
-                                                <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                                                    📱 WhatsApp / Celular (10 dígitos) *
-                                                </label>
-                                                <input
-                                                    type="tel"
-                                                    required
-                                                    value={customerPhone}
-                                                    onFocus={() => recordHeatmapClick('modal_focus_phone')}
-                                                    onChange={(e) => {
-                                                        const val = e.target.value;
-                                                        setCustomerPhone(val);
-                                                        const digits = val.replace(/\D+/g, '').replace(/^57/, '');
-                                                        if (/^3\d{9}$/.test(digits)) {
-                                                            axios
-                                                                .post('/biolab/lead', {
-                                                                    customer_phone: digits,
-                                                                    customer_name: customerName,
-                                                                    bundle_id: selectedPkgId,
-                                                                    department,
-                                                                    city,
-                                                                    address,
-                                                                })
-                                                                .catch(() => {});
-                                                        }
-                                                    }}
-                                                    placeholder="Ej: 300 123 4567"
-                                                    className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-semibold text-slate-900"
-                                                />
-                                            </div>
-                                            <div className="sm:col-span-5">
-                                                <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                                                    🐾 Tu Mascota:
-                                                </label>
-                                                <select
-                                                    value={petType}
-                                                    onChange={(e) => setPetType(e.target.value as any)}
-                                                    className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3 py-2.5 text-base sm:text-sm font-bold text-slate-900 bg-white"
-                                                >
-                                                    <option value="Perro">🐕 Perro</option>
-                                                    <option value="Gato">🐈 Gato</option>
-                                                    <option value="Ambos">🐾 Perro y Gato</option>
-                                                </select>
-                                            </div>
+                                        {/* CAMPO 1: WHATSAPP CON AUTO-FOCO Y TECLADO NUMÉRICO */}
+                                        <div>
+                                            <label className="block text-xs font-extrabold text-slate-800 mb-1">
+                                                1️⃣ 📱 Tu WhatsApp / Celular (10 dígitos) *
+                                            </label>
+                                            <input
+                                                ref={phoneInputRef}
+                                                type="tel"
+                                                inputMode="numeric"
+                                                autoComplete="tel"
+                                                required
+                                                value={customerPhone}
+                                                onFocus={() => recordHeatmapClick('modal_focus_phone')}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    setCustomerPhone(val);
+                                                    const digits = val.replace(/\D+/g, '').replace(/^57/, '');
+                                                    if (/^3\d{9}$/.test(digits)) {
+                                                        axios
+                                                            .post('/biolab/lead', {
+                                                                customer_phone: digits,
+                                                                customer_name: customerName,
+                                                                bundle_id: selectedPkgId,
+                                                                department,
+                                                                city,
+                                                                address,
+                                                            })
+                                                            .catch(() => {});
+                                                    }
+                                                }}
+                                                placeholder="Ej: 300 123 4567"
+                                                className="w-full rounded-xl border-2 border-emerald-500 bg-emerald-50/30 focus:bg-white focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-black text-slate-900"
+                                            />
                                         </div>
 
+                                        {/* CAMPO 2: NOMBRE Y APELLIDO */}
                                         <div>
-                                            <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                                                👤 Nombre y Apellido *
+                                            <label className="block text-xs font-extrabold text-slate-800 mb-1">
+                                                2️⃣ 👤 Tu Nombre y Apellido *
                                             </label>
                                             <input
                                                 type="text"
+                                                autoComplete="name"
                                                 required
                                                 value={customerName}
                                                 onFocus={() => recordHeatmapClick('modal_focus_name')}
                                                 onChange={(e) => setCustomerName(e.target.value)}
                                                 placeholder="Ej: Carolina Martínez"
-                                                className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-semibold text-slate-900"
+                                                className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2 text-base sm:text-sm font-semibold text-slate-900"
                                             />
                                         </div>
 
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                        {/* CAMPO 3: DEPARTAMENTO Y CIUDAD EN UNA SOLA FILA */}
+                                        <div className="grid grid-cols-2 gap-2">
                                             <div>
-                                                <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                                                    📍 Departamento *
+                                                <label className="block text-xs font-extrabold text-slate-800 mb-1">
+                                                    3️⃣ 📍 Departamento *
                                                 </label>
                                                 <select
                                                     required
                                                     value={department}
                                                     onFocus={() => recordHeatmapClick('modal_focus_dept_city')}
                                                     onChange={(e) => setDepartment(e.target.value)}
-                                                    className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3 py-2.5 text-base sm:text-sm font-semibold text-slate-900 bg-white"
+                                                    className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-2.5 py-2 text-sm font-semibold text-slate-900 bg-white"
                                                 >
                                                     <option value="">Selecciona...</option>
                                                     {COLOMBIA_DEPARTMENTS.map((dep) => (
@@ -1955,55 +1963,44 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                 </select>
                                             </div>
                                             <div>
-                                                <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                                                    🏙️ Ciudad o Municipio *
+                                                <label className="block text-xs font-extrabold text-slate-800 mb-1">
+                                                    🏙️ Ciudad / Municipio *
                                                 </label>
                                                 <input
                                                     type="text"
+                                                    autoComplete="address-level2"
                                                     required
                                                     value={city}
                                                     onFocus={() => recordHeatmapClick('modal_focus_dept_city')}
                                                     onChange={(e) => setCity(e.target.value)}
-                                                    placeholder="Ej: Medellín / Bogotá"
-                                                    className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-semibold text-slate-900"
+                                                    placeholder="Ej: Bogotá / Medellín"
+                                                    className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3 py-2 text-base sm:text-sm font-semibold text-slate-900"
                                                 />
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-                                            <div className="sm:col-span-7">
-                                                <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                                                    🏠 Dirección Exacta *
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    required
-                                                    value={address}
-                                                    onFocus={() => recordHeatmapClick('modal_focus_address')}
-                                                    onChange={(e) => setAddress(e.target.value)}
-                                                    placeholder="Ej: Calle 45 # 12-34 Apto 502"
-                                                    className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-semibold text-slate-900"
-                                                />
-                                            </div>
-                                            <div className="sm:col-span-5">
-                                                <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                                                    🏘️ Barrio / Conjunto
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    value={neighborhood}
-                                                    onChange={(e) => setNeighborhood(e.target.value)}
-                                                    placeholder="Ej: El Poblado / Cedritos"
-                                                    className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-semibold text-slate-900"
-                                                />
-                                            </div>
+                                        {/* CAMPO 4: DIRECCIÓN COMPLETA CON BARRIO / APTO EN 1 SOLA CASILLA */}
+                                        <div>
+                                            <label className="block text-xs font-extrabold text-slate-800 mb-1">
+                                                4️⃣ 🏠 Dirección Exacta y Barrio / Apto *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                autoComplete="street-address"
+                                                required
+                                                value={address}
+                                                onFocus={() => recordHeatmapClick('modal_focus_address')}
+                                                onChange={(e) => setAddress(e.target.value)}
+                                                placeholder="Ej: Calle 45 # 12-34 Apto 502, Barrio Cedritos"
+                                                className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2 text-base sm:text-sm font-semibold text-slate-900"
+                                            />
                                         </div>
 
                                         {/* Botón único de confirmación con el precio total */}
                                         <button
                                             type="submit"
                                             disabled={isSubmitting}
-                                            className="w-full py-4 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs sm:text-base shadow-xl border-b-4 border-emerald-800 cursor-pointer disabled:opacity-60 flex flex-col items-center justify-center gap-0.5 text-center"
+                                            className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm sm:text-base shadow-xl border-b-4 border-emerald-800 cursor-pointer disabled:opacity-60 flex flex-col items-center justify-center gap-0.5 text-center"
                                         >
                                             <span>
                                                 {isSubmitting
@@ -2011,7 +2008,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     : `✅ CONFIRMAR PEDIDO — ${formatCOP(selectedPkg.price)} COP`}
                                             </span>
                                             <span className="text-[11px] font-bold text-emerald-100">
-                                                🚚 Envío Gratis + Guía PDF + 🩺 Comunidad Veterinaria • Pagas en casa
+                                                🚚 Envío Gratis • Pagas en efectivo o Nequi al recibir en casa
                                             </span>
                                         </button>
 
@@ -2031,14 +2028,10 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     currency: 'COP',
                                                 });
                                             }}
-                                            className="w-full py-2.5 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-extrabold text-xs flex items-center justify-center gap-1.5 text-center transition"
+                                            className="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 font-extrabold text-xs flex items-center justify-center gap-1.5 text-center transition"
                                         >
                                             <span>💬 ¿Prefieres pedir directo por WhatsApp en 1 clic? Toca aquí</span>
                                         </a>
-
-                                        <p className="text-[10px] font-bold text-slate-400 text-center">
-                                            🛡️ Protegido contra pedidos duplicados y bots automatizados (Máx. 1 orden activa por celular).
-                                        </p>
                                     </form>
                                 )}
                             </div>
