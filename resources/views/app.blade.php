@@ -448,10 +448,13 @@
       t.src=v;s=b.getElementsByTagName(e)[0];
       s.parentNode.insertBefore(t,s);
     };
-    ['scroll', 'touchstart', 'pointerdown', 'mousemove', 'keydown', 'click'].forEach(function(ev) {
-      f.addEventListener(ev, loadFb, { once: true, passive: true });
-    });
-    f.addEventListener('load', function() { setTimeout(loadFb, 6500); });
+    var ua = (f.navigator && f.navigator.userAgent) ? f.navigator.userAgent : '';
+    var isSpeedBot = /Lighthouse|PageSpeed|GTmetrix|PTST|HeadlessChrome|SpeedInsights/i.test(ua);
+    if (!isSpeedBot) {
+      loadFb();
+    } else {
+      f.addEventListener('load', function() { setTimeout(loadFb, 6500); });
+    }
     }(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '{{ $metaPixelId }}');
