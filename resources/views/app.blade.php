@@ -432,7 +432,7 @@
     @if($cfToken)
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "{{ $cfToken }}"}'></script>
     @endif
-    @if($metaPixelId)
+    @if($metaPixelId && $isBioLabPage)
     <!-- Meta Pixel Code (Vitalidad y Bienestar - {{ $metaPixelId }}) -->
     <script>
     !function(f,b,e,v,n,t,s)
@@ -514,28 +514,41 @@
             $viteHtml = ob_get_clean();
             echo preg_replace('/<link\b[^>]*\brel=["\']modulepreload["\'][^>]*>/i', '', $viteHtml);
         @endphp
+    @elseif($isPublicLanding)
+        @vite(['resources/js/app.tsx'])
     @else
         @vite(isset($page['component']) ? ['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"] : ['resources/js/app.tsx'])
     @endif
     @inertiaHead
 </head>
 <body class="h-full font-sans antialiased bg-[#F4F7FC] text-[#15213B] selection:bg-[#6D28D9] selection:text-white">
-    @if($metaPixelId)
+    @if($metaPixelId && $isBioLabPage)
     <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ $metaPixelId }}&ev=PageView&noscript=1" alt="" /></noscript>
     @endif
     @if($isPublicLanding)
-        @php ob_start(); @endphp
-        @inertia
         @php
-            $inertiaHtml = ob_get_clean();
-            $seoPrerender = view('partials.seo_landing_prerender')->render();
-            echo preg_replace_callback(
-                '/(<div id="app"[^>]*>)<\/div>/',
-                fn($matches) => $matches[1] . $seoPrerender . '</div>',
-                $inertiaHtml,
-                1
-            );
+            $ua = request()->userAgent() ?? '';
+            $isSeoCrawler = (bool) preg_match('/Googlebot|bingbot|Slurp|DuckDuckBot|Baiduspider|YandexBot|GPTBot|ChatGPT|Perplexity|ClaudeBot|facebookexternalhit|WhatsApp|Twitterbot|LinkedInBot/i', $ua);
         @endphp
+        @if($isSeoCrawler)
+            @php ob_start(); @endphp
+            @inertia
+            @php
+                $inertiaHtml = ob_get_clean();
+                $seoPrerender = view('partials.seo_landing_prerender')->render();
+                echo preg_replace_callback(
+                    '/(<div id="app"[^>]*>)<\/div>/',
+                    fn($matches) => $matches[1] . $seoPrerender . '</div>',
+                    $inertiaHtml,
+                    1
+                );
+            @endphp
+        @else
+            @inertia
+            <noscript>
+                @include('partials.seo_landing_prerender')
+            </noscript>
+        @endif
     @elseif($isBioLabPage)
         @php ob_start(); @endphp
         @inertia
