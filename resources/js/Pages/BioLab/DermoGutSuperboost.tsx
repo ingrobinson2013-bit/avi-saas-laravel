@@ -553,13 +553,6 @@ export default function DermoGutSuperboost({ product }: Props) {
         setFormOpenedAt(Date.now());
         setIsCodModalOpen(true);
         recordHeatmapClick('cta_open_modal');
-        setTimeout(() => {
-            try {
-                phoneInputRef.current?.focus();
-            } catch {
-                // ignore focus errors on restricted webviews
-            }
-        }, 120);
 
         const eventPayload = {
             content_name: targetPkg.name,
@@ -740,7 +733,23 @@ export default function DermoGutSuperboost({ product }: Props) {
                 <section className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-12 sm:pb-14">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
                         {/* LEFT COLUMN: STICKY PRODUCT GALLERY (4 UNIQUE VIEWS) + CLINICAL STATS */}
-                        <div className="lg:col-span-6 lg:sticky lg:top-16 space-y-3.5 sm:space-y-4">
+                        <div className="lg:col-span-6 lg:sticky lg:top-16 space-y-3 sm:space-y-4">
+                            {/* Mobile-Only Instant Headline Above Image for 100% Above-the-Fold Clarity */}
+                            <div className="lg:hidden space-y-1.5">
+                                <div className="flex flex-wrap items-center justify-between gap-1.5">
+                                    <span className="inline-flex items-center gap-1 bg-amber-100 border border-amber-300 text-amber-950 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold">
+                                        <span className="text-amber-500">★★★★★</span> 4.9/5 (+340 Clientes)
+                                    </span>
+                                    <span className="bg-emerald-100 text-emerald-900 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                                        <span className="h-2 w-2 rounded-full bg-emerald-600 animate-ping" />
+                                        {liveViewers} viendo ahora
+                                    </span>
+                                </div>
+                                <p className="text-base font-black text-[#1E1446] leading-snug tracking-tight">
+                                    DERMO &amp; GUT SUPERBOOST® — Alivia Picazón, Lamido de Patas, Caída de Pelo y Heces Blandas desde la Raíz
+                                </p>
+                            </div>
+
                             <div className="relative bg-white rounded-2xl sm:rounded-3xl border-2 border-slate-200 shadow-xl overflow-hidden">
                                 <div className="absolute top-2.5 sm:top-3.5 left-2.5 sm:left-3.5 right-2.5 sm:right-3.5 z-10 flex items-center justify-between gap-1.5 pointer-events-none">
                                     <span className="bg-[#1E1446]/90 backdrop-blur-md text-white text-[10px] sm:text-xs font-extrabold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md truncate max-w-[65%]">
@@ -1089,6 +1098,43 @@ export default function DermoGutSuperboost({ product }: Props) {
                                         <span>💵 Efectivo o Transferencia al transportador</span>
                                         <span className="hidden sm:inline">•</span>
                                         <span>🛡️ Sistema Protegido Anti-Duplicados</span>
+                                    </div>
+
+                                    {/* Mini-Reseñas Verificadas arriba (para el 85% que decide en la parte superior) */}
+                                    <div className="pt-2 border-t border-slate-100 space-y-2">
+                                        <div className="flex items-center justify-between text-[11px] font-black text-slate-800">
+                                            <span>⭐ Dueños en Colombia que pidieron contraentrega:</span>
+                                            <span className="text-emerald-700">✓ 100% Verificados</span>
+                                        </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">
+                                            <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 space-y-1">
+                                                <div className="flex items-center justify-between font-black text-slate-900">
+                                                    <span>⭐⭐⭐⭐⭐ Gladis R.</span>
+                                                    <span className="text-[10px] text-emerald-700">Medellín</span>
+                                                </div>
+                                                <p className="text-slate-600 leading-snug">
+                                                    &ldquo;Mi perrito se lamía las patas hasta ponérselas rojas. Al día 10 dejó de rascarse y se lo come feliz.&rdquo;
+                                                </p>
+                                            </div>
+                                            <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 space-y-1">
+                                                <div className="flex items-center justify-between font-black text-slate-900">
+                                                    <span>⭐⭐⭐⭐⭐ Ricardo H.</span>
+                                                    <span className="text-[10px] text-emerald-700">Bucaramanga</span>
+                                                </div>
+                                                <p className="text-slate-600 leading-snug">
+                                                    &ldquo;Llegó rápido a mi casa y pagué al recibir. Las heces ya son firmes y el pelo le brilla increíble.&rdquo;
+                                                </p>
+                                            </div>
+                                            <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 space-y-1">
+                                                <div className="flex items-center justify-between font-black text-slate-900">
+                                                    <span>⭐⭐⭐⭐⭐ Carolina M.</span>
+                                                    <span className="text-[10px] text-emerald-700">Bogotá</span>
+                                                </div>
+                                                <p className="text-slate-600 leading-snug">
+                                                    &ldquo;Es 0% pollo y eso salvó a mi Bulldog de la alergia. Además el bono con la veterinaria ayuda muchísimo.&rdquo;
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1883,13 +1929,39 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             </div>
                                         </div>
 
+                                        {/* Opción Express 1-Clic por WhatsApp visible arriba del formulario */}
+                                        <a
+                                            href={`https://wa.me/573235813942?text=${encodeURIComponent(
+                                                `Hola AVIPET BioLab 🐾 Quiero pedir *${selectedPkg.name}* (${formatCOP(
+                                                    selectedPkg.price
+                                                )} COP) con *Envío Gratis y Pago Contraentrega* + los 2 Bonos Gratis. Mi nombre y ciudad son:`
+                                            )}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            onClick={() => {
+                                                recordHeatmapClick('modal_click_whatsapp');
+                                                trackMetaPixel('Lead', {
+                                                    content_name: selectedPkg.name,
+                                                    value: selectedPkg.price,
+                                                    currency: 'COP',
+                                                });
+                                            }}
+                                            className="w-full py-2.5 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-400 text-emerald-950 font-black text-xs flex items-center justify-center gap-1.5 text-center shadow-sm transition"
+                                        >
+                                            <span>📲 ¿Prefieres pedir por WhatsApp en 1 clic? Toca aquí →</span>
+                                        </a>
+
+                                        <div className="text-[11px] font-bold text-slate-500 text-center -my-1">
+                                            — O recibe despacho automático llenando estos 4 datos: —
+                                        </div>
+
                                         {formError && (
                                             <div className="bg-rose-50 border-2 border-rose-300 text-rose-800 text-xs font-bold p-2.5 rounded-xl">
                                                 ⚠️ {formError}
                                             </div>
                                         )}
 
-                                        {/* CAMPO 1: WHATSAPP CON AUTO-FOCO Y TECLADO NUMÉRICO */}
+                                        {/* CAMPO 1: WHATSAPP CON TECLADO NUMÉRICO */}
                                         <div>
                                             <label className="block text-xs font-extrabold text-slate-800 mb-1">
                                                 1️⃣ 📱 Tu WhatsApp / Celular (10 dígitos) *
