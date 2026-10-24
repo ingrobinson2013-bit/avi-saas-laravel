@@ -515,7 +515,7 @@
             echo preg_replace('/<link\b[^>]*\brel=["\']modulepreload["\'][^>]*>/i', '', $viteHtml);
         @endphp
     @elseif($isPublicLanding)
-        @vite(['resources/js/app.tsx'])
+        @vite(isset($page['component']) ? ['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"] : ['resources/js/app.tsx'])
     @else
         @vite(isset($page['component']) ? ['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"] : ['resources/js/app.tsx'])
     @endif

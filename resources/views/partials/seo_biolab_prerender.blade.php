@@ -30,19 +30,33 @@
                     </p>
                 </div>
             </div>
-            <span class="bg-emerald-700 text-white font-extrabold text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-md flex items-center gap-1 shrink-0">
+            <button type="button" onclick="window.__OPEN_BIOLAB_COD_MODAL=true" class="bg-emerald-700 hover:bg-emerald-600 text-white font-extrabold text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-md flex items-center gap-1 shrink-0 cursor-pointer">
                 <span>🚚 Pedir Contraentrega</span>
-            </span>
+            </button>
         </div>
     </header>
     <main>
         <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-12 sm:pb-14">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
-                <div class="lg:col-span-6 lg:sticky lg:top-16 space-y-3.5 sm:space-y-4">
+                <div class="lg:col-span-6 lg:sticky lg:top-16 space-y-3 sm:space-y-4">
+                    <div class="lg:hidden space-y-1.5">
+                        <div class="flex flex-wrap items-center justify-between gap-1.5">
+                            <span class="inline-flex items-center gap-1 bg-amber-100 border border-amber-300 text-amber-950 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold">
+                                <span class="text-amber-500">★★★★★</span> 4.9/5 (+340 Clientes)
+                            </span>
+                            <span class="bg-emerald-100 text-emerald-900 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                                <span class="h-2 w-2 rounded-full bg-emerald-600"></span>
+                                31 viendo ahora
+                            </span>
+                        </div>
+                        <p class="text-base font-black text-[#1E1446] leading-snug tracking-tight">
+                            DERMO &amp; GUT SUPERBOOST® — Alivia Picazón, Lamido de Patas, Caída de Pelo y Heces Blandas desde la Raíz
+                        </p>
+                    </div>
                     <div class="relative bg-white rounded-2xl sm:rounded-3xl border-2 border-slate-200 shadow-xl overflow-hidden">
                         <div class="absolute top-2.5 sm:top-3.5 left-2.5 sm:left-3.5 right-2.5 sm:right-3.5 z-10 flex items-center justify-between gap-1.5 pointer-events-none">
                             <span class="bg-[#1E1446]/90 text-white text-[10px] sm:text-xs font-extrabold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md truncate max-w-[65%]">
-                                🔬 FÓRMULA BIOTECNOLÓGICA 3 EN 1
+                                ✨ FÓRMULA OFICIAL 250g • 50 DOSIS
                             </span>
                             <span class="bg-amber-400 text-slate-950 text-[10px] sm:text-xs font-black px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-md shrink-0">
                                 ★ 4.9/5 (342)
@@ -124,9 +138,9 @@
     </main>
     <div class="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/95 border-t-2 border-slate-200 px-3 py-2.5 shadow-2xl">
         <div class="max-w-md mx-auto">
-            <span class="w-full bg-gradient-to-r from-emerald-700 to-teal-700 text-white font-black text-xs sm:text-sm py-3.5 px-3 rounded-xl shadow-lg flex items-center justify-center gap-1.5">
+            <button type="button" onclick="window.__OPEN_BIOLAB_COD_MODAL=true" class="w-full bg-gradient-to-r from-emerald-700 to-teal-700 text-white font-black text-xs sm:text-sm py-3.5 px-3 rounded-xl shadow-lg flex items-center justify-center gap-1.5 cursor-pointer">
                 <span>🚚 PEDIR CONTRAENTREGA — $69.900 COP</span>
-            </span>
+            </button>
         </div>
     </div>
 </div>

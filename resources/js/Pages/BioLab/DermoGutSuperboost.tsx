@@ -446,6 +446,12 @@ export default function DermoGutSuperboost({ product }: Props) {
             // ignore storage errors
         }
 
+        // Si el usuario tocó el botón en los primeros milisegundos mientras hidrataba React, abrir el modal de inmediato
+        if ((window as any).__OPEN_BIOLAB_COD_MODAL) {
+            (window as any).__OPEN_BIOLAB_COD_MODAL = false;
+            setTimeout(() => openCodModal(), 50);
+        }
+
         return () => {
             events.forEach((ev) => window.removeEventListener(ev, enableGif));
             window.removeEventListener('scroll', handleScrollHeatmap);
@@ -693,7 +699,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                 {/* 2. MINIMALIST ZERO-DISTRACTION FUNNEL HEADER */}
                 <header className="bg-white border-b border-slate-200">
                     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
-                        <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0">
+                        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                             <img
                                 src="/images/biolab/logo-avipet-biolab.webp?v=3"
                                 alt="AVIPET BioLab"
@@ -711,7 +717,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     Biotecnología Nutricional Veterinaria
                                 </p>
                             </div>
-                        </Link>
+                        </div>
 
                         <div className="hidden md:flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-800">
                             <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -1787,29 +1793,30 @@ export default function DermoGutSuperboost({ product }: Props) {
                     12. SHOPIFY RELEASIT-STYLE 1-STEP COD POPUP MODAL + ESCUDO ANTI-BOT
                    ================================================================= */}
                 {isCodModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 backdrop-blur-sm overflow-y-auto">
-                        <div className="relative w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl border-t-2 sm:border-2 border-emerald-600 shadow-2xl overflow-hidden max-h-[92dvh] flex flex-col">
-                            {/* Sticky Popup Header */}
-                            <div className="bg-gradient-to-r from-[#1E1446] via-[#2D1B69] to-emerald-800 text-white px-4 sm:px-5 py-3.5 flex items-center justify-between gap-2 shrink-0">
-                                <div>
-                                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 block">
-                                        🇨🇴 ENVÍO GRATIS + PAGO CONTRAENTREGA EN CASA
+                    <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4 pt-2.5 sm:pt-4 bg-slate-950/75 backdrop-blur-sm overflow-y-auto">
+                        <div className="relative w-full max-w-lg bg-white rounded-2xl sm:rounded-3xl border-2 border-emerald-600 shadow-2xl overflow-hidden my-auto">
+                            {/* Compact Sticky Popup Header */}
+                            <div className="bg-gradient-to-r from-[#1E1446] via-[#2D1B69] to-emerald-800 text-white px-3.5 sm:px-5 py-2.5 sm:py-3 flex items-center justify-between gap-2 shrink-0">
+                                <div className="min-w-0">
+                                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 block truncate">
+                                        🇨🇴 ENVÍO GRATIS • PAGAS EN CASA AL RECIBIR
                                     </span>
-                                    <h3 className="text-sm sm:text-base font-black">
-                                        Completa tus datos de entrega (Sin tarjeta)
+                                    <h3 className="text-xs sm:text-base font-black truncate">
+                                        Datos de entrega para despachar hoy
                                     </h3>
                                 </div>
                                 <button
                                     type="button"
                                     onClick={() => setIsCodModalOpen(false)}
-                                    className="h-8 w-8 rounded-full bg-white/15 hover:bg-white/25 text-white font-black flex items-center justify-center cursor-pointer shrink-0"
+                                    className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-white/15 hover:bg-white/25 text-white font-black flex items-center justify-center cursor-pointer shrink-0 text-xs"
+                                    aria-label="Cerrar formulario"
                                 >
                                     ✕
                                 </button>
                             </div>
 
-                            {/* Scrollable Modal Body */}
-                            <div className="p-4 sm:p-5 overflow-y-auto space-y-4">
+                            {/* Modal Body */}
+                            <div className="p-3 sm:p-5 space-y-2.5 sm:space-y-3.5">
                                 {orderSuccess ? (
                                     <div className="space-y-4">
                                         <div className="bg-emerald-50 border-2 border-emerald-500 rounded-2xl p-4 text-center space-y-2">
@@ -1884,7 +1891,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                         )}
                                     </div>
                                 ) : (
-                                    <form onSubmit={handleOrderSubmit} className="space-y-3.5">
+                                    <form onSubmit={handleOrderSubmit} className="space-y-2.5 sm:space-y-3">
                                         {/* HONEYPOT ANTI-BOT FIELD (INVISIBLE TO HUMANS) */}
                                         <div className="hidden" aria-hidden="true">
                                             <label>
@@ -1900,124 +1907,102 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             </label>
                                         </div>
 
-                                        {/* Quick Bundle Switcher inside Modal (Compact 1-Row) */}
-                                        <div className="bg-slate-50 rounded-2xl p-2.5 border border-slate-200 space-y-1.5">
-                                            <div className="flex items-center justify-between text-[11px] font-extrabold text-slate-700">
-                                                <span>📦 Elige tu plan:</span>
-                                                <span className="text-emerald-700">🚚 Envío Gratis + 🎁 Guía PDF + Vet</span>
-                                            </div>
-                                            <div className="grid grid-cols-3 gap-1.5">
-                                                {packages.map((p) => (
-                                                    <button
-                                                        key={p.id}
-                                                        type="button"
-                                                        onClick={() => setSelectedPkgId(p.id)}
-                                                        className={`py-1.5 px-1.5 rounded-xl border-2 text-center transition cursor-pointer ${
-                                                            selectedPkgId === p.id
-                                                                ? 'border-indigo-600 bg-indigo-600 text-white font-black'
-                                                                : 'border-slate-200 bg-white text-slate-700 font-bold'
-                                                        }`}
-                                                    >
-                                                        <span className="block text-[10px] sm:text-[11px] truncate">
-                                                            {p.bags === 1 ? '1 Bolsa' : p.bags === 2 ? '🔥 2 Bolsas' : '🏆 3 Bolsas'}
-                                                        </span>
-                                                        <span className="block text-[10px] opacity-95 font-extrabold">
-                                                            {formatCOP(p.price)}
-                                                        </span>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        {/* Opción Express 1-Clic por WhatsApp visible arriba del formulario */}
-                                        <a
-                                            href={`https://wa.me/573235813942?text=${encodeURIComponent(
-                                                `Hola AVIPET BioLab 🐾 Quiero pedir *${selectedPkg.name}* (${formatCOP(
-                                                    selectedPkg.price
-                                                )} COP) con *Envío Gratis y Pago Contraentrega* + los 2 Bonos Gratis. Mi nombre y ciudad son:`
-                                            )}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            onClick={() => {
-                                                recordHeatmapClick('modal_click_whatsapp');
-                                                trackMetaPixel('Lead', {
-                                                    content_name: selectedPkg.name,
-                                                    value: selectedPkg.price,
-                                                    currency: 'COP',
-                                                });
-                                            }}
-                                            className="w-full py-2.5 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-400 text-emerald-950 font-black text-xs flex items-center justify-center gap-1.5 text-center shadow-sm transition"
-                                        >
-                                            <span>📲 ¿Prefieres pedir por WhatsApp en 1 clic? Toca aquí →</span>
-                                        </a>
-
-                                        <div className="text-[11px] font-bold text-slate-500 text-center -my-1">
-                                            — O recibe despacho automático llenando estos 4 datos: —
+                                        {/* Ultra-Compact 1-Row Bundle Switcher */}
+                                        <div className="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                                            {packages.map((p) => (
+                                                <button
+                                                    key={p.id}
+                                                    type="button"
+                                                    onClick={() => setSelectedPkgId(p.id)}
+                                                    className={`py-1 px-1 rounded-lg text-center transition cursor-pointer ${
+                                                        selectedPkgId === p.id
+                                                            ? 'bg-[#1E1446] text-white font-black shadow-sm'
+                                                            : 'bg-white text-slate-700 font-bold hover:bg-slate-50'
+                                                    }`}
+                                                >
+                                                    <span className="block text-[10px] sm:text-[11px] leading-tight truncate">
+                                                        {p.bags === 1 ? '1 Bolsa' : p.bags === 2 ? '🔥 2 Bolsas' : '🏆 3 Bolsas'}
+                                                    </span>
+                                                    <span className="block text-[10px] opacity-95 font-extrabold leading-tight">
+                                                        {formatCOP(p.price)}
+                                                    </span>
+                                                </button>
+                                            ))}
                                         </div>
 
                                         {formError && (
-                                            <div className="bg-rose-50 border-2 border-rose-300 text-rose-800 text-xs font-bold p-2.5 rounded-xl">
+                                            <div className="bg-rose-50 border-2 border-rose-300 text-rose-800 text-xs font-bold p-2 rounded-xl">
                                                 ⚠️ {formError}
                                             </div>
                                         )}
 
-                                        {/* CAMPO 1: WHATSAPP CON TECLADO NUMÉRICO */}
-                                        <div>
-                                            <label className="block text-xs font-extrabold text-slate-800 mb-1">
-                                                1️⃣ 📱 Tu WhatsApp / Celular (10 dígitos) *
-                                            </label>
-                                            <input
-                                                ref={phoneInputRef}
-                                                type="tel"
-                                                inputMode="numeric"
-                                                autoComplete="tel"
-                                                required
-                                                value={customerPhone}
-                                                onFocus={() => recordHeatmapClick('modal_focus_phone')}
-                                                onChange={(e) => {
-                                                    const val = e.target.value;
-                                                    setCustomerPhone(val);
-                                                    const digits = val.replace(/\D+/g, '').replace(/^57/, '');
-                                                    if (/^3\d{9}$/.test(digits)) {
-                                                        axios
-                                                            .post('/biolab/lead', {
-                                                                customer_phone: digits,
-                                                                customer_name: customerName,
-                                                                bundle_id: selectedPkgId,
-                                                                department,
-                                                                city,
-                                                                address,
-                                                            })
-                                                            .catch(() => {});
-                                                    }
-                                                }}
-                                                placeholder="Ej: 300 123 4567"
-                                                className="w-full rounded-xl border-2 border-emerald-500 bg-emerald-50/30 focus:bg-white focus:border-emerald-600 px-3.5 py-2.5 text-base sm:text-sm font-black text-slate-900"
-                                            />
+                                        {/* FILA 1: NOMBRE + WHATSAPP (COMPACTOS Y VISIBLES ARRIBA DEL TECLADO) */}
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <div>
+                                                <label className="block text-[11px] sm:text-xs font-extrabold text-slate-800 mb-0.5">
+                                                    👤 Tu Nombre y Apellido *
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    autoComplete="name"
+                                                    enterKeyHint="next"
+                                                    required
+                                                    value={customerName}
+                                                    onFocus={() => recordHeatmapClick('modal_focus_name')}
+                                                    onChange={(e) => setCustomerName(e.target.value)}
+                                                    placeholder="Ej: Carolina Martínez"
+                                                    className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3 py-2 text-base sm:text-sm font-semibold text-slate-900"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <div className="flex items-center justify-between mb-0.5">
+                                                    <label className="block text-[11px] sm:text-xs font-extrabold text-slate-800">
+                                                        📱 Tu WhatsApp / Celular *
+                                                    </label>
+                                                    {/^3\d{9}$/.test(customerPhone.replace(/\D+/g, '').replace(/^57/, '')) && (
+                                                        <span className="text-[10px] font-black text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded">
+                                                            ✓ Válido
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <input
+                                                    ref={phoneInputRef}
+                                                    type="tel"
+                                                    inputMode="numeric"
+                                                    autoComplete="tel"
+                                                    enterKeyHint="next"
+                                                    required
+                                                    value={customerPhone}
+                                                    onFocus={() => recordHeatmapClick('modal_focus_phone')}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value;
+                                                        setCustomerPhone(val);
+                                                        const digits = val.replace(/\D+/g, '').replace(/^57/, '');
+                                                        if (/^3\d{9}$/.test(digits)) {
+                                                            axios
+                                                                .post('/biolab/lead', {
+                                                                    customer_phone: digits,
+                                                                    customer_name: customerName,
+                                                                    bundle_id: selectedPkgId,
+                                                                    department,
+                                                                    city,
+                                                                    address,
+                                                                })
+                                                                .catch(() => {});
+                                                        }
+                                                    }}
+                                                    placeholder="Ej: 300 123 4567"
+                                                    className="w-full rounded-xl border-2 border-emerald-500 bg-emerald-50/20 focus:bg-white focus:border-emerald-600 px-3 py-2 text-base sm:text-sm font-black text-slate-900"
+                                                />
+                                            </div>
                                         </div>
 
-                                        {/* CAMPO 2: NOMBRE Y APELLIDO */}
-                                        <div>
-                                            <label className="block text-xs font-extrabold text-slate-800 mb-1">
-                                                2️⃣ 👤 Tu Nombre y Apellido *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                autoComplete="name"
-                                                required
-                                                value={customerName}
-                                                onFocus={() => recordHeatmapClick('modal_focus_name')}
-                                                onChange={(e) => setCustomerName(e.target.value)}
-                                                placeholder="Ej: Carolina Martínez"
-                                                className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2 text-base sm:text-sm font-semibold text-slate-900"
-                                            />
-                                        </div>
-
-                                        {/* CAMPO 3: DEPARTAMENTO Y CIUDAD EN UNA SOLA FILA */}
+                                        {/* FILA 2: DEPARTAMENTO Y CIUDAD EN UNA SOLA FILA */}
                                         <div className="grid grid-cols-2 gap-2">
                                             <div>
-                                                <label className="block text-xs font-extrabold text-slate-800 mb-1">
-                                                    3️⃣ 📍 Departamento *
+                                                <label className="block text-[11px] sm:text-xs font-extrabold text-slate-800 mb-0.5">
+                                                    📍 Departamento *
                                                 </label>
                                                 <select
                                                     required
@@ -2035,36 +2020,38 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                 </select>
                                             </div>
                                             <div>
-                                                <label className="block text-xs font-extrabold text-slate-800 mb-1">
+                                                <label className="block text-[11px] sm:text-xs font-extrabold text-slate-800 mb-0.5">
                                                     🏙️ Ciudad / Municipio *
                                                 </label>
                                                 <input
                                                     type="text"
                                                     autoComplete="address-level2"
+                                                    enterKeyHint="next"
                                                     required
                                                     value={city}
                                                     onFocus={() => recordHeatmapClick('modal_focus_dept_city')}
                                                     onChange={(e) => setCity(e.target.value)}
-                                                    placeholder="Ej: Bogotá / Medellín"
+                                                    placeholder="Ej: Medellín / Bogotá"
                                                     className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3 py-2 text-base sm:text-sm font-semibold text-slate-900"
                                                 />
                                             </div>
                                         </div>
 
-                                        {/* CAMPO 4: DIRECCIÓN COMPLETA CON BARRIO / APTO EN 1 SOLA CASILLA */}
+                                        {/* FILA 3: DIRECCIÓN COMPLETA CON BARRIO / APTO EN 1 SOLA CASILLA */}
                                         <div>
-                                            <label className="block text-xs font-extrabold text-slate-800 mb-1">
-                                                4️⃣ 🏠 Dirección Exacta y Barrio / Apto *
+                                            <label className="block text-[11px] sm:text-xs font-extrabold text-slate-800 mb-0.5">
+                                                🏠 Dirección Exacta y Barrio / Apto *
                                             </label>
                                             <input
                                                 type="text"
                                                 autoComplete="street-address"
+                                                enterKeyHint="done"
                                                 required
                                                 value={address}
                                                 onFocus={() => recordHeatmapClick('modal_focus_address')}
                                                 onChange={(e) => setAddress(e.target.value)}
                                                 placeholder="Ej: Calle 45 # 12-34 Apto 502, Barrio Cedritos"
-                                                className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3.5 py-2 text-base sm:text-sm font-semibold text-slate-900"
+                                                className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3 py-2 text-base sm:text-sm font-semibold text-slate-900"
                                             />
                                         </div>
 
