@@ -1014,17 +1014,24 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     </div>
 
                                                     <div className="flex-1 min-w-0">
-                                                        <div className="flex flex-wrap items-center justify-between gap-1.5">
-                                                            <span className="font-black text-xs sm:text-base text-slate-900 leading-snug">
-                                                                {pkg.name}
-                                                            </span>
-                                                            <span className="text-[11px] sm:text-xs font-black text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-lg shrink-0">
-                                                                {pkg.doses} Dosis ({pkg.weight})
-                                                            </span>
+                                                        <div className="flex items-start justify-between gap-2">
+                                                            <div className="min-w-0">
+                                                                <span className="font-black text-xs sm:text-base text-slate-900 leading-snug block">
+                                                                    {pkg.name}
+                                                                </span>
+                                                                <p className="text-[11px] sm:text-xs font-semibold text-slate-500 mt-0.5">
+                                                                    {pkg.subtitle}
+                                                                </p>
+                                                            </div>
+                                                            <div className="text-right shrink-0">
+                                                                <span className="font-black text-sm sm:text-lg text-emerald-700 block leading-none">
+                                                                    {formatCOP(pkg.price)}
+                                                                </span>
+                                                                <span className="text-[10px] sm:text-xs font-bold text-slate-400 line-through block mt-0.5">
+                                                                    {formatCOP(pkg.compareAt)}
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                        <p className="text-[11px] sm:text-xs font-semibold text-slate-500 mt-0.5">
-                                                            {pkg.subtitle}
-                                                        </p>
                                                         <div className="flex flex-wrap gap-1.5 mt-2">
                                                             {pkg.perks.map((perk, idx) => (
                                                                 <span
