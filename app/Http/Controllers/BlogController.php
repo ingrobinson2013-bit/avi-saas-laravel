@@ -12,6 +12,9 @@ class BlogController extends Controller
      */
     public function index()
     {
+        if (strtolower(trim(request()->getHost())) === 'www.avipetapp.com') {
+            return redirect()->to('https://avipetapp.com' . request()->getRequestUri(), 301);
+        }
         $posts = BlogService::getAllPosts();
         return view('blog.index', compact('posts'));
     }
@@ -21,6 +24,9 @@ class BlogController extends Controller
      */
     public function show(string $slug)
     {
+        if (strtolower(trim(request()->getHost())) === 'www.avipetapp.com') {
+            return redirect()->to('https://avipetapp.com' . request()->getRequestUri(), 301);
+        }
         $post = BlogService::getPostBySlug($slug);
 
         if (!$post) {

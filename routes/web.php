@@ -103,6 +103,9 @@ Route::get('/biolab/pedidos', [App\Http\Controllers\BioLabController::class, 'li
 
 // 1. Landing Principal B2B, Tienda General AVIPET BioLab® (biolab.avipetapp.com) ó Storefront de Clínica
 Route::get('/', function () use ($resolveTenantFromHost, $isBioLabHost) {
+    if (strtolower(trim(request()->getHost())) === 'www.avipetapp.com') {
+        return redirect()->to('https://avipetapp.com' . request()->getRequestUri(), 301);
+    }
     if ($isBioLabHost()) {
         return app(App\Http\Controllers\BioLabController::class)->storeHome(request());
     }
