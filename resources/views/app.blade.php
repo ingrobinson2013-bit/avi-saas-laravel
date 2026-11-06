@@ -18,6 +18,7 @@
         $isBaseDomain = in_array($hostNoWww, ['localhost', '127.0.0.1', $baseDomain]) || str_contains($cleanHost, 'easypanel.host');
 
         $isBioLabHost = str_starts_with($hostNoWww, 'biolab.');
+        $isBioLabStoreHome = ($isBioLabHost && request()->is('/')) || request()->is('biolab');
         $isBioLabPage = $isBioLabHost || request()->is('biolab*') || request()->is('dermo-gut-superboost*') || request()->is('producto/dermo-gut-superboost*');
 
         $tenantSlug = request()->route('slug') ?? request()->route('subdomain') ?? session('current_tenant_slug');
@@ -45,9 +46,13 @@
         }
 
         $isPublicLanding = request()->is('/') && !$currentTenant && !$isBioLabPage;
-        $canonicalUrl = $isBioLabPage
-            ? ($isBioLabHost ? 'https://biolab.avipetapp.com/dermo-gut-superboost' : 'https://avipetapp.com/biolab/dermo-gut-superboost')
-            : 'https://avipetapp.com/';
+        if ($isBioLabStoreHome) {
+            $canonicalUrl = $isBioLabHost ? 'https://biolab.avipetapp.com/' : 'https://avipetapp.com/biolab';
+        } elseif ($isBioLabPage) {
+            $canonicalUrl = $isBioLabHost ? 'https://biolab.avipetapp.com/dermo-gut-superboost' : 'https://avipetapp.com/biolab/dermo-gut-superboost';
+        } else {
+            $canonicalUrl = 'https://avipetapp.com/';
+        }
     @endphp
     @if($isPublicLanding)
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -349,6 +354,24 @@
                   "returnMethod": "https://schema.org/ReturnByMail",
                   "returnFees": "https://schema.org/FreeReturn"
                 }
+              },
+              {
+                "@@type": "Offer",
+                "name": "Oferta Dúo Clínico — 2 Bolsas Dermo & Gut Superboost (500g - 100 Dosis)",
+                "price": "124900",
+                "priceCurrency": "COP",
+                "priceValidUntil": "2027-12-31",
+                "availability": "https://schema.org/InStock",
+                "url": "{{ $canonicalUrl }}"
+              },
+              {
+                "@@type": "Offer",
+                "name": "Tratamiento Completo 90 Días — 3 Bolsas Dermo & Gut Superboost (750g - 150 Dosis)",
+                "price": "169900",
+                "priceCurrency": "COP",
+                "priceValidUntil": "2027-12-31",
+                "availability": "https://schema.org/InStock",
+                "url": "{{ $canonicalUrl }}"
               }
             ]
           }
@@ -550,18 +573,29 @@
             </noscript>
         @endif
     @elseif($isBioLabPage)
-        @php ob_start(); @endphp
-        @inertia
         @php
-            $inertiaHtml = ob_get_clean();
-            $seoBioLabPrerender = view('partials.seo_biolab_prerender')->render();
-            echo preg_replace_callback(
-                '/(<div id="app"[^>]*>)<\/div>/',
-                fn($matches) => $matches[1] . $seoBioLabPrerender . '</div>',
-                $inertiaHtml,
-                1
-            );
+            $ua = request()->userAgent() ?? '';
+            $isSeoCrawler = (bool) preg_match('/Googlebot|bingbot|Slurp|DuckDuckBot|Baiduspider|YandexBot|GPTBot|ChatGPT|Perplexity|ClaudeBot|facebookexternalhit|WhatsApp|Twitterbot|LinkedInBot/i', $ua);
         @endphp
+        @if($isSeoCrawler)
+            @php ob_start(); @endphp
+            @inertia
+            @php
+                $inertiaHtml = ob_get_clean();
+                $seoBioLabPrerender = view('partials.seo_biolab_prerender')->render();
+                echo preg_replace_callback(
+                    '/(<div id="app"[^>]*>)<\/div>/',
+                    fn($matches) => $matches[1] . $seoBioLabPrerender . '</div>',
+                    $inertiaHtml,
+                    1
+                );
+            @endphp
+        @else
+            @inertia
+            <noscript>
+                @include('partials.seo_biolab_prerender')
+            </noscript>
+        @endif
     @else
         @inertia
     @endif
