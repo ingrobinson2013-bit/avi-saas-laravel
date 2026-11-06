@@ -583,14 +583,14 @@ HTML,
             [
                 'slug' => 'alergia-dermatitis-picazon-perros-suplemento-hipoalergenico-colombia',
                 'title' => 'Alergia, Dermatitis y Caída de Pelo en Perros: Guía del Eje Intestino-Piel y Suplemento Hipoalergénico en Colombia',
-                'excerpt' => 'Descubre por qué el 80% de la picazón, alergias de piel y caída de pelo en perros nace en la microbiota intestinal, cómo funciona la Matriz de Micro-Proteína Novel Hipoalergénica y cómo pedir AVIPET BioLab® Dermo & Gut Superboost contraentrega en Colombia.',
+                'excerpt' => 'Descubre por qué el 80% de la picazón, alergias de piel y caída de pelo en perros nace en la microbiota intestinal, cómo funciona la Matriz de Micro-Proteína Novel Hipoalergénica y cómo pedir AVIPET BioLab® Dermo & Gut Superboost ($69.900 COP con Envío Gratis y Pago Contraentrega en Colombia).',
                 'category' => 'Nutrición Clínica & BioLab®',
                 'read_time' => '6 min de lectura',
                 'author' => 'División Científica AVIPET BioLab®',
                 'author_role' => 'Biotecnología Nutricional & Salud Dermo-Digestiva',
                 'published_at' => '2026-10-25',
                 'updated_at' => '2026-11-05',
-                'image' => '/brand/biolab/dermo-gut-hero-product.png',
+                'image' => '/images/biolab/hero-estudio-1-bolsa.webp',
                 'keywords' => [
                     'alergia en perros piel',
                     'dermatitis en perros tratamiento natural colombia',
@@ -607,11 +607,11 @@ HTML,
                     ],
                     [
                         'question' => '¿Qué es AVIPET BioLab® Dermo & Gut Superboost y cómo se administra?',
-                        'answer' => 'Es un super-suplemento funcional grado veterinario en polvo (Topper nutricional de 250g) formulado con Matriz de Micro-Proteína Novel Hipoalergénica (55% proteína biodisponible), Ácido Láurico y Quitina Prebiótica. Se espolvorea diariamente sobre el concentrado o dieta BARF actual de tu mascota.'
+                        'answer' => 'Es un super-suplemento funcional grado veterinario en polvo (Topper nutricional de 250g - 50 dosis) formulado con Matriz de Micro-Proteína Novel Hipoalergénica, Ácido Láurico Dermo-Activo (4.5%), Omega 3-6-9 de Linaza Dorada, Fibra Prebiótica, Cúrcuma y Clorofila. Se espolvorea diariamente sobre el concentrado o dieta actual de tu mascota.'
                     ],
                     [
-                        'question' => '¿Cómo pedir AVIPET BioLab® en Colombia y pueden distribuirlo las clínicas veterinarias?',
-                        'answer' => 'Los tutores de mascotas pueden pedirlo con Pago Contraentrega (pagas al recibir en casa) en toda Colombia desde $44.900 COP en avipetapp.com/biolab/dermo-gut-superboost. Además, las clínicas veterinarias socias de AviPetApp pueden adquirir cajas mayoristas o incluirlo dentro de sus planes de salud dermatológicos.'
+                        'question' => '¿Cuánto vale AVIPET BioLab® Dermo & Gut Superboost en Colombia y tiene pago contraentrega?',
+                        'answer' => 'Tiene un valor de $69.900 COP (1 Bolsa de 250g para 50 dosis) con Envío Gratis y Pago Contraentrega (pagas al recibir en casa) en toda Colombia. También están disponibles el Pack Dúo Clínico (2 bolsas por $124.900 COP) y el Tratamiento de 90 Días (3 bolsas por $169.900 COP), además de precios mayoristas para clínicas veterinarias.'
                     ],
                 ],
                 'content' => <<<'HTML'
@@ -662,7 +662,7 @@ Para romper el ciclo de reactividad inmunológica sin obligar al tutor a cambiar
 
 <h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">3. Doble Oportunidad: Bienestar para Tutores y Rentabilidad para Veterinarias</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
-<strong>Si eres tutor de una mascota:</strong> Puedes solicitar tu tratamiento de <strong>AVIPET BioLab® — Dermo &amp; Gut Superboost</strong> directamente en línea con <strong>Pago Contraentrega en toda Colombia</strong> (pagas en efectivo o transferencia cuando el mensajero entrega en tu puerta) desde <strong>$44.900 COP</strong> (1 bolsa de 250g para hasta 50 días) o el protocolo completo de 60 días (2 bolsas por $79.900 COP con envío gratis).
+<strong>Si eres tutor de una mascota:</strong> Puedes solicitar tu tratamiento de <strong>AVIPET BioLab® — Dermo &amp; Gut Superboost</strong> directamente en línea con <strong>Envío Gratis y Pago Contraentrega en toda Colombia</strong> (pagas en efectivo o transferencia cuando el mensajero entrega en tu puerta) por <strong>$69.900 COP</strong> (1 bolsa de 250g para 50 dosis), o aprovechar el <strong>Pack Dúo Clínico (2 bolsas por $124.900 COP)</strong> y el <strong>Tratamiento Completo 90 Días (3 bolsas por $169.900 COP)</strong>.
 </p>
 <p class="text-slate-700 leading-relaxed mb-6">
 <strong>Si tienes una Clínica Veterinaria o Pet Shop:</strong> Puedes incorporar <strong>AVIPET BioLab®</strong> dentro de tus <strong>planes de salud dermatológicos en AviPetApp</strong> o distribuirlo en tu mostrador con margen mayorista preferencial para clínicas socias.
@@ -671,14 +671,14 @@ Para romper el ciclo de reactividad inmunológica sin obligar al tutor a cambiar
 <div class="grid md:grid-cols-2 gap-6 my-8">
     <div class="bg-gradient-to-br from-emerald-950 via-teal-900 to-slate-900 text-white rounded-2xl p-6 shadow-xl border border-emerald-500/30 flex flex-col justify-between">
         <div>
-            <span class="inline-block bg-emerald-400/20 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full mb-3">🐾 Para Tutores de Mascotas · Contraentrega</span>
+            <span class="inline-block bg-emerald-400/20 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full mb-3">🐾 Para Tutores de Mascotas · Envío Gratis + Contraentrega</span>
             <h3 class="text-xl font-black mb-2">Pide AVIPET BioLab® Dermo &amp; Gut Superboost</h3>
             <p class="text-emerald-100 text-xs leading-relaxed mb-5">
-                Bolsa Doypack de 250g (hasta 50 porciones). Envío a toda Colombia y pago en casa al recibir. Desde $44.900 COP.
+                Bolsa Doypack de 250g (50 dosis). Envío Gratis a toda Colombia y pago en casa al recibir por <strong>$69.900 COP</strong>.
             </p>
         </div>
         <a href="/biolab/dermo-gut-superboost" class="inline-flex items-center justify-center px-5 py-3 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-sm rounded-xl shadow-lg transition">
-            Pedir Contraentrega Ahora →
+            Pedir Contraentrega ($69.900) →
         </a>
     </div>
 

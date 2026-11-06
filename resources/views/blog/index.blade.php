@@ -206,7 +206,7 @@
                 </div>
                 <div class="flex flex-col sm:flex-row items-center gap-3">
                     <a href="/biolab/dermo-gut-superboost" class="w-full sm:w-auto px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-sm rounded-xl shadow-lg transition text-center">
-                        Pedir Contraentrega ($44.900) →
+                        Pedir Contraentrega ($69.900) →
                     </a>
                     <a href="https://wa.me/573235813942?text=Hola%20AVIPET%20BioLab,%20quiero%20informaci%C3%B3n%20mayorista%20de%20Dermo%20%26%20Gut%20Superboost%20para%20mi%20veterinaria" target="_blank" class="w-full sm:w-auto px-5 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-sm rounded-xl border border-white/20 transition text-center">
                         Mayorista para Clínicas
