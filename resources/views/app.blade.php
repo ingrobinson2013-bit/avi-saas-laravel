@@ -573,11 +573,7 @@
             </noscript>
         @endif
     @elseif($isBioLabPage)
-        @php
-            $ua = request()->userAgent() ?? '';
-            $isSeoCrawler = (bool) preg_match('/Googlebot|bingbot|Slurp|DuckDuckBot|Baiduspider|YandexBot|GPTBot|ChatGPT|Perplexity|ClaudeBot|facebookexternalhit|WhatsApp|Twitterbot|LinkedInBot/i', $ua);
-        @endphp
-        @if($isSeoCrawler)
+        @if(!$isBioLabStoreHome)
             @php ob_start(); @endphp
             @inertia
             @php

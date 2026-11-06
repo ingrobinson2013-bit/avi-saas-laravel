@@ -643,7 +643,7 @@ Route::get('/sitemap.xml', function () use ($resolveTenantFromHost, $isBioLabHos
     // Si se consulta desde el subdominio o dominio propio de una clínica activa
     if ($tenantHost) {
         $canonicalTenantUrl = rtrim($tenantHost->base_url, '/') . '/';
-        $lastmod = $tenantHost->updated_at ? $tenantHost->updated_at->toDateString() : $today;
+        $lastmod = $today;
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
