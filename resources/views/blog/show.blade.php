@@ -6,9 +6,11 @@
     @php
         $gaId = env('GOOGLE_TAG_ID', 'G-YRPKPVXZ2T') ?: env('GOOGLE_ANALYTICS_ID', 'G-YRPKPVXZ2T');
         $canonicalUrl = "https://avipetapp.com/blog/{$post['slug']}";
+        $ogImageUrl = str_starts_with($post['image'], 'http') ? $post['image'] : url($post['image']);
+        $postFaqs = $post['faqs'] ?? [];
     @endphp
 
-    <title>{{ $post['title'] }} | Blog AviPetApp</title>
+    <title>{{ $post['title'] }} | AviPetApp</title>
     <meta name="description" content="{{ $post['excerpt'] }}">
     <meta name="keywords" content="{{ implode(', ', $post['keywords']) }}">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
@@ -19,7 +21,7 @@
     <meta property="og:url" content="{{ $canonicalUrl }}">
     <meta property="og:title" content="{{ $post['title'] }}">
     <meta property="og:description" content="{{ $post['excerpt'] }}">
-    <meta property="og:image" content="{{ $post['image'] }}">
+    <meta property="og:image" content="{{ $ogImageUrl }}">
     <meta property="og:site_name" content="AviPetApp">
     <meta property="article:published_time" content="{{ $post['published_at'] }}">
     <meta property="article:modified_time" content="{{ $post['updated_at'] }}">
@@ -29,9 +31,9 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $post['title'] }}">
     <meta name="twitter:description" content="{{ $post['excerpt'] }}">
-    <meta name="twitter:image" content="{{ $post['image'] }}">
+    <meta name="twitter:image" content="{{ $ogImageUrl }}">
 
-    <!-- Schema.org JSON-LD Enriquecido para Google Article / BlogPosting + BreadcrumbList -->
+    <!-- Schema.org JSON-LD Enriquecido para Google Article / BlogPosting + BreadcrumbList + FAQPage -->
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
@@ -45,7 +47,7 @@
           },
           "headline": "{{ $post['title'] }}",
           "description": "{{ $post['excerpt'] }}",
-          "image": "{{ $post['image'] }}",
+          "image": "{{ $ogImageUrl }}",
           "author": {
             "@@type": "Person",
             "name": "{{ $post['author'] }}",
@@ -88,7 +90,24 @@
               "item": "{{ $canonicalUrl }}"
             }
           ]
+        }@if(count($postFaqs) > 0),
+        {
+          "@@type": "FAQPage",
+          "@@id": "{{ $canonicalUrl }}#faq",
+          "mainEntity": [
+            @foreach($postFaqs as $fIdx => $faq)
+            {
+              "@@type": "Question",
+              "name": {!! json_encode($faq['question'], JSON_UNESCAPED_UNICODE) !!},
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": {!! json_encode($faq['answer'], JSON_UNESCAPED_UNICODE) !!}
+              }
+            }{{ $fIdx + 1 < count($postFaqs) ? ',' : '' }}
+            @endforeach
+          ]
         }
+        @endif
       ]
     }
     </script>
@@ -143,6 +162,9 @@
             </a>
             <div class="flex items-center gap-2 sm:gap-3">
                 <a href="/blog" class="text-xs sm:text-sm font-semibold text-[#5C6B85] hover:text-[#15213B] px-2 sm:px-3 py-1.5 transition whitespace-nowrap">← <span class="hidden sm:inline">Ver más </span>Guías</a>
+                <a href="/biolab/dermo-gut-superboost" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-2 rounded-xl transition whitespace-nowrap">
+                    🧬 AVIPET BioLab®
+                </a>
                 <a href="/registro-clinica" class="text-xs sm:text-sm font-semibold bg-[#6D28D9] hover:bg-[#5B21B6] text-white px-3 sm:px-4 py-2 rounded-xl shadow-sm transition whitespace-nowrap">Crear mi clínica</a>
             </div>
         </div>
@@ -191,7 +213,64 @@
         <!-- Article Body -->
         <article class="bg-white rounded-2xl p-5 sm:p-8 md:p-12 border border-[#D9E2F2] shadow-sm text-[#15213B] leading-relaxed text-base sm:text-lg">
             {!! $post['content'] !!}
+
+            @if(count($postFaqs) > 0)
+            <div class="mt-12 pt-8 border-t border-[#D9E2F2]">
+                <h2 class="text-xl sm:text-2xl font-extrabold text-[#15213B] mb-5">Preguntas Frecuentes</h2>
+                <div class="space-y-4">
+                    @foreach($postFaqs as $faq)
+                    <div class="bg-[#F4F7FC] border border-[#D9E2F2] rounded-xl p-5">
+                        <h3 class="text-base font-bold text-[#15213B] mb-2">{{ $faq['question'] }}</h3>
+                        <p class="text-sm text-[#5C6B85] leading-relaxed">{{ $faq['answer'] }}</p>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
         </article>
+
+        <!-- Vitrina Comercial Dual: Software SaaS B2B + Producto AVIPET BioLab® -->
+        <section class="mt-8 grid md:grid-cols-2 gap-5">
+            <div class="bg-gradient-to-br from-[#080B20] to-[#111936] text-white rounded-2xl p-6 border border-[#6D28D9]/40 shadow-lg flex flex-col justify-between">
+                <div>
+                    <span class="inline-block text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#6D28D9]/30 text-[#C4B5FD] mb-3">
+                        🏥 Software con IA para Veterinarias
+                    </span>
+                    <h3 class="text-lg font-extrabold text-white mb-2">¿Tienes una Clínica Veterinaria?</h3>
+                    <p class="text-xs text-[#C9D4F0] leading-relaxed mb-4">
+                        Crea tus propios planes de salud preventivos, emite carnets digitales con código QR en WhatsApp y controla el canje en recepción en 1 clic.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2.5">
+                    <a href="/registro-clinica" class="px-4 py-2.5 bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-bold text-xs rounded-xl shadow transition">
+                        Probar 15 Días Gratis →
+                    </a>
+                    <a href="https://wa.me/573235813942?text=Hola%20AviPetApp,%20le%C3%AD%20el%20art%C3%ADculo%20{{ urlencode($post['title']) }}%20y%20quiero%20activar%20mi%20cl%C3%ADnica" target="_blank" class="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs rounded-xl border border-white/15 transition">
+                        Hablar por WhatsApp
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-emerald-950 to-teal-900 text-white rounded-2xl p-6 border border-emerald-500/30 shadow-lg flex flex-col justify-between">
+                <div>
+                    <span class="inline-block text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-400/20 text-emerald-300 mb-3">
+                        🧬 Biotecnología Dermo-Digestiva · Pago en Casa
+                    </span>
+                    <h3 class="text-lg font-extrabold text-white mb-2">AVIPET BioLab® — Dermo &amp; Gut Superboost</h3>
+                    <p class="text-xs text-emerald-100 leading-relaxed mb-4">
+                        Topper funcional hipoalergénico (55% proteína novel, Ácido Láurico y Quitina Prebiótica) para alergias de piel, caída de pelo y digestión firme.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2.5">
+                    <a href="/biolab/dermo-gut-superboost" class="px-4 py-2.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs rounded-xl shadow transition">
+                        Pedir Contraentrega ($44.900) →
+                    </a>
+                    <a href="https://wa.me/573235813942?text=Hola,%20quiero%20informaci%C3%B3n%20de%20AVIPET%20BioLab%20Dermo%20%26%20Gut%20Superboost" target="_blank" class="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs rounded-xl border border-white/15 transition">
+                        Distribución Mayorista
+                    </a>
+                </div>
+            </div>
+        </section>
 
         <!-- Share & Author Box -->
         <div class="mt-8 bg-white border border-[#D9E2F2] rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">

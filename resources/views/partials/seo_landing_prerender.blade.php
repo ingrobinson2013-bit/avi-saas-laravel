@@ -214,6 +214,7 @@
             <div class="flex flex-wrap gap-5 text-xs">
                 <a href="https://avipetapp.com/" class="hover:text-white">Inicio</a>
                 <a href="https://avipetapp.com/blog" class="hover:text-white">Blog Veterinario</a>
+                <a href="https://avipetapp.com/biolab/dermo-gut-superboost" class="hover:text-white">AVIPET BioLab® Dermo &amp; Gut Superboost</a>
                 <a href="https://avipetapp.com/registro-clinica" class="hover:text-white">Registrar Clínica</a>
                 <a href="https://avipetapp.com/admin/login" class="hover:text-white">Acceso Clínicas</a>
             </div>

@@ -671,7 +671,13 @@ Route::get('/sitemap.xml', function () use ($resolveTenantFromHost, $isBioLabHos
     $xml .= "    <priority>1.0</priority>\n";
     $xml .= "  </url>\n";
 
-    // 1.1 AVIPET BioLab® — Dermo & Gut Superboost (Product Page E-commerce)
+    // 1.1 AVIPET BioLab® — Tienda Oficial y Dermo & Gut Superboost (Product Page E-commerce)
+    $xml .= "  <url>\n";
+    $xml .= "    <loc>{$baseUrl}/biolab</loc>\n";
+    $xml .= "    <lastmod>{$today}</lastmod>\n";
+    $xml .= "    <changefreq>daily</changefreq>\n";
+    $xml .= "    <priority>0.95</priority>\n";
+    $xml .= "  </url>\n";
     $xml .= "  <url>\n";
     $xml .= "    <loc>{$baseUrl}/biolab/dermo-gut-superboost</loc>\n";
     $xml .= "    <lastmod>{$today}</lastmod>\n";

@@ -2839,6 +2839,15 @@ export default function B2BLanding() {
                                         <span>Comparativa de Software Veterinario en Colombia (2026)</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a
+                                        href="/blog/alergia-dermatitis-picazon-perros-suplemento-hipoalergenico-colombia"
+                                        className="hover:text-[#35DDF5] transition-colors inline-flex items-center gap-1.5"
+                                    >
+                                        <ArrowRight className="w-3.5 h-3.5 text-[#35DDF5]" strokeWidth={2} />
+                                        <span>Guía del Eje Intestino-Piel: Alergia, Dermatitis y Suplementación</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
@@ -2854,6 +2863,15 @@ export default function B2BLanding() {
                                     >
                                         <BookOpen className="w-4 h-4 text-[#35DDF5]" strokeWidth={2} />
                                         <span>Blog para Clínicas Veterinarias</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="/biolab/dermo-gut-superboost"
+                                        className="hover:text-[#35DDF5] transition-colors inline-flex items-center gap-2"
+                                    >
+                                        <Sparkles className="w-4 h-4 text-[#10B981]" strokeWidth={2} />
+                                        <span>AVIPET BioLab® — Dermo &amp; Gut Superboost</span>
                                     </a>
                                 </li>
                                 <li>

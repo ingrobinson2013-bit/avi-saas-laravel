@@ -17,6 +17,25 @@ class HandleInertiaRequests extends Middleware
     protected $rootView = 'app';
 
     /**
+     * Redirección canónica 301 de www.avipetapp.com hacia https://avipetapp.com
+     * para consolidar el 100% de la autoridad SEO en Google Search Console.
+     */
+    public function handle(Request $request, \Closure $next)
+    {
+        if ($request->isMethodSafe()) {
+            $host = strtolower(trim($request->getHost()));
+            if ($host === 'www.avipetapp.com') {
+                return redirect()->to('https://avipetapp.com' . $request->getRequestUri(), 301);
+            }
+            if ($host === 'www.biolab.avipetapp.com') {
+                return redirect()->to('https://biolab.avipetapp.com' . $request->getRequestUri(), 301);
+            }
+        }
+
+        return parent::handle($request, $next);
+    }
+
+    /**
      * Determines the current asset version.
      *
      * @see https://inertiajs.com/asset-versioning

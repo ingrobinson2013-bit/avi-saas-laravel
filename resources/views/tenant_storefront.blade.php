@@ -10,8 +10,12 @@
         $favIcon = $canonicalUrl . 'clinic-favicon.webp';
         $city = $tenant->branding['city'] ?? ($isPilot ? 'Cajicá, Cundinamarca' : '');
         $shortBrandName = $isPilot ? 'Vet-Pet Patitas' : ($tenant->branding['brand_name'] ?? $tenant->name);
-        $seoTitle = $tenant->name . ($city ? " — Clínica Veterinaria en {$city}" : '') . " | Consultas, Vacunas y Planes de Salud";
-        $metaDescription = "Clínica Veterinaria {$tenant->name}" . ($city ? " en {$city}" : "") . ". Consultas médicas, vacunación, desparasitación, laboratorio clínico y planes de salud preventiva para perros y gatos con carnet digital y cobertura inmediata.";
+        $seoTitle = $isPilot
+            ? "Veterinaria en Cajicá — {$tenant->name} | Consultas, Vacunas, Profilaxis, Baño y Planes de Salud"
+            : ($tenant->name . ($city ? " — Clínica Veterinaria en {$city}" : '') . " | Consultas, Vacunas y Planes de Salud");
+        $metaDescription = $isPilot
+            ? "Clínica Veterinaria {$tenant->name} en Cajicá (Calle 7 # 4-73 Este). Consultas médicas, vacunación para perros y gatos, desparasitación, profilaxis dental, baño y peluquería, laboratorio, domicilios y planes de salud con carnet digital QR."
+            : ("Clínica Veterinaria {$tenant->name}" . ($city ? " en {$city}" : "") . ". Consultas médicas, vacunación, desparasitación, profilaxis dental, baño y planes de salud preventiva para perros y gatos con carnet digital.");
         $shareImage = $favIcon;
         $googleTagId = $tenant->branding['google_tag_id'] ?? env('GOOGLE_TAG_ID', 'G-YRPKPVXZ2T') ?? env('GOOGLE_ANALYTICS_ID', 'G-YRPKPVXZ2T');
         $gtmId = $tenant->branding['google_tag_manager_id'] ?? env('GOOGLE_TAG_MANAGER_ID');

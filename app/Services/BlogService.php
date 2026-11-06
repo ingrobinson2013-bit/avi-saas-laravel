@@ -12,22 +12,37 @@ class BlogService
         return [
             [
                 'slug' => 'planes-de-salud-preventiva-veterinaria-ingresos-recurrentes',
-                'title' => 'Cómo crear Planes de Salud Preventiva en tu Clínica Veterinaria y Facturar Ingresos Recurrentes',
-                'excerpt' => 'Aprende paso a paso a diseñar planes de bienestar para perros y gatos que generen ingresos fijos mes a mes, blinden tu flujo de caja y aumenten la fidelidad de los tutores de mascotas.',
+                'title' => 'Planes de Salud Veterinarios: Cómo Crear Membresías Preventivas en tu Clínica y Facturar Ingresos Recurrentes',
+                'excerpt' => 'Guía paso a paso para estructurar planes de salud veterinarios (perros y gatos) en Colombia: tablas de precios en pesos, margen del 65%, carnet digital QR y recaudo mensual recurrente.',
                 'category' => 'Rentabilidad & Negocio',
                 'read_time' => '7 min de lectura',
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & Estratega SaaS',
                 'published_at' => '2026-10-01',
-                'updated_at' => '2026-10-17',
+                'updated_at' => '2026-11-05',
                 'image' => 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
                     'avipetapp',
+                    'planes de salud veterinarios',
                     'planes de salud veterinaria',
-                    'ingresos recurrentes veterinaria colombia',
+                    'planes preventivos veterinaria colombia',
                     'membresias para mascotas',
-                    'rentabilidad clinica veterinaria',
+                    'ingresos recurrentes veterinaria colombia',
                     'software planes bienestar mascotas'
+                ],
+                'faqs' => [
+                    [
+                        'question' => '¿Qué incluye un plan de salud veterinario preventivo en Colombia?',
+                        'answer' => 'Un plan de salud preventivo para mascotas incluye el esquema anual de vacunación (Séxtuple, Rabia, KC en perros; Triple felina y Leucemia en gatos), desparasitación trimestral, consultas médicas de control programadas y descuentos exclusivos en laboratorio, profilaxis dental y peluquería.'
+                    ],
+                    [
+                        'question' => '¿Cuánto cuesta un plan de salud para perros o gatos en Colombia?',
+                        'answer' => 'Las clínicas veterinarias en Colombia estructuran sus planes básicos entre $39.000 y $49.000 COP al mes, y sus planes integrales o senior entre $69.000 y $89.000 COP mensuales, alcanzando márgenes brutos del 65% sobre el costo de insumos.'
+                    ],
+                    [
+                        'question' => '¿Cuál es la diferencia entre un plan de salud veterinario y una póliza de accidentes?',
+                        'answer' => 'Los planes de salud para mascotas son programas de bienestar y medicina preventiva administrados directamente por la clínica veterinaria con uso garantizado desde el primer mes, no seguros financieros de siniestros.'
+                    ],
                 ],
                 'content' => <<<'HTML'
 <p class="lead text-lg text-slate-700 leading-relaxed font-medium mb-6">
@@ -121,22 +136,37 @@ HTML,
             ],
             [
                 'slug' => 'fidelizacion-clientes-veterinaria-retencion-mascotas',
-                'title' => 'Retención de Clientes en Clínica Veterinaria: Cómo Fidelizar Tutores y Evitar que Vayan a la Competencia',
-                'excerpt' => 'Guía práctica de retención de clientes en clínica veterinaria: cómo aumentar la fidelización en más del 80% con planes preventivos, carnet digital en WhatsApp y recordatorios automatizados.',
+                'title' => 'Retención de Clientes en Clínica Veterinaria: 5 Estrategias Probadas para Fidelizar Tutores (Guía 2026)',
+                'excerpt' => 'Cómo aumentar la retención de clientes en tu clínica veterinaria del 35% al 88%: carnet digital con QR en WhatsApp, recordatorios preventivos con IA, planes de salud y terminal de canje en recepción.',
                 'category' => 'Fidelización & Retención',
                 'read_time' => '6 min de lectura',
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & Estratega SaaS',
                 'published_at' => '2026-10-03',
-                'updated_at' => '2026-10-17',
+                'updated_at' => '2026-11-05',
                 'image' => 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
                     'retención de clientes en clínica veterinaria',
                     'fidelizacion clientes veterinaria',
+                    'como fidelizar clientes en una veterinaria',
                     'retencion tutores mascotas',
                     'carnet digital mascotas whatsapp',
                     'marketing para veterinarias colombia',
                     'atencion al cliente clinica veterinaria'
+                ],
+                'faqs' => [
+                    [
+                        'question' => '¿Cómo mejorar la retención de clientes en una clínica veterinaria?',
+                        'answer' => 'Las 3 acciones de mayor impacto para la retención de clientes en clínica veterinaria son: reemplazar el carnet de cartón por un Carnet Digital interactivo con código QR en WhatsApp, automatizar recordatorios preventivos 7 días y 24 horas antes de cada vacuna o desparasitación, y afiliar al paciente a un plan de salud mensual.'
+                    ],
+                    [
+                        'question' => '¿Por qué los tutores de mascotas dejan de asistir a la misma clínica veterinaria?',
+                        'answer' => 'Más del 68% de la deserción de clientes en veterinarias ocurre por olvido de fechas de refuerzo vacunal o desparasitación y por falta de vínculo recurrente entre consultas de urgencia.'
+                    ],
+                    [
+                        'question' => '¿Cuántas veces al año visita la clínica un cliente afiliado a un plan de salud?',
+                        'answer' => 'Un tutor con plan de salud preventivo activo y carnet digital visita la clínica entre 4 y 6 veces al año, frente a 1 visita cada 18 meses de un cliente ocasional, multiplicando por 3 el consumo en farmacia, nutrición y baños.'
+                    ],
                 ],
                 'content' => <<<'HTML'
 <p class="lead text-lg text-slate-700 leading-relaxed font-medium mb-6">
@@ -190,22 +220,33 @@ HTML,
             ],
             [
                 'slug' => 'mejores-software-veterinarios-colombia-comparativa-2026',
-                'title' => 'Los 5 Mejores Software Veterinarios en Colombia (2026): Comparativa, Precios y Funcionalidades',
-                'excerpt' => 'Guía imparcial y comparativa de los principales programas de gestión veterinaria en Colombia: historias clínicas, facturación DIAN, planes de salud preventiva y apps móviles.',
+                'title' => 'Los 5 Mejores Software Veterinarios en Colombia (2026): Comparativa de Precios y Funciones',
+                'excerpt' => 'Comparativa actualizada de software veterinario en Colombia (2026): precios en pesos, historias clínicas, planes de salud para mascotas, carnet digital QR en WhatsApp y herramientas con IA.',
                 'category' => 'Tecnología & Software',
                 'read_time' => '8 min de lectura',
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & CEO NODIA',
                 'published_at' => '2026-10-05',
-                'updated_at' => '2026-10-17',
+                'updated_at' => '2026-11-05',
                 'image' => 'https://images.unsplash.com/photo-1516715094483-75da7dee9758?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
                     'avipetapp',
                     'software veterinario colombia',
-                    'programa gestion veterinaria bogota medellin',
+                    'mejores software veterinarios colombia',
+                    'programa gestion veterinaria bogota medellin cali',
                     'software para clinicas veterinarias',
                     'sistema historiales clinicos veterinaria',
                     'precio software veterinario colombia'
+                ],
+                'faqs' => [
+                    [
+                        'question' => '¿Cuál es el mejor software veterinario en Colombia para planes de salud y fidelización?',
+                        'answer' => 'AviPetApp es la plataforma líder en Colombia especializada en planes de salud para mascotas, carnets digitales con código QR, terminal de canje en mostrador y herramientas de IA supervisada, y puede operar junto a tu software actual de historia clínica.'
+                    ],
+                    [
+                        'question' => '¿Cuánto cuesta un software para clínica veterinaria en Colombia?',
+                        'answer' => 'En AviPetApp puedes iniciar con 15 días gratis sin tarjeta de crédito, paquetes prepago desde $50.000 COP al mes (para 10 mascotas activas) o planes mensuales desde $99.000 COP/mes con 0% de comisión por venta.'
+                    ],
                 ],
                 'content' => <<<'HTML'
 <p class="lead text-lg text-slate-700 leading-relaxed font-medium mb-6">
@@ -292,22 +333,33 @@ HTML,
             ],
             [
                 'slug' => 'como-calcular-precio-planes-salud-veterinaria-plantilla-costos',
-                'title' => 'Cómo Calcular el Precio de los Planes de Salud para Mascotas: Plantilla de Costos y Margen para Veterinarias',
-                'excerpt' => 'Guía actuarial práctica para clínicas veterinarias en Colombia: cómo calcular el costo unitario de insumos biológicos, horas médicas y fijar cuotas mensuales con un 65% de margen neto real.',
+                'title' => 'Cómo Calcular Precios en tu Veterinaria y Planes de Salud: Calculadora y Plantilla de Costos (Colombia 2026)',
+                'excerpt' => 'Calculadora interactiva y plantilla en pesos colombianos para calcular precios en tu clínica veterinaria: costos reales de vacunas, desparasitación, consulta médica y margen neto del 65%.',
                 'category' => 'Finanzas & Rentabilidad',
                 'read_time' => '9 min de lectura',
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & Director Técnico',
                 'published_at' => '2026-10-08',
-                'updated_at' => '2026-10-17',
+                'updated_at' => '2026-11-05',
                 'image' => 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
                     'avipetapp',
                     'como calcular precios veterinaria',
+                    'como calcular el precio de los planes de salud veterinaria',
                     'plantilla costos clinica veterinaria',
                     'margen ganancia planes salud mascotas',
                     'fijacion precios veterinaria colombia',
                     'costo vacunas desparasitacion perros gatos'
+                ],
+                'faqs' => [
+                    [
+                        'question' => '¿Cómo calcular los precios de servicios y planes de salud en una clínica veterinaria?',
+                        'answer' => 'Suma el costo anual directo de insumos a precio de distribuidor (vacunas, antiparasitarios y jeringas, aprox. $95.000 COP/año en Colombia), divídelo entre 12 meses ($7.916 COP/mes) y divídelo por (1 - margen deseado del 65%), sumando el tiempo médico de consultas preventivas para obtener una cuota óptima entre $45.000 y $49.000 COP/mes.'
+                    ],
+                    [
+                        'question' => '¿Cuál es el margen de rentabilidad ideal en una clínica veterinaria en Colombia?',
+                        'answer' => 'En servicios preventivos y planes de salud para mascotas, el margen bruto recomendado sobre insumos biológicos es del 60% al 70%, lo que genera cerca de $49.300.000 COP de utilidad bruta anual por cada 100 mascotas afiliadas.'
+                    ],
                 ],
                 'content' => <<<'HTML'
 <p class="lead text-lg text-slate-700 leading-relaxed font-medium mb-6">
@@ -525,6 +577,128 @@ Con solo 100 pacientes afiliados a este plan de $49.000 COP:
     <a href="/registro-clinica" class="inline-flex items-center px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
         Crear mi Cuenta Gratis (15 Días) →
     </a>
+</div>
+HTML,
+            ],
+            [
+                'slug' => 'alergia-dermatitis-picazon-perros-suplemento-hipoalergenico-colombia',
+                'title' => 'Alergia, Dermatitis y Caída de Pelo en Perros: Guía del Eje Intestino-Piel y Suplemento Hipoalergénico en Colombia',
+                'excerpt' => 'Descubre por qué el 80% de la picazón, alergias de piel y caída de pelo en perros nace en la microbiota intestinal, cómo funciona la Matriz de Micro-Proteína Novel Hipoalergénica y cómo pedir AVIPET BioLab® Dermo & Gut Superboost contraentrega en Colombia.',
+                'category' => 'Nutrición Clínica & BioLab®',
+                'read_time' => '6 min de lectura',
+                'author' => 'División Científica AVIPET BioLab®',
+                'author_role' => 'Biotecnología Nutricional & Salud Dermo-Digestiva',
+                'published_at' => '2026-10-25',
+                'updated_at' => '2026-11-05',
+                'image' => '/brand/biolab/dermo-gut-hero-product.png',
+                'keywords' => [
+                    'alergia en perros piel',
+                    'dermatitis en perros tratamiento natural colombia',
+                    'picazon en perros lamedura patas',
+                    'suplemento hipoalergenico para perros colombia',
+                    'caida de pelo en perros vitaminas',
+                    'avipet biolab dermo gut superboost',
+                    'microbiota intestinal perros alergia alimentaria'
+                ],
+                'faqs' => [
+                    [
+                        'question' => '¿Por qué mi perro se rasca tanto, se lame las patas y pierde pelo?',
+                        'answer' => 'En más del 70% de los casos crónicos, el rascado constante, el enrojecimiento de orejas, la lamedura de patas y las heces blandas están conectados con la hipersensibilidad a proteínas convencionales (pollo, res, soya) y el desequilibrio del eje intestino-piel.'
+                    ],
+                    [
+                        'question' => '¿Qué es AVIPET BioLab® Dermo & Gut Superboost y cómo se administra?',
+                        'answer' => 'Es un super-suplemento funcional grado veterinario en polvo (Topper nutricional de 250g) formulado con Matriz de Micro-Proteína Novel Hipoalergénica (55% proteína biodisponible), Ácido Láurico y Quitina Prebiótica. Se espolvorea diariamente sobre el concentrado o dieta BARF actual de tu mascota.'
+                    ],
+                    [
+                        'question' => '¿Cómo pedir AVIPET BioLab® en Colombia y pueden distribuirlo las clínicas veterinarias?',
+                        'answer' => 'Los tutores de mascotas pueden pedirlo con Pago Contraentrega (pagas al recibir en casa) en toda Colombia desde $44.900 COP en avipetapp.com/biolab/dermo-gut-superboost. Además, las clínicas veterinarias socias de AviPetApp pueden adquirir cajas mayoristas o incluirlo dentro de sus planes de salud dermatológicos.'
+                    ],
+                ],
+                'content' => <<<'HTML'
+<p class="lead text-lg text-slate-700 leading-relaxed font-medium mb-6">
+En la consulta veterinaria diaria en Colombia, las <strong>dermatitis alérgicas, el prurito (picazón incesante), la otitis recurrente y las heces blandas</strong> representan más del 38% de los motivos de visita médica. Muchos tutores invierten cientos de miles de pesos en baños medicados que alivian el síntoma por pocos días, sin corregir la raíz biológica: <strong>la inflamación del eje intestino-piel</strong>.
+</p>
+
+<div class="bg-emerald-50 border-l-4 border-emerald-600 p-5 rounded-r-xl my-6">
+    <p class="text-emerald-950 font-bold mb-1">Hallazgo Clínico Clave:</p>
+    <p class="text-emerald-900 text-sm">
+        El 70% del sistema inmunológico de perros y gatos reside en su barrera intestinal. Cuando el intestino reacciona a proteínas saturadas (como subproductos de pollo, res o cereales), libera mediadores inflamatorios que se manifiestan directamente en la piel, las almohadillas plantares y los folículos pilosos.
+    </p>
+</div>
+
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">1. Las 4 Señales de Alerta del Desequilibrio Dermo-Digestivo</h2>
+<p class="text-slate-700 leading-relaxed mb-4">
+Tanto médicos veterinarios como tutores deben identificar tempranamente los signos de intolerancia proteica y disbiosis intestinal:
+</p>
+<ul class="list-disc pl-6 space-y-2 text-slate-700 mb-6">
+    <li><strong>Lamedura constante de patas y axilas:</strong> Coloración rojiza u oxidada entre los dedos por exceso de levaduras oportunistas.</li>
+    <li><strong>Caída excesiva de pelo y pelaje opaco:</strong> Déficit de aminoácidos azufrados y ácidos grasos de cadena media biodisponibles.</li>
+    <li><strong>Digestión sensible y gases:</strong> Heces blandas, pastosas o malolientes pese a usar concentrados comerciales costosos.</li>
+    <li><strong>Sacudida de cabeza y cerumen oscuro:</strong> Inflamación del conducto auditivo vinculada a alergias alimentarias.</li>
+</ul>
+
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">2. Biotecnología Nutricional: Matriz de Micro-Proteína Novel Hipoalergénica</h2>
+<p class="text-slate-700 leading-relaxed mb-4">
+Para romper el ciclo de reactividad inmunológica sin obligar al tutor a cambiar todo el bulto de concentrado, la división científica <strong>AVIPET BioLab®</strong> desarrolló <strong>Dermo &amp; Gut Superboost (250g)</strong>, un topper funcional 100% puro que se espolvorea sobre el alimento diario gracias a tres pilares bioactivos:
+</p>
+
+<div class="grid md:grid-cols-3 gap-4 my-6">
+    <div class="border border-slate-200 rounded-xl p-5 bg-white shadow-sm">
+        <span class="inline-block bg-teal-100 text-teal-800 text-xs font-bold px-2.5 py-1 rounded-full mb-2">Pilar 1 · 55% Proteína</span>
+        <h3 class="text-base font-bold text-slate-900 mb-2">Péptidos Bioactivos Hipoalergénicos</h3>
+        <p class="text-xs text-slate-600">Matriz de Micro-Proteína Novel de bajo peso molecular no reconocida como alérgeno por el sistema inmune canino ni felino.</p>
+    </div>
+    <div class="border border-slate-200 rounded-xl p-5 bg-white shadow-sm">
+        <span class="inline-block bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-full mb-2">Pilar 2 · Barrera Dérmica</span>
+        <h3 class="text-base font-bold text-slate-900 mb-2">Ácido Láurico + Omega 3, 6 y 9</h3>
+        <p class="text-xs text-slate-600">Lípidos funcionales con acción calmante natural que nutren el folículo piloso, reducen el rascado y devuelven el brillo al manto.</p>
+    </div>
+    <div class="border border-slate-200 rounded-xl p-5 bg-white shadow-sm">
+        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-bold px-2.5 py-1 rounded-full mb-2">Pilar 3 · Microbiota</span>
+        <h3 class="text-base font-bold text-slate-900 mb-2">Quitina Prebiótica Selectiva</h3>
+        <p class="text-xs text-slate-600">Fibra prebiótica bioactiva que alimenta las bacterias benéficas del colon, logrando heces firmes y menor olor en 7 a 14 días.</p>
+    </div>
+</div>
+
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">3. Doble Oportunidad: Bienestar para Tutores y Rentabilidad para Veterinarias</h2>
+<p class="text-slate-700 leading-relaxed mb-4">
+<strong>Si eres tutor de una mascota:</strong> Puedes solicitar tu tratamiento de <strong>AVIPET BioLab® — Dermo &amp; Gut Superboost</strong> directamente en línea con <strong>Pago Contraentrega en toda Colombia</strong> (pagas en efectivo o transferencia cuando el mensajero entrega en tu puerta) desde <strong>$44.900 COP</strong> (1 bolsa de 250g para hasta 50 días) o el protocolo completo de 60 días (2 bolsas por $79.900 COP con envío gratis).
+</p>
+<p class="text-slate-700 leading-relaxed mb-6">
+<strong>Si tienes una Clínica Veterinaria o Pet Shop:</strong> Puedes incorporar <strong>AVIPET BioLab®</strong> dentro de tus <strong>planes de salud dermatológicos en AviPetApp</strong> o distribuirlo en tu mostrador con margen mayorista preferencial para clínicas socias.
+</p>
+
+<div class="grid md:grid-cols-2 gap-6 my-8">
+    <div class="bg-gradient-to-br from-emerald-950 via-teal-900 to-slate-900 text-white rounded-2xl p-6 shadow-xl border border-emerald-500/30 flex flex-col justify-between">
+        <div>
+            <span class="inline-block bg-emerald-400/20 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full mb-3">🐾 Para Tutores de Mascotas · Contraentrega</span>
+            <h3 class="text-xl font-black mb-2">Pide AVIPET BioLab® Dermo &amp; Gut Superboost</h3>
+            <p class="text-emerald-100 text-xs leading-relaxed mb-5">
+                Bolsa Doypack de 250g (hasta 50 porciones). Envío a toda Colombia y pago en casa al recibir. Desde $44.900 COP.
+            </p>
+        </div>
+        <a href="/biolab/dermo-gut-superboost" class="inline-flex items-center justify-center px-5 py-3 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-sm rounded-xl shadow-lg transition">
+            Pedir Contraentrega Ahora →
+        </a>
+    </div>
+
+    <div class="bg-gradient-to-br from-[#080B20] via-[#111936] to-indigo-950 text-white rounded-2xl p-6 shadow-xl border border-purple-500/30 flex flex-col justify-between">
+        <div>
+            <span class="inline-block bg-purple-400/20 text-purple-300 text-xs font-bold px-3 py-1 rounded-full mb-3">🏥 Para Clínicas Veterinarias · SaaS + Mayorista</span>
+            <h3 class="text-xl font-black mb-2">Activa tus Planes de Salud y Distribuye BioLab®</h3>
+            <p class="text-slate-300 text-xs leading-relaxed mb-5">
+                Crea planes de salud preventivos con Carnet QR en tu veterinaria (15 días gratis) o solicita precios mayoristas de BioLab® para tu clínica.
+            </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-2.5">
+            <a href="/registro-clinica" class="inline-flex items-center justify-center px-4 py-3 bg-[#6D28D9] hover:bg-[#5B21B6] text-white font-bold text-xs rounded-xl shadow transition flex-1">
+                Probar SaaS 15 Días Gratis →
+            </a>
+            <a href="https://wa.me/573235813942?text=Hola%20AviPetApp,%20tengo%20una%20veterinaria%20y%20quiero%20informaci%C3%B3n%20del%20Software%20y%20distribuci%C3%B3n%20mayorista%20de%20AVIPET%20BioLab" target="_blank" class="inline-flex items-center justify-center px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/20 transition">
+                Tarifa Mayorista Clínicas
+            </a>
+        </div>
+    </div>
 </div>
 HTML,
             ]

@@ -115,6 +115,9 @@
             </a>
             <div class="flex items-center gap-2 sm:gap-3">
                 <a href="/" class="text-xs sm:text-sm font-semibold text-[#5C6B85] hover:text-[#15213B] px-2 sm:px-3 py-1.5 transition whitespace-nowrap">← <span class="hidden sm:inline">Volver al </span>Inicio</a>
+                <a href="/biolab/dermo-gut-superboost" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-2 rounded-xl transition whitespace-nowrap">
+                    🧬 AVIPET BioLab®
+                </a>
                 <a href="/registro-clinica" class="text-xs sm:text-sm font-semibold bg-[#6D28D9] hover:bg-[#5b21b6] text-white px-3 sm:px-4 py-2 rounded-xl shadow-sm transition whitespace-nowrap">Crear mi clínica</a>
             </div>
         </div>
@@ -173,19 +176,42 @@
             @endforeach
         </div>
 
-        <!-- Banner CTA Final en Midnight (#080B20) y Deep Navy (#111936) -->
-        <div class="mt-16 bg-gradient-to-r from-[#080B20] to-[#111936] rounded-3xl p-8 sm:p-12 text-white text-center shadow-xl border border-[#A855F7]/20">
-            <h2 class="text-2xl sm:text-4xl font-black mb-4">Tu clínica, conectada con el futuro del bienestar animal.</h2>
-            <p class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed">
-                AviPetApp ayuda a tu clínica a gestionar planes de salud para mascotas, organizar la relación con tus clientes y aprovechar herramientas inteligentes desde una sola plataforma.
-            </p>
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="/registro-clinica" class="w-full sm:w-auto px-8 py-4 bg-[#6D28D9] hover:bg-[#5b21b6] text-white font-semibold rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
-                    Crear mi clínica →
-                </a>
-                <a href="https://wa.me/573235813942?text=Hola%20AviPetApp,%20quiero%20conocer%20c%C3%B3mo%20activar%20planes%20de%20salud%20en%20mi%20veterinaria" target="_blank" class="w-full sm:w-auto px-6 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl border border-white/20 transition">
-                    Hablar con el equipo
-                </a>
+        <!-- Banner CTA Dual: Software SaaS B2B + Producto AVIPET BioLab® -->
+        <div class="mt-16 grid lg:grid-cols-2 gap-6">
+            <div class="bg-gradient-to-r from-[#080B20] to-[#111936] rounded-3xl p-8 text-white shadow-xl border border-[#A855F7]/20 flex flex-col justify-between">
+                <div>
+                    <span class="inline-block text-xs font-bold text-[#35DDF5] uppercase tracking-wider mb-2">🏥 Para Clínicas Veterinarias</span>
+                    <h2 class="text-2xl sm:text-3xl font-black mb-3">Software de Planes de Salud, Carnet QR e IA</h2>
+                    <p class="text-slate-300 text-sm mb-6 leading-relaxed">
+                        AviPetApp ayuda a tu clínica a gestionar planes de salud para mascotas, organizar la relación con tus clientes y controlar canjes en mostrador en 1 clic.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-center gap-3">
+                    <a href="/registro-clinica" class="w-full sm:w-auto px-6 py-3.5 bg-[#6D28D9] hover:bg-[#5b21b6] text-white font-bold text-sm rounded-xl shadow-lg transition text-center">
+                        Probar 15 Días Gratis →
+                    </a>
+                    <a href="https://wa.me/573235813942?text=Hola%20AviPetApp,%20quiero%20conocer%20c%C3%B3mo%20activar%20planes%20de%20salud%20en%20mi%20veterinaria" target="_blank" class="w-full sm:w-auto px-5 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-sm rounded-xl border border-white/20 transition text-center">
+                        Hablar por WhatsApp
+                    </a>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-emerald-950 via-teal-900 to-slate-900 rounded-3xl p-8 text-white shadow-xl border border-emerald-500/30 flex flex-col justify-between">
+                <div>
+                    <span class="inline-block text-xs font-bold text-emerald-300 uppercase tracking-wider mb-2">🧬 División Biotecnológica AVIPET BioLab®</span>
+                    <h2 class="text-2xl sm:text-3xl font-black mb-3">Dermo &amp; Gut Superboost (250g)</h2>
+                    <p class="text-emerald-100 text-sm mb-6 leading-relaxed">
+                        Super-suplemento hipoalergénico para alergias de piel, picazón, caída de pelo y digestión firme en perros y gatos. Pago contraentrega en toda Colombia o distribución mayorista para veterinarias.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-center gap-3">
+                    <a href="/biolab/dermo-gut-superboost" class="w-full sm:w-auto px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-sm rounded-xl shadow-lg transition text-center">
+                        Pedir Contraentrega ($44.900) →
+                    </a>
+                    <a href="https://wa.me/573235813942?text=Hola%20AVIPET%20BioLab,%20quiero%20informaci%C3%B3n%20mayorista%20de%20Dermo%20%26%20Gut%20Superboost%20para%20mi%20veterinaria" target="_blank" class="w-full sm:w-auto px-5 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-sm rounded-xl border border-white/20 transition text-center">
+                        Mayorista para Clínicas
+                    </a>
+                </div>
             </div>
         </div>
     </main>

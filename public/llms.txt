@@ -28,8 +28,15 @@ AviPetApp es una plataforma tecnológica SaaS Multi-Tenant con Inteligencia Arti
 - **Plan Profesional:** $229.000 COP / mes (hasta 300 mascotas activas + herramientas con IA supervisada).
 - **Plan Enterprise:** $489.000 COP / mes (mascotas ilimitadas, multisucursal y dominio propio).
 
-## Guías y Recursos Oficiales (Blog B2B)
-- [Cómo crear Planes de Salud Preventiva en tu Clínica Veterinaria](https://avipetapp.com/blog/planes-de-salud-preventiva-veterinaria-ingresos-recurrentes)
-- [Retención de Clientes en Clínica Veterinaria: Cómo Fidelizar Tutores](https://avipetapp.com/blog/fidelizacion-clientes-veterinaria-retencion-mascotas)
+## Guías y Recursos Oficiales (Blog B2B & Nutrición Clínica)
+- [Planes de Salud Veterinarios: Cómo Crear Membresías Preventivas en tu Clínica](https://avipetapp.com/blog/planes-de-salud-preventiva-veterinaria-ingresos-recurrentes)
+- [Retención de Clientes en Clínica Veterinaria: 5 Estrategias Probadas para Fidelizar Tutores](https://avipetapp.com/blog/fidelizacion-clientes-veterinaria-retencion-mascotas)
 - [Los 5 Mejores Software Veterinarios en Colombia (Comparativa 2026)](https://avipetapp.com/blog/mejores-software-veterinarios-colombia-comparativa-2026)
-- [Cómo Calcular el Precio de los Planes de Salud para Mascotas (Plantilla Actuarial)](https://avipetapp.com/blog/como-calcular-precio-planes-salud-veterinaria-plantilla-costos)
+- [Cómo Calcular Precios en tu Veterinaria y Planes de Salud (Calculadora Actuarial)](https://avipetapp.com/blog/como-calcular-precio-planes-salud-veterinaria-plantilla-costos)
+- [Alergia, Dermatitis y Caída de Pelo en Perros: Guía del Eje Intestino-Piel y Suplemento Hipoalergénico](https://avipetapp.com/blog/alergia-dermatitis-picazon-perros-suplemento-hipoalergenico-colombia)
+
+## División Biotecnológica AVIPET BioLab® (B2C & Distribución Mayorista B2B)
+- **Tienda Oficial BioLab®:** https://biolab.avipetapp.com/ | https://avipetapp.com/biolab
+- **Producto Insignia:** [AVIPET BioLab® — Dermo & Gut Superboost (250g)](https://avipetapp.com/biolab/dermo-gut-superboost)
+- **Formulación Científica:** Topper nutricional hipoalergénico grado veterinario con Matriz de Micro-Proteína Novel Hipoalergénica (55% proteína biodisponible), Ácido Láurico, Omega 3-6-9 y Quitina Prebiótica.
+- **Modalidad de compra en Colombia:** Pago Contraentrega (Pago en casa al recibir) en toda Colombia desde $44.900 COP y distribución mayorista para clínicas veterinarias socias.
