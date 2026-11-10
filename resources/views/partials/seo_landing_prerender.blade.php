@@ -22,6 +22,7 @@
                 <a href="#precios">Precios</a>
                 <a href="#faq">Preguntas frecuentes</a>
                 <a href="/blog">Blog Veterinario</a>
+                <a href="/biolab/dermo-gut-superboost" class="text-[#0E7490] font-bold">🧬 AVIPET BioLab®</a>
             </nav>
             <div class="hidden lg:flex items-center gap-3">
                 <a href="/admin/login" class="px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-white text-[#15213B] text-[14px] font-semibold">
