@@ -554,6 +554,47 @@ Route::get('/v/{slug}/renovar-saas', [App\Http\Controllers\SaaSPaymentController
 Route::redirect('/superadmin', '/super-admin');
 Route::redirect('/superadmin/login', '/super-admin/login');
 
+// 10.0 Autenticación Dedicada SuperAdmin (GET + POST)
+Route::get('/super-admin/login', function () {
+    if (auth()->check() && (auth()->user()->role === 'super_admin' || auth()->user()->email === 'contacto@avipetapp.com')) {
+        return redirect('/super-admin');
+    }
+    return view('auth.superadmin_login');
+})->name('superadmin.login');
+
+Route::post('/super-admin/login', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'email' => ['required', 'string', 'email'],
+        'password' => ['required', 'string'],
+    ], [
+        'email.required' => 'El correo electrónico es obligatorio.',
+        'email.email' => 'Ingresa un correo electrónico válido.',
+        'password.required' => 'La contraseña es obligatoria.',
+    ]);
+
+    $credentials = $request->only('email', 'password');
+    $remember = $request->boolean('remember');
+
+    if (\Illuminate\Support\Facades\Auth::attempt($credentials, $remember)) {
+        $request->session()->regenerate();
+        $user = \Illuminate\Support\Facades\Auth::user();
+
+        if ($user->role === 'super_admin' || $user->email === 'contacto@avipetapp.com') {
+            $intended = session()->pull('url.intended', '/super-admin');
+            return redirect($intended);
+        }
+
+        \Illuminate\Support\Facades\Auth::logout();
+        return back()->withInput($request->only('email', 'remember'))->withErrors([
+            'email' => 'Acceso restringido: Esta cuenta no tiene permisos de Super Administrador.',
+        ]);
+    }
+
+    return back()->withInput($request->only('email', 'remember'))->withErrors([
+        'email' => 'El correo electrónico o la contraseña son incorrectos.',
+    ]);
+})->name('superadmin.login.post');
+
 Route::prefix('super-admin')->middleware([\App\Http\Middleware\EnsureSuperAdminSession::class])->group(function () {
     // 1. Escritorio / Dashboard
     Route::get('/', [App\Http\Controllers\SuperAdmin\SuperAdminDashboardController::class, 'index'])->name('superadmin.dashboard');
