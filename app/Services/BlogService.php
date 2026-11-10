@@ -143,7 +143,7 @@ HTML,
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & Estratega SaaS',
                 'published_at' => '2026-10-03',
-                'updated_at' => '2026-11-05',
+                'updated_at' => '2026-11-10',
                 'image' => 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
                     'retención de clientes en clínica veterinaria',
@@ -170,23 +170,115 @@ HTML,
                 ],
                 'content' => <<<'HTML'
 <p class="lead text-lg text-slate-700 leading-relaxed font-medium mb-6">
-Captar un nuevo cliente para tu clínica veterinaria cuesta <strong>entre 5 y 7 veces más</strong> que retener a uno que ya confía en tu equipo médico. Sin embargo, más del 70% de las veterinarias en Colombia no tienen ningún sistema activo para evitar que el tutor de una mascota compre sus vacunas o medicamentos en el pet shop de la esquina.
+Captar un nuevo cliente para tu clínica veterinaria cuesta <strong>entre 5 y 7 veces más</strong> que retener a uno que ya confía en tu equipo médico. Sin embargo, más del 70% de las veterinarias en Colombia y Latinoamérica no tienen ningún sistema activo para evitar que el tutor de una mascota compre sus vacunas, antiparasitarios o baños en la competencia.
 </p>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">1. El Carnet Físico de Cartón está Muerto</h2>
+<!-- Índice de Contenidos Interactivo (Google Jump-to-Section Sitelinks) -->
+<div class="bg-blue-50/60 border border-blue-200 rounded-2xl p-5 mb-8">
+    <div class="flex items-center gap-2 font-black text-slate-900 text-sm mb-3">
+        <span>📖</span>
+        <span>Índice de la Guía de Retención Veterinaria (Haz clic para ir a la sección)</span>
+    </div>
+    <ul class="text-xs sm:text-sm text-slate-700 space-y-2">
+        <li><a href="#carnet-digital" class="text-blue-600 hover:text-blue-800 font-semibold hover:underline">1. Del Carnet de Cartón al Carnet Digital con Código QR en WhatsApp →</a></li>
+        <li><a href="#calculadora-retencion" class="text-emerald-700 hover:text-emerald-900 font-extrabold hover:underline">2. ⚡ Calculadora en Vivo: ¿Cuánto Dinero Pierde tu Veterinaria por Clientes Inactivos? →</a></li>
+        <li><a href="#recordatorios-ia" class="text-blue-600 hover:text-blue-800 font-semibold hover:underline">3. Recordatorios Preventivos Automatizados (7 días y 24h antes) →</a></li>
+        <li><a href="#plantillas-whatsapp" class="text-blue-600 hover:text-blue-800 font-semibold hover:underline">4. Plantillas de Mensajes de WhatsApp para Seguimiento y Reactivación →</a></li>
+        <li><a href="#terminal-canje" class="text-blue-600 hover:text-blue-800 font-semibold hover:underline">5. Terminal de Canje en Mostrador y Planes de Salud como Candado de Fidelidad →</a></li>
+    </ul>
+</div>
+
+<h2 id="carnet-digital" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">1. El Carnet Físico de Cartón está Muerto</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
 Durante décadas, las veterinarias entregaron libretas o carnets de cartulina sellados a mano. Hoy en día, los tutores de mascotas (principalmente millennials y centennials) <strong>pierden el carnet físico, lo dejan en casa o se olvidan de la fecha exacta del refuerzo vacunal</strong>.
 </p>
 <p class="text-slate-700 leading-relaxed mb-6">
-La solución moderna es el <strong>Carnet Digital en el Smartphone</strong>:
+La solución moderna para blindar la <strong>retención de clientes en clínica veterinaria</strong> es el <strong>Carnet Digital en el Smartphone</strong>:
 </p>
 <ul class="list-disc pl-6 space-y-2 text-slate-700 mb-6">
     <li>Accesible las 24 horas desde WhatsApp sin instalar aplicaciones pesadas.</li>
-    <li>Muestra foto de la mascota, raza, microchip y coberturas vigentes.</li>
+    <li>Muestra foto de la mascota, raza, microchip y coberturas vigentes con la marca y el logo de tu veterinaria.</li>
     <li>Código QR dinámico que el veterinario o recepcionista escanea en 2 segundos para validar el estado del plan.</li>
 </ul>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">2. Recordatorios Preventivos Automatizados (El Secreto de la Asistencia)</h2>
+<!-- 2. CALCULADORA EN VIVO DE RETENCIÓN Y FUGA DE PACIENTES -->
+<div id="calculadora-retencion" class="bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white rounded-3xl p-6 sm:p-8 my-10 shadow-2xl border border-blue-900/50 scroll-mt-24">
+    <div class="flex items-center gap-2 text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider mb-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        Simulador de Retención Clínica en Vivo
+    </div>
+    <h3 class="text-xl sm:text-2xl font-black text-white mb-2">Calcula Cuánto Dinero Pierde tu Veterinaria por Deserción de Pacientes</h3>
+    <p class="text-slate-300 text-xs sm:text-sm mb-6">Ajusta cuántos pacientes atiendes al mes y el ticket promedio anual para descubrir cuánto ingreso recurrente puedes recuperar fidelizando con Carnet QR y Planes de Salud.</p>
+
+    <div class="grid sm:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+            <div class="flex justify-between items-center text-xs font-bold text-slate-300 mb-2">
+                <span>Pacientes Atendidos / Mes:</span>
+                <span id="ret-pets-val" class="text-emerald-400 font-mono text-base font-extrabold">120 pacientes</span>
+            </div>
+            <input type="range" id="ret-pets" min="30" max="500" step="10" value="120" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-400" oninput="updateRetSim()">
+            <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                <span>30 pacientes/mes</span>
+                <span>500 pacientes/mes</span>
+            </div>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+            <div class="flex justify-between items-center text-xs font-bold text-slate-300 mb-2">
+                <span>Gasto Anual por Mascota Fidelizada:</span>
+                <span id="ret-ltv-val" class="text-blue-400 font-mono text-base font-extrabold">$580.000 COP</span>
+            </div>
+            <input type="range" id="ret-ltv" min="300000" max="1200000" step="20000" value="580000" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-400" oninput="updateRetSim()">
+            <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                <span>$300.000/año</span>
+                <span>$1.200.000/año</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center mb-6">
+        <div class="bg-rose-500/15 rounded-xl p-3.5 border border-rose-500/30">
+            <div class="text-[10px] text-rose-300 uppercase font-bold">Pacientes que No Regresan (65% Fuga)</div>
+            <div id="ret-lost-pets" class="text-base sm:text-lg font-black text-rose-300 font-mono mt-1">78 mascotas / mes</div>
+        </div>
+        <div class="bg-white/10 rounded-xl p-3.5 border border-white/10">
+            <div class="text-[10px] text-amber-300 uppercase font-bold">Dinero que se va a la Competencia</div>
+            <div id="ret-lost-money" class="text-base sm:text-lg font-black text-amber-300 font-mono mt-1">-$45.240.000 / año</div>
+        </div>
+        <div class="bg-emerald-500/20 rounded-xl p-3.5 border border-emerald-500/40">
+            <div class="text-[10px] text-emerald-300 uppercase font-bold">Ingreso Recuperable con AviPetApp</div>
+            <div id="ret-recovered" class="text-base sm:text-lg font-black text-emerald-400 font-mono mt-1">+$36.192.000 / año</div>
+        </div>
+    </div>
+
+    <div class="bg-white/10 border border-white/15 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+            <div class="font-bold text-white text-sm">¿Quieres frenar la fuga de clientes en tu clínica esta misma semana?</div>
+            <div class="text-xs text-slate-300">Activa tu Carnet Digital QR y planes preventivos en 10 minutos con 15 días de prueba gratis.</div>
+        </div>
+        <a href="/registro-clinica" class="w-full sm:w-auto px-5 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition transform hover:-translate-y-0.5 shrink-0 text-center">
+            Activar mi Clínica Gratis →
+        </a>
+    </div>
+
+    <script>
+      function updateRetSim() {
+        const pets = parseInt(document.getElementById('ret-pets').value);
+        const ltv = parseInt(document.getElementById('ret-ltv').value);
+        const lostPets = Math.round(pets * 0.65);
+        const lostMoney = lostPets * ltv;
+        const recoveredMoney = Math.round(lostMoney * 0.80);
+
+        document.getElementById('ret-pets-val').innerText = pets + ' pacientes';
+        document.getElementById('ret-ltv-val').innerText = '$' + ltv.toLocaleString('es-CO') + ' COP';
+        document.getElementById('ret-lost-pets').innerText = lostPets + ' mascotas / mes';
+        document.getElementById('ret-lost-money').innerText = '-$' + lostMoney.toLocaleString('es-CO') + ' / año';
+        document.getElementById('ret-recovered').innerText = '+$' + recoveredMoney.toLocaleString('es-CO') + ' / año';
+      }
+    </script>
+</div>
+
+<h2 id="recordatorios-ia" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">3. Recordatorios Preventivos Automatizados (El Secreto de la Asistencia)</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
 Cuando un tutor olvida la desparasitación trimestral o la vacuna anual de la rabia, no lo hace por negligencia: lo hace por falta de tiempo y sobrecarga diaria.
 </p>
@@ -194,9 +286,28 @@ Cuando un tutor olvida la desparasitación trimestral o la vacuna anual de la ra
 Un sistema automatizado de notificaciones vía WhatsApp y correo electrónico con <strong>7 días de anticipación</strong> y un recordatorio <strong>24 horas antes</strong> incrementa la tasa de asistencia a citas preventivas del 48% a más del <strong>89%</strong>.
 </p>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">3. La Experiencia de Canje en Mostrador: Transparencia Total</h2>
+<h2 id="plantillas-whatsapp" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">4. Plantillas de Mensajes de WhatsApp para Seguimiento Veterinario</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
-La mayor fricción en los modelos de membresía ocurre cuando el cliente llega a la veterinaria y pregunta: <em>"¿A mí todavía me queda una vacuna gratis este mes?"</em>.
+Copia y aplica hoy mismo este protocolo de 3 mensajes en la recepción de tu clínica veterinaria (o automatízalo en 1 clic desde el panel de <strong>AviPetApp</strong>):
+</p>
+<div class="space-y-4 my-6">
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+        <span class="inline-block bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full mb-2">Plantilla 1 · Seguimiento 24 Horas Post-Consulta</span>
+        <p class="text-xs sm:text-sm text-slate-700 font-mono bg-white p-3 rounded-lg border border-slate-200">
+            "Hola [Nombre Tutor] 🐾 Te escribimos de [Nombre Veterinaria] para saber cómo amaneció hoy [Nombre Mascota] después de su consulta de ayer. Recuerda que aquí tienes su Carnet Digital actualizado con código QR: [Link Carnet]. ¡Cualquier síntoma nos avisas!"
+        </p>
+    </div>
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-0.5 rounded-full mb-2">Plantilla 2 · Recordatorio Preventivo (7 Días Antes)</span>
+        <p class="text-xs sm:text-sm text-slate-700 font-mono bg-white p-3 rounded-lg border border-slate-200">
+            "Hola [Nombre Tutor] 👋 Nuestro sistema preventivo en [Nombre Veterinaria] nos avisa que en 7 días se cumple el refuerzo de [Vacuna / Desparasitación] de [Nombre Mascota]. Como tienes tu Plan de Salud activo, este beneficio ya está 100% cubierto ($0 en recepción). ¿Te agendamos para este sábado?"
+        </p>
+    </div>
+</div>
+
+<h2 id="terminal-canje" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">5. La Experiencia de Canje en Mostrador: Transparencia Total</h2>
+<p class="text-slate-700 leading-relaxed mb-4">
+La mayor fricción en los modelos de membresía ocurre cuando el cliente llega a la veterinaria y pregunta: <em>"¿A mí todavía me queda una vacuna o consulta disponible este mes?"</em>.
 </p>
 <p class="text-slate-700 leading-relaxed mb-6">
 Tener una <strong>Terminal de Canje Digital</strong> en la recepción de tu clínica permite:

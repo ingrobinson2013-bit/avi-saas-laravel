@@ -256,8 +256,8 @@
     <!-- Open Graph / WhatsApp Business / Meta Catalog -->
     <meta property="og:type" content="product">
     <meta property="og:url" content="{{ $canonicalUrl }}">
-    <meta property="og:title" content="Dermo &amp; Gut Superboost (250g) | Alivio de Dermatitis, Picazón, Pelo y Digestión — AVIPET BioLab®">
-    <meta property="og:description" content="Suplemento biotecnológico 3 en 1 en polvo para perros y gatos. Con Matriz de Micro-Proteína Novel Hipoalergénica y Ácido Láurico natural. Corta la picazón, lamido de patas, caída de pelo y regula la digestión. 0% pollo, 0% res y libre de gluten. Envío GRATIS y Pago Contraentrega en toda Colombia.">
+    <meta property="og:title" content="AVIPET BioLab® — Dermo &amp; Gut Superboost (250g) | Alivio de Picazón, Pelo y Digestión ($69.900 Contraentrega)">
+    <meta property="og:description" content="AVIPET BioLab® Dermo &amp; Gut Superboost ($69.900 COP con Envío GRATIS y Pago Contraentrega en Colombia). Suplemento biotecnológico 3 en 1 para perros y gatos: corta la picazón, lamido de patas, caída de pelo y regula la digestión. 0% pollo, 0% res y libre de gluten.">
     <meta property="og:image" content="https://biolab.avipetapp.com/images/biolab/hero-estudio-1-bolsa.jpg">
     <meta property="og:image:secure_url" content="https://biolab.avipetapp.com/images/biolab/hero-estudio-1-bolsa.jpg">
     <meta property="og:image:alt" content="AVIPET BioLab® — Dermo &amp; Gut Superboost (250g)">
@@ -268,7 +268,7 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Dermo &amp; Gut Superboost (250g) | Alivio de Dermatitis, Picazón y Digestión — AVIPET BioLab®">
+    <meta name="twitter:title" content="AVIPET BioLab® — Dermo &amp; Gut Superboost (250g) | Alivio de Picazón y Digestión ($69.900 Contraentrega)">
     <meta name="twitter:description" content="Suplemento biotecnológico 3 en 1 en polvo para perros y gatos. 0% pollo, 0% res y libre de gluten. Envío GRATIS + Pago Contraentrega en Colombia.">
     <meta name="twitter:image" content="https://biolab.avipetapp.com/images/biolab/hero-estudio-1-bolsa.jpg">
 
@@ -491,11 +491,14 @@
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
     @php
-        if ($isBioLabPage) {
-            $clinicPageTitle = 'Dermo & Gut Superboost (250g) | Alivio de Dermatitis, Picazón y Digestión — AVIPET BioLab®';
+        if ($isBioLabStoreHome) {
+            $clinicPageTitle = 'AVIPET BioLab® | Suplementos para Perros y Gatos en Colombia ($69.900 Contraentrega)';
+            $favIcon = '/images/biolab/logo-avipet-biolab.webp?v=3';
+        } elseif ($isBioLabPage) {
+            $clinicPageTitle = 'AVIPET BioLab® — Dermo & Gut Superboost (250g) | Alivio de Picazón, Pelo y Digestión ($69.900 Contraentrega)';
             $favIcon = '/images/biolab/logo-avipet-biolab.webp?v=3';
         } elseif ($isPublicLanding) {
-            $clinicPageTitle = 'AviPetApp — Software con IA para veterinarias | Planes de salud para mascotas';
+            $clinicPageTitle = 'AviPetApp (AVIPET) — Software con IA para Veterinarias y Planes de Salud para Mascotas';
             $favIcon = '/brand/favicons/favicon.svg';
         } elseif (request()->is('super-admin*')) {
             $clinicPageTitle = 'Centro de control · AviPetApp Superadmin';

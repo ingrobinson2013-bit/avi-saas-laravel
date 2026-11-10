@@ -442,6 +442,12 @@ export default function B2BLanding() {
                         >
                             Blog
                         </a>
+                        <a
+                            href="/biolab/dermo-gut-superboost"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-[12px] font-bold transition-colors whitespace-nowrap"
+                        >
+                            <span>🧬 AVIPET BioLab®</span>
+                        </a>
                     </nav>
 
                     {/* Acciones Derecha */}
@@ -546,6 +552,15 @@ export default function B2BLanding() {
                                 <span>Blog y guías para clínicas</span>
                                 <span className="text-[11px] bg-[#6D28D9] text-white px-2 py-0.5 rounded-full font-semibold">
                                     Guías
+                                </span>
+                            </a>
+                            <a
+                                href="/biolab/dermo-gut-superboost"
+                                className="px-3.5 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 font-bold transition flex items-center justify-between"
+                            >
+                                <span>🧬 AVIPET BioLab® · Suplemento Dermo &amp; Gut</span>
+                                <span className="text-[11px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">
+                                    $69.900
                                 </span>
                             </a>
                         </nav>

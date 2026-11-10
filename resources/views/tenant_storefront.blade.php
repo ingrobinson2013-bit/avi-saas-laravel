@@ -11,10 +11,10 @@
         $city = $tenant->branding['city'] ?? ($isPilot ? 'Cajicá, Cundinamarca' : '');
         $shortBrandName = $isPilot ? 'Vet-Pet Patitas' : ($tenant->branding['brand_name'] ?? $tenant->name);
         $seoTitle = $isPilot
-            ? "Veterinaria en Cajicá — {$tenant->name} | Consultas, Vacunas, Profilaxis, Baño y Planes de Salud"
+            ? "Veterinaria en Cajicá (Abierto Hoy) — {$tenant->name} | Consultas, Vacunas, Profilaxis, Baño y Domicilios"
             : ($tenant->name . ($city ? " — Clínica Veterinaria en {$city}" : '') . " | Consultas, Vacunas y Planes de Salud");
         $metaDescription = $isPilot
-            ? "Clínica Veterinaria {$tenant->name} en Cajicá (Calle 7 # 4-73 Este). Consultas médicas, vacunación para perros y gatos, desparasitación, profilaxis dental, baño y peluquería, laboratorio, domicilios y planes de salud con carnet digital QR."
+            ? "📍 Calle 7 # 4-73 Este, Cajicá (📲 WhatsApp 350 874 2543). Clínica Veterinaria en Cajicá y domicilios en Chía: consultas médicas, vacunación perros y gatos, profilaxis dental, baño y peluquería, laboratorio y planes de salud con carnet digital QR."
             : ("Clínica Veterinaria {$tenant->name}" . ($city ? " en {$city}" : "") . ". Consultas médicas, vacunación, desparasitación, profilaxis dental, baño y planes de salud preventiva para perros y gatos con carnet digital.");
         $shareImage = $favIcon;
         $googleTagId = $tenant->branding['google_tag_id'] ?? env('GOOGLE_TAG_ID', 'G-YRPKPVXZ2T') ?? env('GOOGLE_ANALYTICS_ID', 'G-YRPKPVXZ2T');
@@ -128,7 +128,38 @@
             ]
           },
           "description": "{{ $metaDescription }}"
+        }@if($isPilot),
+        {
+          "@@type": "FAQPage",
+          "@@id": "{{ $canonicalUrl }}#faq",
+          "mainEntity": [
+            {
+              "@@type": "Question",
+              "name": "¿Cuál es la dirección, horario y WhatsApp de Veterinaria Vet-Pet Patitas en Cajicá?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Estamos ubicados en la Calle 7 # 4-73 Este en Cajicá, Cundinamarca. Atendemos de lunes a sábado de 8:00 a.m. a 7:00 p.m. Puedes agendar citas o pedir servicio a domicilio en Cajicá y Chía al WhatsApp 350 874 2543."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Qué servicios ofrece la Clínica Veterinaria Vet-Pet Patitas en Cajicá?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Ofrecemos consulta médica veterinaria general y a domicilio, vacunación anual para perros y gatos, desparasitación, odontología y profilaxis dental canina y felina, baño y peluquería, laboratorio clínico y planes de salud preventiva con Carnet Digital QR."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Cómo funcionan los Planes de Salud para mascotas en Vet-Pet Patitas?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Son membresías preventivas mensuales para perros y gatos que cubren su esquema de vacunación anual, desparasitaciones, consultas médicas y descuentos en profilaxis y baño, con Carnet Digital en tu celular y cobertura inmediata."
+              }
+            }
+          ]
         }
+        @endif
       ]
     }
     </script>

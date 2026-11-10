@@ -672,10 +672,10 @@ export default function DermoGutSuperboost({ product }: Props) {
 
     return (
         <>
-            <Head title="DERMO & GUT SUPERBOOST® | Oferta Oficial Contraentrega — AVIPET BioLab®">
+            <Head title="AVIPET BioLab® — Dermo & Gut Superboost (250g) | Alivio de Picazón, Pelo y Digestión ($69.900 Contraentrega)">
                 <meta
                     name="description"
-                    content="Alivia la picazón, lamido de patas, caída de pelo y heces blandas desde la raíz. Suplemento biotecnológico 3 en 1 con Matriz de Micro-Proteína Novel Hipoalergénica y Ácido Láurico Dermo-Activo. Envío GRATIS y Pago Contraentrega en Colombia."
+                    content="AVIPET BioLab® Dermo & Gut Superboost ($69.900 COP con Envío GRATIS y Pago Contraentrega en Colombia). Alivia la picazón, lamido de patas, caída de pelo y heces blandas desde la raíz con Matriz de Micro-Proteína Novel Hipoalergénica y Ácido Láurico Dermo-Activo."
                 />
             </Head>
 
