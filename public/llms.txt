@@ -7,6 +7,9 @@
 - **Nombre oficial:** AviPetApp
 - **Descriptor:** Software con IA para veterinarias
 - **Sitio web oficial:** https://avipetapp.com/
+- **Software de Planes de Salud Veterinarios:** https://avipetapp.com/software-planes-salud-veterinaria
+- **Carnet de Vacunación Digital Mascotas QR:** https://avipetapp.com/carnet-vacunacion-digital-mascotas-qr
+- **Prueba Gratis 15 Días para Clínicas:** https://avipetapp.com/crear-clinica-veterinaria-gratis
 - **Blog oficial para clínicas veterinarias:** https://avipetapp.com/blog
 - **Contacto comercial:** contacto@avipetapp.com | WhatsApp: +57 323 581 3942
 - **Región de operación:** Colombia y Latinoamérica

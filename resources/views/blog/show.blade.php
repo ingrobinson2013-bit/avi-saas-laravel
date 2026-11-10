@@ -315,6 +315,13 @@
         <div class="max-w-4xl mx-auto px-4 space-y-1">
             <p class="text-white font-semibold">AviPetApp · Software con IA para veterinarias</p>
             <p class="text-[#35DDF5]">Más inteligencia. Más bienestar. Más futuro.</p>
+            <div class="pt-3 flex flex-wrap justify-center gap-4 text-[11px] text-slate-300">
+                <a href="/" class="hover:text-[#35DDF5]">Inicio</a>
+                <a href="/software-planes-salud-veterinaria" class="hover:text-[#35DDF5]">Software Planes de Salud Veterinarios</a>
+                <a href="/carnet-vacunacion-digital-mascotas-qr" class="hover:text-[#35DDF5]">Carnet Digital Mascotas QR</a>
+                <a href="/crear-clinica-veterinaria-gratis" class="hover:text-[#35DDF5]">Prueba Gratis 15 Días</a>
+                <a href="/biolab/dermo-gut-superboost" class="hover:text-[#35DDF5]">AVIPET BioLab® ($69.900)</a>
+            </div>
         </div>
     </footer>
 

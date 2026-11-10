@@ -44,7 +44,7 @@
                         AviPetApp · Software con IA para veterinarias · Red de Clínicas Veterinarias Socias
                     </p>
                     <h1 class="text-4xl sm:text-5xl lg:text-[54px] font-bold tracking-tight leading-[1.1] text-white mb-6">
-                        Planes de salud, clientes e IA en una sola plataforma.
+                        Software de Planes de Salud Veterinarios, Carnet QR e IA para tu Clínica.
                     </h1>
                     <p class="text-base sm:text-lg text-[#C9D4F0] leading-relaxed mb-8">
                         <strong>AviPetApp</strong> ayuda a tu clínica veterinaria a gestionar <strong>planes de salud para mascotas</strong>, emitir carnets digitales con código QR, organizar la relación con tus clientes y aprovechar herramientas inteligentes desde una sola plataforma.
@@ -214,6 +214,9 @@
             </div>
             <div class="flex flex-wrap gap-5 text-xs">
                 <a href="https://avipetapp.com/" class="hover:text-white">Inicio</a>
+                <a href="https://avipetapp.com/software-planes-salud-veterinaria" class="hover:text-white">Software Planes de Salud Veterinarios</a>
+                <a href="https://avipetapp.com/carnet-vacunacion-digital-mascotas-qr" class="hover:text-white">Carnet de Vacunación Digital QR</a>
+                <a href="https://avipetapp.com/crear-clinica-veterinaria-gratis" class="hover:text-white">Prueba Gratis 15 Días</a>
                 <a href="https://avipetapp.com/blog" class="hover:text-white">Blog Veterinario</a>
                 <a href="https://avipetapp.com/biolab/dermo-gut-superboost" class="hover:text-white">AVIPET BioLab® Dermo &amp; Gut Superboost</a>
                 <a href="https://avipetapp.com/registro-clinica" class="hover:text-white">Registrar Clínica</a>

@@ -667,7 +667,7 @@
                 <div class="text-xs text-slate-500 mt-0.5">{{ $address }} &bull; {{ $city }} &bull; Tel: {{ $phone }}</div>
             </div>
             <div class="text-xs text-slate-400">
-                Plataforma de Salud Preventiva impulsada por <a href="https://avipetapp.com" target="_blank" class="text-blue-600 hover:underline font-bold">AviPetApp</a>.
+                Plataforma impulsada por <a href="https://avipetapp.com/software-planes-salud-veterinaria" target="_blank" title="AviPetApp — Software para Planes de Salud Veterinarios" class="text-blue-600 hover:underline font-bold">AviPetApp — Software de Planes de Salud Veterinarios</a>.
             </div>
         </div>
     </footer>

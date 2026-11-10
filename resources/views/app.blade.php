@@ -57,8 +57,8 @@
     @if($isPublicLanding)
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <meta name="description" content="AviPetApp ayuda a tu clínica veterinaria a gestionar planes de salud para mascotas, emitir carnets digitales con código QR, organizar la relación con tus clientes y aprovechar herramientas con IA desde una sola plataforma. Prueba 15 días gratis.">
-    <meta name="keywords" content="avipetapp, software con ia para veterinarias, software veterinaria colombia, planes de salud para mascotas, membresias veterinarias, software para clinicas veterinarias, carnet digital mascotas qr, fidelizacion clientes veterinaria, saas veterinario colombia">
+    <meta name="description" content="Software de planes de salud veterinarios, membresías para mascotas y carnet digital con código QR en Colombia. Crea los planes preventivos de tu clínica veterinaria con IA, 0% de comisión por venta y 15 días de prueba gratis en AviPetApp.">
+    <meta name="keywords" content="planes de salud veterinarios, software planes de salud veterinaria, software para veterinarias colombia, avipetapp, software con ia para veterinarias, planes de salud para mascotas, membresias veterinarias, carnet de vacunacion digital mascotas qr, fidelizacion clientes veterinaria">
     <meta name="author" content="AviPetApp">
     <meta name="application-name" content="AviPetApp">
     <meta name="apple-mobile-web-app-title" content="AviPetApp">
@@ -70,7 +70,7 @@
     <!-- Open Graph / WhatsApp / Facebook / LinkedIn -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ $canonicalUrl }}">
-    <meta property="og:title" content="AviPetApp — Software con IA para veterinarias | Planes de salud para mascotas">
+    <meta property="og:title" content="Planes de Salud Veterinarios y Software con IA para Veterinarias | AviPetApp Colombia">
     <meta property="og:description" content="Planes de salud, clientes e IA en una sola plataforma. Gestiona membresías preventivas, carnet digital con código QR y seguimiento inteligente en tu clínica veterinaria.">
     <meta property="og:image" content="https://avipetapp.com/brand/favicons/og-image-1200x630.png">
     <meta property="og:image:secure_url" content="https://avipetapp.com/brand/favicons/og-image-1200x630.png">
@@ -83,7 +83,7 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AviPetApp — Software con IA para veterinarias | Planes de salud para mascotas">
+    <meta name="twitter:title" content="Planes de Salud Veterinarios y Software con IA para Veterinarias | AviPetApp Colombia">
     <meta name="twitter:description" content="Planes de salud, clientes e IA en una sola plataforma para clínicas veterinarias. Prueba 15 días gratis.">
     <meta name="twitter:image" content="https://avipetapp.com/brand/favicons/og-image-1200x630.png">
 
@@ -107,7 +107,7 @@
           "@@type": "WebPage",
           "@@id": "https://avipetapp.com/#webpage",
           "url": "https://avipetapp.com/",
-          "name": "AviPetApp — Software con IA para veterinarias | Planes de salud para mascotas",
+          "name": "Planes de Salud Veterinarios y Software con IA para Veterinarias | AviPetApp Colombia",
           "description": "AviPetApp ayuda a tu clínica veterinaria a gestionar planes de salud para mascotas, emitir carnets digitales con código QR, organizar la relación con tus clientes y aprovechar herramientas con IA desde una sola plataforma.",
           "isPartOf": {
             "@@id": "https://avipetapp.com/#website"
@@ -498,7 +498,7 @@
             $clinicPageTitle = 'AVIPET BioLab® — Dermo & Gut Superboost (250g) | Alivio de Picazón, Pelo y Digestión ($69.900 Contraentrega)';
             $favIcon = '/images/biolab/logo-avipet-biolab.webp?v=3';
         } elseif ($isPublicLanding) {
-            $clinicPageTitle = 'AviPetApp (AVIPET) — Software con IA para Veterinarias y Planes de Salud para Mascotas';
+            $clinicPageTitle = 'Planes de Salud Veterinarios y Software con IA para Veterinarias | AviPetApp (AVIPET)';
             $favIcon = '/brand/favicons/favicon.svg';
         } elseif (request()->is('super-admin*')) {
             $clinicPageTitle = 'Centro de control · AviPetApp Superadmin';

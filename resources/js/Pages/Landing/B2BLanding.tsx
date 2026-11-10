@@ -369,7 +369,7 @@ export default function B2BLanding() {
 
     return (
         <div className="min-h-screen flex flex-col justify-between bg-[#F4F7FC] text-[#15213B] font-sans antialiased selection:bg-[#6D28D9] selection:text-white overflow-x-hidden">
-            <Head title="AviPetApp — Software con IA para veterinarias | Planes de salud para mascotas" />
+            <Head title="Planes de Salud Veterinarios y Software con IA para Veterinarias | AviPetApp (AVIPET)" />
 
             {/* =====================================================================
                 1. HEADER / NAVBAR OFICIAL AVIPETAPP (Págs. 5, 6 y 9 Manual v1.1)
@@ -602,9 +602,9 @@ export default function B2BLanding() {
                                     <span>Software con IA para veterinarias · 15 días de prueba sin tarjeta</span>
                                 </div>
 
-                                <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-bold tracking-tight text-[#15213B] leading-[1.1]">
-                                    Tu clínica, conectada con el{' '}
-                                    <span className="gradient-headline">futuro del bienestar animal.</span>
+                                <h1 className="text-4xl sm:text-5xl lg:text-[52px] font-bold tracking-tight text-[#15213B] leading-[1.1]">
+                                    Software de{' '}
+                                    <span className="gradient-headline">planes de salud veterinarios</span>, carnet QR e IA para tu clínica.
                                 </h1>
 
                                 <p className="text-[15px] sm:text-[16px] text-[#5C6B85] leading-[1.5] font-normal max-w-[62ch]">
@@ -2871,6 +2871,33 @@ export default function B2BLanding() {
                                 Accesos Directos
                             </h4>
                             <ul className="space-y-2.5 font-semibold text-slate-300">
+                                <li>
+                                    <a
+                                        href="/software-planes-salud-veterinaria"
+                                        className="hover:text-[#35DDF5] transition-colors inline-flex items-center gap-2"
+                                    >
+                                        <ShieldCheck className="w-4 h-4 text-[#35DDF5]" strokeWidth={2} />
+                                        <span>Software de Planes de Salud Veterinarios</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="/carnet-vacunacion-digital-mascotas-qr"
+                                        className="hover:text-[#35DDF5] transition-colors inline-flex items-center gap-2"
+                                    >
+                                        <QrCode className="w-4 h-4 text-[#A855F7]" strokeWidth={2} />
+                                        <span>Carnet de Vacunación Digital Mascotas QR</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="/crear-clinica-veterinaria-gratis"
+                                        className="hover:text-[#35DDF5] transition-colors inline-flex items-center gap-2"
+                                    >
+                                        <Sparkles className="w-4 h-4 text-[#35DDF5]" strokeWidth={2} />
+                                        <span>Crear Clínica Gratis (Prueba 15 Días)</span>
+                                    </a>
+                                </li>
                                 <li>
                                     <a
                                         href="/blog"

@@ -19,7 +19,7 @@ class BlogService
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & Estratega SaaS',
                 'published_at' => '2026-10-01',
-                'updated_at' => '2026-11-05',
+                'updated_at' => '2026-11-10',
                 'image' => 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
                     'avipetapp',
@@ -56,7 +56,17 @@ El modelo tradicional de facturación en las clínicas veterinarias de Colombia 
     </p>
 </div>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">1. ¿Qué es un Plan de Salud Preventiva para Mascotas?</h2>
+<nav aria-label="Tabla de contenidos" class="bg-slate-50 border border-slate-200 rounded-2xl p-5 my-6">
+    <p class="text-xs font-extrabold uppercase tracking-wider text-violet-700 mb-3">Contenido de esta Guía Práctica (Colombia 2026)</p>
+    <ol class="grid sm:grid-cols-2 gap-2 text-sm font-semibold text-slate-700 list-decimal pl-5">
+        <li><a href="#que-es-plan-preventivo" class="hover:text-violet-700 underline">¿Qué incluyen los planes de salud veterinarios?</a></li>
+        <li><a href="#armador-planes-interactivo" class="hover:text-violet-700 underline">Armador Interactivo de Planes (Cachorro / Adulto / Senior)</a></li>
+        <li><a href="#niveles-planes-veterinarios" class="hover:text-violet-700 underline">Precios sugeridos en Colombia (Básico vs Integral)</a></li>
+        <li><a href="#matematica-margen-65" class="hover:text-violet-700 underline">Matemática real: Margen del 65% y Carnet QR</a></li>
+    </ol>
+</nav>
+
+<h2 id="que-es-plan-preventivo" class="text-2xl font-bold text-slate-900 mt-8 mb-4">1. ¿Qué es un Plan de Salud Preventiva para Mascotas?</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
 A diferencia de una póliza de accidentes mayores, un <strong>plan de salud preventiva para mascotas</strong> es un programa de suscripción recurrente mensual que cubre la medicina preventiva que toda mascota necesita a lo largo del año para mantenerse sana:
 </p>
@@ -68,7 +78,46 @@ A diferencia de una póliza de accidentes mayores, un <strong>plan de salud prev
     <li>Descuentos exclusivos en farmacia, profilaxis dental, ecografías y estética canina.</li>
 </ul>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">2. Cómo Estructurar tus Niveles de Planes (Básico vs Premium)</h2>
+<div id="armador-planes-interactivo" class="bg-slate-900 text-white rounded-2xl p-6 sm:p-7 my-8 border border-indigo-500/30 shadow-xl">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <span class="px-3 py-1 rounded-full bg-violet-600/30 border border-violet-400/40 text-cyan-300 text-xs font-bold">Herramienta Interactiva Gratuita</span>
+        <span class="text-xs text-slate-300">Precios de referencia Colombia 2026</span>
+    </div>
+    <h3 class="text-xl font-extrabold mb-2">Armador Rápido de Planes de Salud Veterinarios</h3>
+    <p class="text-xs sm:text-sm text-slate-300 mb-4">Selecciona el tipo de paciente para ver la estructura recomendada de tarifa mensual, costo estimado de insumos y ganancia anual para tu clínica:</p>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
+        <button type="button" onclick="selectPlanPreset(45000, 15500, 'Plan Cachorro Sano (Vacunas + Desparasitación + 3 Controles)')" class="px-3 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold cursor-pointer">🐶 Cachorro</button>
+        <button type="button" onclick="selectPlanPreset(49000, 17000, 'Plan Adulto Preventivo (Séxtuple + Rabia + KC + 4 Antiparasitarios + Consultas)')" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-violet-600 border border-slate-700 text-white text-xs font-bold cursor-pointer">🐕 Adulto</button>
+        <button type="button" onclick="selectPlanPreset(44000, 15000, 'Plan Felino Indoor (Triple Felina + Leucemia + Rabia + Control Renal)')" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-violet-600 border border-slate-700 text-white text-xs font-bold cursor-pointer">🐱 Felino</button>
+        <button type="button" onclick="selectPlanPreset(79000, 27000, 'Plan Senior +7 Años (Vacunas + Hemograma + Perfil Bioquímico + Ecografía Control)')" class="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-violet-600 border border-slate-700 text-white text-xs font-bold cursor-pointer">🩺 Senior VIP</button>
+    </div>
+
+    <div class="bg-slate-800/90 rounded-xl p-4 border border-slate-700 space-y-2 text-sm">
+        <div id="preset-plan-name" class="font-bold text-cyan-300">Plan Adulto Preventivo (Séxtuple + Rabia + KC + 4 Antiparasitarios + Consultas)</div>
+        <div class="grid sm:grid-cols-3 gap-3 pt-2">
+            <div><span class="text-xs text-slate-400 block">Tarifa Mensual Sugerida:</span><strong id="preset-plan-price" class="text-lg text-white">$49.000 COP/mes</strong></div>
+            <div><span class="text-xs text-slate-400 block">Costo Insumos Mes:</span><strong id="preset-plan-cost" class="text-lg text-amber-300">~$17.000 COP/mes</strong></div>
+            <div><span class="text-xs text-slate-400 block">Utilidad c/ 100 Mascotas:</span><strong id="preset-plan-profit" class="text-lg text-emerald-400">$3.200.000 COP/mes</strong></div>
+        </div>
+    </div>
+
+    <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <a href="/software-planes-salud-veterinaria" class="text-xs font-semibold text-cyan-300 hover:underline">Ver cómo funciona el Software de Planes de Salud Veterinarios →</a>
+        <a href="/crear-clinica-veterinaria-gratis" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition">Activar estos planes en mi clínica (15 días gratis) →</a>
+    </div>
+</div>
+<script>
+function selectPlanPreset(price, cost, label) {
+    var fmt = function(n){ return '$' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); };
+    document.getElementById('preset-plan-name').textContent = label;
+    document.getElementById('preset-plan-price').textContent = fmt(price) + ' COP/mes';
+    document.getElementById('preset-plan-cost').textContent = '~' + fmt(cost) + ' COP/mes';
+    document.getElementById('preset-plan-profit').textContent = fmt((price - cost) * 100) + ' COP/mes';
+}
+</script>
+
+<h2 id="niveles-planes-veterinarios" class="text-2xl font-bold text-slate-900 mt-8 mb-4">2. Cómo Estructurar tus Niveles de Planes (Básico vs Premium)</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
 El error más común de los médicos veterinarios es crear una lista interminable de planes que confunde al tutor. La mejor práctica de negocio probada en AviPetApp es estructurar únicamente <strong>dos o máximo tres planes claros</strong>:
 </p>
@@ -99,7 +148,7 @@ El error más común de los médicos veterinarios es crear una lista interminabl
     </div>
 </div>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">3. La Matemática del Negocio: Margen del 65% y Retención</h2>
+<h2 id="matematica-margen-65" class="text-2xl font-bold text-slate-900 mt-8 mb-4">3. La Matemática del Negocio: Margen del 65% y Retención</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
 Hagamos un ejercicio real con una clínica veterinaria mediana en Colombia con <strong>150 mascotas suscritas</strong> a un plan promedio de <strong>$49.000 COP/mes</strong>:
 </p>
@@ -120,7 +169,7 @@ Muchos veterinarios intentan vender membresías cobrando por Nequi o transferenc
     <li>No hay forma de validar si una vacuna ya fue aplicada o sigue disponible en el saldo.</li>
 </ol>
 <p class="text-slate-700 leading-relaxed mb-6">
-Por esta razón, la tecnología SaaS como <strong>AviPetApp</strong> automatiza el recaudo recurrente, genera un <strong>Carnet Digital interactivo</strong> con código QR y actualiza en tiempo real el saldo de servicios en mostrador con un solo clic.
+Por esta razón, implementar un <a href="/software-planes-salud-veterinaria" class="text-violet-700 font-bold underline">software para planes de salud veterinarios</a> como <strong>AviPetApp</strong> organiza tus membresías, emite un <a href="/carnet-vacunacion-digital-mascotas-qr" class="text-violet-700 font-bold underline">Carnet Digital interactivo con código QR</a> y actualiza en tiempo real el saldo de servicios en mostrador con un solo clic.
 </p>
 
 <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-8 my-8 text-center shadow-xl">
@@ -338,7 +387,7 @@ HTML,
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & CEO NODIA',
                 'published_at' => '2026-10-05',
-                'updated_at' => '2026-11-05',
+                'updated_at' => '2026-11-10',
                 'image' => 'https://images.unsplash.com/photo-1516715094483-75da7dee9758?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
                     'avipetapp',
@@ -451,7 +500,7 @@ HTML,
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & Director Técnico',
                 'published_at' => '2026-10-08',
-                'updated_at' => '2026-11-05',
+                'updated_at' => '2026-11-10',
                 'image' => 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
                     'avipetapp',
@@ -700,7 +749,7 @@ HTML,
                 'author' => 'División Científica AVIPET BioLab®',
                 'author_role' => 'Biotecnología Nutricional & Salud Dermo-Digestiva',
                 'published_at' => '2026-10-25',
-                'updated_at' => '2026-11-05',
+                'updated_at' => '2026-11-10',
                 'image' => '/images/biolab/hero-estudio-1-bolsa.webp',
                 'keywords' => [
                     'alergia en perros piel',

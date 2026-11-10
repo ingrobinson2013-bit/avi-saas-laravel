@@ -688,13 +688,15 @@ Route::get('/sitemap.xml', function () use ($resolveTenantFromHost, $isBioLabHos
     $xml .= "    <priority>0.95</priority>\n";
     $xml .= "  </url>\n";
     $xml .= "  <url>\n";
-    $xml .= "    <loc>{$baseUrl}/producto/dermo-gut-superboost</loc>\n";
+    $xml .= "    <loc>{$baseUrl}/software-planes-salud-veterinaria</loc>\n";
     $xml .= "    <lastmod>{$today}</lastmod>\n";
     $xml .= "    <changefreq>daily</changefreq>\n";
     $xml .= "    <priority>0.95</priority>\n";
     $xml .= "  </url>\n";
 
-    // 2. Portada del Blog B2B de AviPetApp
+    // 2. Landings Comerciales Transaccionales SaaS + Portada del Blog B2B de AviPetApp
+    $xml .= "  <url>\n    <loc>{$baseUrl}/carnet-vacunacion-digital-mascotas-qr</loc>\n    <lastmod>{$today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.95</priority>\n  </url>\n";
+    $xml .= "  <url>\n    <loc>{$baseUrl}/crear-clinica-veterinaria-gratis</loc>\n    <lastmod>{$today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.95</priority>\n  </url>\n";
     $xml .= "  <url>\n";
     $xml .= "    <loc>{$baseUrl}/blog</loc>\n";
     $xml .= "    <lastmod>{$today}</lastmod>\n";
@@ -724,6 +726,11 @@ Route::get('/sitemap.xml', function () use ($resolveTenantFromHost, $isBioLabHos
 // 12. Blog SEO B2B para Clínicas Veterinarias
 Route::get('/blog', [App\Http\Controllers\BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])->name('blog.show');
+
+// 12.1 Landings Comerciales Transaccionales SaaS B2B (SSR SEO de Alta Intención)
+Route::get('/software-planes-salud-veterinaria', fn(\Illuminate\Http\Request $r) => app(App\Http\Controllers\SaaSLandingController::class)->show($r, 'planes-salud'))->name('saas.landing.planes');
+Route::get('/carnet-vacunacion-digital-mascotas-qr', fn(\Illuminate\Http\Request $r) => app(App\Http\Controllers\SaaSLandingController::class)->show($r, 'carnet-qr'))->name('saas.landing.carnet');
+Route::get('/crear-clinica-veterinaria-gratis', fn(\Illuminate\Http\Request $r) => app(App\Http\Controllers\SaaSLandingController::class)->show($r, 'prueba-gratis'))->name('saas.landing.trial');
 
 // 13. Píxel de Seguimiento de Aperturas de Correo (Prospección AviPetApp)
 Route::get('/track/p/{id}.png', function ($id) {

@@ -1577,7 +1577,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-slate-900 text-center text-slate-400 text-[11px] flex flex-col sm:flex-row items-center justify-between gap-3">
             <div>© {{ date('Y') }} {{ $tenant->name }}. Todos los derechos reservados. Sistema Integral de Membresías y Salud Preventiva.</div>
             <div class="text-slate-400">
-                Tecnología y Planes de Salud Preventiva por <a href="https://avipetapp.com" target="_blank" rel="follow" title="AviPetApp — Software con IA para veterinarias" class="text-teal-400 hover:text-teal-300 font-bold underline decoration-teal-500/50">AviPetApp</a>
+                Tecnología por <a href="https://avipetapp.com/software-planes-salud-veterinaria" target="_blank" rel="follow" title="AviPetApp — Software para Planes de Salud Veterinarios en Colombia" class="text-teal-400 hover:text-teal-300 font-bold underline decoration-teal-500/50">AviPetApp — Software de Planes de Salud Veterinarios</a>
             </div>
         </div>
     </footer>
