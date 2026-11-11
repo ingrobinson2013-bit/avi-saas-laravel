@@ -464,6 +464,44 @@
             </div>
         </section>
 
+        <!-- SERVICIOS VETERINARIOS Y DOMICILIOS EN CAJICÁ Y CHÍA -->
+        <section id="servicios-clinicos" class="py-12 bg-white border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                    <div>
+                        <span class="text-xs font-black uppercase tracking-wider text-teal-700 block mb-1">Atención en Consultorio • Domicilios Cajicá y Chía</span>
+                        <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Servicios Médicos Veterinarios de Confianza</h2>
+                    </div>
+                    <a href="https://wa.me/{{ $cleanPhoneFormatted }}?text={{ urlencode('Hola, quisiera solicitar servicio a domicilio o cita en ' . $tenant->name) }}" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-sm transition">
+                        <span>📲 Agendar Domicilio o Cita WhatsApp</span>
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-teal-500 transition">
+                        <span class="text-2xl block mb-2">🚗</span>
+                        <h3 class="font-bold text-slate-900 text-sm mb-1">Veterinaria a Domicilio</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Atención médica en la comodidad de tu hogar en Cajicá, Chía y alrededores sin estrés de traslado.</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-teal-500 transition">
+                        <span class="text-2xl block mb-2">🦷</span>
+                        <h3 class="font-bold text-slate-900 text-sm mb-1">Odontología &amp; Profilaxis</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Limpieza dental canina y felina con ultrasonido para eliminar sarro, placa bacteriana y mal aliento.</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-teal-500 transition">
+                        <span class="text-2xl block mb-2">🛁</span>
+                        <h3 class="font-bold text-slate-900 text-sm mb-1">Baño &amp; Peluquería Canina y Felina</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Baño medicado e hipoalergénico, peluquería profesional, corte de uñas y limpieza de oídos.</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-teal-500 transition">
+                        <span class="text-2xl block mb-2">💉</span>
+                        <h3 class="font-bold text-slate-900 text-sm mb-1">Vacunación &amp; Desparasitación</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Biológicos certificados: Séxtuple, Rabia, KC en perros; Triple Felina y Leucemia en gatos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- 02. ¿CÓMO FUNCIONA? (4 PASOS LIMPIOS - PRIORIDAD 2) -->
         @if($showHowItWorks)
         <section id="como-funciona" class="py-16 sm:py-20 bg-slate-50 border-t border-slate-200">

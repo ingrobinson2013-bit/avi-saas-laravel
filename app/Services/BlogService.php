@@ -378,8 +378,7 @@ Tener una <strong>Terminal de Canje Digital</strong> en la recepción de tu clí
 </div>
 HTML,
             ],
-            [
-                'slug' => 'mejores-software-veterinarios-colombia-comparativa-2026',
+            [                'slug' => 'mejores-software-veterinarios-colombia-comparativa-2026',
                 'title' => 'Los 5 Mejores Software Veterinarios en Colombia (2026): Comparativa de Precios y Funciones',
                 'excerpt' => 'Comparativa actualizada de software veterinario en Colombia (2026): precios en pesos, historias clínicas, planes de salud para mascotas, carnet digital QR en WhatsApp y herramientas con IA.',
                 'category' => 'Tecnología & Software',
@@ -387,110 +386,188 @@ HTML,
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & CEO NODIA',
                 'published_at' => '2026-10-05',
-                'updated_at' => '2026-11-10',
+                'updated_at' => '2026-11-11',
                 'image' => 'https://images.unsplash.com/photo-1516715094483-75da7dee9758?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
-                    'avipetapp',
+                    'software veterinario',
+                    'programa para veterinarias',
+                    'software para clinicas veterinarias',
                     'software veterinario colombia',
                     'mejores software veterinarios colombia',
-                    'programa gestion veterinaria bogota medellin cali',
-                    'software para clinicas veterinarias',
-                    'sistema historiales clinicos veterinaria',
+                    'software planes de salud veterinaria',
+                    'carnet digital mascotas qr software',
                     'precio software veterinario colombia'
                 ],
                 'faqs' => [
                     [
                         'question' => '¿Cuál es el mejor software veterinario en Colombia para planes de salud y fidelización?',
-                        'answer' => 'AviPetApp es la plataforma líder en Colombia especializada en planes de salud para mascotas, carnets digitales con código QR, terminal de canje en mostrador y herramientas de IA supervisada, y puede operar junto a tu software actual de historia clínica.'
+                        'answer' => 'AviPetApp es la plataforma líder en Colombia especializada en planes de salud para mascotas, carnets digitales con código QR en WhatsApp, terminal de canje en mostrador y herramientas de IA supervisada, y puede operar junto a tu software actual de historia clínica.'
                     ],
                     [
                         'question' => '¿Cuánto cuesta un software para clínica veterinaria en Colombia?',
-                        'answer' => 'En AviPetApp puedes iniciar con 15 días gratis sin tarjeta de crédito, paquetes prepago desde $50.000 COP al mes (para 10 mascotas activas) o planes mensuales desde $99.000 COP/mes con 0% de comisión por venta.'
+                        'answer' => 'En AviPetApp puedes iniciar con 15 días gratis sin tarjeta de crédito, paquetes prepago desde $50.000 COP al mes (para 10 mascotas activas) o planes mensuales desde $99.000 COP/mes con 0% de comisión por venta de membresías.'
+                    ],
+                    [
+                        'question' => '¿Tengo que migrar mis historias clínicas de software para usar AviPetApp?',
+                        'answer' => 'No. AviPetApp convive con cualquier software tradicional de historia médica o facturador DIAN. Se enfoca en la retención de clientes, venta recurrente de planes preventivos y control de beneficios en recepción.'
                     ],
                 ],
                 'content' => <<<'HTML'
+<nav aria-label="Tabla de contenidos" class="bg-slate-50 border border-slate-200 rounded-2xl p-5 my-6">
+    <p class="text-xs font-extrabold uppercase tracking-wider text-violet-700 mb-3">Índice de la Comparativa de Software Veterinario en Colombia</p>
+    <ol class="grid sm:grid-cols-2 gap-2 text-sm font-semibold text-slate-700 list-decimal pl-5">
+        <li><a href="#test-software-interactivo" class="hover:text-violet-700 underline">Test Interactivo: ¿Qué software necesita tu clínica?</a></li>
+        <li><a href="#analisis-avipetapp" class="hover:text-violet-700 underline">1. AviPetApp: Planes de Salud e IA</a></li>
+        <li><a href="#analisis-tradicionales" class="hover:text-violet-700 underline">2. Vetsoft / Q-Vet / Provet Cloud</a></li>
+        <li><a href="#cuadro-comparativo-colombia" class="hover:text-violet-700 underline">3. Matriz Comparativa de Funciones y Precios</a></li>
+        <li><a href="#veredicto-final" class="hover:text-violet-700 underline">4. Veredicto: Cómo elegir según tu modelo</a></li>
+    </ol>
+</nav>
+
 <p class="lead text-lg text-slate-700 leading-relaxed font-medium mb-6">
-Elegir el software adecuado para tu clínica veterinaria en Colombia es una de las decisiones más estratégicas para el crecimiento de tu negocio. Una herramienta obsoleta genera demoras en recepción, pérdida de pacientes y falta de control sobre los ingresos mensuales.
+Elegir el <strong>software veterinario</strong> adecuado para tu clínica en Colombia es una de las decisiones más estratégicas para la rentabilidad de tu negocio. Una herramienta obsoleta genera demoras en recepción, pérdida de pacientes y falta de control sobre los ingresos mensuales.
 </p>
 
-<p class="text-slate-700 leading-relaxed mb-6">
-En esta comparativa analizamos las opciones líderes del mercado colombiano en 2026 según su enfoque: <strong>Historias Clínicas, Facturación Electrónica DIAN y Planes de Salud Preventiva Recurrente</strong>.
-</p>
+<!-- TEST INTERACTIVO DE EVALUACIÓN DE SOFTWARE -->
+<div id="test-software-interactivo" class="bg-slate-900 text-white rounded-2xl p-6 sm:p-7 my-8 border border-violet-500/40 shadow-xl scroll-mt-24">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+        <span class="px-3 py-1 rounded-full bg-violet-600/30 text-cyan-300 border border-violet-400/40 text-xs font-bold">Evaluador de Software en 30 Segundos</span>
+        <span class="text-xs text-slate-300">Mercado Veterinario Colombiano</span>
+    </div>
+    <h3 class="text-xl font-extrabold mb-1">¿Qué tipo de programa para veterinarias necesita tu clínica hoy?</h3>
+    <p class="text-xs sm:text-sm text-slate-300 mb-4">Selecciona tu principal objetivo de negocio para ver la recomendación técnica exacta:</p>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">1. AviPetApp: Software con IA para Veterinarias y Planes de Salud</h2>
+    <div class="grid sm:grid-cols-3 gap-3 mb-4">
+        <button type="button" onclick="setSoftwareQuiz('planes')" id="sq-btn-planes" class="p-3.5 rounded-xl bg-violet-600 border border-violet-400 text-left cursor-pointer transition">
+            <span class="block text-xs font-bold uppercase text-cyan-300 mb-1">Opción A</span>
+            <strong class="text-xs sm:text-sm text-white block">Quiero facturar ingresos recurrentes con planes de salud y carnet digital</strong>
+        </button>
+        <button type="button" onclick="setSoftwareQuiz('historia')" id="sq-btn-historia" class="p-3.5 rounded-xl bg-slate-800 border border-slate-700 hover:border-slate-500 text-left cursor-pointer transition">
+            <span class="block text-xs font-bold uppercase text-slate-400 mb-1">Opción B</span>
+            <strong class="text-xs sm:text-sm text-white block">Solo necesito archivar historias clínicas de urgencias y recetas</strong>
+        </button>
+        <button type="button" onclick="setSoftwareQuiz('hospital')" id="sq-btn-hospital" class="p-3.5 rounded-xl bg-slate-800 border border-slate-700 hover:border-slate-500 text-left cursor-pointer transition">
+            <span class="block text-xs font-bold uppercase text-slate-400 mb-1">Opción C</span>
+            <strong class="text-xs sm:text-sm text-white block">Soy un hospital de más de 20 consultorios y quirófanos complejos</strong>
+        </button>
+    </div>
+
+    <div id="sq-result" class="p-4 rounded-xl bg-slate-800/90 border border-slate-700 space-y-2 text-xs sm:text-sm">
+        <div class="font-bold text-cyan-300">Diagnóstico para tu Clínica: Arquitectura Especializada en Membresías Preventivas</div>
+        <p class="text-slate-300">Los software tradicionales no gestionan planes preventivos ni entregan carnet QR en WhatsApp. La mejor solución es implementar <a href="/software-planes-salud-veterinaria" class="text-cyan-300 font-bold underline">AviPetApp</a>, que convive con tu historia clínica actual y te da 15 días gratis sin comisión.</p>
+        <div class="pt-2 flex flex-wrap items-center gap-3">
+            <a href="/crear-clinica-veterinaria-gratis" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition">Probar AviPetApp 15 Días Gratis →</a>
+            <a href="/carnet-vacunacion-digital-mascotas-qr" class="text-xs text-slate-300 hover:underline">Ver cómo funciona el Carnet QR</a>
+        </div>
+    </div>
+</div>
+<script>
+function setSoftwareQuiz(type) {
+    var bPlanes = document.getElementById('sq-btn-planes');
+    var bHist = document.getElementById('sq-btn-historia');
+    var bHosp = document.getElementById('sq-btn-hospital');
+    var res = document.getElementById('sq-result');
+    bPlanes.className = 'p-3.5 rounded-xl bg-slate-800 border border-slate-700 text-left cursor-pointer transition';
+    bHist.className = 'p-3.5 rounded-xl bg-slate-800 border border-slate-700 text-left cursor-pointer transition';
+    bHosp.className = 'p-3.5 rounded-xl bg-slate-800 border border-slate-700 text-left cursor-pointer transition';
+
+    if (type === 'planes') {
+        bPlanes.className = 'p-3.5 rounded-xl bg-violet-600 border border-violet-400 text-left cursor-pointer transition';
+        res.innerHTML = '<div class="font-bold text-cyan-300">Diagnóstico: Arquitectura de Membresías Preventivas</div>' +
+            '<p class="text-slate-300">Para generar ingresos mensuales fijos y fidelizar tutores, un software de historia clínica no basta. Necesitas <a href="/software-planes-salud-veterinaria" class="text-cyan-300 font-bold underline">AviPetApp</a> para emitir carnets con código QR, cobrar mes a mes y canjear servicios en recepción en 1 clic.</p>' +
+            '<div class="pt-2 flex flex-wrap items-center gap-3">' +
+            '<a href="/crear-clinica-veterinaria-gratis" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition">Crear mi clínica (15 días gratis) →</a>' +
+            '<a href="/carnet-vacunacion-digital-mascotas-qr" class="text-xs text-slate-300 hover:underline">Ver Carnet QR en WhatsApp</a></div>';
+    } else if (type === 'historia') {
+        bHist.className = 'p-3.5 rounded-xl bg-violet-600 border border-violet-400 text-left cursor-pointer transition';
+        res.innerHTML = '<div class="font-bold text-cyan-300">Diagnóstico: Enfoque Clínico Mixto</div>' +
+            '<p class="text-slate-300">Puedes usar un software clínico tradicional (como Vetsoft o Q-Vet) para el historial médico, pero te recomendamos conectar <a href="/software-planes-salud-veterinaria" class="text-cyan-300 font-bold underline">AviPetApp</a> en recepción para que tus clientes no se vayan a la competencia por vacunas o desparasitaciones.</p>' +
+            '<div class="pt-2"><a href="/crear-clinica-veterinaria-gratis" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition">Probar 15 días gratis sin compromiso →</a></div>';
+    } else {
+        bHosp.className = 'p-3.5 rounded-xl bg-violet-600 border border-violet-400 text-left cursor-pointer transition';
+        res.innerHTML = '<div class="font-bold text-cyan-300">Diagnóstico: Nivel Hospitalario Enterprise</div>' +
+            '<p class="text-slate-300">Hospitales con quirófanos múltiples suelen usar Provet Cloud o sistemas ERP. Aun así, para la unidad ambulatoria y programas de fidelización preventiva, el modelo de carnets QR de AviPetApp aligera la carga en mostrador.</p>' +
+            '<div class="pt-2"><a href="/software-planes-salud-veterinaria" class="text-xs text-cyan-300 hover:underline">Conoce cómo se integran los planes de salud →</a></div>';
+    }
+}
+</script>
+
+<h2 id="analisis-avipetapp" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">1. AviPetApp: Software con IA para Veterinarias y Planes de Salud</h2>
 <div class="border border-blue-200 bg-blue-50/40 rounded-xl p-5 mb-6">
-    <p class="text-sm text-slate-700 mb-2"><strong>Lo mejor:</strong> Diseñado específicamente para gestionar planes de salud para mascotas, organizar la relación con tus clientes y aprovechar herramientas de IA desde una sola plataforma.</p>
-    <p class="text-sm text-slate-700 mb-2"><strong>Funciones estrella:</strong> Motor actuarial de planes de salud, carnet digital con QR para tutores, terminal de canje en mostrador y sugerencias preventivas con Inteligencia Artificial supervisada.</p>
-    <p class="text-sm text-slate-700 mb-0"><strong>Precio:</strong> Paquetes prepago desde $50.000 COP / 10 mascotas o planes mensuales desde $99.000 COP/mes (15 días de prueba gratis, sin tarjeta de crédito).</p>
+    <p class="text-sm text-slate-700 mb-2"><strong>Lo mejor:</strong> Diseñado específicamente para crear y gestionar <a href="/software-planes-salud-veterinaria" class="text-blue-700 font-bold underline">planes de salud para mascotas</a>, emitir <a href="/carnet-vacunacion-digital-mascotas-qr" class="text-blue-700 font-bold underline">carnets digitales con código QR</a> y aprovechar herramientas de IA supervisada desde una sola plataforma.</p>
+    <p class="text-sm text-slate-700 mb-2"><strong>Funciones estrella:</strong> Motor de cálculo actuarial de tarifas, vitrina web propia para tu veterinaria (tu-clinica.avipetapp.com), afiche oficial en PDF para sala de espera y terminal de canje en mostrador en 1 clic.</p>
+    <p class="text-sm text-slate-700 mb-0"><strong>Precio transparente:</strong> Paquetes prepago desde $50.000 COP / 10 mascotas o mensualidad plana desde $99.000 COP/mes con <strong>0% de comisión por venta</strong> (15 días de prueba gratis sin tarjeta de crédito).</p>
 </div>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">2. Vetsoft / Q-Vet: Gestión Clínica y Hospitalización Tradicional</h2>
+<h2 id="analisis-tradicionales" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">2. Vetsoft / Q-Vet / Provet Cloud: Gestión Clínica Tradicional</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
-Sistemas veteranos con amplia trayectoria en historia clínica completa, hospitalización y control de inventarios farmacéuticos. Su fortaleza radica en el expediente clínico tradicional, aunque su interfaz y adaptabilidad móvil suelen ser más pesadas para el usuario moderno.
+Sistemas veteranos con amplia trayectoria en expedientes de hospitalización e inventario farmacéutico. Su fortaleza radica en el archivo médico histórico, pero carecen de módulos modernos de fidelización recurrente, carnets interactivos para el celular del tutor o cobro prepago simplificado en pesos colombianos.
 </p>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">3. Provet Cloud: Solución Enterprise para Grandes Hospitales</h2>
-<p class="text-slate-700 leading-relaxed mb-4">
-Una de las plataformas en la nube más avanzadas a nivel global. Ideal para hospitales veterinarios de más de 20 consultorios y clínicas universitarias. Su costo en dólares y complejidad de implementación la hacen poco accesible para veterinarias de barrio o clínicas medianas.
-</p>
-
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">4. Cuadro Comparativo de Funcionalidades Clave</h2>
+<h2 id="cuadro-comparativo-colombia" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">3. Cuadro Comparativo de Funcionalidades Clave (Colombia 2026)</h2>
 
 <div class="overflow-x-auto my-6">
     <table class="w-full text-left text-sm border-collapse border border-slate-200">
         <thead>
             <tr class="bg-slate-100 text-slate-800 font-bold border-b border-slate-200">
                 <th class="p-3 border-r border-slate-200">Criterio / Software</th>
-                <th class="p-3 border-r border-slate-200 text-blue-700 font-extrabold">AviPetApp</th>
-                <th class="p-3 border-r border-slate-200">Software Tradicional</th>
+                <th class="p-3 border-r border-slate-200 text-violet-700 font-extrabold bg-violet-50/50">AviPetApp</th>
+                <th class="p-3 border-r border-slate-200">Software Clínico Tradicional</th>
                 <th class="p-3">Excel / Libretas</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-slate-200 text-slate-600">
             <tr>
                 <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Planes de Salud y Membresías</td>
-                <td class="p-3 font-bold text-emerald-600 border-r border-slate-200">✓ Nativo (100% configurable)</td>
+                <td class="p-3 font-bold text-emerald-600 border-r border-slate-200 bg-violet-50/30">✓ Nativo (100% configurable)</td>
                 <td class="p-3 text-red-500 border-r border-slate-200">✗ No incluye</td>
                 <td class="p-3 text-red-500">✗ No incluye</td>
             </tr>
             <tr>
-                <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Carnet Digital en WhatsApp para Tutor</td>
-                <td class="p-3 font-bold text-emerald-600 border-r border-slate-200">✓ Con QR y Saldo</td>
-                <td class="p-3 text-slate-400 border-r border-slate-200">Opcional / PDF</td>
-                <td class="p-3 text-red-500">✗ Cartulina física</td>
+                <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Carnet Digital QR en WhatsApp</td>
+                <td class="p-3 font-bold text-emerald-600 border-r border-slate-200 bg-violet-50/30">✓ Con QR y Saldo en Vivo</td>
+                <td class="p-3 text-slate-400 border-r border-slate-200">Opcional / PDF estático</td>
+                <td class="p-3 text-red-500">✗ Cartulina física perdida</td>
             </tr>
             <tr>
-                <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Terminal de Canje Rápido en Recepción</td>
-                <td class="p-3 font-bold text-emerald-600 border-r border-slate-200">✓ 1-Clic</td>
+                <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Terminal de Canje en Mostrador</td>
+                <td class="p-3 font-bold text-emerald-600 border-r border-slate-200 bg-violet-50/30">✓ 1-Clic por QR o Cédula</td>
                 <td class="p-3 text-slate-400 border-r border-slate-200">Manual en factura</td>
-                <td class="p-3 text-red-500">✗ Manual</td>
+                <td class="p-3 text-red-500">✗ Manual en papel</td>
+            </tr>
+            <tr>
+                <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Comisión por Cobro de Planes</td>
+                <td class="p-3 font-bold text-emerald-600 border-r border-slate-200 bg-violet-50/30">0% (100% para tu clínica)</td>
+                <td class="p-3 text-slate-400 border-r border-slate-200">N/A</td>
+                <td class="p-3 text-slate-400">0%</td>
             </tr>
             <tr>
                 <td class="p-3 font-medium text-slate-900 border-r border-slate-200">Tiempo de Puesta en Marcha</td>
-                <td class="p-3 font-bold text-emerald-600 border-r border-slate-200">10 minutos</td>
-                <td class="p-3 text-slate-400 border-r border-slate-200">1 a 3 semanas</td>
-                <td class="p-3 text-slate-400">Inmediato</td>
+                <td class="p-3 font-bold text-emerald-600 border-r border-slate-200 bg-violet-50/30">60 segundos (Inmediato)</td>
+                <td class="p-3 text-slate-400 border-r border-slate-200">1 a 3 semanas de setup</td>
+                <td class="p-3 text-slate-400">Inmediato pero caótico</td>
             </tr>
         </tbody>
     </table>
 </div>
 
-<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">¿Cuál es la Mejor Opción para tu Clínica?</h2>
+<h2 id="veredicto-final" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">4. Veredicto: Cómo Elegir la Mejor Opción para tu Veterinaria</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
-Si tu prioridad exclusiva es archivar historias clínicas de urgencias, un software clínico clásico te servirá. Pero <strong>si tu objetivo es organizar los planes de salud de tu clínica veterinaria, fortalecer la relación con las familias y aprovechar herramientas de IA</strong>, la arquitectura de <strong>AviPetApp</strong> es el complemento ideal para tu operación médica.
+Si tu prioridad exclusiva es registrar expedientes médicos de urgencias, un software clásico cumple esa función. Pero <strong>si tu meta como director(a) de clínica es asegurar un flujo de caja predecible todos los meses, blindar a tus pacientes frente a la competencia y automatizar el mostrador</strong>, la mejor decisión en Colombia en 2026 es activar <a href="/software-planes-salud-veterinaria" class="text-violet-700 font-bold underline">AviPetApp</a>.
 </p>
 
-<div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-8 my-8 text-center shadow-lg">
-    <h3 class="text-2xl font-extrabold mb-2">Comprueba la Diferencia en tu Propia Clínica</h3>
-    <p class="text-blue-100 text-sm max-w-xl mx-auto mb-6">
-        Únete a las veterinarias que ya gestionan sus planes de salud para mascotas en Colombia con AviPetApp.
+<div class="bg-gradient-to-r from-violet-900 via-indigo-900 to-[#080B20] text-white rounded-2xl p-8 my-8 text-center shadow-xl border border-violet-500/30">
+    <span class="text-xs font-bold uppercase tracking-widest text-[#35DDF5] mb-2 block">Alta Inmediata · 0% Comisión</span>
+    <h3 class="text-2xl font-black mb-2">Comprueba la Diferencia en tu Propia Veterinaria</h3>
+    <p class="text-slate-300 text-sm max-w-xl mx-auto mb-6">
+        Recibe tu vitrina con planes preconfigurados y tu afiche QR de sala de espera listo para imprimir.
     </p>
-    <a href="/registro-clinica" class="inline-flex items-center px-6 py-3 bg-white hover:bg-slate-100 text-blue-900 font-extrabold rounded-xl shadow-lg transition">
-        Iniciar Prueba Gratuita de 15 Días →
+    <a href="/crear-clinica-veterinaria-gratis" class="inline-flex items-center px-7 py-3.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
+        Crear mi Clínica Gratis (15 Días Sin Tarjeta) →
     </a>
 </div>
 HTML,
-            ],
+            ],,
             [
                 'slug' => 'como-calcular-precio-planes-salud-veterinaria-plantilla-costos',
                 'title' => 'Cómo Calcular Precios en tu Veterinaria y Planes de Salud: Calculadora y Plantilla de Costos (Colombia 2026)',
@@ -862,6 +939,280 @@ Para romper el ciclo de reactividad inmunológica sin obligar al tutor a cambiar
 </div>
 HTML,
             ]
+
+            [
+                'slug' => 'perro-se-lame-las-patas-rojas-pododermatitis-alergia-solucion',
+                'title' => 'Mi Perro Se Lame Mucho las Patas Rojas y Se Muerde: Causas, Pododermatitis y Tratamiento en Colombia (2026)',
+                'excerpt' => '¿Tu perro se lame las patas sin parar y las tiene rojas o inflamadas? Conoce las verdaderas causas de la pododermatitis alérgica en Colombia, el papel de las levaduras y el suplemento 3 en 1 con Matriz Hipoalergénica y Ácido Láurico ($69.900 Contraentrega).',
+                'category' => 'Dermatología Canina & BioLab®',
+                'read_time' => '7 min de lectura',
+                'author' => 'División Científica AVIPET BioLab®',
+                'author_role' => 'Biotecnología Nutricional & Salud Dermo-Digestiva',
+                'published_at' => '2026-11-11',
+                'updated_at' => '2026-11-11',
+                'image' => '/images/biolab/empaque-frente-reverso.jpg',
+                'keywords' => [
+                    'mi perro se lame mucho las patas',
+                    'perro patas rojas pododermatitis',
+                    'por que mi perro se muerde las patas',
+                    'alergia en patas perros tratamiento colombia',
+                    'hongos en patas de perros remedio',
+                    'suplemento dermatitis perros colombia contraentrega',
+                    'acido laurico perros picazon'
+                ],
+                'faqs' => [
+                    [
+                        'question' => '¿Por qué mi perro se lame compulsivamente las patas y las almohadillas?',
+                        'answer' => 'En más del 80% de los casos en Colombia, el lamido compulsivo se debe a prurito alérgico ocasionado por hipersensibilidad alimentaria (alergia al pollo, res o cereales) o dermatitis atópica. La humedad de la saliva crea el ambiente perfecto para la proliferación de levaduras (Malassezia), tiñendo los pelos de color rojizo oxidado.'
+                    ],
+                    [
+                        'question' => '¿Sirven las cremas o remedios caseros para las patas rojas en perros?',
+                        'answer' => 'Las cremas tópicas suelen ser lamidas por el perro a los pocos segundos, pudiendo causarle irritación gástrica. El tratamiento más efectivo actúa desde el interior: modulando la respuesta inflamatoria en el intestino con Ácido Láurico dermo-activo y sustituyendo proteínas reactivas por una Matriz de Micro-Proteína Novel Hipoalergénica.'
+                    ],
+                    [
+                        'question' => '¿Cómo ayuda AVIPET BioLab® Dermo & Gut Superboost en perros que se lamen las patas?',
+                        'answer' => 'Su fórmula 3 en 1 contiene 4.5% de Ácido Láurico Dermo-Activo (potente antimicrobiano y antifúngico natural que corta la proliferación de levaduras), 40% de Micro-Proteína Novel 100% libre de pollo y res, y Omega 3-6-9 de Linaza Dorada que regenera la barrera epidérmica de las patas en 3 a 4 semanas.'
+                    ],
+                    [
+                        'question' => '¿Cuál es el precio y tiempo de entrega en Colombia?',
+                        'answer' => 'La bolsa de 250g (50 dosis) cuesta $69.900 COP con Envío Gratis y Pago Contraentrega (pagas en efectivo o transferencia al recibir en tu puerta). El tiempo promedio de entrega en Bogotá y Sabana Norte es de 24 a 48 horas, y 48 a 72 horas para el resto del país.'
+                    ],
+                ],
+                'content' => <<<'HTML'
+<nav aria-label="Tabla de contenidos" class="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 my-6">
+    <p class="text-xs font-extrabold uppercase tracking-wider text-emerald-800 mb-3">Guía Clínica de Alivio Dermo-Podal (Colombia 2026)</p>
+    <ol class="grid sm:grid-cols-2 gap-2 text-sm font-semibold text-slate-700 list-decimal pl-5">
+        <li><a href="#por-que-se-lame-las-patas" class="hover:text-emerald-700 underline">1. El ciclo del lamido y la Malassezia</a></li>
+        <li><a href="#calculadora-dosis-patas" class="hover:text-emerald-700 underline">2. Calculadora de Dosis en Gramos por Peso</a></li>
+        <li><a href="#como-actua-acido-laurico" class="hover:text-emerald-700 underline">3. Ácido Láurico Dermo-Activo vs Cremas</a></li>
+        <li><a href="#pedido-contraentrega-patas" class="hover:text-emerald-700 underline">4. Cómo pedir Contraentrega ($69.900)</a></li>
+    </ol>
+</nav>
+
+<p class="lead text-lg text-slate-700 leading-relaxed font-medium mb-6">
+Ver a tu perro lamerse y morderse las patas día y noche es desesperante. Muchos tutores en Colombia notan que <strong>los pelos entre las almohadillas se tornan de un color rojizo o marrón oxidado</strong>, despiden un olor similar a queso o levadura y la piel se inflama al punto de causar cojera.
+</p>
+
+<h2 id="por-que-se-lame-las-patas" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">1. La Verdad Detrás de las Patas Rojas: El Eje Intestino-Piel</h2>
+<p class="text-slate-700 leading-relaxed mb-4">
+El lamido constante no es "manía" ni "estrés" en la mayoría de los casos. Es <strong>pododermatitis alérgica</strong>:
+</p>
+<ul class="list-disc pl-6 space-y-2 text-slate-700 mb-6">
+    <li><strong>Intolerancia a la proteína tradicional:</strong> El 70% del sistema inmune está en el intestino. Al digerir concentrados comerciales con harinas de pollo o res, el intestino permeable libera citoquinas inflamatorias que se acumulan en las extremidades.</li>
+    <li><strong>Proliferación de Malassezia:</strong> La saliva del perro contiene porfirinas (que tiñen el pelo de rojo) y humedad constante, el caldo de cultivo ideal para levaduras y hongos que intensifican el picor en un 300%.</li>
+</ul>
+
+<!-- CALCULADORA DE DOSIS INTERACTIVA -->
+<div id="calculadora-dosis-patas" class="bg-gradient-to-br from-slate-900 via-[#080B20] to-emerald-950 text-white rounded-2xl p-6 sm:p-8 my-8 border border-emerald-500/40 shadow-2xl scroll-mt-24">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">Calculadora de Dosis Oficial AVIPET BioLab®</span>
+        <span class="text-xs text-slate-300">Dermo & Gut Superboost (250g)</span>
+    </div>
+    <h3 class="text-xl sm:text-2xl font-extrabold mb-1">Calcula la dosis diaria de alivio para tu perro</h3>
+    <p class="text-xs sm:text-sm text-slate-300 mb-5">Desliza el peso de tu mascota para ver los gramos exactos, duración de la bolsa y modo de empleo:</p>
+
+    <div class="space-y-4">
+        <div>
+            <div class="flex justify-between text-sm font-bold mb-1.5">
+                <span>Peso de tu perro:</span>
+                <span id="patas-weight-val" class="text-emerald-400 font-black text-base">15 kg (Mediano)</span>
+            </div>
+            <input type="range" id="patas-weight" min="2" max="50" step="1" value="15" oninput="calcPatasDose()" class="w-full accent-emerald-400">
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-3 pt-2">
+            <div class="p-3.5 rounded-xl bg-white/5 border border-white/10">
+                <span class="text-xs text-slate-400 block">Dosis Diaria Recomendada:</span>
+                <strong id="patas-dose-out" class="text-lg text-emerald-300">5 g al día (1 cucharada)</strong>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white/5 border border-white/10">
+                <span class="text-xs text-slate-400 block">Duración de 1 Bolsa (250g):</span>
+                <strong id="patas-days-out" class="text-lg text-white">50 días de tratamiento</strong>
+            </div>
+            <div class="p-3.5 rounded-xl bg-white/5 border border-white/10">
+                <span class="text-xs text-slate-400 block">Inversión por Día:</span>
+                <strong id="patas-cost-out" class="text-lg text-[#35DDF5]">$1.398 COP / día</strong>
+            </div>
+        </div>
+
+        <div class="pt-3 flex flex-col sm:flex-row items-center gap-3">
+            <a href="/biolab/dermo-gut-superboost" class="w-full sm:w-auto px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-sm rounded-xl shadow-lg transition text-center">
+                Pedir con Pago Contraentrega ($69.900 COP) →
+            </a>
+            <span class="text-xs text-slate-300">🚚 Envío Gratis a toda Colombia · Pagas al recibir en tu casa</span>
+        </div>
+    </div>
+</div>
+<script>
+function calcPatasDose() {
+    var w = parseInt(document.getElementById('patas-weight').value, 10) || 15;
+    var dose = 5;
+    var label = w + ' kg';
+    if (w <= 5) { dose = 2.5; label += ' (Miniatura / Toy)'; }
+    else if (w <= 12) { dose = 3.5; label += ' (Pequeño)'; }
+    else if (w <= 25) { dose = 5; label += ' (Mediano)'; }
+    else if (w <= 40) { dose = 7.5; label += ' (Grande)'; }
+    else { dose = 10; label += ' (Gigante)'; }
+
+    var days = Math.round(250 / dose);
+    var costPerDay = Math.round(69900 / days);
+
+    document.getElementById('patas-weight-val').textContent = label;
+    document.getElementById('patas-dose-out').textContent = dose + ' g al día (' + (dose <= 3.5 ? '1/2 cucharadita' : '1 cucharada medidora') + ')';
+    document.getElementById('patas-days-out').textContent = days + ' días de alivio continuo';
+    document.getElementById('patas-cost-out').textContent = '$' + costPerDay.toLocaleString('es-CO') + ' COP / día';
+}
+</script>
+
+<h2 id="como-actua-acido-laurico" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">2. Por Qué el Ácido Láurico Dermo-Activo Corta el Lamido de Raíz</h2>
+<p class="text-slate-700 leading-relaxed mb-4">
+A diferencia de los medicamentos corticoesteroides que deprimen el sistema inmunológico o las cremas tópicas que tu perro se come en 3 minutos, <strong>AVIPET BioLab® Dermo & Gut Superboost</strong> actúa desde adentro:
+</p>
+<ul class="list-disc pl-6 space-y-2 text-slate-700 mb-6">
+    <li><strong>Ácido Láurico Dermo-Activo (4.5%):</strong> En el organismo se convierte en monolaurina, un lípido bioactivo que destruye la membrana lipídica de las levaduras (Malassezia) y bacterias oportunistas en las patas.</li>
+    <li><strong>Matriz de Micro-Proteína Novel (40%):</strong> Cero pollo, res, soya o gluten. Fuente de aminoácidos puros que detienen la respuesta autoinmune cutánea.</li>
+    <li><strong>Omega 3-6-9 de Linaza Dorada:</strong> Desinflama la dermis y repara la almohadilla plantar reseca.</li>
+</ul>
+
+<div id="pedido-contraentrega-patas" class="bg-slate-100 rounded-2xl p-6 sm:p-8 my-8 border border-slate-300 flex flex-col md:flex-row items-center justify-between gap-6">
+    <div class="space-y-2 max-w-xl">
+        <span class="text-xs font-bold uppercase text-emerald-700">Garantía y Confianza AVIPET BioLab®</span>
+        <h3 class="text-xl font-black text-slate-900">Alivia la picazón de tu mascota sin arriesgar tu dinero</h3>
+        <p class="text-xs sm:text-sm text-slate-600">
+            Pide hoy tu bolsa de <strong>Dermo & Gut Superboost (250g) por solo $69.900 COP</strong>. El repartidor llega a tu dirección y pagas en efectivo o transferencia al recibirlo.
+        </p>
+    </div>
+    <a href="/biolab/dermo-gut-superboost" class="px-6 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm rounded-xl shadow-lg transition whitespace-nowrap text-center">
+        Comprar con Envío Gratis ($69.900) →
+    </a>
+</div>
+HTML,
+            ],
+            [
+                'slug' => 'alergia-al-pollo-en-perros-sintomas-piel-que-darle',
+                'title' => 'Alergia al Pollo en Perros: Síntomas en Piel, Qué Concentrado o Suplemento Darle y Proteína Novel (Colombia)',
+                'excerpt' => '¿Sospechas que tu perro es alérgico al pollo? Descubre las 5 señales en piel y digestión, por qué los concentrados tradicionales fallan y cómo la Micro-Proteína Novel hipoalergénica de AVIPET BioLab® ($69.900 Contraentrega) elimina el picor sin cambiar de marca bruscamente.',
+                'category' => 'Nutrición Clínica & Alergias',
+                'read_time' => '6 min de lectura',
+                'author' => 'División Científica AVIPET BioLab®',
+                'author_role' => 'Biotecnología Nutricional & Salud Dermo-Digestiva',
+                'published_at' => '2026-11-11',
+                'updated_at' => '2026-11-11',
+                'image' => '/images/biolab/funnel-antes-despues.png',
+                'keywords' => [
+                    'alergia al pollo en perros sintomas',
+                    'perro alergico al pollo que darle',
+                    'alimentos hipoalergenicos para perros sin pollo',
+                    'dermatitis por pollo en perros colombia',
+                    'sustituto de proteina para perros alergicos',
+                    'suplemento hipoalergenico perros colombia',
+                    'proteina novel hipoalergenica perros'
+                ],
+                'faqs' => [
+                    [
+                        'question' => '¿Cuáles son los síntomas más comunes de la alergia al pollo en perros?',
+                        'answer' => 'Los síntomas principales son: rascado intenso en orejas, cuello y vientre; enrojecimiento de la piel; caída de pelo en parches; lamedura compulsiva de patas; y en el área digestiva: flatulencias constantes, heces pastosas o vómitos ocasionales de bilis.'
+                    ],
+                    [
+                        'question' => '¿Por qué tantos perros en Colombia desarrollan alergia al pollo?',
+                        'answer' => 'El pollo es la proteína más utilizada en la industria de alimentos balanceados. Al estar expuestos a la misma fuente proteica ultraprocesada durante años, el sistema inmunológico del perro reconoce la molécula como un alérgeno agresor, desencadenando una respuesta autoinmune inflamatoria crónica.'
+                    ],
+                    [
+                        'question' => '¿Qué suplemento o topper darle a un perro con alergia al pollo?',
+                        'answer' => 'Se debe utilizar un suplemento con Matriz de Micro-Proteína Novel Hipoalergénica 100% libre de pollo, res y soya, como AVIPET BioLab® Dermo & Gut Superboost. Aporta 40% de proteína limpia hipoalergénica que no genera reactividad cruzada y regenera la flora intestinal.'
+                    ],
+                ],
+                'content' => <<<'HTML'
+<p class="lead text-lg text-slate-700 leading-relaxed font-medium mb-6">
+El pollo es el ingrediente principal en más del 85% de los concentrados comerciales en Colombia. Sin embargo, en la práctica clínica veterinaria, es también el <strong>alérgeno alimentario número uno</strong> responsable de otitis crónicas, barriga enrojecida y diarreas intermitentes.
+</p>
+
+<div class="bg-amber-50 border-l-4 border-amber-500 p-5 rounded-r-xl my-6">
+    <p class="text-amber-950 font-bold mb-1">Cuidado con la "Trampa de las Etiquetas":</p>
+    <p class="text-amber-900 text-sm">
+        Muchos alimentos comerciales que dicen "Sabor a Cordero" o "Salmón" en la portada, contienen como primer o segundo ingrediente <em>"Harina de subproductos de ave"</em> o <em>"Grasa de pollo"</em>. Si tu perro es sensible, seguirá rascándose sin parar.
+    </p>
+</div>
+
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Las 5 Señales Inequívocas de Alergia al Pollo</h2>
+<ul class="list-disc pl-6 space-y-2 text-slate-700 mb-6">
+    <li><strong>1. Otitis recurrente con cera oscura:</strong> Se sacude la cabeza y las orejas huelen a humedad.</li>
+    <li><strong>2. Piel del abdomen caliente y enrojecida:</strong> Pequeños granitos o ronchas en axilas e ingle.</li>
+    <li><strong>3. Lamido constante de patas y ano:</strong> Sensación de quemazón provocada por histaminas.</li>
+    <li><strong>4. Heces inconsistentes:</strong> Días con popó firme seguidos de días con diarrea o heces pastosas.</li>
+    <li><strong>5. Mal aliento persistente:</strong> Disbiosis gástrica por fermentación anormal de proteínas.</li>
+</ul>
+
+<div class="bg-gradient-to-r from-emerald-900 to-slate-900 text-white rounded-2xl p-7 my-8 border border-emerald-500/40">
+    <h3 class="text-xl font-black text-emerald-300 mb-2">La Solución: Proteína Novel Hipoalergénica + Ácido Láurico</h3>
+    <p class="text-xs sm:text-sm text-slate-300 mb-5">
+        <strong>AVIPET BioLab® Dermo & Gut Superboost</strong> es 100% libre de pollo, res, soya y gluten. Espolvoreas una cucharada sobre su comida habitual y entregas aminoácidos puros que no activan los anticuerpos de la alergia.
+    </p>
+    <a href="/biolab/dermo-gut-superboost" class="inline-flex items-center px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg transition">
+        Pedir Dermo & Gut Superboost ($69.900 Contraentrega) →
+    </a>
+</div>
+HTML,
+            ],
+            [
+                'slug' => 'caida-de-pelo-perros-caspa-pelaje-opaco-vitaminas-colombia',
+                'title' => 'Caída de Pelo Excesiva en Perros, Caspa y Pelaje Opaco: Causas, Vitaminas y Suplementos en Colombia',
+                'excerpt' => '¿Tu perro bota demasiado pelo y deja la ropa y muebles llenos? Aprende la diferencia entre muda normal y alopecia nutricional, qué vitaminas necesita y cómo el Omega 3-6-9 de Linaza Dorada y Ácido Láurico ($69.900 Contraentrega) frenan la caída en 21 días.',
+                'category' => 'Salud Capilar & Piel Canina',
+                'read_time' => '6 min de lectura',
+                'author' => 'División Científica AVIPET BioLab®',
+                'author_role' => 'Biotecnología Nutricional & Salud Dermo-Digestiva',
+                'published_at' => '2026-11-11',
+                'updated_at' => '2026-11-11',
+                'image' => '/images/biolab/funnel-pack-trio.png',
+                'keywords' => [
+                    'caida de pelo en perros que darle',
+                    'vitaminas caida de pelo perros colombia',
+                    'mi perro bota mucho pelo y tiene caspa',
+                    'suplemento pelaje brillante perros',
+                    'omega 3 para pelo de perros colombia',
+                    'remedio natural para la caida de pelo perros',
+                    'dermo gut superboost pelo y piel'
+                ],
+                'faqs' => [
+                    [
+                        'question' => '¿Por qué a mi perro se le cae tanto el pelo todo el año?',
+                        'answer' => 'En climas como Colombia (sin estaciones marcadas), los perros no tienen mudas estacionales definidas. La caída excesiva con zonas calvas o pelo quebradizo se debe casi siempre a déficit de ácidos grasos esenciales (Omega 3 y 6) y aminoácidos azufrados como la metionina, vitales para sintetizar queratina.'
+                    ],
+                    [
+                        'question' => '¿Qué vitamina o suplemento es el más efectivo para frenar la caída de pelo en perros?',
+                        'answer' => 'Más que una vitamina aislada, el folículo piloso requiere una sinergia de Omega 3-6-9 de alta biodisponibilidad (como el aceite de Linaza Dorada), prebióticos para absorber nutrientes y Ácido Láurico para eliminar la caspa y microorganismos del cuero cabelludo.'
+                    ],
+                ],
+                'content' => <<<'HTML'
+<p class="lead text-lg text-slate-700 leading-relaxed font-medium mb-6">
+Pasar la mano por el lomo de tu perro y quedarte con un mechón de pelo en la mano no es normal. La <strong>caída excesiva de pelaje, la caspa blanca visible y la textura seca y áspera</strong> son gritos de auxilio del folículo piloso por desnutrición celular.
+</p>
+
+<h2 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Muda Fisiológica vs Caída Patológica</h2>
+<p class="text-slate-700 leading-relaxed mb-4">
+Mientras que la muda normal ocurre de forma homogénea, la caída patológica viene acompañada de:
+</p>
+<ul class="list-disc pl-6 space-y-2 text-slate-700 mb-6">
+    <li>Caspa visible en el lomo al cepillar.</li>
+    <li>Pelaje sin brillo, áspero al tacto como paja.</li>
+    <li>Piel reseca que se descama con facilidad.</li>
+    <li>Mal olor dérmico horas después del baño.</li>
+</ul>
+
+<div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-7 my-8 border border-cyan-500/30">
+    <span class="text-xs font-bold uppercase text-cyan-300 mb-1 block">Fórmula Dermatológica 3 en 1</span>
+    <h3 class="text-2xl font-black mb-2">Devuélvele a tu perro un pelaje denso, brillante y sin caspa</h3>
+    <p class="text-xs sm:text-sm text-slate-300 mb-5">
+        <strong>AVIPET BioLab® Dermo & Gut Superboost (250g)</strong> aporta Omega 3-6-9 de Linaza Dorada, Cúrcuma antiinflamatoria y Clorofila desodorizante. Resultados visibles en suavidad y reducción de caída desde la tercera semana.
+    </p>
+    <a href="/biolab/dermo-gut-superboost" class="inline-flex items-center px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-sm rounded-xl shadow-lg transition">
+        Pedir con Pago Contraentrega ($69.900 COP) →
+    </a>
+</div>
+HTML,
+            ]
+
         ];
     }
 

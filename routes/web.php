@@ -101,6 +101,91 @@ Route::post('/dermo-gut-superboost/order', [App\Http\Controllers\BioLabControlle
 Route::post('/producto/dermo-gut-superboost/order', [App\Http\Controllers\BioLabController::class, 'storeOrder']);
 Route::get('/biolab/pedidos', [App\Http\Controllers\BioLabController::class, 'listOrders'])->name('biolab.orders.list');
 
+// 0.2 Feed XML Oficial de Google Shopping / Google Merchant Center para AVIPET BioLab®
+$shoppingFeedHandler = function () {
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    $xml .= '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">' . "\n";
+    $xml .= '  <channel>' . "\n";
+    $xml .= '    <title>AVIPET BioLab® — Suplementos Nutricionales para Perros y Gatos</title>' . "\n";
+    $xml .= '    <link>https://avipetapp.com/biolab</link>' . "\n";
+    $xml .= '    <description>Suplementos funcionales biotecnológicos para piel, pelo y digestión en Colombia.</description>' . "\n";
+
+    // Item 1: Dermo & Gut Superboost 250g ($69.900)
+    $xml .= '    <item>' . "\n";
+    $xml .= '      <g:id>BIOLAB-DGS-250G</g:id>' . "\n";
+    $xml .= '      <g:title>AVIPET BioLab® Dermo &amp; Gut Superboost (250g - 50 Dosis) | Suplemento Hipoalergénico Picazón y Piel Perros</g:title>' . "\n";
+    $xml .= '      <g:description>Suplemento biotecnológico 3 en 1 en polvo para picazón, pododermatitis, caída de pelo y digestión sensible. Con Micro-Proteína Novel Hipoalergénica (40%), Ácido Láurico Dermo-Activo (4.5%), Omega 3-6-9 y Prebióticos. Envío gratis y pago contraentrega en toda Colombia.</g:description>' . "\n";
+    $xml .= '      <g:link>https://avipetapp.com/biolab/dermo-gut-superboost</g:link>' . "\n";
+    $xml .= '      <g:image_link>https://biolab.avipetapp.com/images/biolab/hero-estudio-1-bolsa.jpg</g:image_link>' . "\n";
+    $xml .= '      <g:additional_image_link>https://biolab.avipetapp.com/images/biolab/empaque-frente-reverso.jpg</g:additional_image_link>' . "\n";
+    $xml .= '      <g:condition>new</g:condition>' . "\n";
+    $xml .= '      <g:availability>in_stock</g:availability>' . "\n";
+    $xml .= '      <g:price>69900.00 COP</g:price>' . "\n";
+    $xml .= '      <g:brand>AVIPET BioLab®</g:brand>' . "\n";
+    $xml .= '      <g:identifier_exists>no</g:identifier_exists>' . "\n";
+    $xml .= '      <g:google_product_category>Animals &amp; Pet Supplies &gt; Pet Supplies &gt; Dog Supplies &gt; Dog Health Supplies &gt; Dog Vitamins &amp; Supplements</g:google_product_category>' . "\n";
+    $xml .= '      <g:product_type>Mascotas &gt; Suplementos y Vitaminas &gt; Dermatología y Digestión Canina</g:product_type>' . "\n";
+    $xml .= '      <g:shipping>' . "\n";
+    $xml .= '        <g:country>CO</g:country>' . "\n";
+    $xml .= '        <g:service>Envío Nacional Express Contraentrega</g:service>' . "\n";
+    $xml .= '        <g:price>0.00 COP</g:price>' . "\n";
+    $xml .= '      </g:shipping>' . "\n";
+    $xml .= '    </item>' . "\n";
+
+    // Item 2: Pack Dúo Clínico 500g ($124.900)
+    $xml .= '    <item>' . "\n";
+    $xml .= '      <g:id>BIOLAB-DGS-DUO-500G</g:id>' . "\n";
+    $xml .= '      <g:title>Pack Dúo Clínico AVIPET BioLab® Dermo &amp; Gut Superboost (2 Bolsas x 250g = 500g)</g:title>' . "\n";
+    $xml .= '      <g:description>Tratamiento de 60 días para 2 mascotas o perros medianos/grandes. Ahorra $14.900 COP ($62.450 c/u). Envío gratis y pago contraentrega en toda Colombia.</g:description>' . "\n";
+    $xml .= '      <g:link>https://avipetapp.com/biolab/dermo-gut-superboost?pack=duo</g:link>' . "\n";
+    $xml .= '      <g:image_link>https://biolab.avipetapp.com/images/biolab/empaque-frente-reverso.jpg</g:image_link>' . "\n";
+    $xml .= '      <g:condition>new</g:condition>' . "\n";
+    $xml .= '      <g:availability>in_stock</g:availability>' . "\n";
+    $xml .= '      <g:price>124900.00 COP</g:price>' . "\n";
+    $xml .= '      <g:brand>AVIPET BioLab®</g:brand>' . "\n";
+    $xml .= '      <g:identifier_exists>no</g:identifier_exists>' . "\n";
+    $xml .= '      <g:google_product_category>Animals &amp; Pet Supplies &gt; Pet Supplies &gt; Dog Supplies &gt; Dog Health Supplies &gt; Dog Vitamins &amp; Supplements</g:google_product_category>' . "\n";
+    $xml .= '      <g:product_type>Mascotas &gt; Suplementos y Vitaminas &gt; Dermatología y Digestión Canina</g:product_type>' . "\n";
+    $xml .= '      <g:shipping>' . "\n";
+    $xml .= '        <g:country>CO</g:country>' . "\n";
+    $xml .= '        <g:service>Envío Nacional Express Contraentrega</g:service>' . "\n";
+    $xml .= '        <g:price>0.00 COP</g:price>' . "\n";
+    $xml .= '      </g:shipping>' . "\n";
+    $xml .= '    </item>' . "\n";
+
+    // Item 3: Tratamiento 90 Días 750g ($169.900)
+    $xml .= '    <item>' . "\n";
+    $xml .= '      <g:id>BIOLAB-DGS-TRIO-750G</g:id>' . "\n";
+    $xml .= '      <g:title>Tratamiento 90 Días Regeneración Celular AVIPET BioLab® Dermo &amp; Gut Superboost (3 Bolsas x 250g = 750g)</g:title>' . "\n";
+    $xml .= '      <g:description>Tratamiento clínico completo para regeneración de piel, pelo y microbiota intestinal. Ahorra $40.000 COP ($56.633 c/u). Envío gratis y pago contraentrega en toda Colombia.</g:description>' . "\n";
+    $xml .= '      <g:link>https://avipetapp.com/biolab/dermo-gut-superboost?pack=trio</g:link>' . "\n";
+    $xml .= '      <g:image_link>https://biolab.avipetapp.com/images/biolab/hero-estudio-1-bolsa.jpg</g:image_link>' . "\n";
+    $xml .= '      <g:condition>new</g:condition>' . "\n";
+    $xml .= '      <g:availability>in_stock</g:availability>' . "\n";
+    $xml .= '      <g:price>169900.00 COP</g:price>' . "\n";
+    $xml .= '      <g:brand>AVIPET BioLab®</g:brand>' . "\n";
+    $xml .= '      <g:identifier_exists>no</g:identifier_exists>' . "\n";
+    $xml .= '      <g:google_product_category>Animals &amp; Pet Supplies &gt; Pet Supplies &gt; Dog Supplies &gt; Dog Health Supplies &gt; Dog Vitamins &amp; Supplements</g:google_product_category>' . "\n";
+    $xml .= '      <g:product_type>Mascotas &gt; Suplementos y Vitaminas &gt; Dermatología y Digestión Canina</g:product_type>' . "\n";
+    $xml .= '      <g:shipping>' . "\n";
+    $xml .= '        <g:country>CO</g:country>' . "\n";
+    $xml .= '        <g:service>Envío Nacional Express Contraentrega</g:service>' . "\n";
+    $xml .= '        <g:price>0.00 COP</g:price>' . "\n";
+    $xml .= '      </g:shipping>' . "\n";
+    $xml .= '    </item>' . "\n";
+
+    $xml .= '  </channel>' . "\n";
+    $xml .= '</rss>';
+
+    return response($xml, 200, [
+        'Content-Type' => 'application/xml; charset=utf-8',
+        'Cache-Control' => 'public, max-age=86400',
+    ]);
+};
+Route::get('/biolab/google-shopping.xml', $shoppingFeedHandler)->name('biolab.shopping.xml');
+Route::get('/google-shopping.xml', $shoppingFeedHandler);
+
+
 // 1. Landing Principal B2B, Tienda General AVIPET BioLab® (biolab.avipetapp.com) ó Storefront de Clínica
 Route::get('/', function () use ($resolveTenantFromHost, $isBioLabHost) {
     if (strtolower(trim(request()->getHost())) === 'www.avipetapp.com') {

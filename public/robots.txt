@@ -23,6 +23,11 @@ Allow: /biolab/
 Allow: /dermo-gut-superboost
 Allow: /producto/dermo-gut-superboost
 Allow: /images/biolab/
+Allow: /software-planes-salud-veterinaria
+Allow: /carnet-vacunacion-digital-mascotas-qr
+Allow: /crear-clinica-veterinaria-gratis
+Allow: /biolab/google-shopping.xml
+Allow: /google-shopping.xml
 Disallow: /admin
 Disallow: /admin/
 Disallow: /super-admin
