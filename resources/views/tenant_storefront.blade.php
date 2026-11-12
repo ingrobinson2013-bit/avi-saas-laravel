@@ -206,6 +206,7 @@
         $address = $tenant->branding['address'] ?? ($isPilot ? 'Calle 7 # 4-73 Este' : 'Sede Principal');
         $phone = $tenant->branding['phone'] ?? ($isPilot ? '3508742543' : '');
         $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
+        $cleanPhoneFormatted = str_starts_with($cleanPhone, '57') ? $cleanPhone : '57' . $cleanPhone;
         $paymentNequi = $tenant->branding['payment_nequi'] ?? $phone;
         $paymentBank = $tenant->branding['payment_bank_info'] ?? ($isPilot ? 'Bancolombia Ahorros # 123-456789-01 (Titular: ' . $tenant->name . ')' : '');
         $paymentBoldLink = $tenant->branding['payment_bold_link'] ?? null;

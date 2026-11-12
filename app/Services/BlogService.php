@@ -567,7 +567,7 @@ Si tu prioridad exclusiva es registrar expedientes médicos de urgencias, un sof
     </a>
 </div>
 HTML,
-            ],,
+            ],
             [
                 'slug' => 'como-calcular-precio-planes-salud-veterinaria-plantilla-costos',
                 'title' => 'Cómo Calcular Precios en tu Veterinaria y Planes de Salud: Calculadora y Plantilla de Costos (Colombia 2026)',
