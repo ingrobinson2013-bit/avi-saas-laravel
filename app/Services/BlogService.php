@@ -938,7 +938,7 @@ Para romper el ciclo de reactividad inmunológica sin obligar al tutor a cambiar
     </div>
 </div>
 HTML,
-            ]
+            ],
 
             [
                 'slug' => 'perro-se-lame-las-patas-rojas-pododermatitis-alergia-solucion',
