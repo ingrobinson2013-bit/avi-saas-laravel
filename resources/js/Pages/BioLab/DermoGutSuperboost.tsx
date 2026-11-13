@@ -350,6 +350,8 @@ export default function DermoGutSuperboost({ product }: Props) {
     const [shouldLoadAnimatedGif, setShouldLoadAnimatedGif] = useState<boolean>(false);
 
     // Lightweight Heatmap Telemetry (only fires after user interaction, 0 ms impact on Lighthouse)
+    const attributionRef = React.useRef<Record<string, string>>({});
+
     const telemetryRef = React.useRef<{
         sessionId: string;
         maxScroll: number;
@@ -375,6 +377,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                     max_scroll_pct: t.maxScroll,
                     sections: Array.from(t.sections),
                     clicks: Array.from(t.clicks),
+                    attribution: attributionRef.current,
                 })
                 .catch(() => {});
         }, 700);
@@ -387,6 +390,29 @@ export default function DermoGutSuperboost({ product }: Props) {
 
     // Restore recent order from localStorage if still within 15-min anti-duplicate window + Fire ViewContent
     useEffect(() => {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const attr: Record<string, string> = {};
+            ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'ad_name', 'adset_name', 'campaign_name', 'fbclid'].forEach((k) => {
+                const val = params.get(k);
+                if (val) attr[k] = val;
+            });
+            if (params.get('ad') && !attr['utm_content']) attr['utm_content'] = params.get('ad')!;
+            if (params.get('adset') && !attr['utm_term']) attr['utm_term'] = params.get('adset')!;
+
+            let saved: Record<string, string> = {};
+            try {
+                const raw = sessionStorage.getItem('biolab_attribution');
+                if (raw) saved = JSON.parse(raw);
+            } catch {}
+
+            const merged = { ...saved, ...attr };
+            if (Object.keys(merged).length > 0) {
+                sessionStorage.setItem('biolab_attribution', JSON.stringify(merged));
+                attributionRef.current = merged;
+            }
+        } catch {}
+
         try {
             let sid = sessionStorage.getItem('biolab_hm_sid');
             if (!sid) {
@@ -522,6 +548,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                     department,
                     city,
                     address,
+                    ...attributionRef.current,
                 })
                 .catch(() => {});
         }, 600);
@@ -610,6 +637,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                 website_url: websiteUrlHoneypot,
                 form_opened_at: formOpenedAt,
                 elapsed_ms: elapsedMs,
+                ...attributionRef.current,
             });
 
             if (response.data?.success) {

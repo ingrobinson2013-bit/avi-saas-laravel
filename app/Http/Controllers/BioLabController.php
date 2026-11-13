@@ -182,6 +182,12 @@ class BioLabController extends Controller
             'notes' => $validated['notes'] ?? null,
             'ip' => $ip,
             'host' => $request->getHost(),
+            'utm_source' => $request->input('utm_source'),
+            'utm_medium' => $request->input('utm_medium'),
+            'utm_campaign' => $request->input('utm_campaign') ?: $request->input('campaign_name'),
+            'utm_content' => $request->input('utm_content') ?: ($request->input('ad_name') ?: $request->input('ad')),
+            'utm_term' => $request->input('utm_term') ?: ($request->input('adset_name') ?: $request->input('adset')),
+            'fbclid' => $request->input('fbclid'),
         ];
 
         // 1. Guardar en registro persistente JSON, Cache y Log del sistema (y limpiar de carritos abandonados si estaba allí)
@@ -308,6 +314,12 @@ class BioLabController extends Controller
             'department' => trim((string) $request->input('department', '')),
             'city' => trim((string) $request->input('city', '')),
             'address' => trim((string) $request->input('address', '')),
+            'utm_source' => $request->input('utm_source'),
+            'utm_medium' => $request->input('utm_medium'),
+            'utm_campaign' => $request->input('utm_campaign') ?: $request->input('campaign_name'),
+            'utm_content' => $request->input('utm_content') ?: ($request->input('ad_name') ?: $request->input('ad')),
+            'utm_term' => $request->input('utm_term') ?: ($request->input('adset_name') ?: $request->input('adset')),
+            'fbclid' => $request->input('fbclid'),
             'whatsapp_recovery_url' => 'https://wa.me/57' . $cleanPhone . '?text=' . rawurlencode(
                 "Hola 🐾 Vimos que estabas pidiendo tu *DERMO & GUT SUPERBOOST®* de *AVIPET BioLab®* con Envío Gratis y Pago Contraentrega. ¿Te ayudo por aquí a confirmar tu dirección de entrega?"
             ),
@@ -362,6 +374,10 @@ class BioLabController extends Controller
             $existing['max_scroll_pct'] = max((int) ($existing['max_scroll_pct'] ?? 0), $maxScroll);
             $existing['sections'] = array_values(array_unique(array_merge($existing['sections'] ?? [], $sections, ['hero_gallery'])));
             $existing['clicks'] = array_values(array_unique(array_merge($existing['clicks'] ?? [], $clicks)));
+            $attr = (array) $request->input('attribution', []);
+            if (!empty($attr)) {
+                $existing['attribution'] = array_merge($existing['attribution'] ?? [], $attr);
+            }
 
             $sessions[$sessionId] = $existing;
             if (count($sessions) > 500) {
@@ -413,60 +429,80 @@ class BioLabController extends Controller
                 // ignore
             }
 
-            $totalSessions = count($sessions);
-            $activeNow = 0;
-            $scrollSum = 0;
+            $bogotaNow = now('America/Bogota');
+            $todayStartTs = $bogotaNow->copy()->startOfDay()->timestamp;
             $tenMinsAgo = now()->subMinutes(10)->timestamp;
 
-            $sectionCounts = [
-                'hero_gallery' => 0,
-                'plan_selector' => 0,
-                'demo_gif' => 0,
-                'problem_agitation' => 0,
-                'formula_ingredients' => 0,
-                'dosage_calculator' => 0,
-                'reviews_social' => 0,
-                'faq_guarantee' => 0,
-            ];
+            $aggregateHeatmap = function (array $sessionsList) use ($tenMinsAgo) {
+                $totalSessions = count($sessionsList);
+                $activeNow = 0;
+                $scrollSum = 0;
+                $sectionCounts = [
+                    'hero_gallery' => 0,
+                    'plan_selector' => 0,
+                    'demo_gif' => 0,
+                    'problem_agitation' => 0,
+                    'formula_ingredients' => 0,
+                    'dosage_calculator' => 0,
+                    'reviews_social' => 0,
+                    'faq_guarantee' => 0,
+                ];
+                $clickCounts = [
+                    'thumb_gallery' => 0,
+                    'pkg_1_bolsa' => 0,
+                    'pkg_2_bolsas' => 0,
+                    'pkg_3_bolsas' => 0,
+                    'cta_open_modal' => 0,
+                    'modal_focus_phone' => 0,
+                    'modal_focus_name' => 0,
+                    'modal_focus_dept_city' => 0,
+                    'modal_focus_address' => 0,
+                    'modal_click_whatsapp' => 0,
+                    'modal_submit_attempt' => 0,
+                ];
 
-            $clickCounts = [
-                'thumb_gallery' => 0,
-                'pkg_1_bolsa' => 0,
-                'pkg_2_bolsas' => 0,
-                'pkg_3_bolsas' => 0,
-                'cta_open_modal' => 0,
-                'modal_focus_phone' => 0,
-                'modal_focus_name' => 0,
-                'modal_focus_dept_city' => 0,
-                'modal_focus_address' => 0,
-                'modal_click_whatsapp' => 0,
-                'modal_submit_attempt' => 0,
-            ];
-
-            foreach ($sessions as $s) {
-                $scrollSum += (int) ($s['max_scroll_pct'] ?? 0);
-                if (!empty($s['last_seen']) && strtotime($s['last_seen']) >= $tenMinsAgo) {
-                    $activeNow++;
-                }
-                foreach (($s['sections'] ?? []) as $sec) {
-                    if (isset($sectionCounts[$sec])) {
-                        $sectionCounts[$sec]++;
+                foreach ($sessionsList as $s) {
+                    $scrollSum += (int) ($s['max_scroll_pct'] ?? 0);
+                    if (!empty($s['last_seen']) && strtotime($s['last_seen']) >= $tenMinsAgo) {
+                        $activeNow++;
+                    }
+                    foreach (($s['sections'] ?? []) as $sec) {
+                        if (isset($sectionCounts[$sec])) {
+                            $sectionCounts[$sec]++;
+                        }
+                    }
+                    foreach (($s['clicks'] ?? []) as $clk) {
+                        if (isset($clickCounts[$clk])) {
+                            $clickCounts[$clk]++;
+                        }
                     }
                 }
-                foreach (($s['clicks'] ?? []) as $clk) {
-                    if (isset($clickCounts[$clk])) {
-                        $clickCounts[$clk]++;
-                    }
-                }
-            }
 
-            $heatmap = [
-                'total_sessions' => $totalSessions,
-                'active_now' => $activeNow,
-                'avg_scroll_pct' => $totalSessions > 0 ? round($scrollSum / $totalSessions) : 0,
-                'sections' => $sectionCounts,
-                'clicks' => $clickCounts,
-            ];
+                return [
+                    'total_sessions' => $totalSessions,
+                    'active_now' => $activeNow,
+                    'avg_scroll_pct' => $totalSessions > 0 ? round($scrollSum / $totalSessions) : 0,
+                    'sections' => $sectionCounts,
+                    'clicks' => $clickCounts,
+                ];
+            };
+
+            $todaySessions = array_filter($sessions, function($s) use ($todayStartTs) {
+                $seen = !empty($s['last_seen']) ? strtotime($s['last_seen']) : (!empty($s['first_seen']) ? strtotime($s['first_seen']) : 0);
+                return $seen >= $todayStartTs;
+            });
+
+            $todayOrders = array_values(array_filter($orders, function($o) use ($todayStartTs) {
+                return !empty($o['created_at']) && strtotime($o['created_at']) >= $todayStartTs;
+            }));
+
+            $todayLeads = array_values(array_filter($leads, function($l) use ($todayStartTs) {
+                return !empty($l['created_at']) && strtotime($l['created_at']) >= $todayStartTs;
+            }));
+
+            $allHeatmap = $aggregateHeatmap($sessions);
+            $todayHeatmap = $aggregateHeatmap($todaySessions);
+            $heatmap = $todayHeatmap; // default
         }
 
         if ($request->query('format') === 'json') {
@@ -474,19 +510,26 @@ class BioLabController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
             return response()->json([
+                'today_orders' => count($todayOrders ?? []),
                 'total_orders' => count($orders),
                 'orders' => $orders,
+                'today_abandoned_checkouts' => count($todayLeads ?? []),
                 'total_abandoned_checkouts' => count($leads),
                 'abandoned_checkouts' => $leads,
-                'heatmap' => $heatmap,
+                'today_heatmap' => $todayHeatmap ?? [],
+                'all_heatmap' => $allHeatmap ?? [],
             ]);
         }
 
         return view('biolab_orders_panel', [
             'authorized' => $authorized,
-            'orders' => $orders,
-            'leads' => $leads,
-            'heatmap' => $heatmap,
+            'todayOrders' => $todayOrders ?? [],
+            'allOrders' => $orders,
+            'todayLeads' => $todayLeads ?? [],
+            'allLeads' => $leads,
+            'todayHeatmap' => $todayHeatmap ?? [],
+            'allHeatmap' => $allHeatmap ?? [],
+            'todayDate' => isset($bogotaNow) ? $bogotaNow->format('d/m/Y') : now()->format('d/m/Y'),
         ]);
     }
 }
