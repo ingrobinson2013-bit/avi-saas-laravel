@@ -500,26 +500,75 @@
             }
 
             function playAlertChime() {
+                // Sonido clásico "Cha-Ching" estilo caja registradora Shopify
                 try {
                     const AudioCtx = window.AudioContext || window.webkitAudioContext;
                     if (!AudioCtx) return;
                     const ctx = new AudioCtx();
-                    [587.33, 880].forEach((freq, idx) => {
+                    if (ctx.state === 'suspended') {
+                        ctx.resume();
+                    }
+                    const now = ctx.currentTime;
+
+                    // 1. "Cha-" (deslizamiento metálico de caja + moneda)
+                    const bufferSize = Math.floor(ctx.sampleRate * 0.08);
+                    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                    const output = noiseBuffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
+                    }
+                    const noise = ctx.createBufferSource();
+                    noise.buffer = noiseBuffer;
+                    const filter = ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime(3400, now);
+                    filter.Q.value = 2.2;
+                    const noiseGain = ctx.createGain();
+                    noiseGain.gain.setValueAtTime(0.28, now);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    noise.connect(filter);
+                    filter.connect(noiseGain);
+                    noiseGain.connect(ctx.destination);
+                    noise.start(now);
+
+                    // Pre-toque metálico corto (B5 -> E6)
+                    const coin = ctx.createOscillator();
+                    const coinGain = ctx.createGain();
+                    coin.type = 'triangle';
+                    coin.frequency.setValueAtTime(987.77, now);
+                    coin.frequency.exponentialRampToValueAtTime(1318.51, now + 0.06);
+                    coinGain.gain.setValueAtTime(0.16, now);
+                    coinGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+                    coin.connect(coinGain);
+                    coinGain.connect(ctx.destination);
+                    coin.start(now);
+                    coin.stop(now + 0.095);
+
+                    // 2. "-CHING!" (campana brillante de caja registradora)
+                    const bellStart = now + 0.105;
+                    const partials = [
+                        { freq: 1318.51, gain: 0.24, dur: 0.85 }, // E6 fundamental
+                        { freq: 1975.53, gain: 0.14, dur: 0.75 }, // B6 quinta brillante
+                        { freq: 2637.02, gain: 0.16, dur: 0.65 }, // E7 octava
+                        { freq: 3322.44, gain: 0.09, dur: 0.50 }, // G#7 brillo metálico
+                        { freq: 4186.01, gain: 0.05, dur: 0.35 }, // C8 shimmer
+                    ];
+                    partials.forEach((p) => {
                         const osc = ctx.createOscillator();
                         const gain = ctx.createGain();
                         osc.type = 'sine';
-                        osc.frequency.value = freq;
-                        gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.14);
-                        gain.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + idx * 0.14 + 0.03);
-                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.14 + 0.35);
+                        osc.frequency.setValueAtTime(p.freq, bellStart);
+                        gain.gain.setValueAtTime(0.001, bellStart);
+                        gain.gain.exponentialRampToValueAtTime(p.gain, bellStart + 0.012);
+                        gain.gain.exponentialRampToValueAtTime(0.0008, bellStart + p.dur);
                         osc.connect(gain);
                         gain.connect(ctx.destination);
-                        osc.start(ctx.currentTime + idx * 0.14);
-                        osc.stop(ctx.currentTime + idx * 0.14 + 0.36);
+                        osc.start(bellStart);
+                        osc.stop(bellStart + p.dur + 0.02);
                     });
                 } catch (e) {}
                 if (navigator.vibrate) {
-                    navigator.vibrate([200, 100, 200]);
+                    navigator.vibrate([120, 60, 220]);
                 }
             }
 
