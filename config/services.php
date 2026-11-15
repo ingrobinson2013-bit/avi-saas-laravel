@@ -20,4 +20,9 @@ return [
         'url' => env('FASTAPI_AI_URL', env('AI_SERVICE_URL', 'http://avi-ai:8001')),
         'timeout' => (float) env('AI_SERVICE_TIMEOUT', 4.0),
     ],
+    'meta' => [
+        'pixel_id' => env('META_PIXEL_ID', '1655560125395952'),
+        'capi_token' => env('META_CAPI_ACCESS_TOKEN'),
+        'test_event_code' => env('META_TEST_EVENT_CODE'),
+    ],
 ];

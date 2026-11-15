@@ -232,6 +232,9 @@ class BioLabController extends Controller
             Log::warning('WebPush storeOrder error: ' . $e->getMessage());
         }
 
+        // 1.6 Meta Conversions API (CAPI) — respaldo server-side con event_id = order_code
+        $this->sendMetaCapiPurchase($request, $orderPayload, (int) ($selectedBundle['bags'] ?? 1));
+
         $guidePdfUrl = 'https://biolab.avipetapp.com/guias/guia-nutricion-clinica-hipoalergenica-avipet-biolab.pdf';
 
         // 2. Notificar por correo al equipo de despachos
@@ -647,5 +650,78 @@ class BioLabController extends Controller
         ]);
 
         return response()->json(['ok' => true, 'result' => $result]);
+    }
+
+    /**
+     * Envía el evento Purchase a Meta Conversions API (CAPI) con deduplicación por order_code
+     */
+    private function sendMetaCapiPurchase(Request $request, array $orderPayload, int $numItems = 1): void
+    {
+        $pixelId = config('services.meta.pixel_id');
+        $capiToken = config('services.meta.capi_token');
+        if (empty($pixelId) || empty($capiToken)) {
+            return;
+        }
+
+        try {
+            $realIp = $request->header('CF-Connecting-IP')
+                ?: trim(explode(',', (string) $request->header('X-Forwarded-For'))[0])
+                ?: $request->ip();
+
+            $fbc = $request->input('fbc') ?: $request->cookie('_fbc');
+            if (empty($fbc) && !empty($orderPayload['fbclid'])) {
+                $fbc = 'fb.1.' . (int) (microtime(true) * 1000) . '.' . $orderPayload['fbclid'];
+            }
+            $fbp = $request->input('fbp') ?: $request->cookie('_fbp');
+
+            $normalizeHash = fn (?string $val) => $val !== null && trim($val) !== ''
+                ? hash('sha256', mb_strtolower(trim($val), 'UTF-8'))
+                : null;
+
+            $firstName = trim(explode(' ', (string) ($orderPayload['customer_name'] ?? ''))[0] ?? '');
+            $phoneDigits = '57' . preg_replace('/\D+/', '', (string) ($orderPayload['customer_phone'] ?? ''));
+
+            $userData = array_filter([
+                'ph' => [$normalizeHash($phoneDigits)],
+                'fn' => $firstName !== '' ? [$normalizeHash($firstName)] : null,
+                'ct' => $normalizeHash($orderPayload['city'] ?? null) ? [$normalizeHash($orderPayload['city'])] : null,
+                'st' => $normalizeHash($orderPayload['department'] ?? null) ? [$normalizeHash($orderPayload['department'])] : null,
+                'country' => [hash('sha256', 'co')],
+                'client_ip_address' => $realIp ?: null,
+                'client_user_agent' => $request->userAgent() ?: null,
+                'fbc' => $fbc ?: null,
+                'fbp' => $fbp ?: null,
+            ], fn ($v) => $v !== null);
+
+            $eventData = [
+                'event_name' => 'Purchase',
+                'event_time' => time(),
+                'event_id' => $orderPayload['order_code'],
+                'action_source' => 'website',
+                'event_source_url' => 'https://biolab.avipetapp.com/dermo-gut-superboost',
+                'user_data' => $userData,
+                'custom_data' => [
+                    'currency' => 'COP',
+                    'value' => (float) ($orderPayload['total_cop'] ?? 69900),
+                    'order_id' => $orderPayload['order_code'],
+                    'content_ids' => [$orderPayload['bundle_id'] ?? '1_bolsa'],
+                    'content_type' => 'product',
+                    'num_items' => max(1, $numItems),
+                ],
+            ];
+
+            $body = ['data' => [$eventData]];
+            $testCode = config('services.meta.test_event_code');
+            if (!empty($testCode)) {
+                $body['test_event_code'] = $testCode;
+            }
+
+            $client = new \GuzzleHttp\Client(['timeout' => 5.0]);
+            $client->post("https://graph.facebook.com/v21.0/{$pixelId}/events?access_token=" . urlencode($capiToken), [
+                'json' => $body,
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Meta CAPI Purchase error: ' . $e->getMessage());
+        }
     }
 }

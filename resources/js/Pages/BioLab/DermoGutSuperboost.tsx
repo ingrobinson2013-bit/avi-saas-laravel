@@ -333,11 +333,24 @@ export default function DermoGutSuperboost({ product }: Props) {
         guide_pdf_url: string;
     } | null>(null);
 
-    const trackMetaPixel = (eventName: string, params?: Record<string, any>) => {
+    const getCookie = (name: string): string | null => {
+        try {
+            const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+            return match ? decodeURIComponent(match[1]) : null;
+        } catch {
+            return null;
+        }
+    };
+
+    const trackMetaPixel = (eventName: string, params?: Record<string, any>, eventId?: string) => {
         try {
             const w = window as any;
             if (typeof w.fbq === 'function') {
-                w.fbq('track', eventName, params || {});
+                if (eventId) {
+                    w.fbq('track', eventName, params || {}, { eventID: eventId });
+                } else {
+                    w.fbq('track', eventName, params || {});
+                }
             }
             if (typeof w.gtag === 'function') {
                 w.gtag('event', eventName, params || {});
@@ -637,6 +650,8 @@ export default function DermoGutSuperboost({ product }: Props) {
                 website_url: websiteUrlHoneypot,
                 form_opened_at: formOpenedAt,
                 elapsed_ms: elapsedMs,
+                fbp: getCookie('_fbp'),
+                fbc: getCookie('_fbc'),
                 ...attributionRef.current,
             });
 
@@ -662,7 +677,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                     num_items: selectedPkg.bags,
                     order_id: response.data.order_code,
                 };
-                trackMetaPixel('Purchase', conversionPayload);
+                trackMetaPixel('Purchase', conversionPayload, response.data.order_code);
                 trackMetaPixel('SubmitApplication', conversionPayload);
                 trackMetaPixel('Lead', conversionPayload);
 

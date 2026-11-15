@@ -9,7 +9,7 @@
         $gaId = env('GOOGLE_TAG_ID', 'G-YRPKPVXZ2T') ?: env('GOOGLE_ANALYTICS_ID', 'G-YRPKPVXZ2T');
         $gtmId = env('GOOGLE_TAG_MANAGER_ID');
         $cfToken = env('CLOUDFLARE_ANALYTICS_TOKEN');
-        $metaPixelId = env('META_PIXEL_ID', '1655560125395952');
+        $metaPixelId = config('services.meta.pixel_id', '1655560125395952');
 
         $host = request()->getHost();
         $cleanHost = strtolower(trim($host));
