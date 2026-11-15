@@ -2,12 +2,17 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#059669">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="BioLab Pedidos">
+    <link rel="manifest" href="/biolab/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="/brand/favicons/favicon-180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/brand/favicons/favicon-192.png">
     <title>Panel de Pedidos y Carritos Abandonados — AVIPET BioLab®</title>
-    @if($authorized)
-    <meta http-equiv="refresh" content="25">
-    @endif
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased">
@@ -87,20 +92,51 @@
                         </p>
                     </div>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex flex-wrap items-center gap-2">
+                    <button
+                        id="pwa-install-btn"
+                        type="button"
+                        onclick="installPwaApp()"
+                        class="hidden px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs transition shadow-lg shadow-indigo-900/30"
+                    >
+                        📲 Instalar App
+                    </button>
+                    <button
+                        id="push-enable-btn"
+                        type="button"
+                        onclick="enableBiolabPush()"
+                        class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition shadow-lg shadow-amber-900/30"
+                    >
+                        🔔 Activar Alertas
+                    </button>
+                    <button
+                        id="push-test-btn"
+                        type="button"
+                        onclick="sendTestBiolabPush()"
+                        class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition"
+                        title="Enviar notificación de prueba"
+                    >
+                        ⚡ Probar
+                    </button>
                     <a
                         href="/biolab/pedidos?pin=2026"
                         class="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition"
                     >
-                        🔄 Actualizar ahora
+                        🔄 Actualizar
                     </a>
                     <a
                         href="/dermo-gut-superboost"
                         target="_blank"
                         class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs transition"
                     >
-                        ↗ Ver Página de Producto
+                        ↗ Ver Producto
                     </a>
+                </div>
+            </div>
+            <div id="pwa-status-banner" class="hidden max-w-7xl mx-auto px-4 pb-3">
+                <div class="px-3.5 py-2 rounded-xl bg-slate-800/90 border border-white/10 text-xs text-slate-200 flex items-center justify-between gap-2">
+                    <span id="pwa-status-text"></span>
+                    <button type="button" onclick="document.getElementById('pwa-status-banner').classList.add('hidden')" class="text-slate-400 hover:text-white font-bold">✕</button>
                 </div>
             </div>
         </header>
@@ -444,12 +480,205 @@
                 }
             }
 
-            // Restore last active tab on load
-            document.addEventListener('DOMContentLoaded', function() {
+            const BIOTAB_VAPID_KEY = @json($vapidPublicKey ?? '');
+            const BIOLAB_PIN = '2026';
+            let deferredInstallPrompt = null;
+            let swRegistration = null;
+
+            let knownOrderCount = {{ count($allOrders) }};
+            let knownTopOrderCode = @json($allOrders[0]['order_code'] ?? '');
+            let knownLeadCount = {{ count($allLeads) }};
+            let knownTopLeadKey = @json(($allLeads[0]['customer_phone'] ?? '') . '|' . ($allLeads[0]['created_at'] ?? ''));
+
+            function showPwaBanner(msg) {
+                const banner = document.getElementById('pwa-status-banner');
+                const text = document.getElementById('pwa-status-text');
+                if (banner && text) {
+                    text.textContent = msg;
+                    banner.classList.remove('hidden');
+                }
+            }
+
+            function playAlertChime() {
+                try {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (!AudioCtx) return;
+                    const ctx = new AudioCtx();
+                    [587.33, 880].forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.14);
+                        gain.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + idx * 0.14 + 0.03);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.14 + 0.35);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(ctx.currentTime + idx * 0.14);
+                        osc.stop(ctx.currentTime + idx * 0.14 + 0.36);
+                    });
+                } catch (e) {}
+                if (navigator.vibrate) {
+                    navigator.vibrate([200, 100, 200]);
+                }
+            }
+
+            function urlBase64ToUint8Array(base64String) {
+                const padding = '='.repeat((4 - base64String.length % 4) % 4);
+                const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+                const rawData = window.atob(base64);
+                const outputArray = new Uint8Array(rawData.length);
+                for (let i = 0; i < rawData.length; ++i) {
+                    outputArray[i] = rawData.charCodeAt(i);
+                }
+                return outputArray;
+            }
+
+            function updatePushButtonUI(active) {
+                const btn = document.getElementById('push-enable-btn');
+                if (!btn) return;
+                if (active) {
+                    btn.textContent = '✅ Alertas Activas';
+                    btn.className = 'px-3.5 py-2 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 font-black text-xs transition';
+                } else {
+                    btn.textContent = '🔔 Activar Alertas';
+                    btn.className = 'px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition shadow-lg shadow-amber-900/30';
+                }
+            }
+
+            async function syncPushSubscription(reg) {
+                if (!reg || !reg.pushManager || !BIOTAB_VAPID_KEY) return false;
+                let sub = await reg.pushManager.getSubscription();
+                if (!sub) {
+                    sub = await reg.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(BIOTAB_VAPID_KEY),
+                    });
+                }
+                const res = await fetch('/biolab/push/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ pin: BIOLAB_PIN, subscription: sub.toJSON() }),
+                });
+                return res.ok;
+            }
+
+            async function enableBiolabPush() {
+                playAlertChime();
+                const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+                if (isIos && !isStandalone) {
+                    showPwaBanner('📱 En iPhone: toca el botón Compartir (cuadro con flecha ↑) → "Agregar a inicio", abre la app desde tu pantalla y luego toca "🔔 Activar Alertas".');
+                    return;
+                }
+
+                if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+                    showPwaBanner('⚠️ Este navegador no soporta Push en segundo plano. Mantén el panel abierto para recibir alertas con sonido cada 15s.');
+                    return;
+                }
+
+                try {
+                    const permission = await Notification.requestPermission();
+                    if (permission !== 'granted') {
+                        showPwaBanner('🔕 Permiso de notificaciones denegado. Actívalo en Ajustes del navegador/sitio para recibir alertas.');
+                        updatePushButtonUI(false);
+                        return;
+                    }
+                    const reg = swRegistration || await navigator.serviceWorker.ready;
+                    const ok = await syncPushSubscription(reg);
+                    updatePushButtonUI(ok);
+                    if (ok) {
+                        showPwaBanner('✅ ¡Alertas Push activadas! Recibirás notificación por cada pedido y carrito abandonado incluso con la app cerrada.');
+                    } else {
+                        showPwaBanner('⚠️ No se pudo registrar el dispositivo en el servidor. Intenta recargar.');
+                    }
+                } catch (err) {
+                    showPwaBanner('⚠️ Error activando alertas: ' + (err && err.message ? err.message : 'desconocido'));
+                }
+            }
+
+            async function sendTestBiolabPush() {
+                playAlertChime();
+                try {
+                    const res = await fetch('/biolab/push/test', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify({ pin: BIOLAB_PIN }),
+                    });
+                    const data = await res.json();
+                    if (data.ok && data.result && data.result.sent > 0) {
+                        showPwaBanner('⚡ Notificación de prueba enviada a ' + data.result.sent + ' dispositivo(s).');
+                    } else {
+                        showPwaBanner('⚠️ Aún no hay dispositivos suscritos. Toca primero "🔔 Activar Alertas".');
+                    }
+                } catch (e) {
+                    showPwaBanner('⚠️ Error enviando prueba.');
+                }
+            }
+
+            async function installPwaApp() {
+                if (deferredInstallPrompt) {
+                    deferredInstallPrompt.prompt();
+                    await deferredInstallPrompt.userChoice;
+                    deferredInstallPrompt = null;
+                    document.getElementById('pwa-install-btn')?.classList.add('hidden');
+                } else {
+                    showPwaBanner('📲 En Android Chrome: menú ⋮ → "Instalar aplicación". En iPhone Safari: Compartir ↑ → "Agregar a inicio".');
+                }
+            }
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredInstallPrompt = e;
+                document.getElementById('pwa-install-btn')?.classList.remove('hidden');
+            });
+
+            async function pollBiolabUpdates() {
+                try {
+                    const res = await fetch('/biolab/pedidos?pin=' + BIOLAB_PIN + '&format=json', { cache: 'no-store' });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    const newOrderCount = data.total_orders ?? knownOrderCount;
+                    const newTopOrderCode = (data.orders && data.orders[0] && data.orders[0].order_code) ? data.orders[0].order_code : '';
+                    const newLeadCount = data.total_abandoned_checkouts ?? knownLeadCount;
+                    const topLead = (data.abandoned_checkouts && data.abandoned_checkouts[0]) ? data.abandoned_checkouts[0] : null;
+                    const newTopLeadKey = topLead ? ((topLead.customer_phone || '') + '|' + (topLead.created_at || '')) : '';
+
+                    const hasNewOrder = newOrderCount > knownOrderCount || (newTopOrderCode && newTopOrderCode !== knownTopOrderCode);
+                    const hasNewLead = newLeadCount > knownLeadCount || (newTopLeadKey && newTopLeadKey !== knownTopLeadKey);
+
+                    if (hasNewOrder || hasNewLead) {
+                        playAlertChime();
+                        setTimeout(() => window.location.reload(), 900);
+                    }
+                } catch (e) {}
+            }
+
+            // Restore last active tab & initialize PWA Service Worker on load
+            document.addEventListener('DOMContentLoaded', async function() {
                 const saved = localStorage.getItem('biolab_panel_tab');
                 if (saved === 'all') {
                     switchTab('all');
                 }
+
+                const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+                if (isIos && !isStandalone) {
+                    document.getElementById('pwa-install-btn')?.classList.remove('hidden');
+                }
+
+                if ('serviceWorker' in navigator) {
+                    try {
+                        swRegistration = await navigator.serviceWorker.register('/biolab-sw.js', { scope: '/biolab/' });
+                        if ('Notification' in window && Notification.permission === 'granted') {
+                            const ok = await syncPushSubscription(swRegistration);
+                            updatePushButtonUI(ok);
+                        }
+                    } catch (e) {}
+                }
+
+                setInterval(pollBiolabUpdates, 15000);
             });
         </script>
     @endif

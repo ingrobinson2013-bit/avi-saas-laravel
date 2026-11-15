@@ -100,6 +100,9 @@ Route::post('/biolab/telemetry', [App\Http\Controllers\BioLabController::class, 
 Route::post('/dermo-gut-superboost/order', [App\Http\Controllers\BioLabController::class, 'storeOrder']);
 Route::post('/producto/dermo-gut-superboost/order', [App\Http\Controllers\BioLabController::class, 'storeOrder']);
 Route::get('/biolab/pedidos', [App\Http\Controllers\BioLabController::class, 'listOrders'])->name('biolab.orders.list');
+Route::get('/biolab/manifest.webmanifest', [App\Http\Controllers\BioLabController::class, 'manifest'])->name('biolab.manifest');
+Route::post('/biolab/push/subscribe', [App\Http\Controllers\BioLabController::class, 'subscribePush'])->name('biolab.push.subscribe');
+Route::post('/biolab/push/test', [App\Http\Controllers\BioLabController::class, 'testPush'])->name('biolab.push.test');
 
 // 0.2 Feed XML Oficial de Google Shopping / Google Merchant Center para AVIPET BioLab®
 $shoppingFeedHandler = function () {

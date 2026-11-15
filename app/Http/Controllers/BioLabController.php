@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\WebPushService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -216,6 +217,21 @@ class BioLabController extends Controller
 
         Log::info("📦 [AVIPET BioLab] Nuevo Pedido Contraentrega {$orderCode}", $orderPayload);
 
+        // 1.5 Notificación Push PWA en segundo plano a dispositivos suscritos
+        try {
+            $pushBody = "{$orderPayload['customer_name']} • {$orderPayload['formatted_total']} ({$orderPayload['city']}) — {$orderPayload['bundle_title']}";
+            WebPushService::sendToAll([
+                'title' => "🛒 ¡Nuevo Pedido {$orderCode}!",
+                'body' => $pushBody,
+                'url' => '/biolab/pedidos?pin=2026',
+                'tag' => 'biolab-order-' . $orderCode,
+                'icon' => '/brand/favicons/favicon-192.png',
+                'requireInteraction' => true,
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('WebPush storeOrder error: ' . $e->getMessage());
+        }
+
         $guidePdfUrl = 'https://biolab.avipetapp.com/guias/guia-nutricion-clinica-hipoalergenica-avipet-biolab.pdf';
 
         // 2. Notificar por correo al equipo de despachos
@@ -336,6 +352,20 @@ class BioLabController extends Controller
             $leads = array_slice($leads, 0, 200);
             Storage::disk('local')->put('biolab_leads.json', json_encode($leads, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
             Cache::forever('biolab_leads_cache', $leads);
+
+            // Notificar máximo 1 vez cada 10 minutos por celular para no hacer spam mientras escribe
+            if (Cache::add("biolab_lead_pushed_{$cleanPhone}", true, now()->addMinutes(10))) {
+                $leadName = $leadPayload['customer_name'] !== '' ? $leadPayload['customer_name'] : 'Cliente sin nombre';
+                $leadCity = $leadPayload['city'] !== '' ? " ({$leadPayload['city']})" : '';
+                WebPushService::sendToAll([
+                    'title' => '⚠️ Carrito Abandonado — AVIPET BioLab',
+                    'body' => "{$leadName}{$leadCity} • Cel: {$cleanPhone}. ¡Toca para recuperar por WhatsApp!",
+                    'url' => '/biolab/pedidos?pin=2026',
+                    'tag' => 'biolab-lead-' . $cleanPhone,
+                    'icon' => '/brand/favicons/favicon-192.png',
+                    'requireInteraction' => true,
+                ]);
+            }
         } catch (\Throwable $e) {
             Log::warning('No se pudo guardar lead BioLab: ' . $e->getMessage());
         }
@@ -521,6 +551,15 @@ class BioLabController extends Controller
             ]);
         }
 
+        $vapidPublicKey = null;
+        if ($authorized) {
+            try {
+                $vapidPublicKey = WebPushService::getVapidKeys()['publicKey'] ?? null;
+            } catch (\Throwable $e) {
+                Log::warning('VAPID key init error: ' . $e->getMessage());
+            }
+        }
+
         return view('biolab_orders_panel', [
             'authorized' => $authorized,
             'todayOrders' => $todayOrders ?? [],
@@ -530,6 +569,83 @@ class BioLabController extends Controller
             'todayHeatmap' => $todayHeatmap ?? [],
             'allHeatmap' => $allHeatmap ?? [],
             'todayDate' => isset($bogotaNow) ? $bogotaNow->format('d/m/Y') : now()->format('d/m/Y'),
+            'vapidPublicKey' => $vapidPublicKey,
         ]);
+    }
+
+    /**
+     * Web App Manifest para instalar el Panel de Pedidos BioLab como PWA móvil
+     */
+    public function manifest()
+    {
+        return response()->json([
+            'id' => '/biolab/pedidos?pin=2026',
+            'name' => 'AVIPET BioLab® Pedidos',
+            'short_name' => 'BioLab Pedidos',
+            'description' => 'Panel de pedidos contraentrega y carritos abandonados en tiempo real.',
+            'start_url' => '/biolab/pedidos?pin=2026',
+            'scope' => '/biolab/',
+            'display' => 'standalone',
+            'orientation' => 'portrait',
+            'background_color' => '#020617',
+            'theme_color' => '#059669',
+            'icons' => [
+                [
+                    'src' => '/brand/favicons/favicon-192.png',
+                    'sizes' => '192x192',
+                    'type' => 'image/png',
+                    'purpose' => 'any maskable',
+                ],
+                [
+                    'src' => '/brand/favicons/favicon-512.png',
+                    'sizes' => '512x512',
+                    'type' => 'image/png',
+                    'purpose' => 'any maskable',
+                ],
+            ],
+        ], 200, [
+            'Content-Type' => 'application/manifest+json; charset=utf-8',
+        ]);
+    }
+
+    /**
+     * Guarda la suscripción Web Push (VAPID) de un celular/navegador autorizado
+     */
+    public function subscribePush(Request $request)
+    {
+        if ((string) $request->input('pin', '') !== '2026') {
+            return response()->json(['ok' => false, 'error' => 'PIN inválido'], 401);
+        }
+
+        $subscription = $request->input('subscription');
+        if (!is_array($subscription) || empty($subscription['endpoint']) || empty($subscription['keys']['p256dh']) || empty($subscription['keys']['auth'])) {
+            return response()->json(['ok' => false, 'error' => 'Suscripción inválida'], 422);
+        }
+
+        $subscription['user_agent'] = substr((string) $request->userAgent(), 0, 180);
+        WebPushService::saveSubscription($subscription);
+
+        return response()->json(['ok' => true]);
+    }
+
+    /**
+     * Envía una notificación push de prueba a todos los dispositivos suscritos
+     */
+    public function testPush(Request $request)
+    {
+        if ((string) $request->input('pin', '') !== '2026') {
+            return response()->json(['ok' => false, 'error' => 'PIN inválido'], 401);
+        }
+
+        $result = WebPushService::sendToAll([
+            'title' => '🔔 Prueba AVIPET BioLab®',
+            'body' => '¡Listo! Recibirás alertas así por cada pedido y carrito abandonado.',
+            'url' => '/biolab/pedidos?pin=2026',
+            'tag' => 'biolab-test-' . time(),
+            'icon' => '/brand/favicons/favicon-192.png',
+            'requireInteraction' => false,
+        ]);
+
+        return response()->json(['ok' => true, 'result' => $result]);
     }
 }
