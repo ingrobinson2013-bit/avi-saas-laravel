@@ -681,6 +681,21 @@ export default function DermoGutSuperboost({ product }: Props) {
                 trackMetaPixel('SubmitApplication', conversionPayload);
                 trackMetaPixel('Lead', conversionPayload);
 
+                // Respaldo inmediato vía Beacon/Pixel por si el navegador in-app de Facebook cambia rápido a WhatsApp
+                try {
+                    const trUrl =
+                        'https://www.facebook.com/tr?id=1655560125395952&ev=Purchase' +
+                        '&cd[value]=' + encodeURIComponent(String(selectedPkg.price)) +
+                        '&cd[currency]=COP' +
+                        '&cd[order_id]=' + encodeURIComponent(String(response.data.order_code)) +
+                        '&noscript=1';
+                    if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
+                        navigator.sendBeacon(trUrl);
+                    }
+                } catch {
+                    // ignore beacon error
+                }
+
                 try {
                     localStorage.setItem(
                         'biolab_cod_order_lock',
@@ -696,7 +711,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                 if (confirmedOrder.whatsapp_url) {
                     setTimeout(() => {
                         window.location.href = confirmedOrder.whatsapp_url;
-                    }, 1400);
+                    }, 4500);
                 }
             } else {
                 setFormError('No pudimos procesar tu solicitud. Intenta nuevamente.');
