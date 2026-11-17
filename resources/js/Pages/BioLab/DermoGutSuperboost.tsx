@@ -681,19 +681,19 @@ export default function DermoGutSuperboost({ product }: Props) {
                 trackMetaPixel('SubmitApplication', conversionPayload);
                 trackMetaPixel('Lead', conversionPayload);
 
-                // Respaldo inmediato vía Beacon/Pixel por si el navegador in-app de Facebook cambia rápido a WhatsApp
+                // Respaldo inmediato vía GET Image Pixel por si el navegador in-app de Facebook cambia rápido a WhatsApp
                 try {
                     const trUrl =
                         'https://www.facebook.com/tr?id=1655560125395952&ev=Purchase' +
                         '&cd[value]=' + encodeURIComponent(String(selectedPkg.price)) +
                         '&cd[currency]=COP' +
                         '&cd[order_id]=' + encodeURIComponent(String(response.data.order_code)) +
+                        '&eid=' + encodeURIComponent(String(response.data.order_code)) +
                         '&noscript=1';
-                    if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
-                        navigator.sendBeacon(trUrl);
-                    }
+                    const img = new Image();
+                    img.src = trUrl;
                 } catch {
-                    // ignore beacon error
+                    // ignore pixel fallback error
                 }
 
                 try {

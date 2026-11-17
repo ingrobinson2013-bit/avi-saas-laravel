@@ -717,11 +717,98 @@ class BioLabController extends Controller
             }
 
             $client = new \GuzzleHttp\Client(['timeout' => 5.0]);
-            $client->post("https://graph.facebook.com/v21.0/{$pixelId}/events?access_token=" . urlencode($capiToken), [
+            $res = $client->post("https://graph.facebook.com/v21.0/{$pixelId}/events?access_token=" . urlencode($capiToken), [
                 'json' => $body,
             ]);
+            Cache::forever('biolab_last_capi_result', [
+                'at' => now()->toIso8601String(),
+                'order_code' => $orderPayload['order_code'] ?? null,
+                'status' => $res->getStatusCode(),
+                'body' => json_decode((string) $res->getBody(), true),
+            ]);
         } catch (\Throwable $e) {
+            Cache::forever('biolab_last_capi_result', [
+                'at' => now()->toIso8601String(),
+                'order_code' => $orderPayload['order_code'] ?? null,
+                'error' => $e->getMessage(),
+            ]);
             Log::warning('Meta CAPI Purchase error: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Diagnóstico de configuración y último envío a Meta CAPI
+     */
+    public function capiStatus(Request $request)
+    {
+        if ((string) $request->query('pin', '') !== '2026') {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $token = (string) config('services.meta.capi_token', '');
+        return response()->json([
+            'pixel_id' => config('services.meta.pixel_id'),
+            'has_capi_token' => $token !== '',
+            'token_prefix' => $token !== '' ? substr($token, 0, 8) . '...' : null,
+            'last_capi_result' => Cache::get('biolab_last_capi_result'),
+        ]);
+    }
+
+    /**
+     * Envía un evento de prueba Purchase a Meta CAPI (requiere test_event_code de Meta "Probar eventos")
+     */
+    public function testCapi(Request $request)
+    {
+        if ((string) $request->input('pin', '') !== '2026') {
+            return response()->json(['ok' => false, 'error' => 'PIN inválido'], 401);
+        }
+
+        $pixelId = config('services.meta.pixel_id');
+        $capiToken = config('services.meta.capi_token');
+        if (empty($pixelId) || empty($capiToken)) {
+            return response()->json(['ok' => false, 'error' => 'Falta META_CAPI_ACCESS_TOKEN en Easypanel'], 422);
+        }
+
+        $testCode = trim((string) $request->input('test_event_code', ''));
+        $body = [
+            'data' => [[
+                'event_name' => 'Purchase',
+                'event_time' => time(),
+                'event_id' => 'TEST-' . time(),
+                'action_source' => 'website',
+                'event_source_url' => 'https://biolab.avipetapp.com/dermo-gut-superboost',
+                'user_data' => [
+                    'ph' => [hash('sha256', '573001234567')],
+                    'country' => [hash('sha256', 'co')],
+                    'client_ip_address' => $request->header('CF-Connecting-IP') ?: $request->ip(),
+                    'client_user_agent' => $request->userAgent() ?: 'Mozilla/5.0',
+                ],
+                'custom_data' => [
+                    'currency' => 'COP',
+                    'value' => 69900,
+                    'order_id' => 'TEST-' . time(),
+                    'content_ids' => ['1_bolsa'],
+                    'content_type' => 'product',
+                    'num_items' => 1,
+                ],
+            ]],
+        ];
+        if ($testCode !== '') {
+            $body['test_event_code'] = $testCode;
+        }
+
+        try {
+            $client = new \GuzzleHttp\Client(['timeout' => 8.0, 'http_errors' => false]);
+            $res = $client->post("https://graph.facebook.com/v21.0/{$pixelId}/events?access_token=" . urlencode($capiToken), [
+                'json' => $body,
+            ]);
+            return response()->json([
+                'ok' => $res->getStatusCode() >= 200 && $res->getStatusCode() < 300,
+                'status' => $res->getStatusCode(),
+                'meta_response' => json_decode((string) $res->getBody(), true),
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['ok' => false, 'error' => $e->getMessage()], 500);
         }
     }
 }
