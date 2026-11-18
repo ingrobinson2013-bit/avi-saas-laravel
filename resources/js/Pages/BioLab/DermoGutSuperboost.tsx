@@ -813,7 +813,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                     DERMO &amp; GUT SUPERBOOST® — Alivia Picazón, Lamido de Patas, Caída de Pelo y Heces Blandas desde la Raíz
                                 </p>
                                 <div className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-200 text-indigo-950 px-2.5 py-1 rounded-lg text-[11px] font-extrabold">
-                                    <span>🥄 Presentación: Polvo Bio-Activo (250g) • Se espolvorea en la comida (no son pastillas)</span>
+                                    <span>🥄 Polvo Bio-Activo (250g) • Se mezcla con un poquito de agua o en su comida para que se lo coma garantizado (no son pastillas)</span>
                                 </div>
                             </div>
 
@@ -965,7 +965,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                                 </h1>
 
                                 <p className="text-xs sm:text-base text-slate-600 font-medium leading-relaxed">
-                                    Suplemento Nutricional Biotecnológico <strong className="text-slate-900">3 en 1 en Polvo Bio-Activo (250g • 50 Dosis)</strong> para espolvorear o mezclar en su comida (no son pastillas), con{' '}
+                                    Suplemento Nutricional Biotecnológico <strong className="text-slate-900">3 en 1 en Polvo Bio-Activo (250g • 50 Dosis)</strong> para mezclar con un poquito de agua (queda tipo salsita irresistible) o espolvorear en su comida para que se lo coma garantizado (no son pastillas), con{' '}
                                     <strong className="text-indigo-700">Matriz de Micro-Proteína Novel Hipoalergénica</strong> +{' '}
                                     <strong className="text-indigo-700">Ácido Láurico Dermo-Activo + Omega 3-6-9 + Prebióticos Gut-Care®</strong>.
                                 </p>
@@ -2000,7 +2000,7 @@ export default function DermoGutSuperboost({ product }: Props) {
 
                                         <div className="bg-indigo-50 border border-indigo-200 rounded-xl px-2.5 py-1.5 text-[11px] font-bold text-indigo-950 flex items-center gap-1.5">
                                             <span>🥄</span>
-                                            <span>Presentación: <strong>Polvo Bio-Activo (250g c/bolsa)</strong> con cuchara dosificadora — se mezcla en la comida (no son pastillas).</span>
+                                            <span>Presentación: <strong>Polvo Bio-Activo (250g c/bolsa)</strong> con cuchara dosificadora — se mezcla con un poquito de agua o en su comida para que se lo coma garantizado (no son pastillas).</span>
                                         </div>
 
                                         {formError && (
