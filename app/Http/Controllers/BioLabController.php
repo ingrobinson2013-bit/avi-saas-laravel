@@ -811,4 +811,108 @@ class BioLabController extends Controller
             return response()->json(['ok' => false, 'error' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Reenvía una orden existente (por order_code) a Meta Conversions API (CAPI)
+     */
+    public function resendOrderCapi(Request $request)
+    {
+        if ((string) $request->input('pin', '') !== '2026') {
+            return response()->json(['ok' => false, 'error' => 'PIN inválido'], 401);
+        }
+
+        $orderCode = trim((string) $request->input('order_code', ''));
+        if ($orderCode === '') {
+            return response()->json(['ok' => false, 'error' => 'Falta order_code'], 422);
+        }
+
+        $pixelId = config('services.meta.pixel_id');
+        $capiToken = config('services.meta.capi_token');
+        if (empty($pixelId) || empty($capiToken)) {
+            return response()->json(['ok' => false, 'error' => 'Falta META_CAPI_ACCESS_TOKEN'], 422);
+        }
+
+        $orders = Cache::get('biolab_orders_cache', []);
+        if (empty($orders) && Storage::disk('local')->exists('biolab_orders.json')) {
+            $orders = json_decode(Storage::disk('local')->get('biolab_orders.json'), true) ?? [];
+        }
+
+        $order = null;
+        foreach ($orders as $o) {
+            if (($o['order_code'] ?? '') === $orderCode) {
+                $order = $o;
+                break;
+            }
+        }
+
+        if (!$order) {
+            return response()->json(['ok' => false, 'error' => 'Orden no encontrada'], 404);
+        }
+
+        $normalizeHash = fn (?string $val) => $val !== null && trim($val) !== ''
+            ? hash('sha256', mb_strtolower(trim($val), 'UTF-8'))
+            : null;
+
+        $eventTs = !empty($order['created_at']) ? strtotime($order['created_at']) : time();
+        if (!$eventTs || (time() - $eventTs) > 6 * 86400) {
+            $eventTs = time();
+        }
+
+        $fbc = !empty($order['fbclid']) ? ('fb.1.' . ($eventTs * 1000) . '.' . $order['fbclid']) : null;
+        $firstName = trim(explode(' ', (string) ($order['customer_name'] ?? ''))[0] ?? '');
+        $phoneDigits = '57' . preg_replace('/\D+/', '', (string) ($order['customer_phone'] ?? ''));
+
+        $userData = array_filter([
+            'ph' => [$normalizeHash($phoneDigits)],
+            'fn' => $firstName !== '' ? [$normalizeHash($firstName)] : null,
+            'ct' => $normalizeHash($order['city'] ?? null) ? [$normalizeHash($order['city'])] : null,
+            'st' => $normalizeHash($order['department'] ?? null) ? [$normalizeHash($order['department'])] : null,
+            'country' => [hash('sha256', 'co')],
+            'client_ip_address' => $order['ip'] ?? null,
+            'fbc' => $fbc,
+        ], fn ($v) => $v !== null);
+
+        $bags = ($order['bundle_id'] ?? '') === '3_bolsas' ? 3 : (($order['bundle_id'] ?? '') === '2_bolsas' ? 2 : 1);
+        $body = [
+            'data' => [[
+                'event_name' => 'Purchase',
+                'event_time' => $eventTs,
+                'event_id' => $order['order_code'],
+                'action_source' => 'website',
+                'event_source_url' => 'https://biolab.avipetapp.com/dermo-gut-superboost',
+                'user_data' => $userData,
+                'custom_data' => [
+                    'currency' => 'COP',
+                    'value' => (float) ($order['total_cop'] ?? 69900),
+                    'order_id' => $order['order_code'],
+                    'content_ids' => [$order['bundle_id'] ?? '1_bolsa'],
+                    'content_type' => 'product',
+                    'num_items' => $bags,
+                ],
+            ]],
+        ];
+
+        try {
+            $client = new \GuzzleHttp\Client(['timeout' => 8.0, 'http_errors' => false]);
+            $res = $client->post("https://graph.facebook.com/v21.0/{$pixelId}/events?access_token=" . urlencode($capiToken), [
+                'json' => $body,
+            ]);
+            $decoded = json_decode((string) $res->getBody(), true);
+            Cache::forever('biolab_last_capi_result', [
+                'at' => now()->toIso8601String(),
+                'order_code' => $order['order_code'],
+                'status' => $res->getStatusCode(),
+                'body' => $decoded,
+                'resent' => true,
+            ]);
+
+            return response()->json([
+                'ok' => $res->getStatusCode() >= 200 && $res->getStatusCode() < 300,
+                'status' => $res->getStatusCode(),
+                'meta_response' => $decoded,
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['ok' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
 }

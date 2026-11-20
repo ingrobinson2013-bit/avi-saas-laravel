@@ -647,6 +647,37 @@
                 }
             }
 
+            async function resendOrderToMetaCapi(orderCode, btn) {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.textContent = '⏳ Enviando a Meta CAPI...';
+                }
+                try {
+                    const res = await fetch('/biolab/capi-resend', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify({ pin: BIOLAB_PIN, order_code: orderCode }),
+                    });
+                    const data = await res.json();
+                    if (data.ok) {
+                        if (btn) btn.textContent = '✅ Compra reportada a Meta (HTTP ' + data.status + ')';
+                        showPwaBanner('✅ Orden ' + orderCode + ' enviada a Meta CAPI (events_received: ' + (data.meta_response?.events_received ?? 1) + ').');
+                    } else {
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.textContent = '⚠️ Reintentar envío a Meta CAPI';
+                        }
+                        showPwaBanner('⚠️ Error Meta CAPI (' + orderCode + '): ' + (data.error || JSON.stringify(data.meta_response || {})));
+                    }
+                } catch (e) {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.textContent = '⚠️ Reintentar envío a Meta CAPI';
+                    }
+                    showPwaBanner('⚠️ Error de red enviando a Meta CAPI.');
+                }
+            }
+
             async function sendTestBiolabPush() {
                 playAlertChime();
                 try {

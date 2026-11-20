@@ -677,6 +677,26 @@ export default function DermoGutSuperboost({ product }: Props) {
                     num_items: selectedPkg.bags,
                     order_id: response.data.order_code,
                 };
+                // Coincidencias avanzadas manuales (Meta Pixel las hashea en SHA-256 automáticamente)
+                try {
+                    const w = window as any;
+                    if (typeof w.fbq === 'function') {
+                        const nameParts = customerName.trim().toLowerCase().split(/\s+/);
+                        const advancedMatch: Record<string, string> = {
+                            ph: '57' + cleanDigits,
+                            country: 'co',
+                        };
+                        if (nameParts[0]) advancedMatch.fn = nameParts[0];
+                        if (nameParts.length > 1) advancedMatch.ln = nameParts.slice(1).join(' ');
+                        if (city.trim()) advancedMatch.ct = city.trim().toLowerCase();
+                        if (department.trim()) advancedMatch.st = department.trim().toLowerCase();
+                        if (customerEmail.trim()) advancedMatch.em = customerEmail.trim().toLowerCase();
+                        w.fbq('init', '1655560125395952', advancedMatch);
+                    }
+                } catch {
+                    // ignore advanced matching error
+                }
+
                 trackMetaPixel('Purchase', conversionPayload, response.data.order_code);
                 trackMetaPixel('SubmitApplication', conversionPayload);
                 trackMetaPixel('Lead', conversionPayload);

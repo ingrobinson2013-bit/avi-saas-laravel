@@ -105,6 +105,7 @@ Route::post('/biolab/push/subscribe', [App\Http\Controllers\BioLabController::cl
 Route::post('/biolab/push/test', [App\Http\Controllers\BioLabController::class, 'testPush'])->name('biolab.push.test');
 Route::get('/biolab/capi-status', [App\Http\Controllers\BioLabController::class, 'capiStatus'])->name('biolab.capi.status');
 Route::post('/biolab/capi-test', [App\Http\Controllers\BioLabController::class, 'testCapi'])->name('biolab.capi.test');
+Route::post('/biolab/capi-resend', [App\Http\Controllers\BioLabController::class, 'resendOrderCapi'])->name('biolab.capi.resend');
 
 // 0.2 Feed XML Oficial de Google Shopping / Google Merchant Center para AVIPET BioLab®
 $shoppingFeedHandler = function () {
