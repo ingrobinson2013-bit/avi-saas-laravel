@@ -846,6 +846,17 @@ Route::get('/sitemap.xml', function () use ($resolveTenantFromHost, $isBioLabHos
         $xml .= "  </url>\n";
     }
 
+    // 4. SEO Programático (Guías BioLab por Raza/Síntoma/Ciudad + Software Veterinario por Ciudad)
+    foreach (\App\Services\ProgrammaticSeoService::getAllSitemapPaths(false) as $progPath) {
+        $prio = $progPath === '/salud-mascotas' ? '0.90' : '0.80';
+        $xml .= "  <url>\n";
+        $xml .= "    <loc>{$baseUrl}{$progPath}</loc>\n";
+        $xml .= "    <lastmod>{$today}</lastmod>\n";
+        $xml .= "    <changefreq>weekly</changefreq>\n";
+        $xml .= "    <priority>{$prio}</priority>\n";
+        $xml .= "  </url>\n";
+    }
+
     $xml .= '</urlset>';
 
     return response($xml, 200, [
@@ -862,6 +873,24 @@ Route::get('/blog/{slug}', [App\Http\Controllers\BlogController::class, 'show'])
 Route::get('/software-planes-salud-veterinaria', fn(\Illuminate\Http\Request $r) => app(App\Http\Controllers\SaaSLandingController::class)->show($r, 'planes-salud'))->name('saas.landing.planes');
 Route::get('/carnet-vacunacion-digital-mascotas-qr', fn(\Illuminate\Http\Request $r) => app(App\Http\Controllers\SaaSLandingController::class)->show($r, 'carnet-qr'))->name('saas.landing.carnet');
 Route::get('/crear-clinica-veterinaria-gratis', fn(\Illuminate\Http\Request $r) => app(App\Http\Controllers\SaaSLandingController::class)->show($r, 'prueba-gratis'))->name('saas.landing.trial');
+
+// 12.2 SEO Programático SSR (103 URLs: Hub + BioLab Síntoma×Raza + BioLab Ciudad + Software Veterinario×Ciudad)
+Route::get('/salud-mascotas', [App\Http\Controllers\ProgrammaticSeoController::class, 'hub'])->name('seo.hub');
+Route::get('/salud-mascotas/colombia/{problema}-{ciudad}', [App\Http\Controllers\ProgrammaticSeoController::class, 'showBioLabCity'])
+    ->where([
+        'problema' => 'suplemento-alergia-picazon|solucion-lamido-de-patas|vitaminas-caida-de-pelo',
+        'ciudad' => '[a-z0-9-]+',
+    ])
+    ->name('seo.biolab.city');
+Route::get('/salud-mascotas/{problema}-en-{raza}', [App\Http\Controllers\ProgrammaticSeoController::class, 'showBioLabBreed'])
+    ->where([
+        'problema' => 'lamido-de-patas|alergia-al-pollo|caida-de-pelo-y-caspa|picazon-y-dermatitis|heces-blandas-y-gastritis',
+        'raza' => '[a-z0-9-]+',
+    ])
+    ->name('seo.biolab.breed');
+Route::get('/software-veterinario/{ciudad}', [App\Http\Controllers\ProgrammaticSeoController::class, 'showSaasCity'])
+    ->where(['ciudad' => '[a-z0-9-]+'])
+    ->name('seo.saas.city');
 
 // 13. Píxel de Seguimiento de Aperturas de Correo (Prospección AviPetApp)
 Route::get('/track/p/{id}.png', function ($id) {
