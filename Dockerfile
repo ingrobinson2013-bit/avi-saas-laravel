@@ -22,7 +22,7 @@ RUN install-php-extensions pdo_pgsql pgsql gd zip bcmath opcache intl && \
     rm -rf /tmp/phpredis && \
     apk del .redis-build-deps
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
@@ -32,8 +32,9 @@ COPY uploads.ini $PHP_INI_DIR/conf.d/uploads.ini
 # Copiar manifiestos de dependencias primero para aprovechar la caché de Docker
 COPY composer.json composer.lock* ./
 
-# Descargar e instalar librerías de PHP/Filament (Caché permanente en capas)
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs
+# Descargar e instalar librerías de PHP/Filament (Caché permanente en capas con reintento ante fallos de red)
+RUN COMPOSER_PROCESS_TIMEOUT=600 composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs --no-interaction --no-progress || \
+    COMPOSER_PROCESS_TIMEOUT=600 composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs --no-interaction --no-progress
 
 # Copiar el código fuente de la aplicación y los assets compilados de frontend
 COPY . /var/www/html
