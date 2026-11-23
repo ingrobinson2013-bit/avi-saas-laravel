@@ -81,12 +81,18 @@
         >
             <span>📲 CONFIRMAR DESPACHO Y ENVIAR GUÍA PDF POR WHATSAPP →</span>
         </a>
-        <button
-            type="button"
-            onclick="resendOrderToMetaCapi('{{ $orderCode }}', this)"
-            class="w-full py-2 px-3 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/35 border border-indigo-400/30 text-indigo-200 font-bold text-[11px] text-center transition"
-        >
-            📤 Reportar Compra a Meta CAPI
-        </button>
+        @if(($order['capi_status'] ?? null) === 200)
+            <div class="w-full py-1.5 px-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold text-[11px] text-center">
+                ✅ Enviado automático a Meta CAPI (HTTP 200)
+            </div>
+        @else
+            <button
+                type="button"
+                onclick="resendOrderToMetaCapi('{{ $orderCode }}', this)"
+                class="w-full py-2 px-3 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/35 border border-indigo-400/30 text-indigo-200 font-bold text-[11px] text-center transition"
+            >
+                📤 Reportar Compra a Meta CAPI
+            </button>
+        @endif
     </div>
 </div>

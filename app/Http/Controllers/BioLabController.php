@@ -217,7 +217,22 @@ class BioLabController extends Controller
 
         Log::info("📦 [AVIPET BioLab] Nuevo Pedido Contraentrega {$orderCode}", $orderPayload);
 
-        // 1.5 Notificación Push PWA en segundo plano a dispositivos suscritos
+        // 1.5 Meta Conversions API (CAPI) — PRIORIDAD #1 antes de WebPush/SMTP para garantizar envío automático 100%
+        $capiResult = $this->sendMetaCapiPurchase($request, $orderPayload, (int) ($selectedBundle['bags'] ?? 1));
+        if ($capiResult !== null) {
+            try {
+                $existingOrders = Cache::get('biolab_orders_cache', []);
+                if (!empty($existingOrders) && ($existingOrders[0]['order_code'] ?? '') === $orderCode) {
+                    $existingOrders[0]['capi_status'] = $capiResult['status'] ?? ($capiResult['error'] ?? 'unknown');
+                    Storage::disk('local')->put('biolab_orders.json', json_encode($existingOrders, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+                    Cache::forever('biolab_orders_cache', $existingOrders);
+                }
+            } catch (\Throwable $e) {
+                // ignore non-critical status save
+            }
+        }
+
+        // 1.6 Notificación Push PWA en segundo plano a dispositivos suscritos
         try {
             $pushBody = "{$orderPayload['customer_name']} • {$orderPayload['formatted_total']} ({$orderPayload['city']}) — {$orderPayload['bundle_title']}";
             WebPushService::sendToAll([
@@ -231,9 +246,6 @@ class BioLabController extends Controller
         } catch (\Throwable $e) {
             Log::warning('WebPush storeOrder error: ' . $e->getMessage());
         }
-
-        // 1.6 Meta Conversions API (CAPI) — respaldo server-side con event_id = order_code
-        $this->sendMetaCapiPurchase($request, $orderPayload, (int) ($selectedBundle['bags'] ?? 1));
 
         $guidePdfUrl = 'https://biolab.avipetapp.com/guias/guia-nutricion-clinica-hipoalergenica-avipet-biolab.pdf';
 
@@ -655,12 +667,14 @@ class BioLabController extends Controller
     /**
      * Envía el evento Purchase a Meta Conversions API (CAPI) con deduplicación por order_code
      */
-    private function sendMetaCapiPurchase(Request $request, array $orderPayload, int $numItems = 1): void
+    private function sendMetaCapiPurchase(Request $request, array $orderPayload, int $numItems = 1): ?array
     {
-        $pixelId = config('services.meta.pixel_id');
-        $capiToken = config('services.meta.capi_token');
+        $pixelId = config('services.meta.pixel_id') ?: env('META_PIXEL_ID', '1655560125395952');
+        $capiToken = config('services.meta.capi_token') ?: env('META_CAPI_ACCESS_TOKEN');
         if (empty($pixelId) || empty($capiToken)) {
-            return;
+            $err = ['at' => now()->toIso8601String(), 'order_code' => $orderPayload['order_code'] ?? null, 'error' => 'missing_pixel_or_token'];
+            Cache::forever('biolab_last_capi_result', $err);
+            return $err;
         }
 
         try {
@@ -716,23 +730,29 @@ class BioLabController extends Controller
                 $body['test_event_code'] = $testCode;
             }
 
-            $client = new \GuzzleHttp\Client(['timeout' => 5.0]);
+            $client = new \GuzzleHttp\Client(['timeout' => 8.0, 'http_errors' => false]);
             $res = $client->post("https://graph.facebook.com/v21.0/{$pixelId}/events?access_token=" . urlencode($capiToken), [
                 'json' => $body,
             ]);
-            Cache::forever('biolab_last_capi_result', [
+            $result = [
                 'at' => now()->toIso8601String(),
                 'order_code' => $orderPayload['order_code'] ?? null,
                 'status' => $res->getStatusCode(),
                 'body' => json_decode((string) $res->getBody(), true),
-            ]);
+                'auto' => true,
+            ];
+            Cache::forever('biolab_last_capi_result', $result);
+            return $result;
         } catch (\Throwable $e) {
-            Cache::forever('biolab_last_capi_result', [
+            $err = [
                 'at' => now()->toIso8601String(),
                 'order_code' => $orderPayload['order_code'] ?? null,
                 'error' => $e->getMessage(),
-            ]);
+                'auto' => true,
+            ];
+            Cache::forever('biolab_last_capi_result', $err);
             Log::warning('Meta CAPI Purchase error: ' . $e->getMessage());
+            return $err;
         }
     }
 
