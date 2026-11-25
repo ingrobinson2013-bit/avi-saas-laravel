@@ -69,12 +69,21 @@
         </div>
     </div>
 
-    <a
-        href="{{ $waUrl }}"
-        target="_blank"
-        rel="noreferrer"
-        class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-emerald-600 hover:from-amber-400 hover:to-emerald-500 text-slate-950 font-black text-xs sm:text-sm text-center shadow-lg transition flex items-center justify-center gap-2"
-    >
-        <span>📲 RECUPERAR PEDIDO POR WHATSAPP (1 CLIC) →</span>
-    </a>
+    <div class="space-y-2">
+        <a
+            href="{{ $waUrl }}"
+            target="_blank"
+            rel="noreferrer"
+            class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-emerald-600 hover:from-amber-400 hover:to-emerald-500 text-slate-950 font-black text-xs sm:text-sm text-center shadow-lg transition flex items-center justify-center gap-2"
+        >
+            <span>📲 RECUPERAR PEDIDO POR WHATSAPP (1 CLIC) →</span>
+        </a>
+        <button
+            type="button"
+            onclick="promoteLeadToOrder('{{ $phone }}', this)"
+            class="w-full py-2 px-3 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/35 border border-emerald-400/40 text-emerald-300 font-bold text-[11px] text-center transition"
+        >
+            ✅ Convertir en Pedido Confirmado + Enviar a Meta CAPI
+        </button>
+    </div>
 </div>

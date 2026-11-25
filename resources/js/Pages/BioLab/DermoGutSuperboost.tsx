@@ -2138,11 +2138,16 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             <input
                                                 type="text"
                                                 autoComplete="street-address"
-                                                enterKeyHint="done"
+                                                enterKeyHint="send"
                                                 required
                                                 value={address}
                                                 onFocus={() => recordHeatmapClick('modal_focus_address')}
                                                 onChange={(e) => setAddress(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        handleOrderSubmit(e as any);
+                                                    }
+                                                }}
                                                 placeholder="Ej: Calle 45 # 12-34 Apto 502, Barrio Cedritos"
                                                 className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3 py-2 text-base sm:text-sm font-semibold text-slate-900"
                                             />
@@ -2172,8 +2177,20 @@ export default function DermoGutSuperboost({ product }: Props) {
                                             )}`}
                                             target="_blank"
                                             rel="noreferrer"
-                                            onClick={() => {
+                                            onClick={(e) => {
                                                 recordHeatmapClick('modal_click_whatsapp');
+                                                const cleanDigits = customerPhone.replace(/\D+/g, '').replace(/^57/, '');
+                                                if (
+                                                    /^3\d{9}$/.test(cleanDigits) &&
+                                                    customerName.trim() &&
+                                                    department &&
+                                                    city.trim() &&
+                                                    address.trim()
+                                                ) {
+                                                    e.preventDefault();
+                                                    handleOrderSubmit(e as any);
+                                                    return;
+                                                }
                                                 trackMetaPixel('Lead', {
                                                     content_name: selectedPkg.name,
                                                     value: selectedPkg.price,

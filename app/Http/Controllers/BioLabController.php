@@ -935,4 +935,100 @@ class BioLabController extends Controller
             return response()->json(['ok' => false, 'error' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Convierte un Carrito Abandonado completo en Pedido Confirmado y envía Purchase automático a Meta CAPI
+     */
+    public function promoteLeadToOrder(Request $request)
+    {
+        if ((string) $request->input('pin', '') !== '2026') {
+            return response()->json(['ok' => false, 'error' => 'PIN inválido'], 401);
+        }
+
+        $phone = preg_replace('/\D+/', '', (string) $request->input('customer_phone', ''));
+        if ($phone === '') {
+            return response()->json(['ok' => false, 'error' => 'Falta teléfono'], 422);
+        }
+
+        $leads = Cache::get('biolab_leads_cache', []);
+        if (empty($leads) && Storage::disk('local')->exists('biolab_leads.json')) {
+            $leads = json_decode(Storage::disk('local')->get('biolab_leads.json'), true) ?? [];
+        }
+
+        $targetLead = null;
+        foreach ($leads as $l) {
+            if (($l['customer_phone'] ?? '') === $phone) {
+                $targetLead = $l;
+                break;
+            }
+        }
+
+        if (!$targetLead) {
+            return response()->json(['ok' => false, 'error' => 'Carrito no encontrado'], 404);
+        }
+
+        $bundles = [
+            '1_bolsa' => ['title' => '1 Bolsa Dermo & Gut Superboost (250g)', 'bags' => 1, 'price' => 69900, 'formatted_price' => '$69.900 COP'],
+            '2_bolsas' => ['title' => 'Oferta Dúo Clínico — 2 Bolsas (500g)', 'bags' => 2, 'price' => 124900, 'formatted_price' => '$124.900 COP'],
+            '3_bolsas' => ['title' => 'Tratamiento Completo 90 Días — 3 Bolsas (750g)', 'bags' => 3, 'price' => 169900, 'formatted_price' => '$169.900 COP'],
+        ];
+        $bundleId = $targetLead['bundle_id'] ?? '1_bolsa';
+        $selectedBundle = $bundles[$bundleId] ?? $bundles['1_bolsa'];
+        $orderCode = 'BIO-' . now()->format('ym') . '-' . strtoupper(substr(bin2hex(random_bytes(2)), 0, 4));
+
+        $orderPayload = [
+            'order_code' => $orderCode,
+            'created_at' => $targetLead['created_at'] ?? now()->toIso8601String(),
+            'product' => 'AVIPET BioLab® — Dermo & Gut Superboost',
+            'bundle_id' => $bundleId,
+            'bundle_title' => $selectedBundle['title'],
+            'total_cop' => $selectedBundle['price'],
+            'formatted_total' => $selectedBundle['formatted_price'],
+            'order_bump' => true,
+            'order_bump_vip_guide' => true,
+            'customer_name' => !empty($targetLead['customer_name']) ? $targetLead['customer_name'] : 'Cliente Confirmado',
+            'customer_phone' => $phone,
+            'customer_email' => null,
+            'department' => !empty($targetLead['department']) ? $targetLead['department'] : 'Colombia',
+            'city' => !empty($targetLead['city']) ? $targetLead['city'] : 'Por confirmar',
+            'address' => !empty($targetLead['address']) ? $targetLead['address'] : 'Confirmado por WhatsApp',
+            'neighborhood' => null,
+            'pet_type' => 'Perro',
+            'pet_name' => null,
+            'pet_weight' => null,
+            'payment_method' => 'Contraentrega (Efectivo / Transferencia al recibir)',
+            'notes' => 'Convertido desde Carrito Iniciado',
+            'ip' => $request->header('CF-Connecting-IP') ?: $request->ip(),
+            'host' => $request->getHost(),
+            'utm_source' => $targetLead['utm_source'] ?? null,
+            'utm_medium' => $targetLead['utm_medium'] ?? null,
+            'utm_campaign' => $targetLead['utm_campaign'] ?? null,
+            'utm_content' => $targetLead['utm_content'] ?? null,
+            'utm_term' => $targetLead['utm_term'] ?? null,
+            'fbclid' => $targetLead['fbclid'] ?? null,
+        ];
+
+        $capiResult = $this->sendMetaCapiPurchase($request, $orderPayload, (int) $selectedBundle['bags']);
+        if ($capiResult !== null) {
+            $orderPayload['capi_status'] = $capiResult['status'] ?? ($capiResult['error'] ?? 'unknown');
+        }
+
+        $existingOrders = Cache::get('biolab_orders_cache', []);
+        if (empty($existingOrders) && Storage::disk('local')->exists('biolab_orders.json')) {
+            $existingOrders = json_decode(Storage::disk('local')->get('biolab_orders.json'), true) ?? [];
+        }
+        array_unshift($existingOrders, $orderPayload);
+        Storage::disk('local')->put('biolab_orders.json', json_encode($existingOrders, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        Cache::forever('biolab_orders_cache', $existingOrders);
+
+        $leads = array_values(array_filter($leads, fn ($l) => ($l['customer_phone'] ?? '') !== $phone));
+        Storage::disk('local')->put('biolab_leads.json', json_encode($leads, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        Cache::forever('biolab_leads_cache', $leads);
+
+        return response()->json([
+            'ok' => true,
+            'order_code' => $orderCode,
+            'capi_result' => $capiResult,
+        ]);
+    }
 }

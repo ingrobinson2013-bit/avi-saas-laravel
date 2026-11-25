@@ -647,6 +647,38 @@
                 }
             }
 
+            async function promoteLeadToOrder(phone, btn) {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.textContent = '⏳ Convirtiendo y enviando a Meta CAPI...';
+                }
+                try {
+                    const res = await fetch('/biolab/lead/promote', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify({ pin: BIOLAB_PIN, customer_phone: phone }),
+                    });
+                    const data = await res.json();
+                    if (data.ok) {
+                        playAlertChime();
+                        showPwaBanner('✅ Carrito convertido en orden ' + data.order_code + ' y enviado a Meta CAPI.');
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.textContent = '⚠️ Reintentar conversión';
+                        }
+                        showPwaBanner('⚠️ Error convirtiendo carrito: ' + (data.error || 'desconocido'));
+                    }
+                } catch (e) {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.textContent = '⚠️ Reintentar conversión';
+                    }
+                    showPwaBanner('⚠️ Error de red convirtiendo carrito.');
+                }
+            }
+
             async function resendOrderToMetaCapi(orderCode, btn) {
                 if (btn) {
                     btn.disabled = true;
