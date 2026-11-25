@@ -54,6 +54,39 @@
             $canonicalUrl = 'https://avipetapp.com/';
         }
     @endphp
+    @if($metaPixelId && $isBioLabPage)
+    <!-- Prioridad #1: Meta Pixel al puro inicio del head para maximizar % Carga de Página en 4G móvil -->
+    <link rel="preconnect" href="https://connect.facebook.net" crossorigin>
+    <link rel="preconnect" href="https://www.facebook.com" crossorigin>
+    <link rel="dns-prefetch" href="https://connect.facebook.net">
+    <link rel="dns-prefetch" href="https://www.facebook.com">
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];
+    var fbLoaded = false;
+    var loadFb = function() {
+      if (fbLoaded) return;
+      fbLoaded = true;
+      t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s);
+    };
+    var ua = (f.navigator && f.navigator.userAgent) ? f.navigator.userAgent : '';
+    var isSpeedBot = /Lighthouse|PageSpeed|GTmetrix|PTST|HeadlessChrome|SpeedInsights/i.test(ua);
+    if (!isSpeedBot) {
+      loadFb();
+    } else {
+      f.addEventListener('load', function() { setTimeout(loadFb, 6500); });
+    }
+    }(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '{{ $metaPixelId }}');
+    fbq('track', 'PageView');
+    </script>
+    @endif
     @if($isPublicLanding)
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -454,36 +487,6 @@
     @endif
     @if($cfToken)
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "{{ $cfToken }}"}'></script>
-    @endif
-    @if($metaPixelId && $isBioLabPage)
-    <!-- Meta Pixel Code (Vitalidad y Bienestar - {{ $metaPixelId }}) -->
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];
-    var fbLoaded = false;
-    var loadFb = function() {
-      if (fbLoaded) return;
-      fbLoaded = true;
-      t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s);
-    };
-    var ua = (f.navigator && f.navigator.userAgent) ? f.navigator.userAgent : '';
-    var isSpeedBot = /Lighthouse|PageSpeed|GTmetrix|PTST|HeadlessChrome|SpeedInsights/i.test(ua);
-    if (!isSpeedBot) {
-      loadFb();
-    } else {
-      f.addEventListener('load', function() { setTimeout(loadFb, 6500); });
-    }
-    }(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '{{ $metaPixelId }}');
-    fbq('track', 'PageView');
-    </script>
-    <!-- End Meta Pixel Code -->
     @endif
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
