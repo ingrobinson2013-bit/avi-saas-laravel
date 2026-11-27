@@ -11,10 +11,10 @@
         $city = $tenant->branding['city'] ?? ($isPilot ? 'Cajicá, Cundinamarca' : '');
         $shortBrandName = $isPilot ? 'Vet-Pet Patitas' : ($tenant->branding['brand_name'] ?? $tenant->name);
         $seoTitle = $isPilot
-            ? "Veterinaria en Cajicá (Abierto Hoy) — {$tenant->name} | Consultas, Vacunas, Profilaxis, Baño y Domicilios"
-            : ($tenant->name . ($city ? " — Clínica Veterinaria en {$city}" : '') . " | Consultas, Vacunas y Planes de Salud");
+            ? "Veterinaria en Cajicá · Domicilios Hoy | Vet-Pet Patitas"
+            : ($tenant->name . ($city ? " — Veterinaria en {$city}" : '') . " | Citas y Planes");
         $metaDescription = $isPilot
-            ? "📍 Calle 7 # 4-73 Este, Cajicá (📲 WhatsApp 350 874 2543). Clínica Veterinaria en Cajicá y domicilios en Chía: consultas médicas, vacunación perros y gatos, profilaxis dental, baño y peluquería, laboratorio y planes de salud con carnet digital QR."
+            ? "★ 4.8 (245 reseñas) · Clínica Veterinaria en Cajicá (Calle 7 #4-73 Este) y domicilios Chía. Consultas, vacunas, profilaxis y baño. WhatsApp: 350 874 2543."
             : ("Clínica Veterinaria {$tenant->name}" . ($city ? " en {$city}" : "") . ". Consultas médicas, vacunación, desparasitación, profilaxis dental, baño y planes de salud preventiva para perros y gatos con carnet digital.");
         $shareImage = $favIcon;
         $googleTagId = $tenant->branding['google_tag_id'] ?? env('GOOGLE_TAG_ID', 'G-YRPKPVXZ2T') ?? env('GOOGLE_ANALYTICS_ID', 'G-YRPKPVXZ2T');
@@ -109,6 +109,11 @@
             "latitude": 4.9186,
             "longitude": -74.0278
           },
+          "areaServed": [
+            { "@@type": "City", "name": "Cajicá" },
+            { "@@type": "City", "name": "Chía" },
+            { "@@type": "AdministrativeArea", "name": "Sabana Norte, Cundinamarca" }
+          ],
           @endif
           "openingHoursSpecification": [
             {
@@ -170,6 +175,14 @@
               "acceptedAnswer": {
                 "@@type": "Answer",
                 "text": "Son membresías preventivas mensuales para perros y gatos que cubren su esquema de vacunación anual, desparasitaciones, consultas médicas y descuentos en profilaxis y baño, con Carnet Digital en tu celular y cobertura inmediata."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Vet-Pet Patitas ofrece veterinaria a domicilio en Cajicá y Chía?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Sí. Contamos con servicio médico veterinario a domicilio en Cajicá, Chía y Sabana Norte para consultas generales, vacunación de perros y gatos, desparasitación y toma de muestras. Puedes solicitarlo hoy mismo al WhatsApp 350 874 2543."
               }
             }
           ]

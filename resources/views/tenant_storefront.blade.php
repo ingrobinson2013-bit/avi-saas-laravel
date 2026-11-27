@@ -11,10 +11,10 @@
         $city = $tenant->branding['city'] ?? ($isPilot ? 'Cajicá, Cundinamarca' : '');
         $shortBrandName = $isPilot ? 'Vet-Pet Patitas' : ($tenant->branding['brand_name'] ?? $tenant->name);
         $seoTitle = $isPilot
-            ? "Veterinaria en Cajicá (Abierto Hoy) — {$tenant->name} | Consultas, Vacunas, Profilaxis, Baño y Domicilios"
-            : ($tenant->name . ($city ? " — Clínica Veterinaria en {$city}" : '') . " | Consultas, Vacunas y Planes de Salud");
+            ? "Veterinaria en Cajicá · Domicilios Hoy | Vet-Pet Patitas"
+            : ($tenant->name . ($city ? " — Veterinaria en {$city}" : '') . " | Citas y Planes");
         $metaDescription = $isPilot
-            ? "📍 Calle 7 # 4-73 Este, Cajicá (📲 WhatsApp 350 874 2543). Clínica Veterinaria en Cajicá y domicilios en Chía: consultas médicas, vacunación perros y gatos, profilaxis dental, baño y peluquería, laboratorio y planes de salud con carnet digital QR."
+            ? "★ 4.8 (245 reseñas) · Clínica Veterinaria en Cajicá (Calle 7 #4-73 Este) y domicilios Chía. Consultas, vacunas, profilaxis y baño. WhatsApp: 350 874 2543."
             : ("Clínica Veterinaria {$tenant->name}" . ($city ? " en {$city}" : "") . ". Consultas médicas, vacunación, desparasitación, profilaxis dental, baño y planes de salud preventiva para perros y gatos con carnet digital.");
         $shareImage = $favIcon;
         $googleTagId = $tenant->branding['google_tag_id'] ?? env('GOOGLE_TAG_ID', 'G-YRPKPVXZ2T') ?? env('GOOGLE_ANALYTICS_ID', 'G-YRPKPVXZ2T');
@@ -24,7 +24,7 @@
 
     <title>{{ $seoTitle }}</title>
     <meta name="description" content="{{ $metaDescription }}">
-    <meta name="keywords" content="veterinaria {{ strtolower($city ?: 'colombia') }}, {{ strtolower($tenant->name) }}, clinica veterinaria {{ strtolower($city) }}, vacunas perros gatos {{ strtolower($city) }}, planes de salud mascotas, consulta veterinaria {{ strtolower($city) }}, carnet digital mascotas">
+    <meta name="keywords" content="veterinaria {{ strtolower($city ?: 'colombia') }}, veterinarias cajica, veterinaria a domicilio cajica chia, {{ strtolower($tenant->name) }}, clinica veterinaria {{ strtolower($city) }}, profilaxis perros, bano para gatos veterinaria, vacunas perros gatos {{ strtolower($city) }}, planes de salud mascotas, carnet digital mascotas">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="application-name" content="{{ $shortBrandName }}">
     <link rel="canonical" href="{{ $canonicalUrl }}">
@@ -94,6 +94,11 @@
             "latitude": 4.9186,
             "longitude": -74.0278
           },
+          "areaServed": [
+            { "@@type": "City", "name": "Cajicá" },
+            { "@@type": "City", "name": "Chía" },
+            { "@@type": "AdministrativeArea", "name": "Sabana Norte, Cundinamarca" }
+          ],
           @endif
           "openingHoursSpecification": [
             {
@@ -155,6 +160,14 @@
               "acceptedAnswer": {
                 "@@type": "Answer",
                 "text": "Son membresías preventivas mensuales para perros y gatos que cubren su esquema de vacunación anual, desparasitaciones, consultas médicas y descuentos en profilaxis y baño, con Carnet Digital en tu celular y cobertura inmediata."
+              }
+            },
+            {
+              "@@type": "Question",
+              "name": "¿Vet-Pet Patitas ofrece veterinaria a domicilio en Cajicá y Chía?",
+              "acceptedAnswer": {
+                "@@type": "Answer",
+                "text": "Sí. Contamos con servicio médico veterinario a domicilio en Cajicá, Chía y Sabana Norte para consultas generales, vacunación de perros y gatos, desparasitación y toma de muestras. Puedes solicitarlo hoy mismo al WhatsApp 350 874 2543."
               }
             }
           ]
@@ -411,13 +424,18 @@
                             </div>
                         </div>
 
-                        <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
-                            <a href="#planes" class="px-7 py-4 rounded-full bg-brand-primary text-white font-extrabold text-sm shadow-lg hover:opacity-90 transition-all flex items-center justify-center space-x-2 text-center">
+                        <div class="pt-2 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
+                            <a href="#planes" class="px-6 py-4 rounded-full bg-brand-primary text-white font-extrabold text-sm shadow-lg hover:opacity-90 transition-all flex items-center justify-center space-x-2 text-center">
                                 <span>Ver Planes de Salud</span>
                                 <span>›</span>
                             </a>
-                            <button type="button" onclick="openEnrollModal('basico')" class="px-6 py-4 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-sm border border-slate-200 shadow-xs transition-all flex items-center justify-center space-x-2 text-center">
-                                <span>🐾 Afiliar a Mi Mascota</span>
+                            @if(!empty($cleanPhone))
+                            <a href="https://wa.me/{{ $cleanPhoneFormatted }}?text={{ urlencode('Hola ' . $tenant->name . ', quiero agendar una cita o servicio veterinario a domicilio hoy.') }}" target="_blank" class="px-6 py-4 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg transition-all flex items-center justify-center space-x-2 text-center">
+                                <span>📲 Cita o Domicilio Hoy</span>
+                            </a>
+                            @endif
+                            <button type="button" onclick="openEnrollModal('basico')" class="px-5 py-4 rounded-full bg-white hover:bg-slate-50 text-slate-800 font-extrabold text-sm border border-slate-200 shadow-xs transition-all flex items-center justify-center space-x-2 text-center">
+                                <span>🐾 Afiliar Mascota</span>
                             </button>
                         </div>
                     </div>
@@ -1572,8 +1590,9 @@
                 <span>🔐</span>
                 <span>Panel</span>
             </a>
-            <a href="https://wa.me/57{{ $cleanPhone }}" target="_blank" class="p-2 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-200 text-sm">
-                💬
+            <a href="https://wa.me/{{ $cleanPhoneFormatted }}?text={{ urlencode('Hola ' . $tenant->name . ', quiero agendar una cita o domicilio hoy.') }}" target="_blank" class="px-2.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-[11px] flex items-center gap-1 shadow-xs whitespace-nowrap">
+                <span>📲</span>
+                <span>Cita Hoy</span>
             </a>
             <button type="button" onclick="openEnrollModal('basico')" class="px-3 py-2 bg-brand-primary text-white font-black text-[11px] sm:text-xs rounded-xl shadow-xs">
                 Afiliar Mascota 🐾

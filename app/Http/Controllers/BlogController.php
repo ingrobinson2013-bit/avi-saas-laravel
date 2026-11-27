@@ -33,7 +33,7 @@ class BlogController extends Controller
             abort(404, 'Artículo no encontrado en el blog de AviPetApp');
         }
 
-        $relatedPosts = BlogService::getRelatedPosts($slug, 2);
+        $relatedPosts = BlogService::getRelatedPosts($slug, 3);
 
         return view('blog.show', compact('post', 'relatedPosts'));
     }

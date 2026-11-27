@@ -222,9 +222,12 @@
                 <p class="text-sm text-indigo-100 max-w-2xl mx-auto">
                     Fórmula 3 en 1 hipoalergénica (0% pollo, 0% granos) con Ácido Láurico Dermo-Activo, Omega 3-6-9 y Prebióticos Gut-Care®. Incluye Guía Clínica PDF y acceso a Comunidad con Médica Veterinaria.
                 </p>
-                <div class="pt-1">
-                    <a href="{{ $ctaUrl }}" class="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm sm:text-base px-6 py-3.5 rounded-2xl shadow-lg transition">
+                <div class="pt-1 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <a href="{{ $ctaUrl }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm sm:text-base px-6 py-3.5 rounded-2xl shadow-lg transition">
                         <span>🚚 PEDIR AHORA CONTRAENTREGA ($69.900 COP) →</span>
+                    </a>
+                    <a href="https://wa.me/573235813942?text={{ rawurlencode('Hola AVIPET BioLab®, estoy leyendo sobre ' . $h1 . ' y quiero pedir Dermo & Gut Superboost ($69.900 envío gratis contraentrega).') }}" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-emerald-200 border border-emerald-400/40 font-black text-sm px-5 py-3.5 rounded-2xl transition">
+                        <span>📲 Pedir por WhatsApp</span>
                     </a>
                 </div>
             </div>
@@ -275,10 +278,15 @@
     </main>
 
     {{-- Sticky Mobile CTA --}}
-    <div class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-slate-200 p-3 z-40 sm:hidden">
-        <a href="{{ $ctaUrl }}" class="block w-full text-center bg-emerald-600 text-white font-black text-sm py-3 rounded-xl shadow-lg">
-            🚚 Pedir Dermo &amp; Gut Contraentrega — $69.900
-        </a>
+    <div class="fixed bottom-0 inset-x-0 bg-slate-950/95 backdrop-blur border-t-2 border-emerald-400/60 p-2.5 z-40 sm:hidden">
+        <div class="flex items-center gap-2">
+            <a href="{{ $ctaUrl }}" class="flex-1 text-center bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-xs py-3 px-3 rounded-xl shadow-lg">
+                🚚 Pedir Hoy ($69.900)
+            </a>
+            <a href="https://wa.me/573235813942?text={{ rawurlencode('Hola AVIPET BioLab®, estoy leyendo sobre ' . $h1 . ' y quiero pedir Dermo & Gut Superboost ($69.900 contraentrega).') }}" target="_blank" rel="noopener noreferrer" class="shrink-0 text-center bg-emerald-700 hover:bg-emerald-600 text-white font-black text-xs py-3 px-3.5 rounded-xl border border-emerald-400/40 shadow-lg">
+                📲 WhatsApp
+            </a>
+        </div>
     </div>
 </body>
 </html>

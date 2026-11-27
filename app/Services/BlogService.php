@@ -12,6 +12,8 @@ class BlogService
         return [
             [
                 'slug' => 'planes-de-salud-preventiva-veterinaria-ingresos-recurrentes',
+                'cluster' => 'saas',
+                'seo_title' => 'Planes de Salud Veterinarios: Cómo Crear Membresías (2026)',
                 'title' => 'Planes de Salud Veterinarios: Cómo Crear Membresías Preventivas en tu Clínica y Facturar Ingresos Recurrentes',
                 'excerpt' => 'Guía paso a paso para estructurar planes de salud veterinarios (perros y gatos) en Colombia: tablas de precios en pesos, margen del 65%, carnet digital QR y recaudo mensual recurrente.',
                 'category' => 'Rentabilidad & Negocio',
@@ -19,7 +21,7 @@ class BlogService
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & Estratega SaaS',
                 'published_at' => '2026-10-01',
-                'updated_at' => '2026-11-10',
+                'updated_at' => '2026-11-27',
                 'image' => 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
                     'avipetapp',
@@ -169,7 +171,7 @@ Muchos veterinarios intentan vender membresías cobrando por Nequi o transferenc
     <li>No hay forma de validar si una vacuna ya fue aplicada o sigue disponible en el saldo.</li>
 </ol>
 <p class="text-slate-700 leading-relaxed mb-6">
-Por esta razón, implementar un <a href="/software-planes-salud-veterinaria" class="text-violet-700 font-bold underline">software para planes de salud veterinarios</a> como <strong>AviPetApp</strong> organiza tus membresías, emite un <a href="/carnet-vacunacion-digital-mascotas-qr" class="text-violet-700 font-bold underline">Carnet Digital interactivo con código QR</a> y actualiza en tiempo real el saldo de servicios en mostrador con un solo clic.
+Por esta razón, implementar un <a href="/software-planes-salud-veterinaria" class="text-violet-700 font-bold underline">software para planes de salud veterinarios</a> como <strong>AviPetApp</strong> organiza tus membresías, emite un <a href="/carnet-vacunacion-digital-mascotas-qr" class="text-violet-700 font-bold underline">Carnet Digital interactivo con código QR</a>, potencia la <a href="/blog/fidelizacion-clientes-veterinaria-retencion-mascotas" class="text-violet-700 font-bold underline">retención de clientes en clínica veterinaria</a> y actualiza en tiempo real el saldo de servicios en mostrador con un solo clic.
 </p>
 
 <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-8 my-8 text-center shadow-xl">
@@ -185,20 +187,24 @@ HTML,
             ],
             [
                 'slug' => 'fidelizacion-clientes-veterinaria-retencion-mascotas',
-                'title' => 'Retención de Clientes en Clínica Veterinaria: 5 Estrategias Probadas para Fidelizar Tutores (Guía 2026)',
-                'excerpt' => 'Cómo aumentar la retención de clientes en tu clínica veterinaria del 35% al 88%: carnet digital con QR en WhatsApp, recordatorios preventivos con IA, planes de salud y terminal de canje en recepción.',
+                'cluster' => 'saas',
+                'seo_title' => 'Retención de Clientes en Clínica Veterinaria: 5 Claves 2026',
+                'title' => 'Retención de Clientes en Clínica Veterinaria (Guía 2026): El Secreto de los Planes de Salud',
+                'excerpt' => '¿Pierdes clientes tras la primera consulta? Descubre 5 estrategias de retención de clientes en clínica veterinaria: Carnet QR, WhatsApp y Planes de Salud.',
                 'category' => 'Fidelización & Retención',
-                'read_time' => '6 min de lectura',
+                'read_time' => '7 min de lectura',
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & Estratega SaaS',
                 'published_at' => '2026-10-03',
-                'updated_at' => '2026-11-10',
+                'updated_at' => '2026-11-27',
                 'image' => 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
                     'retención de clientes en clínica veterinaria',
+                    'como retener clientes en una clinica veterinaria',
                     'fidelizacion clientes veterinaria',
                     'como fidelizar clientes en una veterinaria',
                     'retencion tutores mascotas',
+                    'planes de salud veterinarios fidelizacion',
                     'carnet digital mascotas whatsapp',
                     'marketing para veterinarias colombia',
                     'atencion al cliente clinica veterinaria'
@@ -209,12 +215,20 @@ HTML,
                         'answer' => 'Las 3 acciones de mayor impacto para la retención de clientes en clínica veterinaria son: reemplazar el carnet de cartón por un Carnet Digital interactivo con código QR en WhatsApp, automatizar recordatorios preventivos 7 días y 24 horas antes de cada vacuna o desparasitación, y afiliar al paciente a un plan de salud mensual.'
                     ],
                     [
+                        'question' => '¿Cuál es la tasa promedio de retención de clientes en una clínica veterinaria?',
+                        'answer' => 'En clínicas veterinarias que operan solo por consulta ocasional o urgencias, la retención anual suele ubicarse entre el 30% y el 42%. Al implementar planes de salud preventiva, seguimiento por WhatsApp y carnet digital QR, las clínicas logran elevar la permanencia por encima del 80%.'
+                    ],
+                    [
                         'question' => '¿Por qué los tutores de mascotas dejan de asistir a la misma clínica veterinaria?',
                         'answer' => 'Más del 68% de la deserción de clientes en veterinarias ocurre por olvido de fechas de refuerzo vacunal o desparasitación y por falta de vínculo recurrente entre consultas de urgencia.'
                     ],
                     [
+                        'question' => '¿Cómo reactivar clientes inactivos en una clínica veterinaria por WhatsApp?',
+                        'answer' => 'Envía un mensaje personalizado a los tutores que llevan más de 6 meses sin visita mencionando el nombre de su mascota, recordando el chequeo preventivo pendiente e invitándolos a activar su Carnet Digital QR con un beneficio preferencial de diagnóstico o desparasitación.'
+                    ],
+                    [
                         'question' => '¿Cuántas veces al año visita la clínica un cliente afiliado a un plan de salud?',
-                        'answer' => 'Un tutor con plan de salud preventivo activo y carnet digital visita la clínica entre 4 y 6 veces al año, frente a 1 visita cada 18 meses de un cliente ocasional, multiplicando por 3 el consumo en farmacia, nutrición y baños.'
+                        'answer' => 'Un tutor con plan de salud preventivo activo y carnet digital visita la clínica entre 4 y 6 veces al año, frente a 1 visita cada 18 meses de un cliente ocasional, multiplicando el consumo en farmacia, nutrición y baños.'
                     ],
                 ],
                 'content' => <<<'HTML'
@@ -242,7 +256,7 @@ Captar un nuevo cliente para tu clínica veterinaria cuesta <strong>entre 5 y 7 
 Durante décadas, las veterinarias entregaron libretas o carnets de cartulina sellados a mano. Hoy en día, los tutores de mascotas (principalmente millennials y centennials) <strong>pierden el carnet físico, lo dejan en casa o se olvidan de la fecha exacta del refuerzo vacunal</strong>.
 </p>
 <p class="text-slate-700 leading-relaxed mb-6">
-La solución moderna para blindar la <strong>retención de clientes en clínica veterinaria</strong> es el <strong>Carnet Digital en el Smartphone</strong>:
+La solución moderna para blindar la <strong>retención de clientes en clínica veterinaria</strong> es el <a href="/carnet-vacunacion-digital-mascotas-qr" class="text-violet-700 font-bold underline">Carnet Digital con código QR en el Smartphone</a>:
 </p>
 <ul class="list-disc pl-6 space-y-2 text-slate-700 mb-6">
     <li>Accesible las 24 horas desde WhatsApp sin instalar aplicaciones pesadas.</li>
@@ -352,15 +366,60 @@ Copia y aplica hoy mismo este protocolo de 3 mensajes en la recepción de tu cl�
             "Hola [Nombre Tutor] 👋 Nuestro sistema preventivo en [Nombre Veterinaria] nos avisa que en 7 días se cumple el refuerzo de [Vacuna / Desparasitación] de [Nombre Mascota]. Como tienes tu Plan de Salud activo, este beneficio ya está 100% cubierto ($0 en recepción). ¿Te agendamos para este sábado?"
         </p>
     </div>
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+        <span class="inline-block bg-violet-100 text-violet-800 text-xs font-bold px-2.5 py-0.5 rounded-full mb-2">Plantilla 3 · Reactivación de Clientes Inactivos (+6 Meses sin Visita)</span>
+        <p class="text-xs sm:text-sm text-slate-700 font-mono bg-white p-3 rounded-lg border border-slate-200">
+            "Hola [Nombre Tutor] 🐶 Hace unos meses no vemos a [Nombre Mascota] en [Nombre Veterinaria] y queremos saber cómo está de salud. Esta semana estamos activando nuestro nuevo Carnet Digital QR + Planes de Salud Preventiva desde $49.000/mes (vacunas, desparasitación y controles incluidos). ¿Quieres que te enviemos la ficha de beneficios por aquí?"
+        </p>
+    </div>
 </div>
 
-<h2 id="terminal-canje" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">5. La Experiencia de Canje en Mostrador: Transparencia Total</h2>
+<h2 id="terminal-canje" class="text-2xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">5. La Experiencia de Canje en Mostrador y KPIs de Retención Clínica</h2>
 <p class="text-slate-700 leading-relaxed mb-4">
 La mayor fricción en los modelos de membresía ocurre cuando el cliente llega a la veterinaria y pregunta: <em>"¿A mí todavía me queda una vacuna o consulta disponible este mes?"</em>.
 </p>
 <p class="text-slate-700 leading-relaxed mb-6">
-Tener una <strong>Terminal de Canje Digital</strong> en la recepción de tu clínica permite:
+Implementar un <a href="/software-planes-salud-veterinaria" class="text-violet-700 font-bold underline">software de planes de salud veterinarios</a> con <strong>Terminal de Canje Digital</strong> en la recepción de tu clínica transforma los indicadores de fidelización frente a una clínica tradicional:
 </p>
+
+<div class="overflow-x-auto my-6">
+    <table class="w-full text-left text-xs sm:text-sm border-collapse border border-slate-200 rounded-xl overflow-hidden">
+        <thead>
+            <tr class="bg-slate-900 text-white">
+                <th class="p-3 border-r border-slate-700">Indicador de Retención Veterinaria</th>
+                <th class="p-3 border-r border-slate-700">Clínica Tradicional (Solo Urgencias)</th>
+                <th class="p-3 text-emerald-300">Con Planes de Salud + Carnet QR (AviPetApp)</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200 text-slate-700">
+            <tr class="bg-white">
+                <td class="p-3 font-semibold text-slate-900 border-r border-slate-200">Visitas por mascota al año</td>
+                <td class="p-3 border-r border-slate-200">1 a 1.3 visitas / año</td>
+                <td class="p-3 font-bold text-emerald-700">4 a 6 visitas programadas / año</td>
+            </tr>
+            <tr class="bg-slate-50">
+                <td class="p-3 font-semibold text-slate-900 border-r border-slate-200">Asistencia a refuerzos vacunales</td>
+                <td class="p-3 border-r border-slate-200">~48% (carnet de papel)</td>
+                <td class="p-3 font-bold text-emerald-700">Más del 85% (alertas WhatsApp + QR)</td>
+            </tr>
+            <tr class="bg-white">
+                <td class="p-3 font-semibold text-slate-900 border-r border-slate-200">Control de beneficios en recepción</td>
+                <td class="p-3 border-r border-slate-200">Manual en Excel o libreta</td>
+                <td class="p-3 font-bold text-emerald-700">Terminal de Canje en 1 clic con recibo WhatsApp</td>
+            </tr>
+            <tr class="bg-slate-50">
+                <td class="p-3 font-semibold text-slate-900 border-r border-slate-200">Previsibilidad de flujo de caja</td>
+                <td class="p-3 border-r border-slate-200">Variable mes a mes</td>
+                <td class="p-3 font-bold text-emerald-700">Ingresos mensuales recurrentes (0% comisión)</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<p class="text-slate-700 leading-relaxed mb-4">
+¿Aún no sabes cuánto cobrar por tus membresías? Usa nuestra guía práctica de <a href="/blog/como-calcular-precio-planes-salud-veterinaria-plantilla-costos" class="text-violet-700 font-bold underline">cómo calcular precios y márgenes de planes de salud veterinarios</a> o revisa paso a paso cómo estructurar <a href="/blog/planes-de-salud-preventiva-veterinaria-ingresos-recurrentes" class="text-violet-700 font-bold underline">planes de salud preventiva para mascotas en Colombia</a>.
+</p>
+
 <ul class="list-disc pl-6 space-y-2 text-slate-700 mb-6">
     <li>Digitar la cédula del tutor o el nombre de la mascota y ver al instante qué beneficios le quedan (ej: 1 Consulta disponible, 0 Profilaxis restantes).</li>
     <li>Hacer clic en "Canjear Servicio" y descontarlo automáticamente del historial con fecha, hora y nombre del médico tratante.</li>
@@ -378,7 +437,10 @@ Tener una <strong>Terminal de Canje Digital</strong> en la recepción de tu clí
 </div>
 HTML,
             ],
-            [                'slug' => 'mejores-software-veterinarios-colombia-comparativa-2026',
+            [
+                'slug' => 'mejores-software-veterinarios-colombia-comparativa-2026',
+                'cluster' => 'saas',
+                'seo_title' => '5 Mejores Software Veterinarios en Colombia (Precios 2026)',
                 'title' => 'Los 5 Mejores Software Veterinarios en Colombia (2026): Comparativa de Precios y Funciones',
                 'excerpt' => 'Comparativa actualizada de software veterinario en Colombia (2026): precios en pesos, historias clínicas, planes de salud para mascotas, carnet digital QR en WhatsApp y herramientas con IA.',
                 'category' => 'Tecnología & Software',
@@ -386,7 +448,7 @@ HTML,
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & CEO NODIA',
                 'published_at' => '2026-10-05',
-                'updated_at' => '2026-11-11',
+                'updated_at' => '2026-11-27',
                 'image' => 'https://images.unsplash.com/photo-1516715094483-75da7dee9758?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
                     'software veterinario',
@@ -570,6 +632,8 @@ HTML,
             ],
             [
                 'slug' => 'como-calcular-precio-planes-salud-veterinaria-plantilla-costos',
+                'cluster' => 'saas',
+                'seo_title' => 'Cómo Calcular Precios en tu Veterinaria + Calculadora 2026',
                 'title' => 'Cómo Calcular Precios en tu Veterinaria y Planes de Salud: Calculadora y Plantilla de Costos (Colombia 2026)',
                 'excerpt' => 'Calculadora interactiva y plantilla en pesos colombianos para calcular precios en tu clínica veterinaria: costos reales de vacunas, desparasitación, consulta médica y margen neto del 65%.',
                 'category' => 'Finanzas & Rentabilidad',
@@ -577,7 +641,7 @@ HTML,
                 'author' => 'Robinson R. & Equipo AviPetApp',
                 'author_role' => 'Ingeniero en Telecomunicaciones & Director Técnico',
                 'published_at' => '2026-10-08',
-                'updated_at' => '2026-11-10',
+                'updated_at' => '2026-11-27',
                 'image' => 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80',
                 'keywords' => [
                     'avipetapp',
@@ -809,7 +873,7 @@ Con solo 100 pacientes afiliados a este plan de $49.000 COP:
 <div class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-2xl p-8 my-8 text-center shadow-xl">
     <h3 class="text-2xl font-extrabold mb-3">Calcula y Activa los Planes de tu Veterinaria</h3>
     <p class="text-blue-200 text-sm max-w-xl mx-auto mb-6">
-        No dejes el dinero sobre la mesa. Con AviPetApp puedes personalizar tus servicios, precios y emitir carnets con código QR en minutos. 15 días gratis.
+        Complementa tu estrategia de tarifas con nuestras <a href="/blog/fidelizacion-clientes-veterinaria-retencion-mascotas" class="text-emerald-300 underline font-bold">5 estrategias de retención de clientes en clínica veterinaria</a>. Con AviPetApp personalizas servicios, precios y carnets con código QR en minutos. 15 días gratis.
     </p>
     <a href="/registro-clinica" class="inline-flex items-center px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
         Crear mi Cuenta Gratis (15 Días) →
@@ -819,14 +883,16 @@ HTML,
             ],
             [
                 'slug' => 'alergia-dermatitis-picazon-perros-suplemento-hipoalergenico-colombia',
+                'cluster' => 'biolab',
+                'seo_title' => 'Dermatitis y Picazón en Perros: Guía y Suplemento Natural',
                 'title' => 'Alergia, Dermatitis y Caída de Pelo en Perros: Guía del Eje Intestino-Piel y Suplemento Hipoalergénico en Colombia',
-                'excerpt' => 'Descubre por qué el 80% de la picazón, alergias de piel y caída de pelo en perros nace en la microbiota intestinal, cómo funciona la Matriz de Micro-Proteína Novel Hipoalergénica y cómo pedir AVIPET BioLab® Dermo & Gut Superboost ($69.900 COP con Envío Gratis y Pago Contraentrega en Colombia).',
+                'excerpt' => '¿Por qué tu perro se rasca sin parar? Conoce el eje intestino-piel y el topper hipoalergénico AVIPET BioLab® ($69.900 con envío gratis y pago contraentrega).',
                 'category' => 'Nutrición Clínica & BioLab®',
                 'read_time' => '6 min de lectura',
                 'author' => 'División Científica AVIPET BioLab®',
                 'author_role' => 'Biotecnología Nutricional & Salud Dermo-Digestiva',
                 'published_at' => '2026-10-25',
-                'updated_at' => '2026-11-10',
+                'updated_at' => '2026-11-27',
                 'image' => '/images/biolab/hero-estudio-1-bolsa.webp',
                 'keywords' => [
                     'alergia en perros piel',
@@ -942,14 +1008,16 @@ HTML,
 
             [
                 'slug' => 'perro-se-lame-las-patas-rojas-pododermatitis-alergia-solucion',
+                'cluster' => 'biolab',
+                'seo_title' => 'Mi Perro Se Lame las Patas Rojas: Causas y Alivio (2026)',
                 'title' => 'Mi Perro Se Lame Mucho las Patas Rojas y Se Muerde: Causas, Pododermatitis y Tratamiento en Colombia (2026)',
-                'excerpt' => '¿Tu perro se lame las patas sin parar y las tiene rojas o inflamadas? Conoce las verdaderas causas de la pododermatitis alérgica en Colombia, el papel de las levaduras y el suplemento 3 en 1 con Matriz Hipoalergénica y Ácido Láurico ($69.900 Contraentrega).',
+                'excerpt' => '¿Tu perro se lame las patas y las tiene rojas? Descubre las causas reales (alergia y levaduras) y cómo aliviarlo desde la raíz. Envío gratis Colombia $69.900.',
                 'category' => 'Dermatología Canina & BioLab®',
                 'read_time' => '7 min de lectura',
                 'author' => 'División Científica AVIPET BioLab®',
                 'author_role' => 'Biotecnología Nutricional & Salud Dermo-Digestiva',
                 'published_at' => '2026-11-11',
-                'updated_at' => '2026-11-11',
+                'updated_at' => '2026-11-27',
                 'image' => '/images/biolab/empaque-frente-reverso.jpg',
                 'keywords' => [
                     'mi perro se lame mucho las patas',
@@ -1074,30 +1142,37 @@ A diferencia de los medicamentos corticoesteroides que deprimen el sistema inmun
     <li><strong>Omega 3-6-9 de Linaza Dorada:</strong> Desinflama la dermis y repara la almohadilla plantar reseca.</li>
 </ul>
 
-<div id="pedido-contraentrega-patas" class="bg-slate-100 rounded-2xl p-6 sm:p-8 my-8 border border-slate-300 flex flex-col md:flex-row items-center justify-between gap-6">
-    <div class="space-y-2 max-w-xl">
-        <span class="text-xs font-bold uppercase text-emerald-700">Garantía y Confianza AVIPET BioLab®</span>
-        <h3 class="text-xl font-black text-slate-900">Alivia la picazón de tu mascota sin arriesgar tu dinero</h3>
-        <p class="text-xs sm:text-sm text-slate-600">
-            Pide hoy tu bolsa de <strong>Dermo & Gut Superboost (250g) por solo $69.900 COP</strong>. El repartidor llega a tu dirección y pagas en efectivo o transferencia al recibirlo.
+<div id="pedido-contraentrega-patas" class="bg-emerald-50 rounded-2xl p-6 sm:p-8 my-8 border-2 border-emerald-300 flex flex-col gap-5">
+    <div class="space-y-2">
+        <span class="inline-block px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-black uppercase tracking-wider">⭐ Garantía AVIPET BioLab® · Envío Gratis Colombia</span>
+        <h3 class="text-xl font-black text-slate-900">Alivia la picazón y las patas rojas sin arriesgar tu dinero</h3>
+        <p class="text-xs sm:text-sm text-slate-700">
+            Pide hoy tu bolsa de <strong>Dermo &amp; Gut Superboost (250g · 50 dosis) por solo $69.900 COP</strong>. El mensajero llega a tu puerta y pagas en efectivo o transferencia al recibirlo. Si además notas síntomas de intolerancia alimentaria, revisa nuestra guía de <a href="/blog/alergia-al-pollo-en-perros-sintomas-piel-que-darle" class="text-emerald-800 font-bold underline">alergia al pollo en perros</a>.
         </p>
     </div>
-    <a href="/biolab/dermo-gut-superboost" class="px-6 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm rounded-xl shadow-lg transition whitespace-nowrap text-center">
-        Comprar con Envío Gratis ($69.900) →
-    </a>
+    <div class="flex flex-col sm:flex-row gap-3">
+        <a href="/biolab/dermo-gut-superboost" class="flex-1 px-6 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm rounded-xl shadow-lg transition text-center">
+            🚚 Pedir Contraentrega ($69.900) →
+        </a>
+        <a href="https://wa.me/573235813942?text=Hola%20AVIPET%20BioLab,%20mi%20perro%20se%20lame%20mucho%20las%20patas%20rojas%20y%20quiero%20pedir%20Dermo%20%26%20Gut%20Superboost%20(%2469.900%20contraentrega)" target="_blank" class="flex-1 px-6 py-4 bg-slate-900 hover:bg-slate-800 text-emerald-300 font-black text-sm rounded-xl shadow-lg transition text-center">
+            📲 Pedir Contraentrega por WhatsApp
+        </a>
+    </div>
 </div>
 HTML,
             ],
             [
                 'slug' => 'alergia-al-pollo-en-perros-sintomas-piel-que-darle',
+                'cluster' => 'biolab',
+                'seo_title' => 'Alergia al Pollo en Perros: Síntomas y Qué Darle (Guía)',
                 'title' => 'Alergia al Pollo en Perros: Síntomas en Piel, Qué Concentrado o Suplemento Darle y Proteína Novel (Colombia)',
-                'excerpt' => '¿Sospechas que tu perro es alérgico al pollo? Descubre las 5 señales en piel y digestión, por qué los concentrados tradicionales fallan y cómo la Micro-Proteína Novel hipoalergénica de AVIPET BioLab® ($69.900 Contraentrega) elimina el picor sin cambiar de marca bruscamente.',
+                'excerpt' => '5 síntomas clave de alergia al pollo en perros (otitis, patas rojas, picazón) y qué suplemento sin pollo darle. AVIPET BioLab® $69.900 envío gratis contraentrega.',
                 'category' => 'Nutrición Clínica & Alergias',
                 'read_time' => '6 min de lectura',
                 'author' => 'División Científica AVIPET BioLab®',
                 'author_role' => 'Biotecnología Nutricional & Salud Dermo-Digestiva',
                 'published_at' => '2026-11-11',
-                'updated_at' => '2026-11-11',
+                'updated_at' => '2026-11-27',
                 'image' => '/images/biolab/funnel-antes-despues.png',
                 'keywords' => [
                     'alergia al pollo en perros sintomas',
@@ -1144,26 +1219,34 @@ El pollo es el ingrediente principal en más del 85% de los concentrados comerci
 </ul>
 
 <div class="bg-gradient-to-r from-emerald-900 to-slate-900 text-white rounded-2xl p-7 my-8 border border-emerald-500/40">
+    <span class="inline-block px-2.5 py-1 rounded-full bg-emerald-400/20 text-emerald-300 text-[11px] font-black uppercase mb-2">0% Pollo · Envío Gratis · Pagas en Casa</span>
     <h3 class="text-xl font-black text-emerald-300 mb-2">La Solución: Proteína Novel Hipoalergénica + Ácido Láurico</h3>
     <p class="text-xs sm:text-sm text-slate-300 mb-5">
-        <strong>AVIPET BioLab® Dermo & Gut Superboost</strong> es 100% libre de pollo, res, soya y gluten. Espolvoreas una cucharada sobre su comida habitual y entregas aminoácidos puros que no activan los anticuerpos de la alergia.
+        <strong>AVIPET BioLab® Dermo &amp; Gut Superboost</strong> es 100% libre de pollo, res, soya y gluten. Espolvoreas una cucharada sobre su comida habitual y entregas aminoácidos puros que no activan la reacción alérgica. ¿Tu peludo también se muerde entre los dedos? Lee nuestra guía sobre <a href="/blog/perro-se-lame-las-patas-rojas-pododermatitis-alergia-solucion" class="text-emerald-300 underline font-bold">por qué tu perro se lame las patas rojas</a>.
     </p>
-    <a href="/biolab/dermo-gut-superboost" class="inline-flex items-center px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg transition">
-        Pedir Dermo & Gut Superboost ($69.900 Contraentrega) →
-    </a>
+    <div class="flex flex-col sm:flex-row gap-3">
+        <a href="/biolab/dermo-gut-superboost" class="inline-flex items-center justify-center px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-sm rounded-xl shadow-lg transition">
+            🚚 Pedir Contraentrega ($69.900) →
+        </a>
+        <a href="https://wa.me/573235813942?text=Hola%20AVIPET%20BioLab,%20mi%20perro%20tiene%20alergia%20al%20pollo%20y%20quiero%20pedir%20Dermo%20%26%20Gut%20Superboost%20(%2469.900%20contraentrega)" target="_blank" class="inline-flex items-center justify-center px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-emerald-400/40 font-black text-sm rounded-xl transition">
+            📲 Pedir Contraentrega por WhatsApp
+        </a>
+    </div>
 </div>
 HTML,
             ],
             [
                 'slug' => 'caida-de-pelo-perros-caspa-pelaje-opaco-vitaminas-colombia',
+                'cluster' => 'biolab',
+                'seo_title' => 'Caída de Pelo y Caspa en Perros: Qué Vitaminas Darle',
                 'title' => 'Caída de Pelo Excesiva en Perros, Caspa y Pelaje Opaco: Causas, Vitaminas y Suplementos en Colombia',
-                'excerpt' => '¿Tu perro bota demasiado pelo y deja la ropa y muebles llenos? Aprende la diferencia entre muda normal y alopecia nutricional, qué vitaminas necesita y cómo el Omega 3-6-9 de Linaza Dorada y Ácido Láurico ($69.900 Contraentrega) frenan la caída en 21 días.',
+                'excerpt' => '¿Tu perro bota mucho pelo y tiene caspa? Conoce las causas reales y el suplemento con Omega 3-6-9 y Ácido Láurico ($69.900 envío gratis contraentrega).',
                 'category' => 'Salud Capilar & Piel Canina',
                 'read_time' => '6 min de lectura',
                 'author' => 'División Científica AVIPET BioLab®',
                 'author_role' => 'Biotecnología Nutricional & Salud Dermo-Digestiva',
                 'published_at' => '2026-11-11',
-                'updated_at' => '2026-11-11',
+                'updated_at' => '2026-11-27',
                 'image' => '/images/biolab/funnel-pack-trio.png',
                 'keywords' => [
                     'caida de pelo en perros que darle',
@@ -1201,14 +1284,19 @@ Mientras que la muda normal ocurre de forma homogénea, la caída patológica vi
 </ul>
 
 <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-7 my-8 border border-cyan-500/30">
-    <span class="text-xs font-bold uppercase text-cyan-300 mb-1 block">Fórmula Dermatológica 3 en 1</span>
+    <span class="text-xs font-bold uppercase text-cyan-300 mb-1 block">Fórmula Dermatológica 3 en 1 · Envío Gratis Colombia</span>
     <h3 class="text-2xl font-black mb-2">Devuélvele a tu perro un pelaje denso, brillante y sin caspa</h3>
     <p class="text-xs sm:text-sm text-slate-300 mb-5">
-        <strong>AVIPET BioLab® Dermo & Gut Superboost (250g)</strong> aporta Omega 3-6-9 de Linaza Dorada, Cúrcuma antiinflamatoria y Clorofila desodorizante. Resultados visibles en suavidad y reducción de caída desde la tercera semana.
+        <strong>AVIPET BioLab® Dermo &amp; Gut Superboost (250g)</strong> aporta Omega 3-6-9 de Linaza Dorada, Cúrcuma antiinflamatoria y Clorofila desodorizante. Si también se muerde las patas, revisa nuestra guía sobre <a href="/blog/perro-se-lame-las-patas-rojas-pododermatitis-alergia-solucion" class="text-emerald-300 underline font-bold">pododermatitis y patas rojas en perros</a>.
     </p>
-    <a href="/biolab/dermo-gut-superboost" class="inline-flex items-center px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-sm rounded-xl shadow-lg transition">
-        Pedir con Pago Contraentrega ($69.900 COP) →
-    </a>
+    <div class="flex flex-col sm:flex-row gap-3">
+        <a href="/biolab/dermo-gut-superboost" class="inline-flex items-center justify-center px-6 py-3.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black text-sm rounded-xl shadow-lg transition">
+            🚚 Pedir Contraentrega ($69.900 COP) →
+        </a>
+        <a href="https://wa.me/573235813942?text=Hola%20AVIPET%20BioLab,%20mi%20perro%20bota%20mucho%20pelo%20y%20quiero%20pedir%20Dermo%20%26%20Gut%20Superboost%20(%2469.900%20contraentrega)" target="_blank" class="inline-flex items-center justify-center px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-emerald-400/40 font-black text-sm rounded-xl transition">
+            📲 Pedir Contraentrega por WhatsApp
+        </a>
+    </div>
 </div>
 HTML,
             ]
@@ -1227,18 +1315,26 @@ HTML,
         return null;
     }
 
-    public static function getRelatedPosts(string $slug, int $limit = 2): array
+    public static function getRelatedPosts(string $slug, int $limit = 3): array
     {
         $posts = self::getAllPosts();
-        $related = [];
+        $currentPost = self::getPostBySlug($slug);
+        $currentCluster = $currentPost['cluster'] ?? 'saas';
+
+        // 1. Priorizar artículos del mismo Topic Cluster (B2B SaaS entre sí / B2C BioLab entre sí)
+        $sameCluster = [];
+        $otherCluster = [];
         foreach ($posts as $post) {
-            if ($post['slug'] !== $slug) {
-                $related[] = $post;
+            if ($post['slug'] === $slug) {
+                continue;
             }
-            if (count($related) >= $limit) {
-                break;
+            if (($post['cluster'] ?? 'saas') === $currentCluster) {
+                $sameCluster[] = $post;
+            } else {
+                $otherCluster[] = $post;
             }
         }
-        return $related;
+
+        return array_slice(array_merge($sameCluster, $otherCluster), 0, $limit);
     }
 }
