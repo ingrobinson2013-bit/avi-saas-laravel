@@ -613,6 +613,46 @@ export default function DermoGutSuperboost({ product }: Props) {
         trackMetaPixel('InitiateCheckout', eventPayload);
     };
 
+    const inferDepartmentFromCity = (rawCity: string): string => {
+        const c = rawCity
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .trim();
+        if (!c) return '';
+        const map: Array<[string[], string]> = [
+            [['bogota', 'bog'], 'Bogotá D.C.'],
+            [['medellin', 'envigado', 'bello', 'itagui', 'sabaneta', 'rionegro', 'apartado'], 'Antioquia'],
+            [['cali', 'palmira', 'jamundi', 'tulua', 'buga', 'buenaventura', 'cartago'], 'Valle del Cauca'],
+            [['barranquilla', 'soledad', 'baranoa', 'malambo', 'sabanalarga', 'puerto colombia'], 'Atlántico'],
+            [['bucaramanga', 'floridablanca', 'giron', 'piedecuesta', 'barrancabermeja'], 'Santander'],
+            [['cartagena', 'magangue', 'turbaco'], 'Bolívar'],
+            [['chia', 'cajica', 'zipaquira', 'soacha', 'mosquera', 'funza', 'madrid', 'facatativa', 'fusagasuga', 'girardot', 'cota', 'sopo', 'tocancipa'], 'Cundinamarca'],
+            [['pereira', 'dosquebradas', 'santa rosa'], 'Risaralda'],
+            [['manizales', 'chinchina', 'la dorada'], 'Caldas'],
+            [['cucuta', 'ocana', 'pamplona'], 'Norte de Santander'],
+            [['villavicencio', 'acacias', 'granada'], 'Meta'],
+            [['santa marta', 'cienaga'], 'Magdalena'],
+            [['ibague', 'espinal'], 'Tolima'],
+            [['armenia', 'calarca'], 'Quindío'],
+            [['neiva', 'pitalito'], 'Huila'],
+            [['pasto', 'ipiales', 'tumaco'], 'Nariño'],
+            [['monteria', 'cerete', 'lorica'], 'Córdoba'],
+            [['valledupar', 'aguachica'], 'Cesar'],
+            [['popayan', 'santander de quilichao', 'miranda'], 'Cauca'],
+            [['tunja', 'duitama', 'sogamoso'], 'Boyacá'],
+            [['sincelejo'], 'Sucre'],
+            [['yopal'], 'Casanare'],
+            [['riohacha', 'maicao'], 'La Guajira'],
+            [['florencia'], 'Caquetá'],
+            [['quibdo'], 'Chocó'],
+        ];
+        for (const [keywords, dept] of map) {
+            if (keywords.some((k) => c.includes(k))) return dept;
+        }
+        return '';
+    };
+
     const handleOrderSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (isSubmitting) return;
@@ -626,10 +666,12 @@ export default function DermoGutSuperboost({ product }: Props) {
             return;
         }
 
-        if (!customerName.trim() || !department || !city.trim() || !address.trim()) {
-            setFormError('Por favor completa tu nombre, departamento, ciudad y dirección exacta para despachar tu pedido.');
+        if (!customerName.trim() || !city.trim() || !address.trim()) {
+            setFormError('Por favor completa tu nombre, ciudad y dirección exacta para despachar tu pedido.');
             return;
         }
+
+        const resolvedDepartment = department || inferDepartmentFromCity(city) || 'Colombia';
 
         setIsSubmitting(true);
         try {
@@ -639,7 +681,7 @@ export default function DermoGutSuperboost({ product }: Props) {
                 customer_name: customerName.trim(),
                 customer_phone: cleanDigits,
                 customer_email: customerEmail.trim() || null,
-                department,
+                department: resolvedDepartment,
                 city: city.trim(),
                 address: address.trim(),
                 neighborhood: neighborhood.trim() || null,
@@ -2095,10 +2137,9 @@ export default function DermoGutSuperboost({ product }: Props) {
                                         <div className="grid grid-cols-2 gap-2">
                                             <div>
                                                 <label className="block text-[11px] sm:text-xs font-extrabold text-slate-800 mb-0.5">
-                                                    📍 Departamento *
+                                                    📍 Departamento
                                                 </label>
                                                 <select
-                                                    required
                                                     value={department}
                                                     onFocus={() => recordHeatmapClick('modal_focus_dept_city')}
                                                     onChange={(e) => setDepartment(e.target.value)}
@@ -2123,7 +2164,14 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                     required
                                                     value={city}
                                                     onFocus={() => recordHeatmapClick('modal_focus_dept_city')}
-                                                    onChange={(e) => setCity(e.target.value)}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value;
+                                                        setCity(val);
+                                                        if (!department) {
+                                                            const inferred = inferDepartmentFromCity(val);
+                                                            if (inferred) setDepartment(inferred);
+                                                        }
+                                                    }}
                                                     placeholder="Ej: Medellín / Bogotá"
                                                     className="w-full rounded-xl border-2 border-slate-300 focus:border-emerald-600 px-3 py-2 text-base sm:text-sm font-semibold text-slate-900"
                                                 />
@@ -2183,7 +2231,6 @@ export default function DermoGutSuperboost({ product }: Props) {
                                                 if (
                                                     /^3\d{9}$/.test(cleanDigits) &&
                                                     customerName.trim() &&
-                                                    department &&
                                                     city.trim() &&
                                                     address.trim()
                                                 ) {
