@@ -7,14 +7,19 @@
     $createdAt = !empty($order['created_at'])
         ? \Carbon\Carbon::parse($order['created_at'])->timezone('America/Bogota')->format('d/m/Y h:i A')
         : '';
+    $isOneBag = ($order['bundle_id'] ?? '1_bolsa') === '1_bolsa';
+    $upsellLine = $isOneBag
+        ? "\n🎁 *Beneficio exclusivo al confirmar hoy:* si deseas agregar una *2.ª bolsa* en este mismo envío gratis, te sale en solo *\$50.000 adicionales* (te quedan las 2 bolsas en *\$119.900*, ahorras \$20.000).\n"
+        : "";
     $confirmMsg = "Hola *{$name}* 🐾 ¡Gracias por tu pedido en *AVIPET BioLab®*!\n\n"
-        . "✅ *Orden confirmada:* {$orderCode}\n"
-        . "📦 *Producto:* {$bundleTitle}\n"
+        . "✅ *Orden:* {$orderCode}\n"
+        . "🥄 *Producto:* {$bundleTitle} (Polvo Bio-Activo — se mezcla con un poquito de agua en su comida)\n"
         . "💰 *Total a pagar al recibir en casa:* {$formattedTotal} (Envío Gratis)\n"
-        . "📍 *Dirección:* " . ($order['address'] ?? '') . ", " . ($order['city'] ?? '') . " (" . ($order['department'] ?? '') . ")\n\n"
-        . "🎁 *AQUÍ TIENES TU BONO VIP GRATIS (Guía Clínica de Nutrición Hipoalergénica en PDF):*\n"
+        . "📍 *Dirección:* " . ($order['address'] ?? '') . ", " . ($order['city'] ?? '') . " (" . ($order['department'] ?? '') . ")\n"
+        . $upsellLine . "\n"
+        . "🎁 *AQUÍ TIENES TU BONO VIP GRATIS (Guía Clínica en PDF):*\n"
         . "https://biolab.avipetapp.com/guias/guia-nutricion-clinica-hipoalergenica-avipet-biolab.pdf\n\n"
-        . "Por favor confírmanos con un *SÍ* para despachar tu paquete hoy mismo. 🚚";
+        . "Por favor confírmanos con un *SÍ*" . ($isOneBag ? " (y si deseas 1 o 2 bolsas)" : "") . " para despachar tu paquete con prioridad hoy mismo. 🚚";
     $waConfirmUrl = "https://wa.me/57{$phone}?text=" . rawurlencode($confirmMsg);
 
     $adParam = $order['utm_content'] ?? $order['ad_name'] ?? $order['ad'] ?? '';

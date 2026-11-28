@@ -7,9 +7,23 @@
     $createdAt = !empty($lead['created_at'])
         ? \Carbon\Carbon::parse($lead['created_at'])->timezone('America/Bogota')->format('d/m/Y h:i A')
         : 'Hace un momento';
-    $recoveryMsg = "Hola" . (!empty($lead['customer_name']) ? " *{$lead['customer_name']}*" : "") . " 🐾 Te escribimos de *AVIPET BioLab®*.\n\n"
-        . "Vimos que estabas pidiendo tu *DERMO & GUT SUPERBOOST®* ({$bundleText}) con *Envío Gratis + Pago Contraentrega*, pero faltó confirmar tu dirección de entrega.\n\n"
-        . "¿Me regalas por aquí tu *Ciudad y Dirección* para dejarte agendado el despacho hoy mismo y enviarte los *2 Bonos Gratis (Guía PDF + Comunidad con Médica Veterinaria)*? 🚚🩺";
+    $hasAddress = !empty($lead['address']) && !empty($lead['city']);
+    $isOneBag = $bundleId === '1_bolsa';
+    $upsellLead = $isOneBag
+        ? "\n🎁 *(Opcional exclusivo hoy: si quieres llevar el *Pack Dúo de 2 bolsas* en este mismo envío gratis, la 2.ª bolsa te queda en solo *\$50.000* más — total *\$119.900*, ahorras \$20.000).*\n"
+        : "";
+    if ($hasAddress) {
+        $recoveryMsg = "Hola" . (!empty($lead['customer_name']) ? " *{$lead['customer_name']}*" : "") . " 🐾 Te escribimos de *AVIPET BioLab®*.\n\n"
+            . "Recibimos tus datos para tu pedido de *DERMO & GUT SUPERBOOST®* ({$bundleText} — Polvo Bio-Activo que se mezcla con un poquito de agua en su comida) con *Envío Gratis + Pago Contraentrega*:\n"
+            . "📍 *Dirección:* {$lead['address']}, {$cityText}\n"
+            . $upsellLead . "\n"
+            . "¿Nos confirmas con un *SÍ*" . ($isOneBag ? " (y si deseas 1 o 2 bolsas)" : "") . " para despacharte con prioridad y enviarte tu Guía Clínica PDF gratis? 🚚🩺";
+    } else {
+        $recoveryMsg = "Hola" . (!empty($lead['customer_name']) ? " *{$lead['customer_name']}*" : "") . " 🐾 Te escribimos de *AVIPET BioLab®*.\n\n"
+            . "Vimos que estabas pidiendo tu *DERMO & GUT SUPERBOOST®* ({$bundleText} — Polvo Bio-Activo que se mezcla con un poquito de agua en su comida) con *Envío Gratis + Pago Contraentrega*, pero faltó confirmar tu dirección de entrega.\n"
+            . $upsellLead . "\n"
+            . "¿Me regalas por aquí tu *Ciudad y Dirección* para dejarte agendado el despacho hoy mismo y enviarte tu Guía Clínica PDF gratis? 🚚🩺";
+    }
     $waUrl = "https://wa.me/57{$phone}?text=" . rawurlencode($recoveryMsg);
 
     $adParam = $lead['utm_content'] ?? $lead['ad_name'] ?? $lead['ad'] ?? '';
